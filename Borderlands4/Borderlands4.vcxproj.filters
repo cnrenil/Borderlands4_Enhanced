@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="SDK">
+      <UniqueIdentifier>{335a4557-8e48-405d-aadf-ad28a92df694}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{3d0ed1f4-a921-4c48-871a-fd9377c27eb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Cheats">
+      <UniqueIdentifier>{57b02205-6d58-4f60-8d57-97b0834279e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{9ea1bd67-d685-4f19-ae69-5f0f4a0e74d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MinHook">
+      <UniqueIdentifier>{ab471159-9bc4-400b-abfa-3862252abacb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Hooks">
+      <UniqueIdentifier>{2e692223-bab2-41b2-97c4-c25f4b14b4bf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DLLMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Localization.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Utils.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\backends\imgui_impl_dx12.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\backends\imgui_impl_win32.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="minhook\src\hde\hde32.c">
+      <Filter>MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="minhook\src\hde\hde64.c">
+      <Filter>MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="minhook\src\buffer.c">
+      <Filter>MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="minhook\src\hook.c">
+      <Filter>MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="minhook\src\trampoline.c">
+      <Filter>MinHook</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\Basic.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\CoreUObject_functions.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\Engine_functions.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\OakGame_functions.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\GbxGame_functions.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\GbxWeapon_functions.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks\D3D12Hook.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\GbxAI_functions.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\AIModule_functions.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\Aimbot.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\ESP.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\GodMode.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\Misc.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\SilentAim.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\TriggerBot.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Config\ConfigManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks\EngineHooks.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks\Init.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+    <ClCompile Include="Hooks\ProcessEventHook.cpp">
+      <Filter>Source Files\Hooks</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Utils\Localization.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Utils.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Cheats.h">
+      <Filter>Source Files\Cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Borderlands4_SDK\SDK\Basic.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_classes.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_structs.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_parameters.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\Engine_classes.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\Engine_structs.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\Engine_parameters.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\OakGame_classes.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\OakGame_structs.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\OakGame_parameters.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxGame_classes.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxGame_structs.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxGame_parameters.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxWeapon_classes.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxWeapon_structs.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxWeapon_parameters.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Hooks\D3D12Hook.h">
+      <Filter>Source Files\Hooks</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxAI_classes.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxAI_structs.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\GbxAI_parameters.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\AIModule_classes.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\AIModule_structs.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\AIModule_parameters.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ImGui\misc\debuggers\imgui.natstepfilter">
+      <Filter>ImGui</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="ImGui\misc\debuggers\imgui.natvis">
+      <Filter>ImGui</Filter>
+    </Natvis>
+  </ItemGroup>
+</Project>
