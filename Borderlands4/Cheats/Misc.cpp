@@ -9,6 +9,77 @@ ImVec2 CheatOptionsWindowSize = ImVec2(0, 0);
 
 void Cheats::SetPlayerSpeed()
 {
+	if (!GVars.Character) return;
+
+	AOakCharacter* OakChar = (AOakCharacter*)GVars.Character;
+	UOakCharacterMovementComponent* OakMove = OakChar->OakCharacterMovement;
+	if (!OakMove) return;
+
+	static float lastSpeedValue = 1.0f;
+	static float originalMaxWalkSpeed = -1.0f;
+
+	// Reset if character changed or component changed
+	static UOakCharacterMovementComponent* lastMoveComp = nullptr;
+	if (lastMoveComp != OakMove) {
+		originalMaxWalkSpeed = OakMove->MaxWalkSpeed;
+		lastMoveComp = OakMove;
+	}
+
+	if (CVars.SpeedEnabled)
+	{
+		// Constant enforcement
+		OakMove->MaxWalkSpeed = originalMaxWalkSpeed * CVars.Speed;
+		lastSpeedValue = CVars.Speed;
+	}
+	else
+	{
+		if (originalMaxWalkSpeed > 0)
+			OakMove->MaxWalkSpeed = originalMaxWalkSpeed;
+	}
+}
+
+void Cheats::Flight()
+{
+	if (!GVars.Character) return;
+
+	AOakCharacter* OakChar = (AOakCharacter*)GVars.Character;
+	UOakCharacterMovementComponent* OakMove = OakChar->OakCharacterMovement;
+	if (!OakMove) return;
+
+	static float fOldFlySpeed = -1.0f;
+	static bool bWasFlightOn = false;
+
+	if (CVars.FlightEnabled)
+	{
+		if (fOldFlySpeed < 0)
+			fOldFlySpeed = OakMove->MaxFlySpeed;
+
+		// Force the mode every frame to prevent game from changing it back
+		if (OakMove->MovementMode != SDK::EMovementMode::MOVE_Flying)
+			OakMove->SetMovementMode(SDK::EMovementMode::MOVE_Flying, 0);
+
+		OakMove->MaxFlySpeed = 600.0f * (CVars.FlightSpeed * 2.0f); // Use a baseline or multiplier
+		
+		static bool collisionDisabled = false;
+		if (!collisionDisabled) {
+			OakChar->SetActorEnableCollision(false);
+			collisionDisabled = true;
+		}
+		
+		bWasFlightOn = true;
+	}
+	else
+	{
+		if (bWasFlightOn)
+		{
+			OakMove->SetMovementMode(SDK::EMovementMode::MOVE_Walking, 0);
+			if (fOldFlySpeed > 0)
+				OakMove->MaxFlySpeed = fOldFlySpeed;
+			OakChar->SetActorEnableCollision(true);
+			bWasFlightOn = false;
+			fOldFlySpeed = -1.0f;
+		}
+	}
 }
 
 void Cheats::ToggleNoTarget()
@@ -37,14 +108,17 @@ void Cheats::SpawnItems()
 
 void Cheats::ToggleDemigod()
 {
-	if (!GVars.PlayerController) return;
-	SDK::UKismetSystemLibrary::ExecuteConsoleCommand(Utils::GetWorldSafe(), L"demigod", GVars.PlayerController);
+	if (GVars.PlayerController && GVars.PlayerController->IsA(AOakPlayerController::StaticClass()))
+		static_cast<AOakPlayerController*>(GVars.PlayerController)->ServerActivateDevPerk(SDK::EDevPerk::Demigod);
 }
 
 void Cheats::TogglePlayersOnly()
 {
 	if (!GVars.PlayerController) return;
-	SDK::UKismetSystemLibrary::ExecuteConsoleCommand(Utils::GetWorldSafe(), L"playersonly", GVars.PlayerController);
+	if (!GVars.PlayerController->CheatManager)
+		GVars.PlayerController->CheatManager = (UCheatManager*)SDK::UGameplayStatics::SpawnObject(SDK::UOakCheatManager::StaticClass(), GVars.PlayerController);
+	if (GVars.PlayerController->CheatManager)
+		GVars.PlayerController->CheatManager->PlayersOnly();
 }
 
 void Cheats::SetGameSpeed(float Speed)
@@ -232,8 +306,8 @@ void Cheats::WeaponModifiers()
 
 			if (WeaponSettings.RapidFireEnabled)
 			{
-				fireBehavior->firerate.Value = 999.0f;
-				fireBehavior->BurstFireDelay.Value = 0.01f;
+				fireBehavior->firerate.Value = 999.0f * WeaponSettings.FireRate;
+				fireBehavior->BurstFireDelay.Value = 0.01f / WeaponSettings.FireRate;
 			}
 			else
 			{
@@ -285,9 +359,6 @@ void Cheats::WeaponModifiers()
 	}
 }
 
-void Cheats::NoClipToggle()
-{
-}
 
 void Cheats::ChangeFOV()
 {
@@ -500,10 +571,10 @@ void Cheats::RenderEnabledOptions()
 		ImGui::TextColored(Color, Localization::T("ESP"));
 	if (CVars.SpeedEnabled)
 		ImGui::TextColored(Color, Localization::T("SPEED_X_1F"), CVars.Speed);
+	if (CVars.FlightEnabled)
+		ImGui::TextColored(Color, Localization::T("FLIGHT"));
 	if (CVars.SilentAim)
 		ImGui::TextColored(Color, Localization::T("SILENT_AIM"));
-	if (CVars.NoClip)
-		ImGui::TextColored(Color, Localization::T("NOCLIP"));
 	if (CVars.NoTarget)
 		ImGui::TextColored(Color, Localization::T("NO_TARGET"));
 	if (CVars.Demigod)
@@ -530,4 +601,28 @@ void Cheats::ToggleFreecam()
 {
 	CVars.Freecam = !CVars.Freecam;
 	if (CVars.Freecam) CVars.ThirdPerson = false;
+}
+
+void Cheats::InfiniteAmmo()
+{
+	if (GVars.PlayerController && GVars.PlayerController->IsA(AOakPlayerController::StaticClass()))
+		static_cast<AOakPlayerController*>(GVars.PlayerController)->ServerActivateDevPerk(SDK::EDevPerk::Loaded);
+}
+
+void Cheats::BlackMarketBypass()
+{
+	// Logic to be called during ProcessEvent intercept for Vending machines
+}
+
+void Cheats::EnforcePersistence()
+{
+	if (Utils::bIsLoading || !GVars.PlayerController || !GVars.Character) return;
+
+	if (CVars.GodMode) GVars.Character->bCanBeDamaged = false;
+
+	static bool lastNoTarget = false;
+	if (CVars.NoTarget != lastNoTarget) {
+		Cheats::ToggleNoTarget();
+		lastNoTarget = CVars.NoTarget;
+	}
 }

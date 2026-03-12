@@ -14,20 +14,29 @@ static SDK::FVector LastPinPos = { 0, 0, 0 };
 
 void PerformMapTeleport()
 {
-	if (!GVars.Character) return;
-	SDK::FVector TelePos = LastPinPos;
-	TelePos.Z += 150.0f; // Offset to avoid ground clipping
-
+	if (!GVars.PlayerController || !GVars.Character) return;
+	
 	SDK::AActor* TargetActor = GVars.Character;
-	if (GVars.Character->GetAttachParentActor()) {
+	if (GVars.Character->GetAttachParentActor()) 
 		TargetActor = GVars.Character->GetAttachParentActor();
+
+	SDK::FVector TelePos = LastPinPos;
+	SDK::FHitResult HitResult;
+
+	// 1. Move to high altitude (no sweep)
+	TelePos.Z = 50000.0f;
+	TargetActor->K2_SetActorLocation(TelePos, false, &HitResult, false);
+
+	// 2. Snap to ground using sweep
+	TelePos.Z = -1000.0f;
+	TargetActor->K2_SetActorLocation(TelePos, true, &HitResult, false);
+
+	if (CVars.Debug) {
+		SDK::FVector FinalPos = TargetActor->K2_GetActorLocation();
+		printf("[MapTP] Teleported to: %.1f, %.1f, %.1f\n", FinalPos.X, FinalPos.Y, FinalPos.Z);
 	}
 
-	printf("[MapTP] Teleporting actor %s to %.1f, %.1f, %.1f\n", 
-		TargetActor->GetName().c_str(), TelePos.X, TelePos.Y, TelePos.Z);
-	
-	TargetActor->K2_SetActorLocation(TelePos, false, nullptr, false);
-	LastPinPos = { 0, 0, 0 }; // Clear to prevent double trigger
+	LastPinPos = { 0, 0, 0 }; 
 }
 
 void DiscoveryPinWatcher()
@@ -106,14 +115,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 			bool bIsInterestingEvent = !bHasFunctionFilter && !bHasObjectFilter && 
 								  (lowerName.find("hit") != std::string::npos || 
 								   lowerName.find("impact") != std::string::npos || 
-								   lowerName.find("camera") != std::string::npos || 
-								   lowerName.find("zoom") != std::string::npos || 
-								   lowerName.find("transition") != std::string::npos ||
-								   lowerName.find("damage") != std::string::npos ||
-								   lowerName.find("map") != std::string::npos ||
-								   lowerName.find("pin") != std::string::npos ||
-								   lowerName.find("discovery") != std::string::npos ||
-								   lowerName.find("waypoint") != std::string::npos);
+								   lowerName.find("damage") != std::string::npos);
 
 			bool bShouldLog = false;
 			
@@ -127,9 +129,14 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
 			if (bShouldLog)
 			{
-				printf("[DEBUG] Function: %s | Class: %s | Object: %s\n", FuncName.c_str(), (Object->Class ? Object->Class->GetName().c_str() : "None"), ObjName.c_str());
+				auto Sanitize = [](const std::string& s) {
+					if (s.length() > 128) return s.substr(0, 125) + "...";
+					return s;
+				};
+
+				const char* objClass = (Object->Class ? Object->Class->GetName().c_str() : "None");
+				printf("[DEBUG] Function: %s | Class: %s | Object: %s\n", Sanitize(FuncName).c_str(), objClass, Sanitize(ObjName).c_str());
 				
-				// Special logging for CameraTransition parameters
 				if (FuncName == "CameraTransition")
 				{
 					struct TransitionParams {
@@ -137,7 +144,11 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 						SDK::FName Transition;
 						float BlendTime;
 					}* p = (TransitionParams*)Params;
-					if (p) printf("    -> Mode: %s | Transition: %s | Time: %.2f\n", p->NewMode.ToString().c_str(), p->Transition.ToString().c_str(), p->BlendTime);
+					if (p) {
+						std::string modeStr = p->NewMode.ToString();
+						std::string transStr = p->Transition.ToString();
+						printf("    -> Mode: %s | Transition: %s | Time: %.2f\n", Sanitize(modeStr).c_str(), Sanitize(transStr).c_str(), p->BlendTime);
+					}
 				}
 			}
 		}
@@ -197,10 +208,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 		}
 		bF8WasDown = bF8IsDown;
 
-		if (CVars.Debug && Function && Function->GetName().find("DiscoveryPin") != std::string::npos)
-		{
-			printf("[DiscoveryDebug] Caller: %s | Func: %s\n", Object->Class->GetName().c_str(), Function->GetName().c_str());
-		}
+		// Noisy discovery logs removed for stability
 
 		// Map Teleport Implementation (Network Events)
 		if (Function && MiscSettings.MapTeleport && Object)
@@ -275,6 +283,15 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 				}
 			}
 		}
+
+		if (Function && MiscSettings.NoBMCooldown && Function->GetName() == "OnDecloakCollisionEnter")
+		{
+			// Python mod: obj.bCooldownOnView = False
+			// Since we don't have the exact offset (and it varies), 
+			// we can use UKismetSystemLibrary::SetBoolPropertyByName if available, 
+			// or assume it's at a known offset if we find it. 
+			// For now, let's keep the hook call and hope to find the offset.
+		}
 	}
 }
 catch (...) {
@@ -298,6 +315,9 @@ void hkPostRender(UObject* ViewportClient, class UCanvas* Canvas)
 		if (CVars.ESP) Cheats::UpdateESP();
 		if (CVars.Aimbot) Cheats::Aimbot();
 		Cheats::WeaponModifiers();
+		Cheats::Flight();
+		Cheats::SetPlayerSpeed();
+		Cheats::EnforcePersistence();
 		DiscoveryPinWatcher();
 		Cheats::ChangeFOV();
 		Cheats::ChangeGameRenderSettings();

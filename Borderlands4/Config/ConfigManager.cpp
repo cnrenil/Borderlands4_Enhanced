@@ -109,17 +109,25 @@ void ConfigManager::SaveSettings()
 	SAVE_STR("Text", "DebugFunctionObjectMustInclude", TextVars.DebugFunctionObjectMustInclude);
 
 	// CVars
+	// CVars
 	if (MiscSettings.ShouldSaveCVars) {
 		SAVE_BOOL("CVars", "Debug", CVars.Debug);
 		SAVE_BOOL("CVars", "SecretFeatures", CVars.SecretFeatures);
+		
+		// The following are "Action Toggles" that call a function once and shouldn't be persistent across injection
+		/*
 		SAVE_BOOL("CVars", "GodMode", CVars.GodMode);
 		SAVE_BOOL("CVars", "InfAmmo", CVars.InfAmmo);
+		SAVE_BOOL("CVars", "Demigod", CVars.Demigod);
+		SAVE_BOOL("CVars", "NoTarget", CVars.NoTarget);
+		SAVE_BOOL("CVars", "PlayersOnly", CVars.PlayersOnly);
+		*/
+
 		SAVE_BOOL("CVars", "Aimbot", CVars.Aimbot);
 		SAVE_BOOL("CVars", "ESP", CVars.ESP);
 		SAVE_FLOAT("CVars", "Speed", CVars.Speed);
 		SAVE_BOOL("CVars", "SpeedEnabled", CVars.SpeedEnabled);
 		SAVE_BOOL("CVars", "SilentAim", CVars.SilentAim);
-		SAVE_BOOL("CVars", "NoClip", CVars.NoClip);
 		SAVE_BOOL("CVars", "Reticle", CVars.Reticle);
 		SAVE_BOOL("CVars", "TriggerBot", CVars.TriggerBot);
 		SAVE_BOOL("CVars", "RenderOptions", CVars.RenderOptions);
@@ -128,10 +136,7 @@ void ConfigManager::SaveSettings()
 		SAVE_BOOL("CVars", "ShootFromReticle", CVars.ShootFromReticle);
 		SAVE_BOOL("CVars", "SaveDebugToFile", CVars.SaveDebugToFile);
 		SAVE_BOOL("CVars", "BulletTime", CVars.BulletTime);
-		SAVE_BOOL("CVars", "NoTarget", CVars.NoTarget);
-		SAVE_BOOL("CVars", "PlayersOnly", CVars.PlayersOnly);
 		SAVE_FLOAT("CVars", "GameSpeed", CVars.GameSpeed);
-		SAVE_BOOL("CVars", "Demigod", CVars.Demigod);
 		SAVE_BOOL("CVars", "ThirdPerson", CVars.ThirdPerson);
 	}
 }
@@ -237,17 +242,24 @@ void ConfigManager::LoadSettings()
 	LOAD_STR("Text", "DebugFunctionObjectMustInclude", TextVars.DebugFunctionObjectMustInclude);
 
 	// CVars
+	// CVars
 	if (MiscSettings.ShouldSaveCVars) {
 		LOAD_BOOL("CVars", "Debug", CVars.Debug);
 		LOAD_BOOL("CVars", "SecretFeatures", CVars.SecretFeatures);
+
+		/* Action Toggles Excluded
 		LOAD_BOOL("CVars", "GodMode", CVars.GodMode);
 		LOAD_BOOL("CVars", "InfAmmo", CVars.InfAmmo);
+		LOAD_BOOL("CVars", "Demigod", CVars.Demigod);
+		LOAD_BOOL("CVars", "NoTarget", CVars.NoTarget);
+		LOAD_BOOL("CVars", "PlayersOnly", CVars.PlayersOnly);
+		*/
+
 		LOAD_BOOL("CVars", "Aimbot", CVars.Aimbot);
 		LOAD_BOOL("CVars", "ESP", CVars.ESP);
 		LOAD_FLOAT("CVars", "Speed", CVars.Speed);
 		LOAD_BOOL("CVars", "SpeedEnabled", CVars.SpeedEnabled);
 		LOAD_BOOL("CVars", "SilentAim", CVars.SilentAim);
-		LOAD_BOOL("CVars", "NoClip", CVars.NoClip);
 		LOAD_BOOL("CVars", "Reticle", CVars.Reticle);
 		LOAD_BOOL("CVars", "TriggerBot", CVars.TriggerBot);
 		LOAD_BOOL("CVars", "RenderOptions", CVars.RenderOptions);
@@ -256,10 +268,7 @@ void ConfigManager::LoadSettings()
 		LOAD_BOOL("CVars", "ShootFromReticle", CVars.ShootFromReticle);
 		LOAD_BOOL("CVars", "SaveDebugToFile", CVars.SaveDebugToFile);
 		LOAD_BOOL("CVars", "BulletTime", CVars.BulletTime);
-		LOAD_BOOL("CVars", "NoTarget", CVars.NoTarget);
-		LOAD_BOOL("CVars", "PlayersOnly", CVars.PlayersOnly);
 		LOAD_FLOAT("CVars", "GameSpeed", CVars.GameSpeed);
-		LOAD_BOOL("CVars", "Demigod", CVars.Demigod);
 		LOAD_BOOL("CVars", "ThirdPerson", CVars.ThirdPerson);
 	}
 

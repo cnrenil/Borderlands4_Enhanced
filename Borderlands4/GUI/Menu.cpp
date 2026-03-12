@@ -46,9 +46,9 @@ void GUI::RenderMenu()
 
 	ImGui::SetNextWindowSize(ImVec2(600, 500), ImGuiCond_FirstUseEver);
 	
-	if (ImGui::Begin("Borderlands 4 Hack", nullptr, ImGuiWindowFlags_NoCollapse))
+	if (ImGui::Begin(Localization::T("WINDOW_TITLE"), nullptr, ImGuiWindowFlags_NoCollapse))
 	{
-		ImGui::SeparatorText("Hello, Have Fun Cheating!");
+		ImGui::SeparatorText(Localization::T("HELLO_GREETING"));
 
 		if (ImGui::BeginTabBar("MainTabBar"))
 		{
@@ -85,10 +85,24 @@ void GUI::RenderMenu()
             {
                 ImGui::Checkbox(Localization::T("ESP"), &CVars.ESP);
                 ImGui::Checkbox(Localization::T("AIMBOT"), &CVars.Aimbot);
-                ImGui::Checkbox(Localization::T("SILENT_AIM"), &CVars.SilentAim);
-                ImGui::Checkbox(Localization::T("GODMODE"), &CVars.GodMode);
+                if (ImGui::Checkbox(Localization::T("SILENT_AIM"), &CVars.SilentAim)) { if (CVars.SilentAim) CVars.Aimbot = false; }
+                if (ImGui::Checkbox(Localization::T("INF_AMMO"), &CVars.InfAmmo)) Cheats::InfiniteAmmo();
+                if (ImGui::Checkbox(Localization::T("GODMODE"), &CVars.GodMode)) Cheats::ToggleGodMode();
                 if (ImGui::Checkbox(Localization::T("DEMIGOD"), &CVars.Demigod)) Cheats::ToggleDemigod();
                 if (ImGui::Checkbox(Localization::T("NO_TARGET"), &CVars.NoTarget)) Cheats::ToggleNoTarget();
+                
+                ImGui::SeparatorText(Localization::T("MOVEMENT"));
+                ImGui::Checkbox(Localization::T("SPEED_HACK"), &CVars.SpeedEnabled);
+                if (CVars.SpeedEnabled)
+                {
+                    ImGui::SliderFloat(Localization::T("SPEED_VALUE"), &CVars.Speed, 1.0f, 10.0f, "%.1f");
+                }
+                
+                ImGui::Checkbox(Localization::T("FLIGHT"), &CVars.FlightEnabled);
+                if (CVars.FlightEnabled)
+                {
+                    ImGui::SliderFloat(Localization::T("FLIGHT_SPEED"), &CVars.FlightSpeed, 1.0f, 20.0f, "%.1f");
+                }
                 
                 bool bTP = CVars.ThirdPerson;
                 if (ImGui::Checkbox(Localization::T("THIRD_PERSON"), &bTP)) Cheats::ToggleThirdPerson();
@@ -149,7 +163,9 @@ void GUI::RenderMenu()
 
                 ImGui::Separator();
                 ImGui::Checkbox(Localization::T("MAP_TELEPORT"), &MiscSettings.MapTeleport);
+                AddDefaultTooltip("Quickly make and remove a pin on the map to teleport to that location.");
                 ImGui::SliderFloat(Localization::T("MAP_TELEPORT_WINDOW"), &MiscSettings.MapTPWindow, 0.5f, 5.0f);
+                ImGui::Checkbox(Localization::T("BLACK_MARKET_BYPASS"), &MiscSettings.NoBMCooldown);
 
                 ImGui::Separator();
                 ImGui::Text(Localization::T("CURRENCY_SETTINGS"));
@@ -240,6 +256,7 @@ void GUI::RenderMenu()
             if (ImGui::BeginTabItem(Localization::T("TAB_WEAPON")))
             {
                 ImGui::Checkbox(Localization::T("INSTANT_HIT"), &WeaponSettings.InstantHitEnabled);
+                AddDefaultTooltip("Increases bullet speed to effectively hit targets instantly.");
                 if (WeaponSettings.InstantHitEnabled)
                 {
                     ImGui::SliderFloat(Localization::T("PROJECTILE_SPEED"), &WeaponSettings.ProjectileSpeedMultiplier, 1.0f, 9999.0f);
@@ -247,6 +264,10 @@ void GUI::RenderMenu()
                 ImGui::Separator();
                 
                 ImGui::Checkbox(Localization::T("RAPID_FIRE"), &WeaponSettings.RapidFireEnabled);
+                if (WeaponSettings.RapidFireEnabled)
+                {
+                    ImGui::SliderFloat(Localization::T("FIRE_RATE_MODIFIER"), &WeaponSettings.FireRate, 0.1f, 10.0f, "%.1f");
+                }
                 
                 ImGui::Separator();
                 ImGui::Checkbox(Localization::T("NO_RECOIL"), &WeaponSettings.NoRecoilEnabled);
@@ -282,7 +303,7 @@ void GUI::RenderMenu()
                 ImGui::EndTabItem();
             }
 
-            if (ImGui::BeginTabItem(Localization::T("CONFIG")))
+            if (ImGui::BeginTabItem(Localization::T("TAB_CONFIG")))
             {
                 if (ImGui::TreeNode(Localization::T("ESP_SETTINGS")))
                 {
@@ -307,6 +328,11 @@ void GUI::RenderMenu()
                 ImGui::SameLine();
                 if (ImGui::Button(Localization::T("LOAD_SETTINGS")))
                     ConfigManager::LoadSettings();
+
+                ImGui::Separator();
+                ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.8f, 0.0f, 1.0f));
+                ImGui::TextWrapped(Localization::T("VOLATILE_HINT"));
+                ImGui::PopStyleColor();
 
                 ImGui::EndTabItem();
             }

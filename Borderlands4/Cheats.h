@@ -85,6 +85,7 @@ struct WeaponSettingsstruct {
 	bool NoSwayEnabled = false;
 	bool HomingProjectiles = false;
 	float HomingRange = 50.0f;
+	float FireRate = 1.0f;
 } inline WeaponSettings;
 
 struct SilentAimSettingsstruct {
@@ -109,7 +110,6 @@ struct CVarsstruct
 	float Speed = 1;
 	bool SpeedEnabled = false;
 	bool SilentAim = false;
-	bool NoClip = false;
 	bool Reticle = false;
 	bool TriggerBot = false;
 	bool RenderOptions = false;
@@ -124,6 +124,8 @@ struct CVarsstruct
 	bool Demigod = false;
 	bool ThirdPerson = false;
 	bool Freecam = false;
+	bool FlightEnabled = false;
+	float FlightSpeed = 1.0f;
 } inline CVars;
 
 #include "Utils/Localization.h"
@@ -150,6 +152,7 @@ struct MiscSettingsStruct {
 	float OTS_X = -150.0f;
 	float OTS_Y = 60.0f;
 	float OTS_Z = 20.0f;
+	bool NoBMCooldown = true;
 	Language CurrentLanguage = Language::English;
 } inline MiscSettings;
 
@@ -191,7 +194,6 @@ struct Cheats
 	static void AutoWin();
 	static void ListPlayers();
 	static void ChangeGameRenderSettings();
-	static void NoClipToggle();
 	static void GoTo(FVector Location);
 	static void SetExperienceLevel(int32 xpAmount);
 	static void WeaponModifiers();
@@ -208,4 +210,8 @@ struct Cheats
 	static void TeleportLoot();
 	static void ToggleThirdPerson();
 	static void ToggleFreecam();
+	static void Flight();
+	static void EnforcePersistence();
+	static void InfiniteAmmo();
+	static void BlackMarketBypass();
 };

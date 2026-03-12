@@ -90,6 +90,8 @@ DWORD MainThread(HMODULE hModule)
 	AllocConsole();
 	freopen_s(&g_ConsoleOut, "CONOUT$", "w", stdout);
 
+	Localization::Initialize();
+
 	std::cout << "Cheat Injecting...\n";
 
 	MH_STATUS Status = MH_Initialize();
@@ -113,7 +115,6 @@ DWORD MainThread(HMODULE hModule)
 
 	std::cout << "Cheat Injected\n";
 
-	Localization::Initialize();
 	ConfigManager::LoadSettings();
 
 	bool bIsProcessEventHooked = false;
