@@ -86,6 +86,7 @@ struct WeaponSettingsstruct {
 	bool HomingProjectiles = false;
 	float HomingRange = 50.0f;
 	float FireRate = 1.0f;
+	bool InstantReload = false;
 } inline WeaponSettings;
 
 struct SilentAimSettingsstruct {
@@ -152,7 +153,8 @@ struct MiscSettingsStruct {
 	float OTS_X = -150.0f;
 	float OTS_Y = 60.0f;
 	float OTS_Z = 20.0f;
-	bool NoBMCooldown = true;
+	bool FreecamBlockInput = true;
+
 	Language CurrentLanguage = Language::English;
 } inline MiscSettings;
 
@@ -213,5 +215,5 @@ struct Cheats
 	static void Flight();
 	static void EnforcePersistence();
 	static void InfiniteAmmo();
-	static void BlackMarketBypass();
+
 };

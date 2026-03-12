@@ -77,6 +77,7 @@ void ConfigManager::SaveSettings()
 	SAVE_BOOL("Weapon", "NoSwayEnabled", WeaponSettings.NoSwayEnabled);
 	SAVE_BOOL("Weapon", "HomingProjectiles", WeaponSettings.HomingProjectiles);
 	SAVE_FLOAT("Weapon", "HomingRange", WeaponSettings.HomingRange);
+	SAVE_BOOL("Weapon", "InstantReload", WeaponSettings.InstantReload);
 	
 	// TriggerBotSettings
 	SAVE_BOOL("TriggerBot", "Enabled", TriggerBotSettings.Enabled);
@@ -99,6 +100,7 @@ void ConfigManager::SaveSettings()
 	SAVE_BOOL("Misc", "ThirdPersonCentered", MiscSettings.ThirdPersonCentered);
 	SAVE_BOOL("Misc", "ThirdPersonOTS", MiscSettings.ThirdPersonOTS);
 	SAVE_BOOL("Misc", "ShouldAutoSave", MiscSettings.ShouldAutoSave);
+	SAVE_BOOL("Misc", "FreecamBlockInput", MiscSettings.FreecamBlockInput);
 	SAVE_BOOL("Misc", "ShouldSaveCVars", MiscSettings.ShouldSaveCVars);
 	SAVE_INT("Misc", "CurrentLanguage", static_cast<int>(MiscSettings.CurrentLanguage));
 
@@ -209,6 +211,7 @@ void ConfigManager::LoadSettings()
 	LOAD_BOOL("Weapon", "NoSwayEnabled", WeaponSettings.NoSwayEnabled);
 	LOAD_BOOL("Weapon", "HomingProjectiles", WeaponSettings.HomingProjectiles);
 	LOAD_FLOAT("Weapon", "HomingRange", WeaponSettings.HomingRange);
+	LOAD_BOOL("Weapon", "InstantReload", WeaponSettings.InstantReload);
 
 	// TriggerBotSettings
 	LOAD_BOOL("TriggerBot", "Enabled", TriggerBotSettings.Enabled);
@@ -231,6 +234,7 @@ void ConfigManager::LoadSettings()
 	LOAD_BOOL("Misc", "ThirdPersonCentered", MiscSettings.ThirdPersonCentered);
 	LOAD_BOOL("Misc", "ThirdPersonOTS", MiscSettings.ThirdPersonOTS);
 	LOAD_BOOL("Misc", "ShouldAutoSave", MiscSettings.ShouldAutoSave);
+	LOAD_BOOL("Misc", "FreecamBlockInput", MiscSettings.FreecamBlockInput);
 	LOAD_BOOL("Misc", "ShouldSaveCVars", MiscSettings.ShouldSaveCVars);
 	int cl = static_cast<int>(MiscSettings.CurrentLanguage); LOAD_INT("Misc", "CurrentLanguage", cl); MiscSettings.CurrentLanguage = static_cast<Language>(cl);
 	Localization::CurrentLanguage = MiscSettings.CurrentLanguage;

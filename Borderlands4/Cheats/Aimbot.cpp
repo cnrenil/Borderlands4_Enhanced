@@ -39,7 +39,17 @@ void Cheats::Aimbot()
 
 	FVector CameraPos = GVars.POV->Location;
 	if (!TargetChar->Mesh) return;
-	FVector TargetPos = TargetChar->Mesh->GetBoneTransform(CachedBoneName, ERelativeTransformSpace::RTS_World).Translation;
+
+	FVector TargetPos;
+	if (TargetChar->Mesh->GetBoneIndex(CachedBoneName) != -1)
+	{
+		TargetPos = TargetChar->Mesh->GetBoneTransform(CachedBoneName, ERelativeTransformSpace::RTS_World).Translation;
+	}
+	else
+	{
+		// Fallback to the highest bone if the requested bone doesn't exist (e.g., drones, turrets)
+		TargetPos = Utils::GetHighestBone(TargetChar);
+	}
 
 	double Dist = CameraPos.GetDistanceToInMeters(TargetPos);
 

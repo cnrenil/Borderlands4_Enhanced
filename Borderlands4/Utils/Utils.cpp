@@ -359,3 +359,29 @@ float Utils::GetHealthPercent(AActor* Actor)
 	if (!Actor) return 0.0f;
 	return UDamageStatics::GetHealthPoolPercent(Actor, 0); // layer 0 usually is health
 }
+
+FVector Utils::GetHighestBone(ACharacter* TargetChar)
+{
+    if (!TargetChar || !TargetChar->Mesh) return TargetChar->K2_GetActorLocation();
+
+    int32 NumBones = TargetChar->Mesh->GetNumBones();
+    if (NumBones <= 0) return TargetChar->K2_GetActorLocation();
+
+    float MaxZ = -1e10f;
+    FVector BestPos = TargetChar->K2_GetActorLocation();
+    
+    // Safety cap to avoid overhead on extremely complex skeletons
+    int32 MaxToCheck = (NumBones > 300) ? 300 : NumBones;
+
+    for (int i = 0; i < MaxToCheck; i++)
+    {
+        FName BoneName = TargetChar->Mesh->GetBoneName(i);
+        FVector Pos = TargetChar->Mesh->GetBoneTransform(BoneName, ERelativeTransformSpace::RTS_World).Translation;
+        if (Pos.Z > MaxZ)
+        {
+            MaxZ = (float)Pos.Z;
+            BestPos = Pos;
+        }
+    }
+    return BestPos;
+}

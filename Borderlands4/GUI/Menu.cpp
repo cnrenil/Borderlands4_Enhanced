@@ -132,6 +132,11 @@ void GUI::RenderMenu()
                 {
                     bool bFreecam = CVars.Freecam;
                     if (ImGui::Checkbox(Localization::T("FREE_CAM"), &bFreecam)) Cheats::ToggleFreecam();
+                    if (CVars.Freecam)
+                    {
+                        ImGui::SameLine();
+                        ImGui::Checkbox(Localization::T("FREECAM_BLOCK_INPUT"), &MiscSettings.FreecamBlockInput);
+                    }
                 }
                 
                 ImGui::Separator();
@@ -165,7 +170,6 @@ void GUI::RenderMenu()
                 ImGui::Checkbox(Localization::T("MAP_TELEPORT"), &MiscSettings.MapTeleport);
                 AddDefaultTooltip("Quickly make and remove a pin on the map to teleport to that location.");
                 ImGui::SliderFloat(Localization::T("MAP_TELEPORT_WINDOW"), &MiscSettings.MapTPWindow, 0.5f, 5.0f);
-                ImGui::Checkbox(Localization::T("BLACK_MARKET_BYPASS"), &MiscSettings.NoBMCooldown);
 
                 ImGui::Separator();
                 ImGui::Text(Localization::T("CURRENCY_SETTINGS"));
@@ -278,6 +282,10 @@ void GUI::RenderMenu()
                 
                 ImGui::Separator();
                 ImGui::Checkbox(Localization::T("NO_SWAY"), &WeaponSettings.NoSwayEnabled);
+                
+                ImGui::Separator();
+                ImGui::Checkbox(Localization::T("INSTANT_RELOAD"), &WeaponSettings.InstantReload);
+                GUI::HostOnlyTooltip();
                 
                 ImGui::Separator();
                 ImGui::Checkbox(Localization::T("HOMING_PROJECTILES"), &WeaponSettings.HomingProjectiles);

@@ -446,6 +446,17 @@ void Cheats::ChangeFOV()
 					
 					GVars.CameraActor->K2_SetActorLocation(CamLoc, false, nullptr, false);
 
+					if (MiscSettings.FreecamBlockInput)
+					{
+						OakPC->SetIgnoreMoveInput(true);
+						OakPC->SetIgnoreLookInput(true);
+					}
+					else
+					{
+						if (OakPC->IsMoveInputIgnored()) OakPC->SetIgnoreMoveInput(false);
+						if (OakPC->IsLookInputIgnored()) OakPC->SetIgnoreLookInput(false);
+					}
+
 					if (OakPC->PlayerCameraManager->ViewTarget.target != GVars.CameraActor)
 					{
 						OakPC->SetViewTargetWithBlend(GVars.CameraActor, 0.1f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
@@ -453,6 +464,9 @@ void Cheats::ChangeFOV()
 				}
 				else // OTS Mode
 				{
+					if (OakPC->IsMoveInputIgnored()) OakPC->SetIgnoreMoveInput(false);
+					if (OakPC->IsLookInputIgnored()) OakPC->SetIgnoreLookInput(false);
+
 					// Ensure background native is in ThirdPerson to render character
 					if (ModeStr.find("ThirdPerson") == std::string::npos && (CurrentTime - LastTransitionTime > 0.5f))
 					{
@@ -482,6 +496,9 @@ void Cheats::ChangeFOV()
 		}
 		else // Native Camera Path
 		{
+			if (OakPC->IsMoveInputIgnored()) OakPC->SetIgnoreMoveInput(false);
+			if (OakPC->IsLookInputIgnored()) OakPC->SetIgnoreLookInput(false);
+
 			bool bShouldBeInThirdPerson = CVars.ThirdPerson;
 			
 			if (CVars.ThirdPerson && !MiscSettings.ThirdPersonOTS && bIsZooming && MiscSettings.ThirdPersonADSFirstPerson)
@@ -609,10 +626,6 @@ void Cheats::InfiniteAmmo()
 		static_cast<AOakPlayerController*>(GVars.PlayerController)->ServerActivateDevPerk(SDK::EDevPerk::Loaded);
 }
 
-void Cheats::BlackMarketBypass()
-{
-	// Logic to be called during ProcessEvent intercept for Vending machines
-}
 
 void Cheats::EnforcePersistence()
 {

@@ -73,6 +73,7 @@ struct Utils
 	static bool IsInLoadingState();
 	static ETeamAttitude GetAttitude(AActor* Target);
 	static float GetHealthPercent(AActor* Actor);
+	static FVector GetHighestBone(ACharacter* TargetChar);
 
 	static inline bool bIsLoading = false;
 };

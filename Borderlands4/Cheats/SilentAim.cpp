@@ -28,7 +28,8 @@ void Cheats::SilentAimHoming()
 		}
 		else
 		{
-			TargetPos = TargetChar->K2_GetActorLocation();
+			// Fallback to the highest bone if targeted bone is not found
+			TargetPos = Utils::GetHighestBone(TargetChar);
 		}
 	} else {
 		TargetPos = Target->K2_GetActorLocation();

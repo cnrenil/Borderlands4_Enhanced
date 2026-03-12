@@ -97,6 +97,7 @@ namespace Localization
         AddString("OTS_OFFSET_Z", "OTS Offset Z (Up)", (const char*)u8"越肩偏移 Z (上下)");
         AddString("ADS_FIRST_PERSON", "ADS switch to First Person", (const char*)u8"右键开镜切换到第一人称");
         AddString("FREE_CAM", "Free Camera", (const char*)u8"自由视角");
+        AddString("FREECAM_BLOCK_INPUT", "Block User Input", (const char*)u8"屏蔽用户输入 (自由视角)");
 
         // 7. Player Progression
         AddString("PLAYER_PROGRESSION", "Player Progression:", (const char*)u8"玩家进度:");
@@ -147,6 +148,7 @@ namespace Localization
         AddString("TRIGGERBOT", "TriggerBot", (const char*)u8"自动射击 (TriggerBot)");
         AddString("REQUIRE_KEY_HELD", "Require Key Held", (const char*)u8"需要热键配合");
         AddString("TARGET_ALL", "Target All", (const char*)u8"目标所有单位");
+        AddString("INSTANT_RELOAD", "Instant Reload", (const char*)u8"秒换弹 (瞬时装填装弹)");
         
         // 12. Misc Settings
         AddString("MISC_SETTINGS", "Misc Settings", (const char*)u8"杂项设置");
