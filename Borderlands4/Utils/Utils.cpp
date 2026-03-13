@@ -21,7 +21,34 @@ namespace
             return false;
         }
     }
+
+    bool IsOTSAdsMode()
+    {
+        if (!ConfigManager::B("Player.ThirdPerson") && !ConfigManager::B("Player.OverShoulder")) return false;
+        if (!GVars.Character || !GVars.Character->IsA(SDK::AOakCharacter::StaticClass())) return false;
+        const SDK::AOakCharacter* oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+        return ((uint8)oakChar->ZoomState.State != 0);
+    }
+
+    ImVec2 GetSnapLineCenter()
+    {
+        if (IsOTSAdsMode() && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
+        {
+            const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
+            const FVector camLoc = CameraPOV.Location;
+            const FVector camFwd = Utils::FRotatorToVector(CameraPOV.Rotation);
+            const FVector aimPoint = camLoc + (camFwd * 50000.0f);
+            FVector2D aimScreen{};
+            if (GVars.PlayerController->ProjectWorldLocationToScreen(aimPoint, &aimScreen, false)) {
+                return ImVec2((float)aimScreen.X, (float)aimScreen.Y);
+            }
+        }
+
+        return ImVec2(GVars.ScreenSize.x * 0.5f, GVars.ScreenSize.y * 0.5f);
+    }
 }
+
+std::recursive_mutex gGVarsMutex;
 
 
 UWorld* Utils::GetWorldSafe() 
@@ -305,10 +332,10 @@ void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
 {
     FVector2D ScreenPos;
 
-    if (!GVars.PlayerController->ProjectWorldLocationToScreen(TargetPos, &ScreenPos, true))
+    if (!GVars.PlayerController->ProjectWorldLocationToScreen(TargetPos, &ScreenPos, false))
         return;
 
-    ImVec2 Center(GVars.ScreenSize.x / 2.0f, GVars.ScreenSize.y / 2.0f);
+    ImVec2 Center = GetSnapLineCenter();
     ImVec2 Target((float)ScreenPos.X, (float)ScreenPos.Y);
     
     // Draw the main line

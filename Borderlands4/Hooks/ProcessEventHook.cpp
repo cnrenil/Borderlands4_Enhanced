@@ -22,7 +22,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 		return;
 	}
 
-    bInsideHook = true;
+	bInsideHook = true;
     try {
         if (Utils::bIsInGame) {
             // Block Input when Menu is open

@@ -1,10 +1,17 @@
 #include "pch.h"
 
+namespace
+{
+    std::recursive_mutex gTeleportMutex;
+}
+
 static float LastPinTime = 0.0f;
 static SDK::FVector LastPinPos = { 0, 0, 0 };
 
 void PerformMapTeleport()
 {
+	std::scoped_lock GVarsLock(gGVarsMutex);
+	std::scoped_lock TeleLock(gTeleportMutex);
 	if (!GVars.PlayerController || !GVars.Character) return;
 
 	SDK::AActor* TargetActor = GVars.Character;
@@ -30,6 +37,8 @@ void PerformMapTeleport()
 
 void DiscoveryPinWatcher()
 {
+	std::scoped_lock GVarsLock(gGVarsMutex);
+	std::scoped_lock TeleLock(gTeleportMutex);
 	if (!ConfigManager::B("Misc.MapTeleport") || !GVars.Character || !GVars.Character->PlayerState) return;
 
 	static int LastPinCount = 0;
@@ -148,6 +157,8 @@ void Cheats::UpdateMovement()
 
 bool Cheats::HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params)
 {
+	std::scoped_lock GVarsLock(gGVarsMutex);
+	std::scoped_lock TeleLock(gTeleportMutex);
     if (!ConfigManager::B("Misc.MapTeleport")) return false;
     const std::string FuncName = Function->GetName();
 

@@ -43,6 +43,40 @@ static float SafeDistanceMeters(const FVector& A, const FVector& B)
 	return (float)(sqrt(dx * dx + dy * dy + dz * dz) / 100.0); // UE units -> meters
 }
 
+static bool ProjectForOverlay(const FVector& worldPos, FVector2D& outScreen)
+{
+	if (!GVars.PlayerController) return false;
+	// Use absolute viewport coords to avoid vertical drift when UE applies letterboxing/constrained view.
+	return GVars.PlayerController->ProjectWorldLocationToScreen(worldPos, &outScreen, false);
+}
+
+static bool IsOTSAdsActive()
+{
+	if (!ConfigManager::B("Player.ThirdPerson") && !ConfigManager::B("Player.OverShoulder")) return false;
+	if (!GVars.Character || !GVars.Character->IsA(SDK::AOakCharacter::StaticClass())) return false;
+	const SDK::AOakCharacter* oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+	return ((uint8)oakChar->ZoomState.State != 0);
+}
+
+static ImVec2 GetCustomReticleScreenPos()
+{
+	if (!GVars.PlayerController || !GVars.PlayerController->PlayerCameraManager) {
+		return ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
+	}
+
+	const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
+	const FVector camLoc = CameraPOV.Location;
+	const FVector camFwd = Utils::FRotatorToVector(CameraPOV.Rotation);
+	const FVector aimPoint = camLoc + (camFwd * 50000.0f);
+
+	FVector2D screen{};
+	if (ProjectForOverlay(aimPoint, screen)) {
+		return ImVec2((float)screen.X, (float)screen.Y);
+	}
+
+	return ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
+}
+
 void Cheats::UpdateESP()
 {
 	Logger::LogThrottled(Logger::Level::Debug, "ESP", 10000, "Cheats::UpdateESP() active");
@@ -126,8 +160,8 @@ void Cheats::UpdateESP()
 		}
 
 		FVector2D TopScreen, BottomScreen;
-		bool bVisible = GVars.PlayerController->ProjectWorldLocationToScreen(TopPos, &TopScreen, true) &&
-						GVars.PlayerController->ProjectWorldLocationToScreen(BottomPos, &BottomScreen, true);
+		bool bVisible = ProjectForOverlay(TopPos, TopScreen) &&
+						ProjectForOverlay(BottomPos, BottomScreen);
 
 		if (bVisible)
 		{
@@ -191,8 +225,8 @@ void Cheats::UpdateESP()
 					FVector P2 = T2.Translation;
 
 					FVector2D S1, S2;
-					if (GVars.PlayerController->ProjectWorldLocationToScreen(P1, &S1, true) && 
-						GVars.PlayerController->ProjectWorldLocationToScreen(P2, &S2, true)) {
+					if (ProjectForOverlay(P1, S1) &&
+						ProjectForOverlay(P2, S2)) {
 						Cache.SkeletonLines.push_back({ImVec2((float)S1.X, (float)S1.Y), ImVec2((float)S2.X, (float)S2.Y)});
 					}
 				}
@@ -208,8 +242,9 @@ void Cheats::UpdateESP()
 		std::lock_guard<std::mutex> lock(TracerMutex);
 		float CurrentTime = std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 		
-		FVector CamLoc = GVars.PlayerController->PlayerCameraManager->GetCameraLocation();
-		FVector CamFwd = GVars.PlayerController->PlayerCameraManager->GetActorForwardVector();
+		const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
+		FVector CamLoc = CameraPOV.Location;
+		FVector CamFwd = Utils::FRotatorToVector(CameraPOV.Rotation);
 
 		for (auto it = BulletTracersList.begin(); it != BulletTracersList.end(); )
 		{
@@ -242,13 +277,13 @@ void Cheats::UpdateESP()
 			{
 				FVector P1 = it->Points[i];
 				FVector2D p1Screen;
-				bool bP1Visible = GVars.PlayerController->ProjectWorldLocationToScreen(P1, &p1Screen, true);
+				bool bP1Visible = ProjectForOverlay(P1, p1Screen);
 
 				if (i + 1 < PointsCount)
 				{
 					FVector P2 = it->Points[i+1];
 					FVector2D p2Screen;
-					bool bP2Visible = GVars.PlayerController->ProjectWorldLocationToScreen(P2, &p2Screen, true);
+					bool bP2Visible = ProjectForOverlay(P2, p2Screen);
 					
 					FVector P1_Final = P1;
 					FVector P2_Final = P2;
@@ -271,8 +306,8 @@ void Cheats::UpdateESP()
 							FVector ClippedPoint = P1 + (P2 - P1) * t;
 							if (d1 < epsilon) P1_Final = ClippedPoint;
 							else P2_Final = ClippedPoint;
-							GVars.PlayerController->ProjectWorldLocationToScreen(P1_Final, &p1Screen, true);
-							GVars.PlayerController->ProjectWorldLocationToScreen(P2_Final, &p2Screen, true);
+							ProjectForOverlay(P1_Final, p1Screen);
+							ProjectForOverlay(P2_Final, p2Screen);
 							bCanDraw = true;
 						}
 					}
@@ -421,14 +456,25 @@ void Cheats::RenderESP()
 		}
 	}
 
-	if (ConfigManager::B("Player.ThirdPerson") && (ConfigManager::B("Misc.ThirdPersonOTS") || ConfigManager::B("Misc.ThirdPersonCentered")) && GVars.Character && GVars.Character->IsA(SDK::AOakCharacter::StaticClass()))
+	if (IsOTSAdsActive())
 	{
-		SDK::AOakCharacter* OakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
-		if ((uint8)OakChar->ZoomState.State != 0)
-		{
-			ImVec2 Center = ImVec2(ImGui::GetIO().DisplaySize.x / 2.0f, ImGui::GetIO().DisplaySize.y / 2.0f);
-			ImGui::GetBackgroundDrawList()->AddLine(ImVec2(Center.x - 5, Center.y), ImVec2(Center.x + 5, Center.y), IM_COL32(255, 255, 255, 255), 1.0f);
-			ImGui::GetBackgroundDrawList()->AddLine(ImVec2(Center.x, Center.y - 5), ImVec2(Center.x, Center.y + 5), IM_COL32(255, 255, 255, 255), 1.0f);
-		}
+		const ImVec2 center = GetCustomReticleScreenPos();
+		const ImU32 outer = IM_COL32(0, 0, 0, 180);
+		const ImU32 inner = IM_COL32(255, 255, 255, 255);
+		const float gap = 3.0f;
+		const float len = 8.0f;
+		auto* draw = ImGui::GetBackgroundDrawList();
+
+		draw->AddCircle(center, 2.0f, outer, 12, 2.0f);
+		draw->AddCircle(center, 1.0f, inner, 12, 1.5f);
+		draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), outer, 2.5f);
+		draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), outer, 2.5f);
+		draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), outer, 2.5f);
+		draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), outer, 2.5f);
+
+		draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), inner, 1.2f);
+		draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), inner, 1.2f);
+		draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), inner, 1.2f);
+		draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), inner, 1.2f);
 	}
 }

@@ -106,6 +106,7 @@ namespace ConfigManager
         Register("Misc.CrossReticle", true);
         Register("Misc.EnableFOV", false);
         Register("Misc.FOV", 100.0f);
+        Register("Misc.ADSFOVScale", 0.7f);
         Register("Misc.EnableViewModelFOV", false);
         Register("Misc.ViewModelFOV", 90.0f);
         Register("Misc.DisableVolumetricClouds", false);

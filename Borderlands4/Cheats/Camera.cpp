@@ -5,6 +5,24 @@ namespace
 	bool g_OTSSmoothInitialized = false;
 	SDK::FVector g_OTSSmoothedLoc{};
 
+	bool IsZoomingNow()
+	{
+		if (!GVars.Character || !GVars.Character->IsA(SDK::AOakCharacter::StaticClass())) return false;
+		const SDK::AOakCharacter* oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+		return ((uint8)oakChar->ZoomState.State != 0);
+	}
+
+	float GetAppliedFOV()
+	{
+		float fov = ConfigManager::F("Misc.FOV");
+		if (IsZoomingNow())
+		{
+			const float adsScale = std::clamp(ConfigManager::F("Misc.ADSFOVScale"), 0.2f, 1.0f);
+			fov *= adsScale;
+		}
+		return std::clamp(fov, 20.0f, 180.0f);
+	}
+
 	bool IsValidShadowCamera(SDK::ACameraActor* CameraActor)
 	{
 		return CameraActor && SDK::UKismetSystemLibrary::IsValid(CameraActor);
@@ -212,10 +230,12 @@ void Cheats::ChangeFOV()
 	static float LastFOV = -1.0f;
 	if (ConfigManager::B("Misc.EnableFOV"))
 	{
-		if (LastFOV != ConfigManager::F("Misc.FOV"))
+		const float targetFOV = GetAppliedFOV();
+		// ADS often overrides FOV every frame, so force-apply while zooming.
+		if (LastFOV != targetFOV || IsZoomingNow())
 		{
-			GVars.PlayerController->fov(ConfigManager::F("Misc.FOV"));
-			LastFOV = ConfigManager::F("Misc.FOV");
+			GVars.PlayerController->fov(targetFOV);
+			LastFOV = targetFOV;
 		}
 	}
 	else
@@ -242,14 +262,15 @@ void Cheats::UpdateCamera()
 
 	if (ConfigManager::B("Misc.EnableFOV"))
 	{
+		const float appliedFOV = GetAppliedFOV();
 		SDK::AOakPlayerController* OakPC = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
 		if (OakPC && OakPC->PlayerCameraManager)
 		{
-			OakPC->PlayerCameraManager->DefaultFOV = ConfigManager::F("Misc.FOV");
+			OakPC->PlayerCameraManager->DefaultFOV = appliedFOV;
 		}
 		if (IsValidShadowCamera(GVars.CameraActor) && GVars.CameraActor->CameraComponent)
 		{
-			GVars.CameraActor->CameraComponent->SetFieldOfView(ConfigManager::F("Misc.FOV"));
+			GVars.CameraActor->CameraComponent->SetFieldOfView(appliedFOV);
 		}
 	}
 

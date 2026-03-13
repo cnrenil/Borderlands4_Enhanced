@@ -76,8 +76,8 @@ struct Utils
 	static float GetHealthPercent(AActor* Actor);
 	static FVector GetHighestBone(ACharacter* TargetChar);
 
-	static inline bool bIsLoading = false;
-	static inline bool bIsInGame = false;
+    static inline std::atomic<bool> bIsLoading = false;
+    static inline std::atomic<bool> bIsInGame = false;
 };
 
 struct Variables
@@ -225,6 +225,8 @@ struct Variables
 		Utils::bIsInGame = Utils::IsInPlayableState();
 	}
 } inline GVars;
+
+extern std::recursive_mutex gGVarsMutex;
 
 static inline float Dot3(const FVector& A, const FVector& B)
 {

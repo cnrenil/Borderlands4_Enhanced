@@ -155,6 +155,7 @@ namespace Localization
         Register("MISC_SETTINGS", "Misc Settings", (const char*)u8"杂项设置");
         Register("ENABLE_FOV_CHANGER", "Enable FOV Changer", (const char*)u8"修改游戏视野");
         Register("FOV_VALUE", "FOV Value", (const char*)u8"视野角度");
+        Register("ADS_ZOOM_SCALE", "ADS Zoom Scale", (const char*)u8"开镜放大倍率");
         Register("ENABLE_VIEWMODEL_FOV", "Enable ViewModel FOV", (const char*)u8"修改武器视角大小 (ViewModel)");
         Register("VIEWMODEL_FOV_VALUE", "ViewModel FOV Value", (const char*)u8"武器视角角度");
         Register("DISABLE_VOLUMETRIC_CLOUDS", "Disable Volumetric Clouds", (const char*)u8"禁用体积云 (提升帧率)");
@@ -181,6 +182,7 @@ namespace Localization
         Register("AIMBOT_KEY", "Aimbot Key", (const char*)u8"自瞄热键");
         Register("TRIGGER_KEY", "TriggerBot Key", (const char*)u8"自动射击热键");
         Register("MENU_KEY", "Menu Toggle Key", (const char*)u8"菜单切换按键");
+        Register("UNHOOK_KEY", "Unhook Key", (const char*)u8"卸载取消 Hook 热键");
         Register("GODMODE_KEY", "God Mode Toggle Key", (const char*)u8"无敌模式切换热键");
         Register("INF_AMMO_KEY", "Infinite Ammo Toggle Key", (const char*)u8"无限弹药切换热键");
         Register("TOGGLE_THIRDPERSON_KEY", "Third Person Toggle Key", (const char*)u8"人称视角切换热键");

@@ -249,6 +249,7 @@ void GUI::RenderMenu()
                     if (B("Misc.EnableFOV"))
                     {
                         ImGui::SliderFloat(Localization::T("FOV_VALUE"), &F("Misc.FOV"), 60.0f, 180.0f);
+                        ImGui::SliderFloat(Localization::T("ADS_ZOOM_SCALE"), &F("Misc.ADSFOVScale"), 0.2f, 1.0f, "%.2f");
                     }
                     ImGui::Checkbox(Localization::T("ENABLE_VIEWMODEL_FOV"), &B("Misc.EnableViewModelFOV"));
                     if (B("Misc.EnableViewModelFOV"))

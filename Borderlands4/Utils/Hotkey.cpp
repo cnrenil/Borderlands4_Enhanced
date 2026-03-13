@@ -1,5 +1,6 @@
 #include "pch.h"
 
+extern std::atomic<bool> Cleaning;
 
 namespace HotkeyManager
 {
@@ -28,6 +29,9 @@ namespace HotkeyManager
         Register("Misc.MenuKey", "MENU_KEY", ImGuiKey_Insert, []() {
             GUI::ShowMenu = !GUI::ShowMenu;
             ImGui::GetIO().MouseDrawCursor = GUI::ShowMenu;
+        });
+        Register("Misc.UnhookKey", "UNHOOK_KEY", ImGuiKey_End, []() {
+            Cleaning.store(true);
         });
 // ... (rest of the one-shot toggles remain the same)
 
@@ -60,9 +64,10 @@ namespace HotkeyManager
             {
                 ImGuiKey currentKey = (ImGuiKey)ConfigManager::I(hk.Name);
                 bool bIsMenuKey = (hk.Name == "Misc.MenuKey");
+                bool bIsUnhookKey = (hk.Name == "Misc.UnhookKey");
                 
-                // If loading, only allow the menu key
-				if ((IsLoading || !IsInGame) && !bIsMenuKey) continue;
+                // Allow menu/unhook hotkeys even if gameplay state is unavailable.
+				if ((IsLoading || !IsInGame) && !bIsMenuKey && !bIsUnhookKey) continue;
 
                 if (currentKey >= ImGuiKey_NamedKey_BEGIN && currentKey < ImGuiKey_NamedKey_END)
                 {
@@ -70,7 +75,7 @@ namespace HotkeyManager
 
                     if (bShouldTrigger)
                     {
-                        if (bIsMenuKey || !ImGui::GetIO().WantCaptureKeyboard)
+                        if (bIsMenuKey || bIsUnhookKey || !ImGui::GetIO().WantCaptureKeyboard)
                         {
                             if (!hk.bIsHold) {
                                 LOG_INFO("Hotkey", "Triggered: %s (Key: %s)", hk.Label.c_str(), ImGui::GetKeyName(currentKey));
