@@ -37,7 +37,7 @@ struct BonePair { FName Parent; FName Child; };
 
 void Cheats::UpdateESP()
 {
-	Logger::LogThrottled(Logger::Level::Info, "ESP", 5000, "Cheats::UpdateESP() active");
+	Logger::LogThrottled(Logger::Level::Debug, "ESP", 10000, "Cheats::UpdateESP() active");
 	if (!ConfigManager::B("Player.ESP") || Utils::bIsLoading || !GVars.PlayerController || !GVars.Level || !GVars.Character || !GVars.World || !GVars.World->VTable)
 	{
 		std::lock_guard<std::mutex> lock(ESPMutex);

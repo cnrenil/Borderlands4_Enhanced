@@ -14,7 +14,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 	static thread_local bool bInsideHook = false;
 
     // Use a very high throttle interval to avoid spamming, but enough to see it's alive
-    Logger::LogThrottled(Logger::Level::Debug, "PE", 10000, "hkProcessEvent: Alive and being called by engine");
+    // Logger::LogThrottled(Logger::Level::Debug, "PE", 10000, "hkProcessEvent: Alive and being called by engine");
 
 	if (!Object || !Function || Cleaning.load() || bInsideHook) {
 		if (oProcessEvent) oProcessEvent(Object, Function, Params);

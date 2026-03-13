@@ -18,7 +18,7 @@ void Cheats::Render()
 
         if (!Utils::bIsLoading)
         {
-            Logger::LogThrottled(Logger::Level::Info, "Render", 5000, "Cheats::Render: Logic thread active (not loading)");
+            Logger::LogThrottled(Logger::Level::Debug, "Render", 10000, "Cheats::Render: Logic thread active (not loading)");
             if (ConfigManager::B("Player.ESP")) UpdateESP();
             if (ConfigManager::B("Aimbot.Enabled")) Aimbot();
 

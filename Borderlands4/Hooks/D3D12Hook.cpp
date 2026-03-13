@@ -46,7 +46,7 @@ namespace d3d12hook {
     static constexpr DWORD        INIT_GRACE_PERIOD_MS = 5000;
 
     inline void LogHRESULT(const char* label, HRESULT hr) {
-        printf("[d3d12hook] %s: hr=0x%08X\n", label, hr);
+        LOG_ERROR("DX12Hook", "%s: hr=0x%08X\n", label, hr);
     }
 
     // Release all overlay GPU resources (but NOT the ImGui context itself).
@@ -171,7 +171,7 @@ namespace d3d12hook {
         gOverlayFenceValue = 0;
         
         gInitialized = true;
-        printf("[d3d12hook] Success: ImGui and DX12 resources fully initialized!\n");
+        LOG_DEBUG("DX12Hook","ImGui and DX12 resources fully initialized!\n");
     }
 
     void RenderImGui(IDXGISwapChain3* pSwapChain) {
@@ -211,7 +211,7 @@ namespace d3d12hook {
             if (SUCCEEDED(gOverlayFence->SetEventOnCompletion(gOverlayFenceValue, gFenceEvent))) {
                 DWORD waitResult = WaitForSingleObject(gFenceEvent, 1000);
                 if (waitResult == WAIT_TIMEOUT) {
-                    printf("[d3d12hook] WARNING: Fence wait timed out, skipping frame.\n");
+                    LOG_WARN("DX12Hook","Fence wait timed out, skipping frame.\n");
                     return; // Skip this frame rather than hang
                 }
             }
@@ -259,7 +259,7 @@ namespace d3d12hook {
         if (!gFirstPresentSeen) {
             gFirstPresentSeen = true;
             gFirstPresentTime = GetTickCount();
-            printf("[d3d12hook] First Present detected, starting %dms grace period for game init...\n", INIT_GRACE_PERIOD_MS);
+            LOG_DEBUG("DX12Hook","First Present detected, starting %dms grace period for game init...\n", INIT_GRACE_PERIOD_MS);
         }
 
         gAfterFirstPresent = true;
@@ -294,7 +294,7 @@ namespace d3d12hook {
         if (!gFirstPresentSeen) {
             gFirstPresentSeen = true;
             gFirstPresentTime = GetTickCount();
-            printf("[d3d12hook] First Present1 detected, starting %dms grace period for game init...\n", INIT_GRACE_PERIOD_MS);
+            LOG_DEBUG("DX12Hook", "First Present1 detected, starting %dms grace period for game init...\n", INIT_GRACE_PERIOD_MS);
         }
 
         gAfterFirstPresent = true;
@@ -324,7 +324,7 @@ namespace d3d12hook {
             D3D12_COMMAND_QUEUE_DESC desc = _this->GetDesc();
             if (desc.Type == D3D12_COMMAND_LIST_TYPE_DIRECT) {
                 gCommandQueue = _this;
-                printf("[d3d12hook] Success: Captured Direct CommandQueue at ExecuteCommandLists.\n");
+                LOG_INFO("DX12Hook", "Success: Captured Direct CommandQueue at ExecuteCommandLists.\n");
             }
         }
         gAfterFirstPresent = false;
@@ -333,7 +333,7 @@ namespace d3d12hook {
     }
 
     HRESULT __stdcall hookResizeBuffersD3D12(IDXGISwapChain3* pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags) {
-        printf("[d3d12hook] ResizeBuffers detected (%ux%u, fmt=%d), cleaning up...\n", Width, Height, (int)NewFormat);
+        LOG_DEBUG("DX12Hook", "ResizeBuffers detected (%ux%u, fmt=%d), cleaning up...\n", Width, Height, (int)NewFormat);
         
         // Signal that we're resizing — Present hook will skip rendering
         Resizing.store(true);
@@ -356,7 +356,7 @@ namespace d3d12hook {
         // Clear resize flag — the next Present call will re-initialize
         Resizing.store(false);
 
-        printf("[d3d12hook] ResizeBuffers completed (hr=0x%08X). Will re-init on next Present.\n", hr);
+        LOG_DEBUG("DX12Hook", "ResizeBuffers completed (hr=0x%08X). Will re-init on next Present.\n", hr);
         return hr;
     }
 

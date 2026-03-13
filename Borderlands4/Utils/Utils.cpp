@@ -122,7 +122,14 @@ bool Utils::IsValidActor(AActor* Actor)
     if (!Actor || IsBadReadPtr(Actor, sizeof(void*)) || !Actor->VTable) return false;
 
     // Use Unreal's built-in validation where possible
-    if (!UKismetSystemLibrary::IsValid(Actor)) return false;
+    if (!Utils::bIsLoading)
+    {
+        auto* Kismet = UKismetSystemLibrary::GetDefaultObj();
+        if (Kismet && Kismet->VTable)
+        {
+            if (!UKismetSystemLibrary::IsValid(Actor)) return false;
+        }
+    }
 
     if (!Actor->Class || !Actor->GetLevel()) return false;
 

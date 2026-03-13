@@ -174,7 +174,7 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 	if (!prevPS && bIsPlayerStateHooked) LOG_INFO("Hook", "SUCCESS: PlayerState ProcessEvent Hooked!");
 	if (!prevCM && bIsCameraManagerHooked) LOG_INFO("Hook", "SUCCESS: CameraManager ProcessEvent Hooked!");
 
-	Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "SafeUpdateHooks: Hooks Status (PE: %d, PS: %d, CM: %d)", bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
+	// Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "SafeUpdateHooks: Hooks Status (PE: %d, PS: %d, CM: %d)", bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 }
 
 DWORD MainThread(HMODULE hModule)
