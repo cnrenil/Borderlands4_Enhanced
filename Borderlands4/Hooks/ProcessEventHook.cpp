@@ -17,7 +17,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
     // Logger::LogThrottled(Logger::Level::Debug, "PE", 10000, "hkProcessEvent: Alive and being called by engine");
 
 	if (!Object || !Function || Cleaning.load() || bInsideHook) {
-		if (oProcessEvent) oProcessEvent(Object, Function, Params);
+		Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, true);
 		g_ProcessEventCount.fetch_sub(1);
 		return;
 	}
@@ -35,13 +35,13 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
                 {
                     // CRITICAL FIX: To block, we must return WITHOUT calling oProcessEvent
                     bInsideHook = false;
+                    Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, false);
                     g_ProcessEventCount.fetch_sub(1);
                     return; 
                 }
             }
 
             // Modular Handlers
-            if (Cheats::HandleDebugEvents(Object, Function, Params)) goto Exit;
             if (Cheats::HandleMovementEvents(Object, Function, Params)) goto Exit;
             if (Cheats::HandleWeaponEvents(Object, Function, Params)) goto Exit;
             if (Cheats::HandleCameraEvents(Object, Function, Params)) goto Exit;
@@ -53,7 +53,8 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
 Exit:
 	bInsideHook = false;
-	if (oProcessEvent) oProcessEvent(Object, Function, Params);
+	Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, true);
+
 	g_ProcessEventCount.fetch_sub(1);
 }
 

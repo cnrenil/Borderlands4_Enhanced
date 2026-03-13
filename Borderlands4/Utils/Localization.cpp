@@ -90,6 +90,7 @@ namespace Localization
         
         // 6. Camera / Third Person
         Register("THIRD_PERSON", "Third Person", (const char*)u8"第三人称");
+        Register("OVER_SHOULDER", "Over-Shoulder Camera", (const char*)u8"越肩视角");
         Register("THIRD_PERSON_CENTERED", "Centered (Third Person)", (const char*)u8"居中 (第三人称)");
         Register("THIRD_PERSON_OTS", "Over The Shoulder (ADS)", (const char*)u8"越肩瞄准 (右键开镜)");
         Register("OTS_OFFSET_X", "OTS Offset X (Forward)", (const char*)u8"越肩偏移 X (前后)");

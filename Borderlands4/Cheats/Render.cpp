@@ -1,5 +1,24 @@
 #include "pch.h"
 
+namespace
+{
+    bool TryAutoSetVariablesForRender()
+    {
+        __try
+        {
+            GVars.AutoSetVariables();
+            return true;
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            GVars.Reset();
+            Utils::bIsLoading = true;
+            Utils::bIsInGame = false;
+            return false;
+        }
+    }
+}
+
 void Cheats::Render()
 {
     // --- Logic Update (Moved from PostRender for stability) ---
@@ -13,8 +32,11 @@ void Cheats::Render()
         LastUpdateFrame = currentFrame;
 
         // Perform essential updates
-        GVars.AutoSetVariables();
+        if (!TryAutoSetVariablesForRender())
+            Logger::LogThrottled(Logger::Level::Warning, "Render", 1000, "Render tick: AutoSetVariables exception, skipping frame");
         HotkeyManager::Update();
+        // Camera controls should keep working even if gameplay-state detection is conservative.
+        UpdateCamera();
 
         if (Utils::bIsInGame)
         {
@@ -24,7 +46,6 @@ void Cheats::Render()
 
             UpdateMovement();
             UpdateWeapon();
-            UpdateCamera();
 
             EnforcePersistence();
             ChangeGameRenderSettings();

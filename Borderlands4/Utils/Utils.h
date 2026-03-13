@@ -71,11 +71,13 @@ struct Utils
 	static ACharacter* GetNearestCharacter(ETeam Team);
 	static void Error(std::string msg);
 	static bool IsInLoadingState();
+	static bool IsInPlayableState();
 	static ETeamAttitude GetAttitude(AActor* Target);
 	static float GetHealthPercent(AActor* Actor);
 	static FVector GetHighestBone(ACharacter* TargetChar);
 
 	static inline bool bIsLoading = false;
+	static inline bool bIsInGame = false;
 };
 
 struct Variables

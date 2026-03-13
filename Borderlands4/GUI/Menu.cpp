@@ -102,39 +102,65 @@ void GUI::RenderMenu()
                     ImGui::SliderFloat(Localization::T("FLIGHT_SPEED"), &F("Player.FlightSpeed"), 1.0f, 20.0f, "%.1f");
                 }
                 
-                bool bTP = B("Player.ThirdPerson");
-                if (ImGui::Checkbox(Localization::T("THIRD_PERSON"), &bTP)) Cheats::ToggleThirdPerson();
-                if (B("Player.ThirdPerson"))
-                {
-                    ImGui::SameLine();
-                    ImGui::Checkbox(Localization::T("THIRD_PERSON_CENTERED"), &B("Misc.ThirdPersonCentered"));
-                    ImGui::SameLine();
-                    ImGui::Checkbox(Localization::T("THIRD_PERSON_OTS"), &B("Misc.ThirdPersonOTS"));
-                    
-                    if (B("Misc.ThirdPersonOTS"))
-                    {
-                        ImGui::Indent();
-                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_X"), &F("Misc.OTS_X"), -500.0f, 500.0f);
-                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_Y"), &F("Misc.OTS_Y"), -200.0f, 200.0f);
-                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_Z"), &F("Misc.OTS_Z"), -200.0f, 200.0f);
-                        ImGui::Unindent();
-                    }
-                    else
-                    {
-                        ImGui::SameLine();
-                        ImGui::Checkbox(Localization::T("ADS_FIRST_PERSON"), &B("Misc.ThirdPersonADSFirstPerson"));
-                    }
-                }
+                const bool bTPEnabled = B("Player.ThirdPerson");
+                const bool bOTSEnabled = B("Player.OverShoulder");
+                const bool bFreecamEnabled = B("Player.Freecam");
 
-                if (!B("Player.ThirdPerson"))
+                if (bFreecamEnabled)
                 {
                     bool bFreecam = B("Player.Freecam");
                     if (ImGui::Checkbox(Localization::T("FREE_CAM"), &bFreecam)) Cheats::ToggleFreecam();
-                    if (B("Player.Freecam"))
+                    ImGui::SameLine();
+                    ImGui::Checkbox(Localization::T("FREECAM_BLOCK_INPUT"), &B("Misc.FreecamBlockInput"));
+                }
+                else if (bOTSEnabled)
+                {
+                    bool bOTS = B("Player.OverShoulder");
+                    if (ImGui::Checkbox(Localization::T("OVER_SHOULDER"), &bOTS))
                     {
-                        ImGui::SameLine();
-                        ImGui::Checkbox(Localization::T("FREECAM_BLOCK_INPUT"), &B("Misc.FreecamBlockInput"));
+                        B("Player.OverShoulder") = bOTS;
                     }
+                    ImGui::Indent();
+                    ImGui::SliderFloat(Localization::T("OTS_OFFSET_X"), &F("Misc.OTS_X"), -500.0f, 500.0f);
+                    ImGui::SliderFloat(Localization::T("OTS_OFFSET_Y"), &F("Misc.OTS_Y"), -200.0f, 200.0f);
+                    ImGui::SliderFloat(Localization::T("OTS_OFFSET_Z"), &F("Misc.OTS_Z"), -200.0f, 200.0f);
+                    ImGui::Unindent();
+                }
+                else if (bTPEnabled)
+                {
+                    bool bTP = B("Player.ThirdPerson");
+                    if (ImGui::Checkbox(Localization::T("THIRD_PERSON"), &bTP)) Cheats::ToggleThirdPerson();
+                    ImGui::SameLine();
+                    ImGui::Checkbox(Localization::T("THIRD_PERSON_CENTERED"), &B("Misc.ThirdPersonCentered"));
+                    ImGui::SameLine();
+                    ImGui::Checkbox(Localization::T("ADS_FIRST_PERSON"), &B("Misc.ThirdPersonADSFirstPerson"));
+                }
+                else
+                {
+                    bool bTP = B("Player.ThirdPerson");
+                    if (ImGui::Checkbox(Localization::T("THIRD_PERSON"), &bTP))
+                    {
+                        Cheats::ToggleThirdPerson();
+                        if (B("Player.ThirdPerson"))
+                        {
+                            B("Player.OverShoulder") = false;
+                            B("Player.Freecam") = false;
+                        }
+                    }
+
+                    bool bOTS = B("Player.OverShoulder");
+                    if (ImGui::Checkbox(Localization::T("OVER_SHOULDER"), &bOTS))
+                    {
+                        B("Player.OverShoulder") = bOTS;
+                        if (bOTS)
+                        {
+                            B("Player.ThirdPerson") = false;
+                            B("Player.Freecam") = false;
+                        }
+                    }
+
+                    bool bFreecam = B("Player.Freecam");
+                    if (ImGui::Checkbox(Localization::T("FREE_CAM"), &bFreecam)) Cheats::ToggleFreecam();
                 }
                 
                 ImGui::Separator();

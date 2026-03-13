@@ -79,6 +79,7 @@ namespace ConfigManager
         Register("Player.Speed", 1.0f);
         Register("Player.FOV", 120.0f);
         Register("Player.ThirdPerson", false);
+        Register("Player.OverShoulder", false);
         Register("Player.Freecam", false);
         Register("Player.Flight", false);
         Register("Player.FlightSpeed", 1.0f);

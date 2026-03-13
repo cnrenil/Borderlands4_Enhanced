@@ -177,6 +177,22 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 	// Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "SafeUpdateHooks: Hooks Status (PE: %d, PS: %d, CM: %d)", bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 }
 
+static bool TryAutoSetVariablesMainThread()
+{
+	__try
+	{
+		GVars.AutoSetVariables();
+		return true;
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		GVars.Reset();
+		Utils::bIsLoading = true;
+		Utils::bIsInGame = false;
+		return false;
+	}
+}
+
 DWORD MainThread(HMODULE hModule)
 {
 	AllocConsole();
@@ -221,7 +237,8 @@ DWORD MainThread(HMODULE hModule)
 	{
 		// 1. Always keep variables updated until PostRender takes over
         // This prevents the 'PlayerController found but logic stopped' deadlock
-		GVars.AutoSetVariables();
+		if (!TryAutoSetVariablesMainThread())
+			Logger::LogThrottled(Logger::Level::Warning, "System", 1000, "MainThread: AutoSetVariables exception, resetting transient state");
 
 		// 2. Always attempt to stabilize hooks (PE, PS, CM)
         // We remove the !Utils::bIsLoading check here to allow HookProcessEvent() 

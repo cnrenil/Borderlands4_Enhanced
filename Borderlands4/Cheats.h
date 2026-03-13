@@ -91,7 +91,12 @@ struct Cheats
 	static void TriggerHotkey();
 	
 	// Modular ProcessEvent Handlers
-	static bool HandleDebugEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
+	static void HandleDebugEvents(
+		const SDK::UObject* Object,
+		SDK::UFunction* Function,
+		void* Params,
+		void(*OriginalProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*),
+		bool bCallOriginal);
 	static bool HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 	static bool HandleWeaponEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 	static bool HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);

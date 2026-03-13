@@ -35,6 +35,14 @@ std::vector<ESPTracerCache> CachedESPTracers;
 
 struct BonePair { FName Parent; FName Child; };
 
+static float SafeDistanceMeters(const FVector& A, const FVector& B)
+{
+	const double dx = (double)A.X - (double)B.X;
+	const double dy = (double)A.Y - (double)B.Y;
+	const double dz = (double)A.Z - (double)B.Z;
+	return (float)(sqrt(dx * dx + dy * dy + dz * dz) / 100.0); // UE units -> meters
+}
+
 void Cheats::UpdateESP()
 {
 	Logger::LogThrottled(Logger::Level::Debug, "ESP", 10000, "Cheats::UpdateESP() active");
@@ -46,6 +54,17 @@ void Cheats::UpdateESP()
 		return;
 	}
 
+	if (!GVars.PlayerController->PlayerCameraManager || !GVars.PlayerController->PlayerCameraManager->VTable)
+	{
+		std::lock_guard<std::mutex> lock(ESPMutex);
+		CachedESPActors.clear();
+		CachedESPTracers.clear();
+		return;
+	}
+
+	// Read camera location once by value; don't depend on GVars.POV pointer lifetime here.
+	const FVector CameraLocation = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV.Location;
+	
 	std::vector<ESPActorCache> NewCache;
 
 	for (ACharacter* TargetActor : GVars.UnitCache)
@@ -67,11 +86,11 @@ void Cheats::UpdateESP()
 		if (Attitude == ETeamAttitude::Friendly) Color = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.TeamColor"));
 		else if (Attitude == ETeamAttitude::Neutral) Color = IM_COL32(255, 255, 0, 255); 
 
-		FVector ActorLocation = TargetActor->K2_GetActorLocation();
-		
-		// Distance check
-		float Distance = GVars.POV->Location.GetDistanceToInMeters(ActorLocation);
-		if (Distance < 0.0f || Distance > 1000.0f) continue;
+			FVector ActorLocation = TargetActor->K2_GetActorLocation();
+			
+			// Distance check
+			float Distance = SafeDistanceMeters(CameraLocation, ActorLocation);
+			if (Distance < 0.0f || Distance > 1000.0f) continue;
 
 		FVector TopPos;
 		FVector BottomPos;

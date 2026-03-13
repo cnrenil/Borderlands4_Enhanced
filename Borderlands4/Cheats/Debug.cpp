@@ -1,5 +1,31 @@
 #include "pch.h"
 
+void Cheats::HandleDebugEvents(
+    const SDK::UObject* Object,
+    SDK::UFunction* Function,
+    void* Params,
+    void(*OriginalProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*),
+    bool bCallOriginal)
+{
+    (void)Params;
+
+    if (Logger::IsRecording() && Object && Function)
+    {
+        const std::string FuncName = Function->GetName();
+        const std::string ClassName = Object->Class ? Object->Class->GetName() : "None";
+        const std::string ObjName = Object->GetName();
+        if (ClassName.find("Widget") == std::string::npos && ClassName.find("Menu") == std::string::npos)
+        {
+            Logger::LogEvent(ClassName, FuncName, ObjName);
+        }
+    }
+
+    if (bCallOriginal && OriginalProcessEvent)
+    {
+        OriginalProcessEvent(Object, Function, Params);
+    }
+}
+
 
 void Cheats::DumpObjects()
 {
@@ -34,22 +60,4 @@ void Cheats::DumpObjects()
 	}
 	file.close();
 	LOG_INFO("Dump", "Finished dumping %d objects.", count);
-}
-
-bool Cheats::HandleDebugEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params)
-{
-    if (Logger::IsRecording())
-    {
-        const std::string FuncName = Function->GetName();
-        const std::string ClassName = Object->Class ? Object->Class->GetName() : "None";
-        const std::string ObjName = Object->GetName();
-
-        // Filter out noise
-        if (ClassName.find("Widget") == std::string::npos && ClassName.find("Menu") == std::string::npos)
-        {
-            Logger::LogEvent(ClassName, FuncName, ObjName);
-        }
-    }
-
-    return false; // Return true if we want to skip oProcessEvent
 }

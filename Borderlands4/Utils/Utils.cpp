@@ -1,5 +1,28 @@
 #include "pch.h"
 
+namespace
+{
+    // Guard against stale UObject pointers during map transition/game shutdown.
+    bool IsReadableUObject(const void* Ptr)
+    {
+        return Ptr && !IsBadReadPtr(Ptr, sizeof(void*));
+    }
+
+    bool TryReadLevelActorCount(ULevel* Level, int32_t& OutActorCount)
+    {
+        __try
+        {
+            OutActorCount = Level->Actors.Num();
+            return true;
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            OutActorCount = -1;
+            return false;
+        }
+    }
+}
+
 
 UWorld* Utils::GetWorldSafe() 
 {
@@ -309,24 +332,32 @@ void Utils::Error(std::string msg)
 
 bool Utils::IsInLoadingState()
 {
-    if (!GVars.World || !GVars.World->VTable) {
+    if (!IsReadableUObject(GVars.World) || !GVars.World->VTable) {
         Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: World is NULL/Invalid");
         return true;
     }
     
-    if (!GVars.Level) {
+    if (!IsReadableUObject(GVars.Level) || !GVars.Level->VTable) {
         Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: PersistentLevel is NULL");
         return true;
     }
 
-    if (!GVars.GameState) {
-        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: GameState is NULL");
+    if (!IsReadableUObject(GVars.GameState) || !GVars.GameState->VTable) {
+        // Some phases keep gameplay alive while GameState is not ready yet.
+        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: GameState not ready yet");
+    }
+
+    int32_t actorCount = 0;
+    if (!TryReadLevelActorCount(GVars.Level, actorCount))
+    {
+        Logger::LogThrottled(Logger::Level::Warning, "System", 2000, "LoadingState: exception while reading Level->Actors (likely unloading)");
         return true;
     }
 
-    if (GVars.Level->Actors.Num() < 1) {
-        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: Level has 0 actors");
-        return true; 
+    if (actorCount < 1 || actorCount > 200000)
+    {
+        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: Level actor count invalid (%d)", actorCount);
+        return true;
     }
 
     return false;
