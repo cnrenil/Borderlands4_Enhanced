@@ -22,17 +22,11 @@ namespace
         }
     }
 
-    bool IsOTSAdsMode()
+    ImVec2 GetAimScreenCenter()
     {
-        if (!ConfigManager::B("Player.ThirdPerson") && !ConfigManager::B("Player.OverShoulder")) return false;
-        if (!GVars.Character || !GVars.Character->IsA(SDK::AOakCharacter::StaticClass())) return false;
-        const SDK::AOakCharacter* oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
-        return ((uint8)oakChar->ZoomState.State != 0);
-    }
-
-    ImVec2 GetSnapLineCenter()
-    {
-        if (IsOTSAdsMode() && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
+        ImVec2 fallbackCenter(GVars.ScreenSize.x * 0.5f, GVars.ScreenSize.y * 0.5f);
+        if (!ConfigManager::B("Player.OverShoulder")) return fallbackCenter;
+        if (GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
         {
             const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
             const FVector camLoc = CameraPOV.Location;
@@ -44,7 +38,7 @@ namespace
             }
         }
 
-        return ImVec2(GVars.ScreenSize.x * 0.5f, GVars.ScreenSize.y * 0.5f);
+        return fallbackCenter;
     }
 }
 
@@ -194,7 +188,7 @@ bool Utils::IsValidActor(AActor* Actor)
 
 float Utils::GetFOVFromScreenCoords(const ImVec2& ScreenLocation)
 {
-    ImVec2 ScreenCenter(GVars.ScreenSize.x / 2.0f, GVars.ScreenSize.y / 2.0f);
+    ImVec2 ScreenCenter = GetAimScreenCenter();
 
     float DeltaX = ScreenLocation.x - ScreenCenter.x;
     float DeltaY = ScreenLocation.y - ScreenCenter.y;
@@ -243,7 +237,7 @@ AActor* Utils::GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool Re
 
     FVector CameraLocation = ViewPoint->PlayerCameraManager->CameraCachePrivate.POV.Location;
     FVector2D ViewportSize = Utils::ImVec2ToFVector2D(GVars.ScreenSize);
-    FVector2D ViewportCenter = ViewportSize / 2.0;
+    FVector2D ViewportCenter = Utils::ImVec2ToFVector2D(GetAimScreenCenter());
     float MaxFOVNormalized = MaxFOV / 90.0f;
 
     // Use Cache!
@@ -319,7 +313,7 @@ AActor* Utils::GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool Re
 void Utils::DrawFOV(float MaxFOV, float Thickness = 1.0f)
 {
     FVector2D ViewportSize = Utils::ImVec2ToFVector2D(GVars.ScreenSize);
-    FVector2D Center = ViewportSize * 0.5f;
+    FVector2D Center = Utils::ImVec2ToFVector2D(GetAimScreenCenter());
 
     float MaxFOVNormalized = MaxFOV / 90.0f;
     float RadiusPixels = MaxFOVNormalized * ((float)ViewportSize.Y * 0.5f);
@@ -335,7 +329,7 @@ void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
     if (!GVars.PlayerController->ProjectWorldLocationToScreen(TargetPos, &ScreenPos, false))
         return;
 
-    ImVec2 Center = GetSnapLineCenter();
+    ImVec2 Center = GetAimScreenCenter();
     ImVec2 Target((float)ScreenPos.X, (float)ScreenPos.Y);
     
     // Draw the main line
@@ -360,18 +354,18 @@ void Utils::Error(std::string msg)
 bool Utils::IsInLoadingState()
 {
     if (!IsReadableUObject(GVars.World) || !GVars.World->VTable) {
-        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: World is NULL/Invalid");
+        Logger::LogThrottled(Logger::Level::Debug, "System", 5000, "LoadingState: World is NULL/Invalid");
         return true;
     }
     
     if (!IsReadableUObject(GVars.Level) || !GVars.Level->VTable) {
-        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: PersistentLevel is NULL");
+        Logger::LogThrottled(Logger::Level::Debug, "System", 5000, "LoadingState: PersistentLevel is NULL");
         return true;
     }
 
     if (!IsReadableUObject(GVars.GameState) || !GVars.GameState->VTable) {
         // Some phases keep gameplay alive while GameState is not ready yet.
-        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: GameState not ready yet");
+        Logger::LogThrottled(Logger::Level::Debug, "System", 5000, "LoadingState: GameState not ready yet");
     }
 
     int32_t actorCount = 0;
@@ -383,7 +377,7 @@ bool Utils::IsInLoadingState()
 
     if (actorCount < 1 || actorCount > 200000)
     {
-        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: Level actor count invalid (%d)", actorCount);
+        Logger::LogThrottled(Logger::Level::Debug, "System", 5000, "LoadingState: Level actor count invalid (%d)", actorCount);
         return true;
     }
 

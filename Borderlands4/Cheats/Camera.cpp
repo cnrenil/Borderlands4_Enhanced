@@ -12,13 +12,43 @@ namespace
 		return ((uint8)oakChar->ZoomState.State != 0);
 	}
 
-	float GetAppliedFOV()
+	float GetShadowCameraBaseFOV()
 	{
-		float fov = ConfigManager::F("Misc.FOV");
+		if (ConfigManager::B("Misc.EnableFOV"))
+		{
+			return ConfigManager::F("Misc.FOV");
+		}
+
+		if (GVars.PlayerController && GVars.PlayerController->IsA(SDK::AOakPlayerController::StaticClass()))
+		{
+			const SDK::AOakPlayerController* oakPc = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
+			if (oakPc->PlayerCameraManager)
+			{
+				return oakPc->PlayerCameraManager->DefaultFOV;
+			}
+		}
+
+		if (GVars.POV)
+		{
+			return GVars.POV->fov;
+		}
+
+		return 90.0f;
+	}
+
+	float GetAppliedFOV(bool bForShadowCamera)
+	{
+		float fov = bForShadowCamera ? GetShadowCameraBaseFOV() : ConfigManager::F("Misc.FOV");
 		if (IsZoomingNow())
 		{
-			const float adsScale = std::clamp(ConfigManager::F("Misc.ADSFOVScale"), 0.2f, 1.0f);
-			fov *= adsScale;
+			if (bForShadowCamera && ConfigManager::B("Player.OverShoulder") && ConfigManager::B("Misc.OTSADSFOVBoost"))
+			{
+				fov *= std::clamp(ConfigManager::F("Misc.OTSADSFOVScale"), 0.2f, 3.0f);
+			}
+			else if (ConfigManager::B("Misc.EnableFOV"))
+			{
+				fov *= std::clamp(ConfigManager::F("Misc.ADSFOVScale"), 0.2f, 1.0f);
+			}
 		}
 		return std::clamp(fov, 20.0f, 180.0f);
 	}
@@ -230,7 +260,7 @@ void Cheats::ChangeFOV()
 	static float LastFOV = -1.0f;
 	if (ConfigManager::B("Misc.EnableFOV"))
 	{
-		const float targetFOV = GetAppliedFOV();
+		const float targetFOV = GetAppliedFOV(false);
 		// ADS often overrides FOV every frame, so force-apply while zooming.
 		if (LastFOV != targetFOV || IsZoomingNow())
 		{
@@ -260,17 +290,18 @@ void Cheats::UpdateCamera()
 	Cheats::ChangeFOV();
 	UpdateCameraModes();
 
+	if (IsValidShadowCamera(GVars.CameraActor) && GVars.CameraActor->CameraComponent)
+	{
+		GVars.CameraActor->CameraComponent->SetFieldOfView(GetAppliedFOV(true));
+	}
+
 	if (ConfigManager::B("Misc.EnableFOV"))
 	{
-		const float appliedFOV = GetAppliedFOV();
+		const float appliedFOV = GetAppliedFOV(false);
 		SDK::AOakPlayerController* OakPC = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
 		if (OakPC && OakPC->PlayerCameraManager)
 		{
 			OakPC->PlayerCameraManager->DefaultFOV = appliedFOV;
-		}
-		if (IsValidShadowCamera(GVars.CameraActor) && GVars.CameraActor->CameraComponent)
-		{
-			GVars.CameraActor->CameraComponent->SetFieldOfView(appliedFOV);
 		}
 	}
 

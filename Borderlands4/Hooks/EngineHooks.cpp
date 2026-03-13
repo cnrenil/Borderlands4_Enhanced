@@ -170,9 +170,9 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 
 	InternalUpdateHooksSEH(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 
-	// Log success outside SEH to allow using std::string conversion in LOG_INFO
-	if (!prevPS && bIsPlayerStateHooked) LOG_INFO("Hook", "SUCCESS: PlayerState ProcessEvent Hooked!");
-	if (!prevCM && bIsCameraManagerHooked) LOG_INFO("Hook", "SUCCESS: CameraManager ProcessEvent Hooked!");
+	// Log success outside SEH to allow using std::string conversion in LOG_DEBUG
+	if (!prevPS && bIsPlayerStateHooked) LOG_DEBUG("Hook", "SUCCESS: PlayerState ProcessEvent Hooked!");
+	if (!prevCM && bIsCameraManagerHooked) LOG_DEBUG("Hook", "SUCCESS: CameraManager ProcessEvent Hooked!");
 
 	// Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "SafeUpdateHooks: Hooks Status (PE: %d, PS: %d, CM: %d)", bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 }
@@ -208,18 +208,6 @@ DWORD MainThread(HMODULE hModule)
 		Cleanup(hModule);
 	}
 
-	Sleep(1000); 
-
-	if (!Engine::HookPresent())
-	{
-		LOG_ERROR("System", "Failed to initialize DX12 hooks.");
-		Cleanup(hModule);
-	}
-	else
-		LOG_INFO("System", "Engine hooks initialized successfully.");
-
-	Sleep(1000); 
-
 	LOG_INFO("System", "Loading configurations...");
 	Localization::Initialize();
     HotkeyManager::Initialize();
@@ -232,6 +220,8 @@ DWORD MainThread(HMODULE hModule)
 	bool bIsProcessEventHooked = false;
 	bool bIsPlayerStateHooked = false;
 	bool bIsCameraManagerHooked = false;
+	bool bDx12Hooked = false;
+	DWORD lastDx12HookAttemptTick = 0;
 
 	while (!Cleaning.load())
 	{
@@ -240,6 +230,27 @@ DWORD MainThread(HMODULE hModule)
 		if (!TryAutoSetVariablesMainThread())
 			Logger::LogThrottled(Logger::Level::Warning, "System", 1000, "MainThread: AutoSetVariables exception, resetting transient state");
 
+		// 1.5 Delay DX12 hook installation until world state is available.
+		// Hooking too early (splash/window transition phase) can destabilize Present.
+		if (!bDx12Hooked && GVars.World)
+		{
+			DWORD now = GetTickCount();
+			if (lastDx12HookAttemptTick == 0 || (now - lastDx12HookAttemptTick) > 2000)
+			{
+				lastDx12HookAttemptTick = now;
+				LOG_DEBUG("System", "Stable world detected. Installing DX12 hooks...");
+				if (Engine::HookPresent())
+				{
+					bDx12Hooked = true;
+					LOG_INFO("System", "Engine hooks initialized successfully.");
+				}
+				else
+				{
+					LOG_WARN("System", "DX12 hook install attempt failed; will retry...");
+				}
+			}
+		}
+		
 		// 2. Always attempt to stabilize hooks (PE, PS, CM)
         // We remove the !Utils::bIsLoading check here to allow HookProcessEvent() 
         // to finish hooking PostRender even if actors aren't loaded yet.

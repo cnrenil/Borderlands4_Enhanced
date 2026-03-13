@@ -37,6 +37,8 @@ namespace d3d12hook {
     static bool                   gInitialized = false;
     static bool                   gShutdown = false;
     static bool                   gAfterFirstPresent = false;
+    static IDXGISwapChain3*       gTrackedSwapChain = nullptr;
+    static bool                   gNeedQueueRecapture = true;
 
     // --- Stability: track resize state and early-injection grace period ---
     static DWORD                  gFirstPresentTime = 0;
@@ -44,6 +46,40 @@ namespace d3d12hook {
     // Grace period (ms) after first Present before we initialize ImGui.
     // This lets the game finish HDR / DLSS / swapchain setup.
     static constexpr DWORD        INIT_GRACE_PERIOD_MS = 5000;
+    // Extra cooldown after each ResizeBuffers. Splash -> main window transitions
+    // can trigger several swapchain reconfigurations; stay fully passive during this phase.
+    static constexpr DWORD        POST_RESIZE_COOLDOWN_MS = 10000;
+    static DWORD                  gLastResizeTime = 0;
+
+    static bool IsInPostResizeCooldown() {
+        if (gLastResizeTime == 0) return false;
+        return (GetTickCount() - gLastResizeTime) < POST_RESIZE_COOLDOWN_MS;
+    }
+
+    static void ReleaseCapturedQueue() {
+        if (gCommandQueue) {
+            gCommandQueue->Release();
+            gCommandQueue = nullptr;
+        }
+    }
+
+    static void CaptureQueue(ID3D12CommandQueue* queue) {
+        if (!queue || queue == gCommandQueue) return;
+        queue->AddRef();
+        ReleaseCapturedQueue();
+        gCommandQueue = queue;
+    }
+
+    static void ResetStartupTracking(const char* reason) {
+        gFirstPresentSeen = false;
+        gFirstPresentTime = 0;
+        gAfterFirstPresent = false;
+        gNeedQueueRecapture = true;
+        ReleaseCapturedQueue();
+        if (reason) {
+            LOG_DEBUG("DX12Hook", "Startup tracking reset: %s\n", reason);
+        }
+    }
 
     inline void LogHRESULT(const char* label, HRESULT hr) {
         LOG_ERROR("DX12Hook", "%s: hr=0x%08X\n", label, hr);
@@ -177,6 +213,7 @@ namespace d3d12hook {
     void RenderImGui(IDXGISwapChain3* pSwapChain) {
         // Don't render while a resize is in progress
         if (Resizing.load()) return;
+        if (!gCommandQueue || !oExecuteCommandListsD3D12) return;
 
         static uint64_t last_rendered_frame = 0;
         uint64_t current_time = GetTickCount64();
@@ -255,6 +292,17 @@ namespace d3d12hook {
     long __stdcall hookPresentD3D12(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags) {
         if (gShutdown) return oPresentD3D12(pSwapChain, SyncInterval, Flags);
 
+        if (IsInPostResizeCooldown()) {
+            gAfterFirstPresent = false;
+            Logger::LogThrottled(Logger::Level::Debug, "DX12Hook", 2000, "Present: in post-resize cooldown, forwarding without overlay init");
+            return oPresentD3D12(pSwapChain, SyncInterval, Flags);
+        }
+
+        if (pSwapChain != gTrackedSwapChain) {
+            gTrackedSwapChain = pSwapChain;
+            ResetStartupTracking("SwapChain changed");
+        }
+
         // Track first Present time for grace period
         if (!gFirstPresentSeen) {
             gFirstPresentSeen = true;
@@ -281,7 +329,7 @@ namespace d3d12hook {
         }
         else if (!gInitialized)
         {
-            Logger::LogThrottled(Logger::Level::Info, "D3D12", 5000, "hookPresentD3D12: Waiting for ImGui Init (Grace Period)...");
+                Logger::LogThrottled(Logger::Level::Debug, "D3D12", 5000, "hookPresentD3D12: Waiting for ImGui Init (Grace Period)...");
         }
 
         return oPresentD3D12(pSwapChain, SyncInterval, Flags);
@@ -289,6 +337,17 @@ namespace d3d12hook {
 
     long __stdcall hookPresent1D3D12(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags, const DXGI_PRESENT_PARAMETERS* pParams) {
         if (gShutdown) return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
+
+        if (IsInPostResizeCooldown()) {
+            gAfterFirstPresent = false;
+            Logger::LogThrottled(Logger::Level::Debug, "DX12Hook", 2000, "Present1: in post-resize cooldown, forwarding without overlay init");
+            return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
+        }
+
+        if (pSwapChain != gTrackedSwapChain) {
+            gTrackedSwapChain = pSwapChain;
+            ResetStartupTracking("SwapChain changed (Present1)");
+        }
 
         // Track first Present time for grace period
         if (!gFirstPresentSeen) {
@@ -319,12 +378,17 @@ namespace d3d12hook {
 
     void __stdcall hookExecuteCommandListsD3D12(ID3D12CommandQueue* _this, UINT NumCommandLists, ID3D12CommandList* const* ppCommandLists) {
         if (gShutdown) return oExecuteCommandListsD3D12(_this, NumCommandLists, ppCommandLists);
+        if (IsInPostResizeCooldown()) {
+            gAfterFirstPresent = false;
+            return oExecuteCommandListsD3D12(_this, NumCommandLists, ppCommandLists);
+        }
 
-        if (!gCommandQueue && gAfterFirstPresent && _this) {
+        if (_this && (gNeedQueueRecapture || !gCommandQueue) && gAfterFirstPresent) {
             D3D12_COMMAND_QUEUE_DESC desc = _this->GetDesc();
             if (desc.Type == D3D12_COMMAND_LIST_TYPE_DIRECT) {
-                gCommandQueue = _this;
-                LOG_INFO("DX12Hook", "Success: Captured Direct CommandQueue at ExecuteCommandLists.\n");
+                CaptureQueue(_this);
+                gNeedQueueRecapture = false;
+                LOG_DEBUG("DX12Hook", "Success: Captured Direct CommandQueue at ExecuteCommandLists.\n");
             }
         }
         gAfterFirstPresent = false;
@@ -334,6 +398,7 @@ namespace d3d12hook {
 
     HRESULT __stdcall hookResizeBuffersD3D12(IDXGISwapChain3* pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags) {
         LOG_DEBUG("DX12Hook", "ResizeBuffers detected (%ux%u, fmt=%d), cleaning up...\n", Width, Height, (int)NewFormat);
+        gLastResizeTime = GetTickCount();
         
         // Signal that we're resizing — Present hook will skip rendering
         Resizing.store(true);
@@ -350,8 +415,17 @@ namespace d3d12hook {
             gInitialized = false;
         }
 
+        if (oWndProc && g_hWnd) {
+            SetWindowLongPtr(g_hWnd, GWLP_WNDPROC, (LONG_PTR)oWndProc);
+            oWndProc = nullptr;
+        }
+        g_hWnd = nullptr;
+
         // Call the original ResizeBuffers
         HRESULT hr = oResizeBuffersD3D12(pSwapChain, BufferCount, Width, Height, NewFormat, SwapChainFlags);
+
+        // Force recapture after swapchain reconfiguration to avoid stale queue usage.
+        ResetStartupTracking("ResizeBuffers");
 
         // Clear resize flag — the next Present call will re-initialize
         Resizing.store(false);
@@ -376,9 +450,14 @@ namespace d3d12hook {
             gInitialized = false;
         }
 
+        ReleaseCapturedQueue();
+        gTrackedSwapChain = nullptr;
+
         if (oWndProc && g_hWnd) {
             SetWindowLongPtr(g_hWnd, GWLP_WNDPROC, (LONG_PTR)oWndProc);
+            oWndProc = nullptr;
         }
+        g_hWnd = nullptr;
 
         MH_DisableHook(MH_ALL_HOOKS);
         // We leave MH_Uninitialize to the main shutdown thread to avoid deadlocks

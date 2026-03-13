@@ -120,6 +120,8 @@ namespace ConfigManager
         Register("Misc.OTS_X", -150.0f);
         Register("Misc.OTS_Y", 60.0f);
         Register("Misc.OTS_Z", 20.0f);
+        Register("Misc.OTSADSFOVBoost", false);
+        Register("Misc.OTSADSFOVScale", 1.2f);
         Register("Misc.FreecamBlockInput", true);
         Register("Misc.Language", 0);
         Register("Misc.Debug", false);

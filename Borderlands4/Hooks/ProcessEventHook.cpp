@@ -174,7 +174,7 @@ bool Hooks::HookProcessEvent()
 	{
 		TempVTable[processEventIdx] = &hkProcessEvent;
 		VirtualProtect(&TempVTable[processEventIdx], sizeof(void*), oldProtect, &oldProtect);
-		LOG_INFO("Hook", "SUCCESS: VTable Overwritten globally for PlayerController!");
+		LOG_DEBUG("Hook", "SUCCESS: VTable Overwritten globally for PlayerController!");
 		return true;
 	}
 	return false;

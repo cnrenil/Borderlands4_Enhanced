@@ -13,37 +13,26 @@ void Cheats::ToggleDemigod() {
 
 void Cheats::EnforcePersistence()
 {
-	static SDK::ACharacter* LastCharacter = nullptr;
-	static SDK::UWorld* LastWorld = nullptr;
+	static bool bOneShotAppliedAfterInjection = false;
 
 	if (!Utils::bIsInGame || !GVars.PlayerController || !GVars.Character) {
-		LastCharacter = nullptr;
-		LastWorld = nullptr;
 		return;
 	}
 
-	bool bInstanceChanged = false;
-	if (LastCharacter != GVars.Character || LastWorld != GVars.World) {
-		bInstanceChanged = true;
-		LastCharacter = GVars.Character;
-		LastWorld = GVars.World;
-	}
-
-	// 1. Permanent State Enforcement (Every Frame)
+	// Permanent state enforcement (every frame)
 	GVars.Character->bCanBeDamaged = !ConfigManager::B("Player.GodMode");
+	Cheats::SetGameSpeed(ConfigManager::F("Player.GameSpeed"));
+	Cheats::TogglePlayersOnly();
 
-	// 2. One-Shot Activation (On Map Change / Respawn)
-	if (bInstanceChanged) {
+	// One-shot activation (only once after injection, on first valid in-game instance)
+	if (!bOneShotAppliedAfterInjection) {
+		bOneShotAppliedAfterInjection = true;
 		using namespace ConfigManager;
 
 		// Re-trigger toggle-style cheats if they are enabled in config
 		if (B("Player.Demigod")) Cheats::ToggleDemigod();
 		if (B("Player.InfAmmo")) Cheats::InfiniteAmmo();
 		if (B("Player.NoTarget")) Cheats::ToggleNoTarget();
-		if (F("Player.GameSpeed") != 1.0f) Cheats::SetGameSpeed(F("Player.GameSpeed"));
-        
-        // Ensure other persistent states are pushed to game systems
-        if (B("Player.PlayersOnly")) Cheats::TogglePlayersOnly();
 	}
 }
 

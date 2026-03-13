@@ -124,6 +124,11 @@ void GUI::RenderMenu()
                     ImGui::SliderFloat(Localization::T("OTS_OFFSET_X"), &F("Misc.OTS_X"), -500.0f, 500.0f);
                     ImGui::SliderFloat(Localization::T("OTS_OFFSET_Y"), &F("Misc.OTS_Y"), -200.0f, 200.0f);
                     ImGui::SliderFloat(Localization::T("OTS_OFFSET_Z"), &F("Misc.OTS_Z"), -200.0f, 200.0f);
+                    ImGui::Checkbox(Localization::T("OTS_ADS_FOV_BOOST"), &B("Misc.OTSADSFOVBoost"));
+                    if (B("Misc.OTSADSFOVBoost"))
+                    {
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_FOV_SCALE"), &F("Misc.OTSADSFOVScale"), 0.2f, 3.0f, "%.2f");
+                    }
                     ImGui::Unindent();
                 }
                 else if (bTPEnabled)

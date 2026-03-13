@@ -13,15 +13,30 @@ void Cheats::WeaponModifiers()
 			SDK::UWeaponBehavior* Behavior = weapon->behaviors[b];
 			if (!Behavior) continue;
 
-			if (Behavior->IsA(SDK::UWeaponBehavior_FireProjectile::StaticClass()) && ConfigManager::B("Weapon.InstantHit")) {
-				static_cast<SDK::UWeaponBehavior_FireProjectile*>(Behavior)->ProjectileSpeedScale.Value = ConfigManager::F("Weapon.ProjectileSpeedMultiplier");
+			if (Behavior->IsA(SDK::UWeaponBehavior_FireProjectile::StaticClass())) {
+				SDK::UWeaponBehavior_FireProjectile* FP = static_cast<SDK::UWeaponBehavior_FireProjectile*>(Behavior);
+				if (ConfigManager::B("Weapon.InstantHit")) {
+					FP->ProjectileSpeedScale.Value = ConfigManager::F("Weapon.ProjectileSpeedMultiplier");
+				}
+				else {
+					FP->ProjectileSpeedScale.Value = FP->ProjectileSpeedScale.BaseValue;
+				}
 			}
 			
 			if (Behavior->IsA(SDK::UWeaponBehavior_Fire::StaticClass())) {
 				SDK::UWeaponBehavior_Fire* FB = static_cast<SDK::UWeaponBehavior_Fire*>(Behavior);
-				if (ConfigManager::B("Weapon.RapidFire")) FB->firerate.Value = 999.0f * ConfigManager::F("Weapon.FireRate");
+				if (ConfigManager::B("Weapon.RapidFire")) {
+					FB->firerate.Value = 999.0f * ConfigManager::F("Weapon.FireRate");
+				}
+				else {
+					FB->firerate.Value = FB->firerate.BaseValue;
+				}
+
 				if (ConfigManager::B("Weapon.NoRecoil")) {
 					FB->RecoilScale.Value = FB->RecoilScale.BaseValue * (1.0f - ConfigManager::F("Weapon.RecoilReduction"));
+				}
+				else {
+					FB->RecoilScale.Value = FB->RecoilScale.BaseValue;
 				}
 			}
 		}

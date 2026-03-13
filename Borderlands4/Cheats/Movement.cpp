@@ -100,21 +100,43 @@ void Cheats::Flight()
 	if (!OakMove) return;
 
 	static float fOldFlySpeed = -1.0f;
+	static float fOldWalkSpeed = -1.0f;
+	static SDK::UOakCharacterMovementComponent* pLastMoveComp = nullptr;
 	static bool bWasFlightOn = false;
+
+	if (pLastMoveComp != OakMove) {
+		fOldFlySpeed = -1.0f;
+		fOldWalkSpeed = -1.0f;
+		bWasFlightOn = false;
+		pLastMoveComp = OakMove;
+	}
 
 	if (ConfigManager::B("Player.Flight")) {
 		if (fOldFlySpeed < 0) fOldFlySpeed = OakMove->MaxFlySpeed;
+		if (fOldWalkSpeed < 0) fOldWalkSpeed = OakMove->MaxWalkSpeed;
+
+		const float SpeedMultiplier = std::clamp(ConfigManager::F("Player.FlightSpeed"), 0.1f, 50.0f);
+		const float BaseSpeed = (fOldFlySpeed > 1.0f) ? fOldFlySpeed : 600.0f;
+		const float TargetSpeed = BaseSpeed * SpeedMultiplier;
+
 		if (OakMove->MovementMode != SDK::EMovementMode::MOVE_Flying)
 			OakMove->SetMovementMode(SDK::EMovementMode::MOVE_Flying, 0);
-		OakMove->MaxFlySpeed = 600.0f * (ConfigManager::F("Player.FlightSpeed") * 2.0f);
+
+		// Some BL4 movement states still consult walk speed while transitioning.
+		// Keep both synchronized so the slider always has effect.
+		OakMove->MaxFlySpeed = TargetSpeed;
+		OakMove->MaxWalkSpeed = TargetSpeed;
+
 		if (!bWasFlightOn) OakChar->SetActorEnableCollision(false);
 		bWasFlightOn = true;
 	} else if (bWasFlightOn) {
 		OakMove->SetMovementMode(SDK::EMovementMode::MOVE_Walking, 0);
 		if (fOldFlySpeed > 0) OakMove->MaxFlySpeed = fOldFlySpeed;
+		if (fOldWalkSpeed > 0) OakMove->MaxWalkSpeed = fOldWalkSpeed;
 		OakChar->SetActorEnableCollision(true);
 		bWasFlightOn = false;
 		fOldFlySpeed = -1.0f;
+		fOldWalkSpeed = -1.0f;
 	}
 }
 
