@@ -61,6 +61,7 @@ namespace ConfigManager
         Register("Weapon.ProjectileSpeedMultiplier", 999.0f);
         Register("Weapon.RapidFire", false);
         Register("Weapon.NoRecoil", false);
+        Register("Weapon.NoSpread", false);
         Register("Weapon.RecoilReduction", 1.0f);
         Register("Weapon.NoSway", false);
         Register("Weapon.HomingProjectiles", false);

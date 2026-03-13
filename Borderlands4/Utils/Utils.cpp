@@ -78,6 +78,35 @@ APlayerController* Utils::GetPlayerController()
 	return PlayerController;
 }
 
+AActor* Utils::GetSelfActor()
+{
+    APawn* controlledPawn = nullptr;
+    if (GVars.PlayerController && Utils::IsValidActor(GVars.PlayerController))
+        controlledPawn = GVars.PlayerController->Pawn;
+
+    if (GVars.Character && Utils::IsValidActor(GVars.Character))
+        return GVars.Character;
+
+    APawn* pawn = nullptr;
+    if (controlledPawn && Utils::IsValidActor(controlledPawn))
+        pawn = controlledPawn;
+    else if (GVars.Pawn && Utils::IsValidActor(GVars.Pawn))
+        pawn = GVars.Pawn;
+
+    if (pawn && pawn->IsA(SDK::AOakVehicle::StaticClass()))
+    {
+        auto* vehicle = reinterpret_cast<SDK::AOakVehicle*>(pawn);
+        if (vehicle->DriverPawn && Utils::IsValidActor(vehicle->DriverPawn))
+            return vehicle->DriverPawn;
+        return vehicle;
+    }
+
+    if (pawn && Utils::IsValidActor(pawn))
+        return pawn;
+
+    return nullptr;
+}
+
 unsigned Utils::ConvertImVec4toU32(ImVec4 Color)
 {
     return IM_COL32((int)(Color.x * 255.0f), (int)(Color.y * 255.0f), (int)(Color.z * 255.0f), (int)(Color.w * 255.0f));
@@ -163,26 +192,29 @@ PlayerCheatData& Utils::GetPlayerCheats(ACharacter* Player)
 
 bool Utils::IsValidActor(AActor* Actor)
 {
-    if (!Actor || IsBadReadPtr(Actor, sizeof(void*)) || !Actor->VTable) return false;
+    if (!Actor) return false;
 
-    // Use Unreal's built-in validation where possible
-    if (!Utils::bIsLoading)
+    __try
     {
-        auto* Kismet = UKismetSystemLibrary::GetDefaultObj();
-        if (Kismet && Kismet->VTable)
-        {
-            if (!UKismetSystemLibrary::IsValid(Actor)) return false;
-        }
+        if (IsBadReadPtr(Actor, sizeof(void*)) || !Actor->VTable) return false;
+        if (!Actor->Class || IsBadReadPtr(Actor->Class, sizeof(void*))) return false;
+
+        // Avoid ProcessEvent-based validity checks on possibly stale objects.
+        const EObjectFlags Flags = Actor->Flags;
+        if (Flags & EObjectFlags::BeginDestroyed) return false;
+        if (Flags & EObjectFlags::FinishDestroyed) return false;
+        if (Flags & EObjectFlags::MirroredGarbage) return false;
+        if (Flags & EObjectFlags::TagGarbageTemp) return false;
+
+        if (Actor->bActorIsBeingDestroyed) return false;
+        if (!Actor->RootComponent) return false;
+
+        return true;
     }
-
-    if (!Actor->Class || !Actor->GetLevel()) return false;
-
-    if (Actor->IsActorBeingDestroyed() || Actor->bActorIsBeingDestroyed) return false;
-
-    // Additional check for RootComponent which is often accessed
-    if (!Actor->RootComponent) return false;
-
-    return true;
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        return false;
+    }
 }
 
 
@@ -240,13 +272,15 @@ AActor* Utils::GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool Re
     FVector2D ViewportCenter = Utils::ImVec2ToFVector2D(GetAimScreenCenter());
     float MaxFOVNormalized = MaxFOV / 90.0f;
 
+    AActor* SelfActor = Utils::GetSelfActor();
+
     // Use Cache!
     for (ACharacter* TargetChar : GVars.UnitCache)
     {
         if (!TargetChar || !Utils::IsValidActor(TargetChar))
             continue;
 
-        if (TargetChar == GVars.Character)
+        if (SelfActor && TargetChar == SelfActor)
             continue;
 
         // Skip non-hostiles unless TargetAll is set
@@ -391,7 +425,7 @@ bool Utils::IsInPlayableState()
     if (!GVars.Level || !GVars.GameState) return false;
     if (!GVars.PlayerController || !GVars.PlayerController->VTable) return false;
     if (!GVars.PlayerController->PlayerCameraManager || !GVars.PlayerController->PlayerCameraManager->VTable) return false;
-    if (!GVars.Character || !GVars.Character->VTable) return false;
+    if (!Utils::GetSelfActor()) return false;
     return true;
 }
 
@@ -409,7 +443,9 @@ void cerrf(const char* Format, ...)
 ACharacter* Utils::GetNearestCharacter(ETeam Team)
 {
     if (!GVars.World || !GVars.World->VTable) return nullptr;
-    if (!GVars.Level || !GVars.Character) return nullptr;
+    if (!GVars.Level) return nullptr;
+    AActor* SelfActor = Utils::GetSelfActor();
+    if (!SelfActor) return nullptr;
     
     ACharacter* NearestCharacter = nullptr;
     float NearestDistance = FLT_MAX;
@@ -419,10 +455,10 @@ ACharacter* Utils::GetNearestCharacter(ETeam Team)
         if (!TargetChar || !Utils::IsValidActor(TargetChar))
             continue;
 
-        if (TargetChar == GVars.Character)
+        if (TargetChar == SelfActor)
             continue;
 
-        FVector PlayerLocation = GVars.Character->K2_GetActorLocation();
+        FVector PlayerLocation = SelfActor->K2_GetActorLocation();
         FVector TargetLocation = TargetChar->K2_GetActorLocation();
         float Distance = (float)PlayerLocation.GetDistanceTo(TargetLocation);
         if (Distance < NearestDistance)
@@ -436,8 +472,9 @@ ACharacter* Utils::GetNearestCharacter(ETeam Team)
  
 ETeamAttitude Utils::GetAttitude(AActor* Target)
 {
-	if (!GVars.Character || !Target) return ETeamAttitude::Neutral;
-	return UGbxTeamFunctionLibrary::GetAttitudeTowards(GVars.Character, Target);
+	AActor* SelfActor = Utils::GetSelfActor();
+	if (!SelfActor || !Target) return ETeamAttitude::Neutral;
+	return UGbxTeamFunctionLibrary::GetAttitudeTowards(SelfActor, Target);
 }
  
 float Utils::GetHealthPercent(AActor* Actor)

@@ -312,6 +312,7 @@ void GUI::RenderMenu()
                 {
                     ImGui::SliderFloat(Localization::T("RECOIL_REDUCTION"), &F("Weapon.RecoilReduction"), 0.0f, 1.0f);
                 }
+                ImGui::Checkbox(Localization::T("NO_SPREAD"), &B("Weapon.NoSpread"));
                 
                 ImGui::Separator();
                 ImGui::Checkbox(Localization::T("NO_SWAY"), &B("Weapon.NoSway"));

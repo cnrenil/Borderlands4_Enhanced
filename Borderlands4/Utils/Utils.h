@@ -54,6 +54,7 @@ struct Utils
 {
 	static UWorld* GetWorldSafe(); // can return nullptr
 	static APlayerController* GetPlayerController(); // can return nullptr
+	static AActor* GetSelfActor(); // character if available, otherwise controlled pawn/vehicle
 	static class ALightProjectileManager* GetLightProjManager();
 	static unsigned ConvertImVec4toU32(ImVec4 Color);
 	static void PrintActors(const char* Exclude);

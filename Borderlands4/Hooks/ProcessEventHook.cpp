@@ -25,13 +25,28 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 	bInsideHook = true;
     try {
         if (Utils::bIsInGame) {
+            std::string fnName = Function->GetName();
+            auto IsInputEvent = [](const std::string& name) -> bool
+            {
+                return name.find("InputKey") != std::string::npos ||
+                    name.find("InputAxis") != std::string::npos ||
+                    name.find("InputTouch") != std::string::npos;
+            };
+            auto IsMouseInputEvent = [&](const std::string& name) -> bool
+            {
+                if (!IsInputEvent(name)) return false;
+                if (name.find("Mouse") != std::string::npos) return true;
+                if (name.find("LeftMouseButton") != std::string::npos) return true;
+                if (name.find("RightMouseButton") != std::string::npos) return true;
+                if (name.find("ThumbMouseButton") != std::string::npos) return true;
+                if (name == "InputKey" || name == "InputAxis") return true;
+                return false;
+            };
+
             // Block Input when Menu is open
-            if (GUI::ShowMenu && Function) {
-                // Use a more efficient check if possible, or just be careful with GetName()
-                std::string fnName = Function->GetName();
-                if (fnName.find("InputKey") != std::string::npos ||
-                    fnName.find("InputAxis") != std::string::npos ||
-                    fnName.find("InputTouch") != std::string::npos) 
+            if (GUI::ShowMenu)
+            {
+                if (IsInputEvent(fnName))
                 {
                     // CRITICAL FIX: To block, we must return WITHOUT calling oProcessEvent
                     bInsideHook = false;
@@ -39,6 +54,15 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
                     g_ProcessEventCount.fetch_sub(1);
                     return; 
                 }
+            }
+
+            // While triggerbot simulates mouse hold/taps, suppress game mouse input processing.
+            if (Cheats::bTriggerSuppressMouseInput.load() && IsMouseInputEvent(fnName))
+            {
+                bInsideHook = false;
+                Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, false);
+                g_ProcessEventCount.fetch_sub(1);
+                return;
             }
 
             // Modular Handlers

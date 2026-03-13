@@ -80,7 +80,8 @@ static ImVec2 GetCustomReticleScreenPos()
 void Cheats::UpdateESP()
 {
 	Logger::LogThrottled(Logger::Level::Debug, "ESP", 10000, "Cheats::UpdateESP() active");
-	if (!ConfigManager::B("Player.ESP") || !Utils::bIsInGame || !GVars.PlayerController || !GVars.Level || !GVars.Character || !GVars.World || !GVars.World->VTable)
+	AActor* SelfActor = Utils::GetSelfActor();
+	if (!ConfigManager::B("Player.ESP") || !Utils::bIsInGame || !GVars.PlayerController || !GVars.Level || !SelfActor || !GVars.World || !GVars.World->VTable)
 	{
 		std::lock_guard<std::mutex> lock(ESPMutex);
 		CachedESPActors.clear();
@@ -105,7 +106,7 @@ void Cheats::UpdateESP()
 	{
 		if (!TargetActor || !Utils::IsValidActor(TargetActor)) continue;
 
-		if (TargetActor == GVars.Character) continue;
+			if (TargetActor == SelfActor) continue;
 
 		// Check attitude and skip if friendly and setting is off
 		ETeamAttitude Attitude = Utils::GetAttitude(TargetActor);

@@ -38,6 +38,26 @@ void Cheats::WeaponModifiers()
 				else {
 					FB->RecoilScale.Value = FB->RecoilScale.BaseValue;
 				}
+
+				if (ConfigManager::B("Weapon.NoSpread")) {
+					FB->spread.Value = 0.0f;
+				}
+				else {
+					FB->spread.Value = FB->spread.BaseValue;
+				}
+			}
+
+			if (Behavior->IsA(SDK::UWeaponBehavior_Reload::StaticClass())) {
+				SDK::UWeaponBehavior_Reload* RB = static_cast<SDK::UWeaponBehavior_Reload*>(Behavior);
+				if (ConfigManager::B("Weapon.InstantReload")) {
+					// Keep a tiny positive duration to avoid edge cases with zero-time reload.
+					RB->ReloadTime.Value = 0.01f;
+					RB->MinReloadTime.Value = 0.01f;
+				}
+				else {
+					RB->ReloadTime.Value = RB->ReloadTime.BaseValue;
+					RB->MinReloadTime.Value = RB->MinReloadTime.BaseValue;
+				}
 			}
 		}
 	}

@@ -4,11 +4,11 @@ static AActor* CurrentAimbotTarget = nullptr;
 
 void Cheats::Aimbot()
 {
-    bHasAimbotTarget = false;
-    CurrentAimbotTarget = nullptr;
+	bHasAimbotTarget = false;
+	CurrentAimbotTarget = nullptr;
 
 	if (!ConfigManager::B("Aimbot.Enabled") || !Utils::bIsInGame) return;
-	if (!GVars.POV || !GVars.PlayerController || !GVars.Character) return;
+	if (!GVars.POV || !GVars.PlayerController || !Utils::GetSelfActor()) return;
 
 	// Ordinary logic: Target acquisition and visual state
 	CurrentAimbotTarget = Utils::GetBestTarget(

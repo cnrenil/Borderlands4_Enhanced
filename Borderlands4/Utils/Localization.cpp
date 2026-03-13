@@ -144,6 +144,7 @@ namespace Localization
         Register("RAPID_FIRE", "Rapid Fire", (const char*)u8"连射 (高射速)");
         Register("FIRE_RATE_MODIFIER", "Fire Rate Multiplier", (const char*)u8"射速倍率");
         Register("NO_RECOIL", "No Recoil", (const char*)u8"无后坐力");
+        Register("NO_SPREAD", "No Spread", (const char*)u8"无扩散");
         Register("RECOIL_REDUCTION", "Recoil Reduction %", (const char*)u8"后坐力减免比例");
         Register("NO_SWAY", "No Sway", (const char*)u8"无武器摇晃");
         Register("HOMING_PROJECTILES", "Homing Projectiles", (const char*)u8"自导子弹 (魔法子弹)");

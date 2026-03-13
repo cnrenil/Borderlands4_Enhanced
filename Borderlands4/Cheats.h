@@ -106,10 +106,11 @@ struct Cheats
 	static void UpdateWeapon();
 	static void UpdateCamera();
 
-    // Cross-thread Rendering Helpers
-    static inline FVector AimbotTargetPos;
-    static inline bool bHasAimbotTarget = false;
-    static inline FVector SilentAimTargetPos;
-    static inline bool bHasSilentAimTarget = false;
+	// Cross-thread Rendering Helpers
+	static inline FVector AimbotTargetPos;
+	static inline bool bHasAimbotTarget = false;
+	static inline FVector SilentAimTargetPos;
+	static inline bool bHasSilentAimTarget = false;
+	static inline std::atomic<bool> bTriggerSuppressMouseInput = false;
 
 };
