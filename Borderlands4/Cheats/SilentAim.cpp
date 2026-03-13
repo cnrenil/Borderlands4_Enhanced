@@ -3,14 +3,14 @@
 void Cheats::SilentAimHoming()
 {
     bHasSilentAimTarget = false;
-	if (!ConfigManager::B("Weapon.HomingProjectiles") || !GVars.Character || !GVars.PlayerController || !GVars.World) return;
+	if (!ConfigManager::B("SilentAim.Enabled") || !GVars.Character || !GVars.PlayerController || !GVars.World) return;
 
 	AActor* Target = Utils::GetBestTarget(
 		GVars.PlayerController,
 		ConfigManager::F("Aimbot.MaxFOV"),
 		ConfigManager::B("SilentAim.RequiresLOS"),
-		ConfigManager::S("Aimbot.Bone"),
-		ConfigManager::B("Aimbot.TargetAll")
+		ConfigManager::S("SilentAim.Bone"),
+		ConfigManager::B("SilentAim.TargetAll")
 	);
 
 	if (!Target || !Target->IsA(ACharacter::StaticClass())) return;
@@ -19,7 +19,7 @@ void Cheats::SilentAimHoming()
 	ACharacter* TargetChar = reinterpret_cast<ACharacter*>(Target);
 
 	if (TargetChar->Mesh) {
-		std::wstring BoneWStr = UtfN::StringToWString(ConfigManager::S("Aimbot.Bone"));
+		std::wstring BoneWStr = UtfN::StringToWString(ConfigManager::S("SilentAim.Bone"));
 		FName BoneName = UKismetStringLibrary::Conv_StringToName(BoneWStr.c_str());
 		if (TargetChar->Mesh->GetBoneIndex(BoneName) != -1)
 		{
@@ -36,17 +36,4 @@ void Cheats::SilentAimHoming()
     // Update Cache for rendering
     bHasSilentAimTarget = true;
     SilentAimTargetPos = TargetPos;
-
-	TArray<AActor*> Projectiles;
-	UGameplayStatics::GetAllActorsOfClass(Utils::GetWorldSafe(), AOakProjectile::StaticClass(), &Projectiles);
-	
-	for (int i = 0; i < Projectiles.Num(); i++) {
-		AOakProjectile* Proj = static_cast<AOakProjectile*>(Projectiles[i]);
-		if (Utils::IsValidActor(Proj) && Proj->GetInstigator() == GVars.Character) {
-			float dist = Proj->K2_GetActorLocation().GetDistanceToInMeters(TargetPos);
-			if (dist > 0.5f && dist < ConfigManager::F("Weapon.HomingRange")) {
-				Proj->K2_SetActorLocation(TargetPos, false, nullptr, false);
-			}
-		}
-	}
 }

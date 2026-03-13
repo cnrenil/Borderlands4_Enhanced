@@ -28,6 +28,8 @@ namespace
     static float g_LastFlightMultiplier = 1.0f;
     static float g_OriginalGlideCostValue = -1.0f;
     static float g_OriginalGlideCostBase = -1.0f;
+    static float g_OriginalDashCostValue = -1.0f;
+    static float g_OriginalDashCostBase = -1.0f;
     static double g_LastGlideRefreshTime = 0.0;
 
     void ResetMovementState()
@@ -40,6 +42,8 @@ namespace
         g_LastFlightMultiplier = 1.0f;
         g_OriginalGlideCostValue = -1.0f;
         g_OriginalGlideCostBase = -1.0f;
+        g_OriginalDashCostValue = -1.0f;
+        g_OriginalDashCostBase = -1.0f;
         g_LastGlideRefreshTime = 0.0;
     }
 
@@ -132,6 +136,10 @@ namespace
                     g_LastGlideMoveComp->VaultPowerCost_Glide.Value = g_OriginalGlideCostValue;
                 if (g_OriginalGlideCostBase >= 0.0f)
                     g_LastGlideMoveComp->VaultPowerCost_Glide.BaseValue = g_OriginalGlideCostBase;
+                if (g_OriginalDashCostValue >= 0.0f)
+                    g_LastGlideMoveComp->VaultPowerCost_Dash.Value = g_OriginalDashCostValue;
+                if (g_OriginalDashCostBase >= 0.0f)
+                    g_LastGlideMoveComp->VaultPowerCost_Dash.BaseValue = g_OriginalDashCostBase;
             }
 
             g_WasInfGlideStaminaOn = false;
@@ -144,13 +152,19 @@ namespace
             g_LastGlideMoveComp = move;
             g_OriginalGlideCostValue = -1.0f;
             g_OriginalGlideCostBase = -1.0f;
+            g_OriginalDashCostValue = -1.0f;
+            g_OriginalDashCostBase = -1.0f;
         }
 
         if (g_OriginalGlideCostValue < 0.0f) g_OriginalGlideCostValue = move->VaultPowerCost_Glide.Value;
         if (g_OriginalGlideCostBase < 0.0f) g_OriginalGlideCostBase = move->VaultPowerCost_Glide.BaseValue;
+        if (g_OriginalDashCostValue < 0.0f) g_OriginalDashCostValue = move->VaultPowerCost_Dash.Value;
+        if (g_OriginalDashCostBase < 0.0f) g_OriginalDashCostBase = move->VaultPowerCost_Dash.BaseValue;
 
         move->VaultPowerCost_Glide.Value = 0.0f;
         move->VaultPowerCost_Glide.BaseValue = 0.0f;
+        move->VaultPowerCost_Dash.Value = 0.0f;
+        move->VaultPowerCost_Dash.BaseValue = 0.0f;
         g_WasInfGlideStaminaOn = true;
 
         const double now = ImGui::GetTime();
@@ -159,6 +173,33 @@ namespace
             move->ClientOnVaultPowerNotDepleted();
             g_LastGlideRefreshTime = now;
         }
+    }
+
+    bool IsLikelyStaminaResourceName(const SDK::FName& ResourceName)
+    {
+        std::string n = ResourceName.ToString();
+        std::transform(n.begin(), n.end(), n.begin(), [](unsigned char c) {
+            if (c >= 'A' && c <= 'Z') return (char)(c + ('a' - 'A'));
+            return (char)c;
+            });
+        return n.find("vault") != std::string::npos ||
+            n.find("stamina") != std::string::npos ||
+            n.find("sprint") != std::string::npos ||
+            n.find("glide") != std::string::npos ||
+            n.find("dash") != std::string::npos;
+    }
+
+    bool IsLocalMovementComponent(const SDK::UObject* Object)
+    {
+        if (!Object || !GVars.Character || !Utils::IsValidActor(GVars.Character))
+            return false;
+
+        if (!Object->IsA(SDK::UOakCharacterMovementComponent::StaticClass()))
+            return false;
+
+        const SDK::AOakCharacter* localChar = (const SDK::AOakCharacter*)GVars.Character;
+        const SDK::UOakCharacterMovementComponent* move = (const SDK::UOakCharacterMovementComponent*)Object;
+        return move && localChar && move == localChar->OakCharacterMovement;
     }
 
     void ApplyInfiniteVehicleBoost()
@@ -177,6 +218,7 @@ namespace
         // Keep boost state out of "depleted/cooldown" so boost can be reused immediately.
         vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
         vehicleMove->OnBoostFilled();
+        SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
 
         // Ask server-side vehicle logic to recompute boost state if gameplay code marked it invalid.
         if (!SDK::UOakVehicleBlueprintLibrary::CanBoost(vehicle))
@@ -394,8 +436,71 @@ bool Cheats::HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Fu
 {
 	std::scoped_lock GVarsLock(gGVarsMutex);
 	std::scoped_lock TeleLock(gTeleportMutex);
-    if (!ConfigManager::B("Misc.MapTeleport")) return false;
     const std::string FuncName = Function->GetName();
+
+    if (ConfigManager::B("Player.InfGlideStamina"))
+    {
+        if (FuncName == "DrainResourcePool" && Params)
+        {
+            struct DrainResourcePoolParams
+            {
+                SDK::UObject* OwnerContext;
+                SDK::FName ResourceName;
+                float Percentage;
+                float MinPercentage;
+            };
+
+            auto* p = (DrainResourcePoolParams*)Params;
+            if (p &&
+                p->OwnerContext &&
+                GVars.Character &&
+                p->OwnerContext == GVars.Character &&
+                IsLikelyStaminaResourceName(p->ResourceName))
+            {
+                return true;
+            }
+        }
+
+        if ((FuncName == "OnVaultPowerDepleted" || FuncName == "ClientOnVaultPowerDepleted") &&
+            IsLocalMovementComponent(Object))
+        {
+            SDK::UOakCharacterMovementComponent* move = (SDK::UOakCharacterMovementComponent*)Object;
+            move->OnVaultPowerNotDepleted();
+            move->ClientOnVaultPowerNotDepleted();
+            return true;
+        }
+    }
+
+    if (ConfigManager::B("Player.InfVehicleBoost") &&
+        Object &&
+        Object->IsA(SDK::UOakWheeledVehicleMovementComponent::StaticClass()))
+    {
+        SDK::UOakWheeledVehicleMovementComponent* vehicleMove = (SDK::UOakWheeledVehicleMovementComponent*)Object;
+        SDK::AOakVehicle* vehicle = vehicleMove ? vehicleMove->OakVehicleOwner : nullptr;
+
+        if (FuncName == "OnBoostDepleted")
+        {
+            vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
+            vehicleMove->OnBoostFilled();
+            if (vehicle && Utils::IsValidActor(vehicle))
+            {
+                SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
+                vehicle->ServerRecomputeBoostCost();
+            }
+            return true;
+        }
+
+        if (FuncName == "FreeBoostElapsed")
+        {
+            vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
+            vehicleMove->OnBoostFilled();
+            if (vehicle && Utils::IsValidActor(vehicle))
+                SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
+            return true;
+        }
+    }
+
+    if (!ConfigManager::B("Misc.MapTeleport")) return false;
 
     if (FuncName == "Server_CreateDiscoveryPin" || FuncName == "Server_AddDiscoveryPin") {
         struct InPinParams { SDK::FGbxDiscoveryPinningPinData InPinData; }*p = (InPinParams*)Params;

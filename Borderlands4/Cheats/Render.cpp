@@ -69,7 +69,7 @@ void Cheats::Render()
             Utils::DrawSnapLine(AimbotTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
     }
 
-    if (Utils::bIsInGame && ConfigManager::B("Weapon.HomingProjectiles") && bHasSilentAimTarget && ConfigManager::B("Aimbot.DrawArrow"))
+    if (Utils::bIsInGame && ConfigManager::B("SilentAim.Enabled") && bHasSilentAimTarget && ConfigManager::B("Aimbot.DrawArrow"))
     {
         Utils::DrawSnapLine(SilentAimTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
     }
