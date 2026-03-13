@@ -145,8 +145,12 @@
   <ItemGroup>
     <ClCompile Include="Cheats\Aimbot.cpp" />
     <ClCompile Include="Cheats\ESP.cpp" />
-    <ClCompile Include="Cheats\GodMode.cpp" />
     <ClCompile Include="Cheats\Misc.cpp" />
+    <ClCompile Include="Cheats\Camera.cpp" />
+    <ClCompile Include="Cheats\Movement.cpp" />
+    <ClCompile Include="Cheats\Weapon.cpp" />
+    <ClCompile Include="Cheats\Player.cpp" />
+    <ClCompile Include="Cheats\Debug.cpp" />
     <ClCompile Include="Cheats\SilentAim.cpp" />
     <ClCompile Include="Cheats\TriggerBot.cpp" />
     <ClCompile Include="Config\ConfigManager.cpp" />
@@ -215,6 +219,8 @@
     </ClCompile>
     <ClCompile Include="Utils\Localization.cpp" />
     <ClCompile Include="Utils\Utils.cpp" />
+    <ClCompile Include="Utils\Hotkey.cpp" />
+    <ClCompile Include="Utils\Logger.cpp" />
     <ClCompile Include="Borderlands4_SDK\SDK\GbxGame_functions.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -238,6 +244,8 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Utils\Localization.h" />
     <ClInclude Include="Utils\Utils.h" />
+    <ClInclude Include="Utils\Hotkey.h" />
+    <ClInclude Include="Utils\Logger.h" />
     <ClInclude Include="Borderlands4_SDK\SDK\Basic.hpp" />
     <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_classes.hpp" />
     <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_structs.hpp" />

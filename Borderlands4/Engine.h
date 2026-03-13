@@ -17,6 +17,7 @@ struct Hooks
 {
 	static void** pcVTable;
 	static void** psVTable;
+	static void** cmVTable;
 	static void** viewportVTable;
 
 	static bool HookProcessEvent();

@@ -1,6 +1,5 @@
-﻿#include "pch.h"
-#include "Hooks/EngineHooks.h"
-#include <atomic>
+#include "pch.h"
+
 
 // Global state variables
 
@@ -15,6 +14,7 @@ std::atomic<int> g_WndProcCount{ 0 };
 std::atomic<int> g_ProcessEventCount{ 0 };
 std::atomic<bool> Cleaning{ false };
 std::atomic<bool> Resizing{ false };
+FILE* g_ConsoleOut = nullptr;
 
 WNDPROC oWndProc = nullptr;
 HWND g_hWnd = nullptr;

@@ -4,10 +4,12 @@
 #include "Engine.h"
 #include "Config/ConfigManager.h"
 #include "Cheats.h"
+#include "Utils/Hotkey.h"
 
 extern WNDPROC oWndProc;
 extern HWND g_hWnd;
 extern LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+extern std::atomic<int> g_PresentCount;
 
 namespace d3d12hook {
     PresentD3D12            oPresentD3D12 = nullptr;
@@ -126,16 +128,9 @@ namespace d3d12hook {
         static UINT64 lastFrameCount = 0;
         UINT64 currentFrameCount = 0;
         
-        // Use a simple static counter or pSwapChain->GetLastPresentCount()
-        // But GetLastPresentCount is not always reliable. 
-        // Let's use a workaround: track the LastBackBufferIndex and time, 
-        // or just use a shared 'inside_frame' flag.
-        
         static uint64_t last_rendered_frame = 0;
         uint64_t current_time = GetTickCount64();
         
-        // This is a common UE5 issue where it calls both Present hooks.
-        // We only render if it's been at least a few ms or a new index.
         static UINT last_index = 0xFFFFFFFF;
         UINT current_index = pSwapChain->GetCurrentBackBufferIndex();
         
@@ -157,6 +152,7 @@ namespace d3d12hook {
             Cheats::Aimbot();
             Cheats::WeaponModifiers();
             Cheats::ChangeFOV();
+            HotkeyManager::Update();
         } catch (...) {}
 
         GUI::RenderMenu();
@@ -222,6 +218,7 @@ namespace d3d12hook {
             } else insert_was_down = false;
 
             RenderImGui(pSwapChain);
+            g_PresentCount.fetch_add(1);
         }
 
         return oPresentD3D12(pSwapChain, SyncInterval, Flags);
@@ -237,6 +234,7 @@ namespace d3d12hook {
 
         if (gInitialized) {
             RenderImGui(pSwapChain);
+            g_PresentCount.fetch_add(1);
         }
 
         return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);

@@ -1,17 +1,17 @@
 #include "pch.h"
-#include "Engine.h"
+
 
 
 void Cheats::SilentAimHoming()
 {
-	if (!WeaponSettings.HomingProjectiles || !GVars.Character || !GVars.PlayerController || !GVars.World) return;
+	if (!ConfigManager::B("Weapon.HomingProjectiles") || !GVars.Character || !GVars.PlayerController || !GVars.World) return;
 
 	AActor* Target = Utils::GetBestTarget(
 		GVars.PlayerController,
-		AimbotSettings.MaxFOV,
-		SilentAimSettings.RequiresLOS,
-		TextVars.AimbotBone,
-		AimbotSettings.TargetAll
+		ConfigManager::F("Aimbot.MaxFOV"),
+		ConfigManager::B("SilentAim.RequiresLOS"),
+		ConfigManager::S("Aimbot.Bone"),
+		ConfigManager::B("Aimbot.TargetAll")
 	);
 
 	if (!Target || !Target->IsA(ACharacter::StaticClass())) return;
@@ -20,7 +20,7 @@ void Cheats::SilentAimHoming()
 	ACharacter* TargetChar = reinterpret_cast<ACharacter*>(Target);
 
 	if (TargetChar->Mesh) {
-		std::wstring BoneWStr = UtfN::StringToWString(TextVars.AimbotBone);
+		std::wstring BoneWStr = UtfN::StringToWString(ConfigManager::S("Aimbot.Bone"));
 		FName BoneName = UKismetStringLibrary::Conv_StringToName(BoneWStr.c_str());
 		if (TargetChar->Mesh->GetBoneIndex(BoneName) != -1)
 		{
@@ -36,9 +36,9 @@ void Cheats::SilentAimHoming()
 	}
 
 	// Draw Tracer Line for Silent Aim if enabled
-	if (AimbotSettings.DrawArrow)
+	if (ConfigManager::B("Aimbot.DrawArrow"))
 	{
-		Utils::DrawSnapLine(TargetPos, AimbotSettings.ArrowThickness);
+		Utils::DrawSnapLine(TargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
 	}
 
 	TArray<AActor*> Projectiles;
@@ -49,7 +49,7 @@ void Cheats::SilentAimHoming()
 		if (Utils::IsValidActor(Proj) && Proj->GetInstigator() == GVars.Character) {
 			float dist = Proj->K2_GetActorLocation().GetDistanceToInMeters(TargetPos);
 			// Only home in if within sensible range and not already too close
-			if (dist > 0.5f && dist < WeaponSettings.HomingRange) {
+			if (dist > 0.5f && dist < ConfigManager::F("Weapon.HomingRange")) {
 				Proj->K2_SetActorLocation(TargetPos, false, nullptr, false);
 			}
 		}

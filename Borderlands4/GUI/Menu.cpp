@@ -1,7 +1,5 @@
 #include "pch.h"
-#include "Menu.h"
-#include "Config/ConfigManager.h"
-#include "Cheats.h"
+
 
 #define MAJORVERSION 0
 #define MINORVERSION 1
@@ -55,11 +53,10 @@ void GUI::RenderMenu()
 			if (ImGui::BeginTabItem(Localization::T("TAB_ABOUT")))
 			{
 				static const char* HostLangs[] = { "English", "简体中文" };
-				int CurrentLangIdx = (int)MiscSettings.CurrentLanguage;
+				int& CurrentLangIdx = ConfigManager::I("Misc.Language");
 				if (ImGui::Combo(Localization::T("LANGUAGE"), &CurrentLangIdx, HostLangs, IM_ARRAYSIZE(HostLangs)))
 				{
-					MiscSettings.CurrentLanguage = (Language)CurrentLangIdx;
-					Localization::CurrentLanguage = MiscSettings.CurrentLanguage;
+					Localization::CurrentLanguage = (Language)CurrentLangIdx;
 				}
 
 				ImGui::Separator();
@@ -83,59 +80,60 @@ void GUI::RenderMenu()
 
             if (ImGui::BeginTabItem(Localization::T("TAB_PLAYER")))
             {
-                ImGui::Checkbox(Localization::T("ESP"), &CVars.ESP);
-                ImGui::Checkbox(Localization::T("AIMBOT"), &CVars.Aimbot);
-                if (ImGui::Checkbox(Localization::T("SILENT_AIM"), &CVars.SilentAim)) { if (CVars.SilentAim) CVars.Aimbot = false; }
-                if (ImGui::Checkbox(Localization::T("INF_AMMO"), &CVars.InfAmmo)) Cheats::InfiniteAmmo();
-                if (ImGui::Checkbox(Localization::T("GODMODE"), &CVars.GodMode)) Cheats::ToggleGodMode();
-                if (ImGui::Checkbox(Localization::T("DEMIGOD"), &CVars.Demigod)) Cheats::ToggleDemigod();
-                if (ImGui::Checkbox(Localization::T("NO_TARGET"), &CVars.NoTarget)) Cheats::ToggleNoTarget();
+                using namespace ConfigManager;
+                ImGui::Checkbox(Localization::T("ESP"), &B("Player.ESP"));
+                ImGui::Checkbox(Localization::T("AIMBOT"), &B("Aimbot.Enabled"));
+                if (ImGui::Checkbox(Localization::T("SILENT_AIM"), &B("SilentAim.Enabled"))) { if (B("SilentAim.Enabled")) B("Aimbot.Enabled") = false; }
+                if (ImGui::Checkbox(Localization::T("INF_AMMO"), &B("Player.InfAmmo"))) Cheats::InfiniteAmmo();
+                if (ImGui::Checkbox(Localization::T("GODMODE"), &B("Player.GodMode"))) Cheats::ToggleGodMode();
+                if (ImGui::Checkbox(Localization::T("DEMIGOD"), &B("Player.Demigod"))) Cheats::ToggleDemigod();
+                if (ImGui::Checkbox(Localization::T("NO_TARGET"), &B("Player.NoTarget"))) Cheats::ToggleNoTarget();
                 
                 ImGui::SeparatorText(Localization::T("MOVEMENT"));
-                ImGui::Checkbox(Localization::T("SPEED_HACK"), &CVars.SpeedEnabled);
-                if (CVars.SpeedEnabled)
+                ImGui::Checkbox(Localization::T("SPEED_HACK"), &B("Player.SpeedEnabled"));
+                if (B("Player.SpeedEnabled"))
                 {
-                    ImGui::SliderFloat(Localization::T("SPEED_VALUE"), &CVars.Speed, 1.0f, 10.0f, "%.1f");
+                    ImGui::SliderFloat(Localization::T("SPEED_VALUE"), &F("Player.Speed"), 1.0f, 10.0f, "%.1f");
                 }
                 
-                ImGui::Checkbox(Localization::T("FLIGHT"), &CVars.FlightEnabled);
-                if (CVars.FlightEnabled)
+                ImGui::Checkbox(Localization::T("FLIGHT"), &B("Player.Flight"));
+                if (B("Player.Flight"))
                 {
-                    ImGui::SliderFloat(Localization::T("FLIGHT_SPEED"), &CVars.FlightSpeed, 1.0f, 20.0f, "%.1f");
+                    ImGui::SliderFloat(Localization::T("FLIGHT_SPEED"), &F("Player.FlightSpeed"), 1.0f, 20.0f, "%.1f");
                 }
                 
-                bool bTP = CVars.ThirdPerson;
+                bool bTP = B("Player.ThirdPerson");
                 if (ImGui::Checkbox(Localization::T("THIRD_PERSON"), &bTP)) Cheats::ToggleThirdPerson();
-                if (CVars.ThirdPerson)
+                if (B("Player.ThirdPerson"))
                 {
                     ImGui::SameLine();
-                    ImGui::Checkbox(Localization::T("THIRD_PERSON_CENTERED"), &MiscSettings.ThirdPersonCentered);
+                    ImGui::Checkbox(Localization::T("THIRD_PERSON_CENTERED"), &B("Misc.ThirdPersonCentered"));
                     ImGui::SameLine();
-                    ImGui::Checkbox(Localization::T("THIRD_PERSON_OTS"), &MiscSettings.ThirdPersonOTS);
+                    ImGui::Checkbox(Localization::T("THIRD_PERSON_OTS"), &B("Misc.ThirdPersonOTS"));
                     
-                    if (MiscSettings.ThirdPersonOTS)
+                    if (B("Misc.ThirdPersonOTS"))
                     {
                         ImGui::Indent();
-                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_X"), &MiscSettings.OTS_X, -500.0f, 500.0f);
-                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_Y"), &MiscSettings.OTS_Y, -200.0f, 200.0f);
-                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_Z"), &MiscSettings.OTS_Z, -200.0f, 200.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_X"), &F("Misc.OTS_X"), -500.0f, 500.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_Y"), &F("Misc.OTS_Y"), -200.0f, 200.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_OFFSET_Z"), &F("Misc.OTS_Z"), -200.0f, 200.0f);
                         ImGui::Unindent();
                     }
                     else
                     {
                         ImGui::SameLine();
-                        ImGui::Checkbox(Localization::T("ADS_FIRST_PERSON"), &MiscSettings.ThirdPersonADSFirstPerson);
+                        ImGui::Checkbox(Localization::T("ADS_FIRST_PERSON"), &B("Misc.ThirdPersonADSFirstPerson"));
                     }
                 }
 
-                if (!CVars.ThirdPerson)
+                if (!B("Player.ThirdPerson"))
                 {
-                    bool bFreecam = CVars.Freecam;
+                    bool bFreecam = B("Player.Freecam");
                     if (ImGui::Checkbox(Localization::T("FREE_CAM"), &bFreecam)) Cheats::ToggleFreecam();
-                    if (CVars.Freecam)
+                    if (B("Player.Freecam"))
                     {
                         ImGui::SameLine();
-                        ImGui::Checkbox(Localization::T("FREECAM_BLOCK_INPUT"), &MiscSettings.FreecamBlockInput);
+                        ImGui::Checkbox(Localization::T("FREECAM_BLOCK_INPUT"), &B("Misc.FreecamBlockInput"));
                     }
                 }
                 
@@ -153,6 +151,7 @@ void GUI::RenderMenu()
 
             if (ImGui::BeginTabItem(Localization::T("TAB_WORLD")))
             {
+                using namespace ConfigManager;
                 ImGui::Text(Localization::T("WORLD_ACTIONS"));
                 if (ImGui::Button(Localization::T("KILL_ENEMIES"))) Cheats::KillEnemies();
                 if (ImGui::Button(Localization::T("CLEAR_GROUND_ITEMS"))) Cheats::ClearGroundItems();
@@ -161,15 +160,15 @@ void GUI::RenderMenu()
                 if (ImGui::Button(Localization::T("GIVE_5_LEVELS"))) Cheats::GiveLevels();
 
                 ImGui::Separator();
-                if (ImGui::Checkbox(Localization::T("PLAYERS_ONLY"), &CVars.PlayersOnly)) Cheats::TogglePlayersOnly();
+                if (ImGui::Checkbox(Localization::T("PLAYERS_ONLY"), &B("Player.PlayersOnly"))) Cheats::TogglePlayersOnly();
 
-                if (ImGui::SliderFloat(Localization::T("GAME_SPEED"), &CVars.GameSpeed, 0.1f, 10.0f))
-                    Cheats::SetGameSpeed(CVars.GameSpeed);
+                if (ImGui::SliderFloat(Localization::T("GAME_SPEED"), &F("Player.GameSpeed"), 0.1f, 10.0f))
+                    Cheats::SetGameSpeed(F("Player.GameSpeed"));
 
                 ImGui::Separator();
-                ImGui::Checkbox(Localization::T("MAP_TELEPORT"), &MiscSettings.MapTeleport);
+                ImGui::Checkbox(Localization::T("MAP_TELEPORT"), &B("Misc.MapTeleport"));
                 AddDefaultTooltip("Quickly make and remove a pin on the map to teleport to that location.");
-                ImGui::SliderFloat(Localization::T("MAP_TELEPORT_WINDOW"), &MiscSettings.MapTPWindow, 0.5f, 5.0f);
+                ImGui::SliderFloat(Localization::T("MAP_TELEPORT_WINDOW"), &F("Misc.MapTPWindow"), 0.5f, 5.0f);
 
                 ImGui::Separator();
                 ImGui::Text(Localization::T("CURRENCY_SETTINGS"));
@@ -186,24 +185,25 @@ void GUI::RenderMenu()
 
             if (ImGui::BeginTabItem(Localization::T("AIMBOT")))
             {
+                using namespace ConfigManager;
                 if (ImGui::TreeNode(Localization::T("STANDARD_AIMBOT_SETTINGS")))
                 {
-                    ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &AimbotSettings.LOS);
-                    ImGui::Checkbox(Localization::T("DRAW_FOV"), &AimbotSettings.DrawFOV);
-                    ImGui::Checkbox(Localization::T("DRAW_ARROW"), &AimbotSettings.DrawArrow);
-                    ImGui::Checkbox(Localization::T("SMOOTH_AIM"), &AimbotSettings.Smooth);
-                    if (AimbotSettings.Smooth)
-                        ImGui::SliderFloat(Localization::T("SMOOTHING"), &AimbotSettings.SmoothingVector, 1.0f, 20.0f);
-                    ImGui::SliderFloat(Localization::T("AIMBOT_FOV"), &AimbotSettings.MaxFOV, 1.0f, 180.0f);
-                    ImGui::SliderFloat(Localization::T("MAX_DISTANCE"), &AimbotSettings.MaxDistance, 1.0f, 500.0f);
+                    ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &B("Aimbot.LOS"));
+                    ImGui::Checkbox(Localization::T("DRAW_FOV"), &B("Aimbot.DrawFOV"));
+                    ImGui::Checkbox(Localization::T("DRAW_ARROW"), &B("Aimbot.DrawArrow"));
+                    ImGui::Checkbox(Localization::T("SMOOTH_AIM"), &B("Aimbot.Smooth"));
+                    if (B("Aimbot.Smooth"))
+                        ImGui::SliderFloat(Localization::T("SMOOTHING"), &F("Aimbot.SmoothingVector"), 1.0f, 20.0f);
+                    ImGui::SliderFloat(Localization::T("AIMBOT_FOV"), &F("Aimbot.MaxFOV"), 1.0f, 180.0f);
+                    ImGui::SliderFloat(Localization::T("MAX_DISTANCE"), &F("Aimbot.MaxDistance"), 1.0f, 500.0f);
                     
-                    if (ImGui::BeginCombo(Localization::T("TARGET_BONE"), TextVars.AimbotBone.c_str()))
+                    if (ImGui::BeginCombo(Localization::T("TARGET_BONE"), S("Aimbot.Bone").c_str()))
                     {
                         for (auto& pair : BoneOptions)
                         {
-                            bool is_selected = (TextVars.AimbotBone == pair.second);
+                            bool is_selected = (S("Aimbot.Bone") == pair.second);
                             if (ImGui::Selectable(pair.first, is_selected))
-                                TextVars.AimbotBone = pair.second;
+                                S("Aimbot.Bone") = pair.second;
                             if (is_selected) ImGui::SetItemDefaultFocus();
                         }
                         ImGui::EndCombo();
@@ -213,38 +213,38 @@ void GUI::RenderMenu()
 
                 if (ImGui::TreeNode(Localization::T("MISC_SETTINGS")))
                 {
-                    if (ImGui::Checkbox(Localization::T("ENABLE_FOV_CHANGER"), &MiscSettings.EnableFOV))
+                    if (ImGui::Checkbox(Localization::T("ENABLE_FOV_CHANGER"), &B("Misc.EnableFOV")))
                     {
-                        if (MiscSettings.EnableFOV && GVars.POV)
+                        if (B("Misc.EnableFOV") && GVars.POV)
                         {
-                            MiscSettings.FOV = GVars.POV->fov;
+                            F("Misc.FOV") = GVars.POV->fov;
                         }
                     }
-                    if (MiscSettings.EnableFOV)
+                    if (B("Misc.EnableFOV"))
                     {
-                        ImGui::SliderFloat(Localization::T("FOV_VALUE"), &MiscSettings.FOV, 60.0f, 180.0f);
+                        ImGui::SliderFloat(Localization::T("FOV_VALUE"), &F("Misc.FOV"), 60.0f, 180.0f);
                     }
-                    ImGui::Checkbox(Localization::T("ENABLE_VIEWMODEL_FOV"), &MiscSettings.EnableViewModelFOV);
-                    if (MiscSettings.EnableViewModelFOV)
+                    ImGui::Checkbox(Localization::T("ENABLE_VIEWMODEL_FOV"), &B("Misc.EnableViewModelFOV"));
+                    if (B("Misc.EnableViewModelFOV"))
                     {
-                        ImGui::SliderFloat(Localization::T("VIEWMODEL_FOV_VALUE"), &MiscSettings.ViewModelFOV, 60.0f, 150.0f);
+                        ImGui::SliderFloat(Localization::T("VIEWMODEL_FOV_VALUE"), &F("Misc.ViewModelFOV"), 60.0f, 150.0f);
                     }
-                    ImGui::Checkbox(Localization::T("DISABLE_VOLUMETRIC_CLOUDS"), &MiscSettings.DisableVolumetricClouds);
+                    ImGui::Checkbox(Localization::T("DISABLE_VOLUMETRIC_CLOUDS"), &B("Misc.DisableVolumetricClouds"));
                     ImGui::TreePop();
                 }
 
                 if (ImGui::TreeNode(Localization::T("SILENT_AIM_SETTINGS")))
                 {
-                    ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &SilentAimSettings.RequiresLOS);
-                    ImGui::Checkbox(Localization::T("DRAW_FOV"), &SilentAimSettings.DrawFOV);
+                    ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &B("SilentAim.RequiresLOS"));
+                    ImGui::Checkbox(Localization::T("DRAW_FOV"), &B("SilentAim.DrawFOV"));
                     
-                    if (ImGui::BeginCombo(Localization::T("TARGET_BONE"), TextVars.SilentAimBone.c_str()))
+                    if (ImGui::BeginCombo(Localization::T("TARGET_BONE"), S("SilentAim.Bone").c_str()))
                     {
                         for (auto& pair : BoneOptions)
                         {
-                            bool is_selected = (TextVars.SilentAimBone == pair.second);
+                            bool is_selected = (S("SilentAim.Bone") == pair.second);
                             if (ImGui::Selectable(pair.first, is_selected))
-                                TextVars.SilentAimBone = pair.second;
+                                S("SilentAim.Bone") = pair.second;
                             if (is_selected) ImGui::SetItemDefaultFocus();
                         }
                         ImGui::EndCombo();
@@ -259,52 +259,50 @@ void GUI::RenderMenu()
 
             if (ImGui::BeginTabItem(Localization::T("TAB_WEAPON")))
             {
-                ImGui::Checkbox(Localization::T("INSTANT_HIT"), &WeaponSettings.InstantHitEnabled);
+                using namespace ConfigManager;
+                ImGui::Checkbox(Localization::T("INSTANT_HIT"), &B("Weapon.InstantHit"));
                 AddDefaultTooltip("Increases bullet speed to effectively hit targets instantly.");
-                if (WeaponSettings.InstantHitEnabled)
+                if (B("Weapon.InstantHit"))
                 {
-                    ImGui::SliderFloat(Localization::T("PROJECTILE_SPEED"), &WeaponSettings.ProjectileSpeedMultiplier, 1.0f, 9999.0f);
+                    ImGui::SliderFloat(Localization::T("PROJECTILE_SPEED"), &F("Weapon.ProjectileSpeedMultiplier"), 1.0f, 9999.0f);
                 }
                 ImGui::Separator();
                 
-                ImGui::Checkbox(Localization::T("RAPID_FIRE"), &WeaponSettings.RapidFireEnabled);
-                if (WeaponSettings.RapidFireEnabled)
+                ImGui::Checkbox(Localization::T("RAPID_FIRE"), &B("Weapon.RapidFire"));
+                if (B("Weapon.RapidFire"))
                 {
-                    ImGui::SliderFloat(Localization::T("FIRE_RATE_MODIFIER"), &WeaponSettings.FireRate, 0.1f, 10.0f, "%.1f");
+                    ImGui::SliderFloat(Localization::T("FIRE_RATE_MODIFIER"), &F("Weapon.FireRate"), 0.1f, 10.0f, "%.1f");
                 }
                 
                 ImGui::Separator();
-                ImGui::Checkbox(Localization::T("NO_RECOIL"), &WeaponSettings.NoRecoilEnabled);
-                if (WeaponSettings.NoRecoilEnabled)
+                ImGui::Checkbox(Localization::T("NO_RECOIL"), &B("Weapon.NoRecoil"));
+                if (B("Weapon.NoRecoil"))
                 {
-                    ImGui::SliderFloat(Localization::T("RECOIL_REDUCTION"), &WeaponSettings.RecoilReduction, 0.0f, 1.0f);
+                    ImGui::SliderFloat(Localization::T("RECOIL_REDUCTION"), &F("Weapon.RecoilReduction"), 0.0f, 1.0f);
                 }
                 
                 ImGui::Separator();
-                ImGui::Checkbox(Localization::T("NO_SWAY"), &WeaponSettings.NoSwayEnabled);
+                ImGui::Checkbox(Localization::T("NO_SWAY"), &B("Weapon.NoSway"));
                 
                 ImGui::Separator();
-                ImGui::Checkbox(Localization::T("INSTANT_RELOAD"), &WeaponSettings.InstantReload);
+                ImGui::Checkbox(Localization::T("INSTANT_RELOAD"), &B("Weapon.InstantReload"));
                 GUI::HostOnlyTooltip();
                 
                 ImGui::Separator();
-                ImGui::Checkbox(Localization::T("HOMING_PROJECTILES"), &WeaponSettings.HomingProjectiles);
-                if (WeaponSettings.HomingProjectiles)
+                ImGui::Checkbox(Localization::T("HOMING_PROJECTILES"), &B("Weapon.HomingProjectiles"));
+                if (B("Weapon.HomingProjectiles"))
                 {
-                    ImGui::SliderFloat(Localization::T("HOMING_RANGE"), &WeaponSettings.HomingRange, 1.0f, 200.0f);
+                    ImGui::SliderFloat(Localization::T("HOMING_RANGE"), &F("Weapon.HomingRange"), 1.0f, 200.0f);
                 }
                 
                 ImGui::Separator();
-                if (ImGui::Checkbox(Localization::T("TRIGGERBOT"), &CVars.TriggerBot))
-                {
-                    TriggerBotSettings.Enabled = CVars.TriggerBot;
-                }
+                ImGui::Checkbox(Localization::T("TRIGGERBOT"), &B("Trigger.Enabled"));
                 
-                if (CVars.TriggerBot)
+                if (B("Trigger.Enabled"))
                 {
                     ImGui::Indent();
-                    ImGui::Checkbox(Localization::T("REQUIRE_KEY_HELD"), &TriggerBotSettings.RequireKeyHeld);
-                    ImGui::Checkbox(Localization::T("TARGET_ALL"), &TriggerBotSettings.TargetAll);
+                    ImGui::Checkbox(Localization::T("REQUIRE_KEY_HELD"), &B("Trigger.RequireKeyHeld"));
+                    ImGui::Checkbox(Localization::T("TARGET_ALL"), &B("Trigger.TargetAll"));
                     ImGui::Unindent();
                 }
 
@@ -313,21 +311,32 @@ void GUI::RenderMenu()
 
             if (ImGui::BeginTabItem(Localization::T("TAB_CONFIG")))
             {
+                using namespace ConfigManager;
                 if (ImGui::TreeNode(Localization::T("ESP_SETTINGS")))
                 {
-                    ImGui::Checkbox(Localization::T("SHOW_BOX"), &ESPSettings.ShowBox);
-                    ImGui::Checkbox(Localization::T("SHOW_DISTANCE"), &ESPSettings.ShowEnemyDistance);
-                    ImGui::Checkbox(Localization::T("SHOW_BONES"), &ESPSettings.Bones);
-                    ImGui::Checkbox(Localization::T("SHOW_NAME"), &ESPSettings.ShowEnemyName);
+                    ImGui::Checkbox(Localization::T("SHOW_BOX"), &B("ESP.ShowBox"));
+                    ImGui::Checkbox(Localization::T("SHOW_DISTANCE"), &B("ESP.ShowEnemyDistance"));
+                    ImGui::Checkbox(Localization::T("SHOW_BONES"), &B("ESP.Bones"));
+                    ImGui::Checkbox(Localization::T("SHOW_NAME"), &B("ESP.ShowEnemyName"));
                     
-                    ImGui::ColorEdit4(Localization::T("ENEMY_COLOR"), (float*)&ESPSettings.EnemyColor, ImGuiColorEditFlags_NoInputs);
+                    ImGui::ColorEdit4(Localization::T("ENEMY_COLOR"), (float*)&Color("ESP.EnemyColor"), ImGuiColorEditFlags_NoInputs);
                     
                     ImGui::TreePop();
                 }
 
                 if (ImGui::TreeNode(Localization::T("DEBUG")))
                 {
-                    ImGui::Checkbox(Localization::T("ENABLE_EVENT_DEBUG_LOGS"), &CVars.Debug);
+                    ImGui::Checkbox(Localization::T("ENABLE_EVENT_DEBUG_LOGS"), &B("Misc.Debug"));
+                    
+                    bool bRecording = Logger::IsRecording();
+                    if (ImGui::Checkbox(Localization::T("ENABLE_EVENT_RECORDING"), &bRecording))
+                    {
+                        if (bRecording) Logger::StartRecording();
+                        else Logger::StopRecording();
+                    }
+
+                    if (ImGui::Button("Dump GObjects")) Cheats::DumpObjects();
+                    
                     ImGui::TreePop();
                 }
                 
@@ -342,6 +351,12 @@ void GUI::RenderMenu()
                 ImGui::TextWrapped(Localization::T("VOLATILE_HINT"));
                 ImGui::PopStyleColor();
 
+                ImGui::EndTabItem();
+            }
+
+            if (ImGui::BeginTabItem(Localization::T("TAB_HOTKEYS")))
+            {
+                HotkeyManager::RenderHotkeyTab();
                 ImGui::EndTabItem();
             }
 

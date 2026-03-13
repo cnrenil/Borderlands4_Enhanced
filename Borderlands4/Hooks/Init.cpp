@@ -1,6 +1,5 @@
 #include "pch.h"
-#include "Engine.h"
-#include "D3D12Hook.h"
+
 
 DXGI_SWAP_CHAIN_DESC Engine::sd = {};
 int Engine::FrameCount = 3;

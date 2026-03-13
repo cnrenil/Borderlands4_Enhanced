@@ -1,5 +1,6 @@
 #include "pch.h"
 
+
 UWorld* Utils::GetWorldSafe() 
 {
     UWorld* World = nullptr;
@@ -46,7 +47,10 @@ ALightProjectileManager* Utils::GetLightProjManager()
         
     if (!GVars.Level) return nullptr;
     
-    for (int i = 0; i < GVars.Level->Actors.Num(); i++)
+    int32_t NumActors = GVars.Level->Actors.Num();
+    if (NumActors < 0 || NumActors > 200000) return nullptr;
+
+    for (int i = 0; i < NumActors; i++)
     {
         AActor* Actor = GVars.Level->Actors[i];
         if (Actor && !IsBadReadPtr(Actor, sizeof(void*)) && Actor->VTable && Actor->IsA(ALightProjectileManager::StaticClass()))
@@ -75,7 +79,7 @@ void Utils::PrintActors(const char* Exclude)
 					if (Exclude && Actor->GetName().find(Exclude) != std::string::npos)
 						continue;
 
-					printf("Actor %d: %s - Class: %s\n", i, Actor->GetName().c_str(), Actor->Class->Name.ToString().c_str());
+					LOG_INFO("Scanner", "Actor %d: %s - Class: %s", i, Actor->GetName().c_str(), Actor->Class->Name.ToString().c_str());
 				}
 			}
 		}
@@ -364,14 +368,14 @@ FVector Utils::GetHighestBone(ACharacter* TargetChar)
 {
     if (!TargetChar || !TargetChar->Mesh) return TargetChar->K2_GetActorLocation();
 
-    int32 NumBones = TargetChar->Mesh->GetNumBones();
-    if (NumBones <= 0) return TargetChar->K2_GetActorLocation();
+    int32_t NumBones = TargetChar->Mesh->GetNumBones();
+    if (NumBones <= 0 || NumBones > 5000) return TargetChar->K2_GetActorLocation();
 
     float MaxZ = -1e10f;
     FVector BestPos = TargetChar->K2_GetActorLocation();
     
     // Safety cap to avoid overhead on extremely complex skeletons
-    int32 MaxToCheck = (NumBones > 300) ? 300 : NumBones;
+    int32_t MaxToCheck = (NumBones > 256) ? 256 : NumBones;
 
     for (int i = 0; i < MaxToCheck; i++)
     {

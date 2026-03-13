@@ -34,143 +34,11 @@ struct BoneListStruct
 	std::string RightFootBone = "R_Foot";
 } inline BoneList;
 
-struct EspSettingsstruct {
-	bool ShowTeam = true;
-	bool ShowBox = true;
-	bool ShowEnemyDistance = true;
-	bool ShowEnemyName = true;
-	bool Bones = true;
-	float BoneOpacity = 1.0f;
-	ImVec4 EnemyColor = ImVec4(1.0f, 0.0f, 0.0f, BoneOpacity);
-	ImVec4 TeamColor = ImVec4(0.0f, 1.0f, 0.0f, BoneOpacity);
-	ImVec4 TargetColor = ImVec4(0.7f, 0.0f, 1.0f, BoneOpacity);
-	bool LOS = false;
-	bool BulletTracers = true;
-	bool TracerRainbow = true;
-	float TracerDuration = 2.0f;
-	ImVec4 TracerColor = ImVec4(1.0f, 0.5f, 0.0f, 1.0f); // Orange-ish by default
-} inline ESPSettings;
-
-struct AimbotSettingsstruct {
-	float MaxFOV = 15.0f;
-	float MaxDistance = 100.0f;
-	bool LOS = true;
-	float MinDistance = 2.0f;
-	bool Smooth = false;
-	float SmoothingVector = 5.0f;
-	bool DrawArrow = false;
-	bool DrawFOV = false;
-	bool RequireKeyHeld = true;
-	ImGuiKey AimbotKey = ImGuiKey_MouseX2;
-	float FOVThickness = 1.0f;
-	bool ArrowThickness = 2.0f;
-	bool TargetAll = false;
-	bool UseMouseInput = true;
-	float MouseSensitivity = 1.0f;
-} inline AimbotSettings;
-
-struct TriggerBotSettingsstruct {
-	bool Enabled = false;
-	bool RequireKeyHeld = true;
-	ImGuiKey TriggerKey = ImGuiKey_MouseX1;
-	bool TargetAll = false; // Trigger on friendlies too
-} inline TriggerBotSettings;
-
-struct WeaponSettingsstruct {
-	bool InstantHitEnabled = false;
-	float ProjectileSpeedMultiplier = 999.0f;
-	bool RapidFireEnabled = false;
-	bool NoRecoilEnabled = false;
-	float RecoilReduction = 1.0f;
-	bool NoSwayEnabled = false;
-	bool HomingProjectiles = false;
-	float HomingRange = 50.0f;
-	float FireRate = 1.0f;
-	bool InstantReload = false;
-} inline WeaponSettings;
-
-struct SilentAimSettingsstruct {
-	float HitChance = 100.0f;
-	bool RequiresLOS = false;
-	bool DrawFOV = false;
-	bool DrawArrow = false;
-	float ArrowThickness = 2.0f;
-	float FOVThickness = 1.0f;
-	bool TargetAll = false;
-	bool MagicBullet = false;
-} inline SilentAimSettings;
-
-struct CVarsstruct
-{
-	bool Debug = false;
-	bool SecretFeatures = false;
-	bool GodMode = false;
-	bool InfAmmo = false;
-	bool Aimbot = false;
-	bool ESP = true;
-	float Speed = 1;
-	bool SpeedEnabled = false;
-	bool SilentAim = false;
-	bool Reticle = false;
-	bool TriggerBot = false;
-	bool RenderOptions = false;
-	float FOV = 120.0f;
-	bool ListPlayers = false;
-	bool ShootFromReticle = false;
-	bool SaveDebugToFile = false;
-	bool BulletTime = false;
-	bool NoTarget = false;
-	bool PlayersOnly = false;
-	float GameSpeed = 1.0f;
-	bool Demigod = false;
-	bool ThirdPerson = false;
-	bool Freecam = false;
-	bool FlightEnabled = false;
-	float FlightSpeed = 1.0f;
-} inline CVars;
-
+#include "Config/ConfigManager.h"
 #include "Utils/Localization.h"
 
-struct MiscSettingsStruct {
-	bool Reticle = false;
-	ImVec4 ReticleColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
-	float ReticleSize = 5.0f;
-	ImVec2 ReticlePosition = ImVec2(0.0f, 0.0f);
-	bool ReticleWhenThrowing = false;
-	bool CrossReticle = true;
-	bool EnableFOV = false;
-	float FOV = 100.0f;
-	bool EnableViewModelFOV = false;
-	float ViewModelFOV = 90.0f;
-	bool DisableVolumetricClouds = false;
-	bool ShouldAutoSave = true;
-	bool ShouldSaveCVars = true;
-	bool MapTeleport = false;
-	float MapTPWindow = 2.0f;
-	bool ThirdPersonCentered = false;
-	bool ThirdPersonOTS = true;
-	bool ThirdPersonADSFirstPerson = true; 
-	float OTS_X = -150.0f;
-	float OTS_Y = 60.0f;
-	float OTS_Z = 20.0f;
-	bool FreecamBlockInput = true;
-
-	Language CurrentLanguage = Language::English;
-} inline MiscSettings;
-
-struct Settingsstruct
-{
-	bool ShouldSave = true;
-	bool ShouldLoad = true;
-} inline Settings;
-
-struct TextVarsstruct
-{
-	std::string SilentAimBone = BoneList.HeadBone;
-	std::string AimbotBone = BoneList.HeadBone;
-	std::string DebugFunctionNameMustInclude = "";
-	std::string DebugFunctionObjectMustInclude = "";
-} inline TextVars;
+// Note: Configuration settings are now managed centrally by ConfigManager.
+// Use ConfigManager::B("Section.Key") for bools, F() for floats, etc.
 
 struct Cheats
 {
@@ -215,5 +83,17 @@ struct Cheats
 	static void Flight();
 	static void EnforcePersistence();
 	static void InfiniteAmmo();
+	static void DumpObjects();
+	
+	// Modular ProcessEvent Handlers
+	static bool HandleDebugEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
+	static bool HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
+	static bool HandleWeaponEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
+	static bool HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
+	
+	// Modular Update Handlers
+	static void UpdateMovement();
+	static void UpdateWeapon();
+	static void UpdateCamera();
 
 };

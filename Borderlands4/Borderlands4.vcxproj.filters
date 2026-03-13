@@ -34,6 +34,12 @@
     <ClCompile Include="Utils\Utils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\Hotkey.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Logger.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="ImGui\backends\imgui_impl_dx12.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -115,6 +121,21 @@
     <ClCompile Include="Cheats\Misc.cpp">
       <Filter>Source Files\Cheats</Filter>
     </ClCompile>
+    <ClCompile Include="Cheats\Camera.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\Movement.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\Weapon.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\Player.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats\Debug.cpp">
+      <Filter>Source Files\Cheats</Filter>
+    </ClCompile>
     <ClCompile Include="Cheats\SilentAim.cpp">
       <Filter>Source Files\Cheats</Filter>
     </ClCompile>
@@ -142,6 +163,12 @@
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Utils.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Hotkey.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Logger.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Cheats.h">

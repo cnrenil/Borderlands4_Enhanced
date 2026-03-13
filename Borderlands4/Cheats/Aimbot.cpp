@@ -4,25 +4,25 @@ bool Init = false;
 
 void Cheats::Aimbot()
 {
-	if (!CVars.Aimbot || Utils::bIsLoading) return;
+	if (!ConfigManager::B("Aimbot.Enabled") || Utils::bIsLoading) return;
 
-	if (AimbotSettings.DrawFOV)
-		Utils::DrawFOV(AimbotSettings.MaxFOV, AimbotSettings.FOVThickness);
+	if (ConfigManager::B("Aimbot.DrawFOV"))
+		Utils::DrawFOV(ConfigManager::F("Aimbot.MaxFOV"), ConfigManager::F("Aimbot.FOVThickness"));
 
 	if (!GVars.POV || !GVars.PlayerController || !GVars.Level || !GVars.Character) return;
 
 	// Aimbot key check (if required)
-	bool AimbotKeyDown = ImGui::IsKeyDown(AimbotSettings.AimbotKey) || (GetAsyncKeyState(VK_XBUTTON2) & 0x8000) != 0;
+	bool AimbotKeyDown = ImGui::IsKeyDown((ImGuiKey)ConfigManager::I("Aimbot.Key"));
 
-	if (AimbotSettings.RequireKeyHeld && !AimbotKeyDown)
+	if (ConfigManager::B("Aimbot.RequireKeyHeld") && !AimbotKeyDown)
 		return;
 
 	AActor* Target = Utils::GetBestTarget(
 		GVars.PlayerController,
-		AimbotSettings.MaxFOV,
-		AimbotSettings.LOS,
-		TextVars.AimbotBone,
-		AimbotSettings.TargetAll
+		ConfigManager::F("Aimbot.MaxFOV"),
+		ConfigManager::B("Aimbot.LOS"),
+		ConfigManager::S("Aimbot.Bone"),
+		ConfigManager::B("Aimbot.TargetAll")
 	);
 
 	if (!Target || !Target->IsA(ACharacter::StaticClass())) return;
@@ -31,10 +31,10 @@ void Cheats::Aimbot()
 
 	static std::string CachedBoneString = "";
 	static FName CachedBoneName;
-	if (CachedBoneString != TextVars.AimbotBone) {
-		std::wstring WideString = UtfN::StringToWString(TextVars.AimbotBone);
+	if (CachedBoneString != ConfigManager::S("Aimbot.Bone")) {
+		std::wstring WideString = UtfN::StringToWString(ConfigManager::S("Aimbot.Bone"));
 		CachedBoneName = UKismetStringLibrary::Conv_StringToName(WideString.c_str());
-		CachedBoneString = TextVars.AimbotBone;
+		CachedBoneString = ConfigManager::S("Aimbot.Bone");
 	}
 
 	FVector CameraPos = GVars.POV->Location;
@@ -53,19 +53,19 @@ void Cheats::Aimbot()
 
 	double Dist = CameraPos.GetDistanceToInMeters(TargetPos);
 
-	if (AimbotSettings.MinDistance > Dist || Dist > AimbotSettings.MaxDistance)
+	if (ConfigManager::F("Aimbot.MinDistance") > Dist || Dist > ConfigManager::F("Aimbot.MaxDistance"))
 		return;
 
-	if (AimbotSettings.DrawArrow)
-		Utils::DrawSnapLine(TargetPos, AimbotSettings.ArrowThickness);
+	if (ConfigManager::B("Aimbot.DrawArrow"))
+		Utils::DrawSnapLine(TargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
 
 	// Simple target rotation calculation
 	FRotator DesiredRot = Utils::GetRotationToTarget(CameraPos, TargetPos);
 	FRotator CurrentRot = GVars.PlayerController->ControlRotation;
 
-	if (AimbotSettings.Smooth)
+	if (ConfigManager::B("Aimbot.Smooth"))
 	{
-		float SmoothFactor = (AimbotSettings.SmoothingVector <= 1.0f) ? 1.0f : AimbotSettings.SmoothingVector;
+		float SmoothFactor = (ConfigManager::F("Aimbot.SmoothingVector") <= 1.0f) ? 1.0f : ConfigManager::F("Aimbot.SmoothingVector");
 
 		FRotator Delta = DesiredRot - CurrentRot;
 		Delta.Normalize();

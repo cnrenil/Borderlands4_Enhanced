@@ -16,6 +16,6 @@ namespace Localization
     extern Language CurrentLanguage;
     
     // Dictionary management
-    void AddString(const std::string& key, const std::string& en, const std::string& zh);
+    void Register(const std::string& key, const std::string& en, const std::string& zh);
     const char* T(const std::string& key);
 }

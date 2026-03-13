@@ -113,9 +113,9 @@ struct Variables
 	void UpdateUnitCache() {
 		if (!this->Level) return;
 		this->UnitCache.clear();
-		
+
 		int ActorCount = this->Level->Actors.Num();
-		if (ActorCount > 1000000 || ActorCount < 0) return;
+		if (ActorCount <= 0 || ActorCount > 100000) return;
 
 		for (int i = 0; i < ActorCount; i++) {
 			AActor* Actor = this->Level->Actors[i];
@@ -129,12 +129,12 @@ struct Variables
 
 	void AutoSetVariables() {
 		UWorld* currentWorld = Utils::GetWorldSafe();
-		
+
 		// If world is null or changed, reset everything dependent on it
 		if (!currentWorld || this->World != currentWorld) {
 			if (this->World != currentWorld) {
 				// World actually changed - clear stale data
-				PlayerCheatMap.clear(); 
+				PlayerCheatMap.clear();
 			}
 			this->World = currentWorld;
 			this->PlayerController = nullptr;
@@ -147,7 +147,7 @@ struct Variables
 			this->CacheTimer = 0;
 		}
 
-		if (!this->World || !this->World->VTable) 
+		if (!this->World || !this->World->VTable)
 		{
 			Utils::bIsLoading = true;
 			return;
@@ -165,7 +165,7 @@ struct Variables
 		// Periodically update the character cache (every 60 frames ~ 1s at 60fps)
 		if (CacheTimer <= 0) {
 			UpdateUnitCache();
-			CacheTimer = 30; 
+			CacheTimer = 30;
 		}
 		CacheTimer--;
 
@@ -182,20 +182,23 @@ struct Variables
 		// 4. Update PC dependents (Pawn/Character)
 		if (this->PlayerController->Pawn && this->PlayerController->Pawn->VTable) {
 			this->Pawn = this->PlayerController->Pawn;
-		} else {
+		}
+		else {
 			this->Pawn = nullptr;
 		}
 
 		if (this->PlayerController->Character && this->PlayerController->Character->VTable) {
 			this->Character = this->PlayerController->Character;
-		} else {
+		}
+		else {
 			this->Character = nullptr;
 		}
 
 		// 5. Update Camera POV
 		if (this->PlayerController->PlayerCameraManager && this->PlayerController->PlayerCameraManager->VTable) {
 			this->POV = &this->PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
-		} else {
+		}
+		else {
 			this->POV = nullptr;
 		}
 

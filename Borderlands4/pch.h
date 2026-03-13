@@ -2,6 +2,8 @@
 #ifndef PCH_H
 #define PCH_H
 
+#define _CRT_SECURE_NO_WARNINGS
+
 // Windows and Graphics
 #include <Windows.h>
 #include <d3d11.h>
@@ -25,6 +27,11 @@
 #include <cmath>
 #include <algorithm>
 #include <unordered_set>
+#include <map>
+#include <functional>
+#include <iomanip>
+#include <sstream>
+#include <cstdarg>
 
 // MinHook
 #include "minhook/include/MinHook.h"
@@ -50,8 +57,15 @@
 using namespace SDK;
 
 // Project Core Headers
+#include "Utils/Logger.h"
+#include "Config/ConfigManager.h"
 #include "Utils/Localization.h"
+#include "Utils/Hotkey.h"
 #include "Utils/Utils.h"
+#include "Engine.h"
 #include "Cheats.h"
+#include "GUI/Menu.h"
+#include "Hooks/D3D12Hook.h"
+#include "Hooks/EngineHooks.h"
 
 #endif //PCH_H

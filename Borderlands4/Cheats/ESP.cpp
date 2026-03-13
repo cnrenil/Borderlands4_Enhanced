@@ -37,7 +37,7 @@ struct BonePair { FName Parent; FName Child; };
 
 void Cheats::UpdateESP()
 {
-	if (!CVars.ESP || Utils::bIsLoading || !GVars.PlayerController || !GVars.Level || !GVars.Character || !GVars.World || !GVars.World->VTable)
+	if (!ConfigManager::B("Player.ESP") || Utils::bIsLoading || !GVars.PlayerController || !GVars.Level || !GVars.Character || !GVars.World || !GVars.World->VTable)
 	{
 		std::lock_guard<std::mutex> lock(ESPMutex);
 		CachedESPActors.clear();
@@ -55,15 +55,15 @@ void Cheats::UpdateESP()
 
 		// Check attitude and skip if friendly and setting is off
 		ETeamAttitude Attitude = Utils::GetAttitude(TargetActor);
-		if (Attitude == ETeamAttitude::Friendly && !ESPSettings.ShowTeam) continue;
+		if (Attitude == ETeamAttitude::Friendly && !ConfigManager::B("ESP.ShowTeam")) continue;
 
 		// Check health - skip dead
 		float HealthPct = Utils::GetHealthPercent(TargetActor);
 		if (HealthPct <= 0.0f) continue;
 
 		// Determine color
-		ImU32 Color = Utils::ConvertImVec4toU32(ESPSettings.EnemyColor);
-		if (Attitude == ETeamAttitude::Friendly) Color = Utils::ConvertImVec4toU32(ESPSettings.TeamColor);
+		ImU32 Color = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.EnemyColor"));
+		if (Attitude == ETeamAttitude::Friendly) Color = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.TeamColor"));
 		else if (Attitude == ETeamAttitude::Neutral) Color = IM_COL32(255, 255, 0, 255); 
 
 		FVector ActorLocation = TargetActor->K2_GetActorLocation();
@@ -121,13 +121,13 @@ void Cheats::UpdateESP()
 			Cache.Color = Color;
 			Cache.HealthPct = HealthPct;
 			Cache.Distance = Distance;
-			if (ESPSettings.ShowEnemyName)
+			if (ConfigManager::B("ESP.ShowEnemyName"))
 			{
 				Cache.Name = UKismetSystemLibrary::GetDisplayName(TargetActor).ToString();
 			}
 
 			// Don't draw skeletons for far away targets to save FPS (Skeletal LOD)
-			if (ESPSettings.Bones && TargetActor->Mesh && Distance < 70.0f) // 70m limit
+			if (ConfigManager::B("ESP.Bones") && TargetActor->Mesh && Distance < 70.0f) // 70m limit
 			{
 				auto GetCachedBone = [&](const std::string& name) -> FName {
 					return UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(name).c_str());
@@ -183,7 +183,7 @@ void Cheats::UpdateESP()
 	}
 
 	std::vector<ESPTracerCache> NewTracers;
-	if (ESPSettings.BulletTracers && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
+	if (ConfigManager::B("ESP.BulletTracers") && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
 	{
 		std::lock_guard<std::mutex> lock(TracerMutex);
 		float CurrentTime = std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
@@ -193,18 +193,18 @@ void Cheats::UpdateESP()
 
 		for (auto it = BulletTracersList.begin(); it != BulletTracersList.end(); )
 		{
-			if (CurrentTime - it->CreationTime > ESPSettings.TracerDuration)
+			if (CurrentTime - it->CreationTime > ConfigManager::F("ESP.TracerDuration"))
 			{
 				it = BulletTracersList.erase(it);
 				continue;
 			}
 			
 			float Age = CurrentTime - it->CreationTime;
-			float FadeRatio = 1.0f - (Age / ESPSettings.TracerDuration);
+			float FadeRatio = 1.0f - (Age / ConfigManager::F("ESP.TracerDuration"));
 			if (FadeRatio < 0.0f) FadeRatio = 0.0f;
 			
 			ImVec4 BaseColor;
-			if (ESPSettings.TracerRainbow)
+			if (ConfigManager::B("ESP.TracerRainbow"))
 			{
 				float Hue = fmodf(it->CreationTime * 0.5f, 1.0f);
 				float R, G, B;
@@ -213,7 +213,7 @@ void Cheats::UpdateESP()
 			}
 			else 
 			{
-				BaseColor = ImVec4(ESPSettings.TracerColor.x, ESPSettings.TracerColor.y, ESPSettings.TracerColor.z, FadeRatio);
+				BaseColor = ImVec4(ConfigManager::Color("ESP.TracerColor").x, ConfigManager::Color("ESP.TracerColor").y, ConfigManager::Color("ESP.TracerColor").z, FadeRatio);
 			}
 
 			size_t PointsCount = it->Points.size();
@@ -303,7 +303,7 @@ void Cheats::UpdateESP()
 
 void Cheats::RenderESP()
 {
-	if (!CVars.ESP) return;
+	if (!ConfigManager::B("Player.ESP")) return;
 
 	std::vector<ESPActorCache> LocalActors;
 	std::vector<ESPTracerCache> LocalTracers;
@@ -319,7 +319,7 @@ void Cheats::RenderESP()
 		float Width = Height * 0.6f;
 
 		// Skeleton
-		if (ESPSettings.Bones && Actor.SkeletonLines.size() > 0)
+		if (ConfigManager::B("ESP.Bones") && Actor.SkeletonLines.size() > 0)
 		{
 			for (const auto& Line : Actor.SkeletonLines)
 			{
@@ -328,7 +328,7 @@ void Cheats::RenderESP()
 		}
 
 		// Box
-		if (ESPSettings.ShowBox)
+		if (ConfigManager::B("ESP.ShowBox"))
 		{
 			ImGui::GetBackgroundDrawList()->AddRect(
 				ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y),
@@ -363,7 +363,7 @@ void Cheats::RenderESP()
 		);
 
 		// Distance and Name
-		if (ESPSettings.ShowEnemyDistance)
+		if (ConfigManager::B("ESP.ShowEnemyDistance"))
 		{
 			char DistanceText[32];
 			snprintf(DistanceText, sizeof(DistanceText), "%.0f m", Actor.Distance);
@@ -374,7 +374,7 @@ void Cheats::RenderESP()
 			);
 		}
 
-		if (ESPSettings.ShowEnemyName)
+		if (ConfigManager::B("ESP.ShowEnemyName"))
 		{
 			ImGui::GetBackgroundDrawList()->AddText(
 				ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15),
@@ -384,7 +384,7 @@ void Cheats::RenderESP()
 		}
 	}
 
-	if (ESPSettings.BulletTracers)
+	if (ConfigManager::B("ESP.BulletTracers"))
 	{
 		for (const auto& Tracer : LocalTracers)
 		{
@@ -401,7 +401,7 @@ void Cheats::RenderESP()
 		}
 	}
 
-	if (CVars.ThirdPerson && (MiscSettings.ThirdPersonOTS || MiscSettings.ThirdPersonCentered) && GVars.Character && GVars.Character->IsA(SDK::AOakCharacter::StaticClass()))
+	if (ConfigManager::B("Player.ThirdPerson") && (ConfigManager::B("Misc.ThirdPersonOTS") || ConfigManager::B("Misc.ThirdPersonCentered")) && GVars.Character && GVars.Character->IsA(SDK::AOakCharacter::StaticClass()))
 	{
 		SDK::AOakCharacter* OakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
 		if ((uint8)OakChar->ZoomState.State != 0)
