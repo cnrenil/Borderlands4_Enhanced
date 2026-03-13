@@ -31,66 +31,6 @@ namespace
 	static std::unordered_map<SDK::AWeapon*, OriginalSwapTiming> g_OriginalSwapTiming;
 	static std::unordered_map<SDK::UWeaponBehavior_Fire*, OriginalAmmoCost> g_OriginalAmmoCost;
 
-	bool TryGetSilentAimTargetLocation(SDK::FVector& OutTargetPos)
-	{
-		if (!ConfigManager::B("SilentAim.Enabled")) return false;
-		if (!GVars.Character || !GVars.PlayerController || !GVars.World) return false;
-
-		SDK::AActor* target = Utils::GetBestTarget(
-			GVars.PlayerController,
-			ConfigManager::F("Aimbot.MaxFOV"),
-			ConfigManager::B("SilentAim.RequiresLOS"),
-			ConfigManager::S("SilentAim.Bone"),
-			ConfigManager::B("SilentAim.TargetAll"));
-
-		if (!target || !target->IsA(SDK::ACharacter::StaticClass())) return false;
-		SDK::ACharacter* targetChar = static_cast<SDK::ACharacter*>(target);
-
-		if (targetChar->Mesh)
-		{
-			std::wstring boneWStr = UtfN::StringToWString(ConfigManager::S("SilentAim.Bone"));
-			SDK::FName boneName = SDK::UKismetStringLibrary::Conv_StringToName(boneWStr.c_str());
-			if (targetChar->Mesh->GetBoneIndex(boneName) != -1)
-				OutTargetPos = targetChar->Mesh->GetBoneTransform(boneName, SDK::ERelativeTransformSpace::RTS_World).Translation;
-			else
-				OutTargetPos = Utils::GetHighestBone(targetChar);
-		}
-		else
-		{
-			OutTargetPos = target->K2_GetActorLocation();
-		}
-
-		return true;
-	}
-
-	bool IsLocalLightProjectileSpawn(const SDK::FLightProjectileSpawnData& SpawnData)
-	{
-		SDK::AActor* localCharacter = GVars.Character;
-		SDK::AActor* controlledPawn = (GVars.PlayerController ? static_cast<SDK::AActor*>(GVars.PlayerController->Pawn) : nullptr);
-		SDK::AActor* instigator = SpawnData.instigator.Get();
-		SDK::AActor* source = SpawnData.Source.Get();
-		SDK::AActor* damageCauser = SpawnData.DamageCauser.Get();
-
-		if (localCharacter && (instigator == localCharacter || source == localCharacter || damageCauser == localCharacter))
-			return true;
-		if (controlledPawn && (instigator == controlledPawn || source == controlledPawn || damageCauser == controlledPawn))
-			return true;
-
-		return false;
-	}
-
-	void RedirectLightProjectileSpawnDirection(SDK::FLightProjectileSpawnData& SpawnData, const SDK::FVector& TargetPos)
-	{
-		const SDK::FVector delta = TargetPos - SpawnData.Location;
-		const float lenSq = (float)(delta.X * delta.X + delta.Y * delta.Y + delta.Z * delta.Z);
-		if (lenSq < 0.0001f) return;
-
-		const float len = sqrtf(lenSq);
-		SDK::FVector newDirection{ delta.X / len, delta.Y / len, delta.Z / len };
-		SpawnData.Direction = newDirection;
-		SpawnData.EndLocation = TargetPos;
-	}
-
 	int FindWeaponSlot(SDK::AOakCharacter* OakChar, SDK::AWeapon* Weapon)
 	{
 		if (!OakChar || !Weapon) return -1;
@@ -394,37 +334,12 @@ void Cheats::WeaponModifiers()
 void Cheats::UpdateWeapon()
 {
     Cheats::WeaponModifiers();
-    Cheats::SilentAimHoming();
     Cheats::TriggerBot();
 }
 
 bool Cheats::HandleWeaponEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params)
 {
     const std::string functionName = Function->GetName();
-    if (ConfigManager::B("SilentAim.Enabled") &&
-        Object &&
-        Object->Class &&
-        Object->Class->GetName().find("LightProjectileStatics") != std::string::npos &&
-        functionName.find("SpawnLightProjectile") != std::string::npos &&
-        Params)
-    {
-        struct SpawnLightProjectileParamsPrefix
-        {
-            SDK::FLightProjectileSpawnData SpawnData;
-        };
-
-        auto* spawnParams = reinterpret_cast<SpawnLightProjectileParamsPrefix*>(Params);
-        if (spawnParams && IsLocalLightProjectileSpawn(spawnParams->SpawnData))
-        {
-            SDK::FVector targetPos{};
-            if (TryGetSilentAimTargetLocation(targetPos))
-            {
-                RedirectLightProjectileSpawnDirection(spawnParams->SpawnData, targetPos);
-                bHasSilentAimTarget = true;
-                SilentAimTargetPos = targetPos;
-            }
-        }
-    }
 
     if (ConfigManager::B("Weapon.InstantReload") && functionName == "ServerStartReloading") {
         SDK::AWeapon* weapon = (SDK::AWeapon*)Object;

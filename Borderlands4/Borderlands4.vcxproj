@@ -151,7 +151,6 @@
     <ClCompile Include="Cheats\Weapon.cpp" />
     <ClCompile Include="Cheats\Player.cpp" />
     <ClCompile Include="Cheats\Debug.cpp" />
-    <ClCompile Include="Cheats\SilentAim.cpp" />
     <ClCompile Include="Cheats\TriggerBot.cpp" />
     <ClCompile Include="Cheats\Render.cpp" />
     <ClCompile Include="Config\ConfigManager.cpp" />

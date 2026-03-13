@@ -83,7 +83,6 @@ void GUI::RenderMenu()
                 using namespace ConfigManager;
                 ImGui::Checkbox(Localization::T("ESP"), &B("Player.ESP"));
                 ImGui::Checkbox(Localization::T("AIMBOT"), &B("Aimbot.Enabled"));
-                if (ImGui::Checkbox(Localization::T("SILENT_AIM"), &B("SilentAim.Enabled"))) { if (B("SilentAim.Enabled")) B("Aimbot.Enabled") = false; }
                 ImGui::Checkbox(Localization::T("INF_AMMO"), &B("Player.InfAmmo"));
                 ImGui::Checkbox(Localization::T("GODMODE"), &B("Player.GodMode"));
                 ImGui::Checkbox(Localization::T("DEMIGOD"), &B("Player.Demigod"));
@@ -222,6 +221,7 @@ void GUI::RenderMenu()
                 if (ImGui::TreeNode(Localization::T("STANDARD_AIMBOT_SETTINGS")))
                 {
                     ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &B("Aimbot.LOS"));
+                    ImGui::Checkbox(Localization::T("SILENT_AIM"), &B("Aimbot.Silent"));
                     ImGui::Checkbox(Localization::T("DRAW_FOV"), &B("Aimbot.DrawFOV"));
                     ImGui::Checkbox(Localization::T("DRAW_ARROW"), &B("Aimbot.DrawArrow"));
                     ImGui::Checkbox(Localization::T("SMOOTH_AIM"), &B("Aimbot.Smooth"));
@@ -264,27 +264,6 @@ void GUI::RenderMenu()
                         ImGui::SliderFloat(Localization::T("VIEWMODEL_FOV_VALUE"), &F("Misc.ViewModelFOV"), 60.0f, 150.0f);
                     }
                     ImGui::Checkbox(Localization::T("DISABLE_VOLUMETRIC_CLOUDS"), &B("Misc.DisableVolumetricClouds"));
-                    ImGui::TreePop();
-                }
-
-                if (ImGui::TreeNode(Localization::T("SILENT_AIM_SETTINGS")))
-                {
-                    ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &B("SilentAim.RequiresLOS"));
-                    ImGui::Checkbox(Localization::T("DRAW_FOV"), &B("SilentAim.DrawFOV"));
-                    
-                    if (ImGui::BeginCombo(Localization::T("TARGET_BONE"), S("SilentAim.Bone").c_str()))
-                    {
-                        for (auto& pair : BoneOptions)
-                        {
-                            bool is_selected = (S("SilentAim.Bone") == pair.second);
-                            if (ImGui::Selectable(pair.first, is_selected))
-                                S("SilentAim.Bone") = pair.second;
-                            if (is_selected) ImGui::SetItemDefaultFocus();
-                        }
-                        ImGui::EndCombo();
-                    }
-                    if (ImGui::IsItemHovered())
-                        ImGui::SetTooltip(Localization::T("CHOOSE_BONE_TOOLTIP"));
                     ImGui::TreePop();
                 }
 

@@ -136,9 +136,6 @@
     <ClCompile Include="Cheats\Debug.cpp">
       <Filter>Source Files\Cheats</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\SilentAim.cpp">
-      <Filter>Source Files\Cheats</Filter>
-    </ClCompile>
     <ClCompile Include="Cheats\TriggerBot.cpp">
       <Filter>Source Files\Cheats</Filter>
     </ClCompile>

@@ -54,7 +54,6 @@ struct Cheats
 	static void UpdateESP();
 	static void RenderESP();
 	static void SetPlayerSpeed();
-	static void SilentAimHoming();
 	static void AddMag();
 	static void DrawReticle();
 	static void TriggerBot();
@@ -98,6 +97,7 @@ struct Cheats
 		void(*OriginalProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*),
 		bool bCallOriginal);
 	static bool HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
+	static bool HandleAimbotEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 	static bool HandleWeaponEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 	static bool HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 	
@@ -109,8 +109,6 @@ struct Cheats
 	// Cross-thread Rendering Helpers
 	static inline FVector AimbotTargetPos;
 	static inline bool bHasAimbotTarget = false;
-	static inline FVector SilentAimTargetPos;
-	static inline bool bHasSilentAimTarget = false;
 	static inline std::atomic<bool> bTriggerSuppressMouseInput = false;
 
 };

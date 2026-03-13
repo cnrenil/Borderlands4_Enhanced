@@ -44,6 +44,7 @@ namespace ConfigManager
         Register("Aimbot.DrawArrow", false);
         Register("Aimbot.DrawFOV", false);
         Register("Aimbot.RequireKeyHeld", true);
+        Register("Aimbot.Silent", false);
         Register("Aimbot.FOVThickness", 1.0f);
         Register("Aimbot.ArrowThickness", 2.0f);
         Register("Aimbot.TargetAll", false);
@@ -89,18 +90,6 @@ namespace ConfigManager
         Register("Player.InfVehicleBoost", false);
         Register("Player.InfGlideStamina", false);
         Register("Player.ESP", true);
-
-        // SilentAim
-        Register("SilentAim.Enabled", false);
-        Register("SilentAim.HitChance", 100.0f);
-        Register("SilentAim.RequiresLOS", false);
-        Register("SilentAim.DrawFOV", false);
-        Register("SilentAim.DrawArrow", false);
-        Register("SilentAim.ArrowThickness", 2.0f);
-        Register("SilentAim.FOVThickness", 1.0f);
-        Register("SilentAim.TargetAll", false);
-        Register("SilentAim.MagicBullet", false);
-        Register("SilentAim.Bone", std::string("Head"));
 
         // Misc
         Register("Misc.Reticle", false);

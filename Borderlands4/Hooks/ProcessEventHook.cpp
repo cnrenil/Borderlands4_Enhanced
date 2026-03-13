@@ -67,6 +67,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
             // Modular Handlers
             if (Cheats::HandleMovementEvents(Object, Function, Params)) goto Exit;
+            if (Cheats::HandleAimbotEvents(Object, Function, Params)) goto Exit;
             if (Cheats::HandleWeaponEvents(Object, Function, Params)) goto Exit;
             if (Cheats::HandleCameraEvents(Object, Function, Params)) goto Exit;
         }

@@ -69,11 +69,6 @@ void Cheats::Render()
             Utils::DrawSnapLine(AimbotTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
     }
 
-    if (Utils::bIsInGame && ConfigManager::B("SilentAim.Enabled") && bHasSilentAimTarget && ConfigManager::B("Aimbot.DrawArrow"))
-    {
-        Utils::DrawSnapLine(SilentAimTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
-    }
-
     // 2. World-based visualizations (ESP)
     if (Utils::bIsInGame)
         RenderESP();
