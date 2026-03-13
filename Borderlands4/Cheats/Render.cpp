@@ -2,6 +2,36 @@
 
 void Cheats::Render()
 {
+    // --- Logic Update (Moved from PostRender for stability) ---
+    // This ensures that even if our PostRender hook fails, the logic still ticks
+    static uint32_t LastUpdateFrame = 0xFFFFFFFF;
+    extern std::atomic<int> g_PresentCount;
+    int currentFrame = g_PresentCount.load();
+
+    if (LastUpdateFrame != currentFrame)
+    {
+        LastUpdateFrame = currentFrame;
+
+        // Perform essential updates
+        GVars.AutoSetVariables();
+        HotkeyManager::Update();
+
+        if (!Utils::bIsLoading)
+        {
+            Logger::LogThrottled(Logger::Level::Info, "Render", 5000, "Cheats::Render: Logic thread active (not loading)");
+            if (ConfigManager::B("Player.ESP")) UpdateESP();
+            if (ConfigManager::B("Aimbot.Enabled")) Aimbot();
+
+            UpdateMovement();
+            UpdateWeapon();
+            UpdateCamera();
+
+            EnforcePersistence();
+            ChangeGameRenderSettings();
+        }
+    }
+
+    // --- Visualizations ---
     // 1. Logic-based visualizations (Draw FOV, Snaplines)
     if (ConfigManager::B("Aimbot.Enabled"))
     {

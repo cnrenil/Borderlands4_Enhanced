@@ -234,8 +234,8 @@ AActor* Utils::GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool Re
         // LOS Check is the most expensive, do it last
         if (RequiresLOS)
         {
-            // Internal sight check Ex using LineOfSightTo (very fast)
-            bool bHasLOS = GVars.PlayerController->LineOfSightTo(TargetChar, FVector(), true);
+            // Internal sight check using camera location as origin
+            bool bHasLOS = GVars.PlayerController->LineOfSightTo(TargetChar, CameraLocation, true);
             if (!bHasLOS)
                 continue;
         }
@@ -302,13 +302,25 @@ void Utils::Error(std::string msg)
 
 bool Utils::IsInLoadingState()
 {
-    if (!GVars.World || !GVars.World->VTable) return true;
+    if (!GVars.World || !GVars.World->VTable) {
+        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: World is NULL/Invalid");
+        return true;
+    }
     
-    if (!GVars.Level) return true;
+    if (!GVars.Level) {
+        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: PersistentLevel is NULL");
+        return true;
+    }
 
-    if (!GVars.GameState) return true;
+    if (!GVars.GameState) {
+        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: GameState is NULL");
+        return true;
+    }
 
-    if (GVars.Level->Actors.Num() < 1) return true; 
+    if (GVars.Level->Actors.Num() < 1) {
+        Logger::LogThrottled(Logger::Level::Info, "System", 5000, "LoadingState: Level has 0 actors");
+        return true; 
+    }
 
     return false;
 }

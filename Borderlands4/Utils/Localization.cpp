@@ -180,6 +180,8 @@ namespace Localization
         Register("AIMBOT_KEY", "Aimbot Key", (const char*)u8"自瞄热键");
         Register("TRIGGER_KEY", "TriggerBot Key", (const char*)u8"自动射击热键");
         Register("MENU_KEY", "Menu Toggle Key", (const char*)u8"菜单切换按键");
+        Register("GODMODE_KEY", "God Mode Toggle Key", (const char*)u8"无敌模式切换热键");
+        Register("INF_AMMO_KEY", "Infinite Ammo Toggle Key", (const char*)u8"无限弹药切换热键");
         Register("TOGGLE_THIRDPERSON_KEY", "Third Person Toggle Key", (const char*)u8"人称视角切换热键");
         Register("DUMP_OBJECTS_KEY", "Dump Objects Key", (const char*)u8"导出对象 key");
  

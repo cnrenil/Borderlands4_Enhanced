@@ -149,6 +149,7 @@ struct Variables
 
 		if (!this->World || !this->World->VTable)
 		{
+			Logger::LogThrottled(Logger::Level::Info, "GVars", 5000, "AutoSetVariables: Waiting for World/VTable...");
 			Utils::bIsLoading = true;
 			return;
 		}
@@ -160,7 +161,10 @@ struct Variables
 
 		// Update loading state
 		Utils::bIsLoading = Utils::IsInLoadingState();
-		if (Utils::bIsLoading) return;
+		if (Utils::bIsLoading) {
+			Logger::LogThrottled(Logger::Level::Info, "GVars", 5000, "AutoSetVariables: Game is in loading state.");
+			return;
+		}
 
 		// Periodically update the character cache (every 60 frames ~ 1s at 60fps)
 		if (CacheTimer <= 0) {
@@ -177,7 +181,10 @@ struct Variables
 			this->POV = nullptr;
 		}
 
-		if (!this->PlayerController || !this->PlayerController->VTable) return;
+		if (!this->PlayerController || !this->PlayerController->VTable) {
+			Logger::LogThrottled(Logger::Level::Info, "GVars", 5000, "AutoSetVariables: Waiting for PlayerController...");
+			return;
+		}
 
 		// 4. Update PC dependents (Pawn/Character)
 		if (this->PlayerController->Pawn && this->PlayerController->Pawn->VTable) {

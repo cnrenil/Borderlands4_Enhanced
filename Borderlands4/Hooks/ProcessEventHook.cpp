@@ -13,6 +13,9 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 	g_ProcessEventCount.fetch_add(1);
 	static thread_local bool bInsideHook = false;
 
+    // Use a very high throttle interval to avoid spamming, but enough to see it's alive
+    Logger::LogThrottled(Logger::Level::Debug, "PE", 10000, "hkProcessEvent: Alive and being called by engine");
+
 	if (!Object || !Function || Cleaning.load() || bInsideHook) {
 		if (oProcessEvent) oProcessEvent(Object, Function, Params);
 		g_ProcessEventCount.fetch_sub(1);
@@ -56,25 +59,8 @@ Exit:
 
 void hkPostRender(UObject* ViewportClient, class UCanvas* Canvas)
 {
-	static int LastUpdateFrame = 0;
-	if (LastUpdateFrame != g_PresentCount.load())
-	{
-		LastUpdateFrame = g_PresentCount.load();
-		GVars.AutoSetVariables();
-		HotkeyManager::Update();
-		
-        if (!Utils::bIsLoading) {
-            if (ConfigManager::B("Player.ESP")) Cheats::UpdateESP();
-            if (ConfigManager::B("Aimbot.Enabled")) Cheats::Aimbot();
-            
-            Cheats::UpdateMovement();
-            Cheats::UpdateWeapon();
-            Cheats::UpdateCamera();
-            
-            Cheats::EnforcePersistence();
-            Cheats::ChangeGameRenderSettings();
-        }
-	}
+	// Log throttled to confirm if this hook is even active
+	Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "hkPostRender: Hook called (Canvas: %p)", Canvas);
 
 	if (oPostRender) oPostRender(ViewportClient, Canvas);
 }
@@ -150,21 +136,31 @@ bool Hooks::HookProcessEvent()
 				UObject* ViewportClient = World->OwningGameInstance->LocalPlayers[0]->ViewportClient;
 				if (ViewportClient)
 				{
+					Logger::Log(Logger::Level::Info, "Hook", "Found ViewportClient, attempting PostRender hook...");
 					viewportVTable = *reinterpret_cast<void***>(ViewportClient);
-					int postRenderIndex = 0x6D;
-					if (viewportVTable && viewportVTable[postRenderIndex] != &hkPostRender)
-					{
-						oPostRender = reinterpret_cast<void(*)(SDK::UObject*, class SDK::UCanvas*)>(viewportVTable[postRenderIndex]);
-						DWORD oldP;
-						if (VirtualProtect(&viewportVTable[postRenderIndex], sizeof(void*), PAGE_EXECUTE_READWRITE, &oldP))
-						{
-							viewportVTable[postRenderIndex] = &hkPostRender;
-							VirtualProtect(&viewportVTable[postRenderIndex], sizeof(void*), oldP, &oldP);
-							LOG_INFO("Hook", "SUCCESS: PostRender Hooked!");
-						}
-					}
+                    int postRenderIndex = 0x6D;
+                    if (viewportVTable && viewportVTable[postRenderIndex] != &hkPostRender)
+                    {
+                        oPostRender = reinterpret_cast<void(*)(SDK::UObject*, class SDK::UCanvas*)>(viewportVTable[postRenderIndex]);
+                        DWORD oldP;
+                        if (VirtualProtect(&viewportVTable[postRenderIndex], sizeof(void*), PAGE_EXECUTE_READWRITE, &oldP))
+                        {
+                            viewportVTable[postRenderIndex] = &hkPostRender;
+                            VirtualProtect(&viewportVTable[postRenderIndex], sizeof(void*), oldP, &oldP);
+                            LOG_INFO("Hook", "SUCCESS: PostRender Hooked!");
+                        }
+                        else {
+                            Logger::Log(Logger::Level::Error, "Hook", "PostRender: VirtualProtect failed!");
+                        }
+                    }
 				}
+                else {
+                    Logger::LogThrottled(Logger::Level::Info, "Hook", 10000, "PostRender ERROR: ViewportClient is NULL");
+                }
 			}
+            else {
+                Logger::LogThrottled(Logger::Level::Info, "Hook", 10000, "PostRender ERROR: GameInstance/LocalPlayers missing");
+            }
 		}
 		return true;
 	}

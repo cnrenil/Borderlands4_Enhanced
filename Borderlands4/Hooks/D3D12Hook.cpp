@@ -276,17 +276,12 @@ namespace d3d12hook {
         }
 
         if (gInitialized && !Resizing.load()) {
-            static bool insert_was_down = false;
-            if ((GetAsyncKeyState(VK_INSERT) & 0x8000)) {
-                if (!insert_was_down) {
-                    GUI::ShowMenu = !GUI::ShowMenu;
-                    ImGui::GetIO().MouseDrawCursor = GUI::ShowMenu;
-                }
-                insert_was_down = true;
-            } else insert_was_down = false;
-
             RenderImGui(pSwapChain);
             g_PresentCount.fetch_add(1);
+        }
+        else if (!gInitialized)
+        {
+            Logger::LogThrottled(Logger::Level::Info, "D3D12", 5000, "hookPresentD3D12: Waiting for ImGui Init (Grace Period)...");
         }
 
         return oPresentD3D12(pSwapChain, SyncInterval, Flags);

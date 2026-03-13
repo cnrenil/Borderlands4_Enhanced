@@ -84,10 +84,10 @@ void GUI::RenderMenu()
                 ImGui::Checkbox(Localization::T("ESP"), &B("Player.ESP"));
                 ImGui::Checkbox(Localization::T("AIMBOT"), &B("Aimbot.Enabled"));
                 if (ImGui::Checkbox(Localization::T("SILENT_AIM"), &B("SilentAim.Enabled"))) { if (B("SilentAim.Enabled")) B("Aimbot.Enabled") = false; }
-                if (ImGui::Checkbox(Localization::T("INF_AMMO"), &B("Player.InfAmmo"))) Cheats::InfiniteAmmo();
-                if (ImGui::Checkbox(Localization::T("GODMODE"), &B("Player.GodMode"))) Cheats::ToggleGodMode();
-                if (ImGui::Checkbox(Localization::T("DEMIGOD"), &B("Player.Demigod"))) Cheats::ToggleDemigod();
-                if (ImGui::Checkbox(Localization::T("NO_TARGET"), &B("Player.NoTarget"))) Cheats::ToggleNoTarget();
+                ImGui::Checkbox(Localization::T("INF_AMMO"), &B("Player.InfAmmo"));
+                ImGui::Checkbox(Localization::T("GODMODE"), &B("Player.GodMode"));
+                ImGui::Checkbox(Localization::T("DEMIGOD"), &B("Player.Demigod"));
+                ImGui::Checkbox(Localization::T("NO_TARGET"), &B("Player.NoTarget"));
                 
                 ImGui::SeparatorText(Localization::T("MOVEMENT"));
                 ImGui::Checkbox(Localization::T("SPEED_HACK"), &B("Player.SpeedEnabled"));

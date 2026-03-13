@@ -22,11 +22,12 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			break;
 	}
 
+    // ALWAYS pass to ImGui first so it can track key states for Aimbot/Hotkeys
+    // even when the menu is closed.
+    ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
+
 	if (GUI::ShowMenu) {
-		// Pass to ImGui first
-		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
-		
-		// Block mouse/keyboard messages from reaching the game
+		// Block mouse/keyboard messages from reaching the game when menu is open
 		switch (uMsg) {
 			case WM_MOUSEMOVE:
 			case WM_LBUTTONDOWN: case WM_LBUTTONUP: case WM_LBUTTONDBLCLK:
@@ -172,6 +173,8 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 	// Log success outside SEH to allow using std::string conversion in LOG_INFO
 	if (!prevPS && bIsPlayerStateHooked) LOG_INFO("Hook", "SUCCESS: PlayerState ProcessEvent Hooked!");
 	if (!prevCM && bIsCameraManagerHooked) LOG_INFO("Hook", "SUCCESS: CameraManager ProcessEvent Hooked!");
+
+	Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "SafeUpdateHooks: Hooks Status (PE: %d, PS: %d, CM: %d)", bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 }
 
 DWORD MainThread(HMODULE hModule)
@@ -216,16 +219,14 @@ DWORD MainThread(HMODULE hModule)
 
 	while (!Cleaning.load())
 	{
-		// Bootstrap: If we don't have a PlayerController, try to get one even before hooks are active
-		// This is necessary because the hook logic itself relies on GVars.PlayerController
-		if (!bIsProcessEventHooked || !GVars.PlayerController)
-		{
-			GVars.AutoSetVariables();
-		}
+		// 1. Always keep variables updated until PostRender takes over
+        // This prevents the 'PlayerController found but logic stopped' deadlock
+		GVars.AutoSetVariables();
 
-		// Only update logic hooks if we aren't loading, aren't resizing, 
-		// and the window is actually in focus (optional but helps stability)
-		if (!Utils::bIsLoading && !Resizing.load())
+		// 2. Always attempt to stabilize hooks (PE, PS, CM)
+        // We remove the !Utils::bIsLoading check here to allow HookProcessEvent() 
+        // to finish hooking PostRender even if actors aren't loaded yet.
+		if (!Resizing.load())
 		{
 			SafeUpdateHooks(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 		}
@@ -234,7 +235,6 @@ DWORD MainThread(HMODULE hModule)
 		if (Resizing.load()) 
 		{
 			Sleep(500);
-			// Note: Resizing may be set to false by ResizeBuffers hook in d3d12hook
 		}
 
 		Sleep(200);

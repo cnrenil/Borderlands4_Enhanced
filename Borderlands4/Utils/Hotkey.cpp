@@ -5,7 +5,7 @@ namespace HotkeyManager
 {
     std::vector<Hotkey> Hotkeys;
 
-    void Register(const std::string& name, const std::string& label, ImGuiKey defaultKey, std::function<void()> callback)
+    void Register(const std::string& name, const std::string& label, ImGuiKey defaultKey, std::function<void()> callback, bool bIsHold)
     {
         // 1. Register in ConfigManager if not already there
         if (!ConfigManager::Exists(name)) {
@@ -13,21 +13,30 @@ namespace HotkeyManager
         }
 
         // 2. Add to our local list for the UI and execution
-        Hotkeys.push_back({ name, label, defaultKey, callback, false });
+        Hotkeys.push_back({ name, label, defaultKey, callback, bIsHold, false });
     }
 
     void Initialize()
     {
         Hotkeys.clear();
         
-        // Aimbot & Trigger: No callback here as they are 'held' logic handled in their own loops
-        Register("Aimbot.Key", "AIMBOT_KEY", ImGuiKey_MouseX2);
-        Register("Trigger.Key", "TRIGGER_KEY", ImGuiKey_MouseX2);
+        // Aimbot & Trigger: These are 'Hold' hotkeys. Their callbacks run continuously.
+        Register("Aimbot.Key", "AIMBOT_KEY", ImGuiKey_MouseX2, []() { Cheats::AimbotHotkey(); }, true);
+        Register("Trigger.Key", "TRIGGER_KEY", ImGuiKey_MouseX2, []() { Cheats::TriggerHotkey(); }, true);
         
         // One-shot toggles with callbacks
         Register("Misc.MenuKey", "MENU_KEY", ImGuiKey_Insert, []() {
             GUI::ShowMenu = !GUI::ShowMenu;
             ImGui::GetIO().MouseDrawCursor = GUI::ShowMenu;
+        });
+// ... (rest of the one-shot toggles remain the same)
+
+        Register("Player.GodModeKey", "GODMODE_KEY", ImGuiKey_None, []() {
+            Cheats::ToggleGodMode();
+        });
+
+        Register("Player.InfAmmoKey", "INF_AMMO_KEY", ImGuiKey_None, []() {
+            Cheats::InfiniteAmmo();
         });
 
         Register("Misc.ThirdPersonKey", "TOGGLE_THIRDPERSON_KEY", ImGuiKey_F5, []() {
@@ -54,12 +63,19 @@ namespace HotkeyManager
                 // If loading, only allow the menu key
                 if (IsLoading && !bIsMenuKey) continue;
 
-                if (ImGui::IsKeyPressed(currentKey, false))
+                if (currentKey >= ImGuiKey_NamedKey_BEGIN && currentKey < ImGuiKey_NamedKey_END)
                 {
-                    if (bIsMenuKey || !ImGui::GetIO().WantCaptureKeyboard)
+                    bool bShouldTrigger = hk.bIsHold ? ImGui::IsKeyDown(currentKey) : ImGui::IsKeyPressed(currentKey, false);
+
+                    if (bShouldTrigger)
                     {
-                        LOG_INFO("Hotkey", "Triggered: %s (Key: %s)", hk.Label.c_str(), ImGui::GetKeyName(currentKey));
-                        hk.Callback();
+                        if (bIsMenuKey || !ImGui::GetIO().WantCaptureKeyboard)
+                        {
+                            if (!hk.bIsHold) {
+                                LOG_INFO("Hotkey", "Triggered: %s (Key: %s)", hk.Label.c_str(), ImGui::GetKeyName(currentKey));
+                            }
+                            hk.Callback();
+                        }
                     }
                 }
             }

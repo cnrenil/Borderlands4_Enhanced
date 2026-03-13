@@ -1,54 +1,49 @@
 #include "pch.h"
 
+static AActor* CurrentTriggerTarget = nullptr;
 
 void Cheats::TriggerBot()
 {
+    CurrentTriggerTarget = nullptr;
 	if (!ConfigManager::B("Trigger.Enabled") || Utils::bIsLoading || !GVars.PlayerController || !GVars.Character) return;
-
-	// Check if in menu
 	if (ImGui::GetIO().WantCaptureMouse) return;
 
-	if (ConfigManager::B("Trigger.RequireKeyHeld"))
-	{
-		if (!ImGui::IsKeyDown((ImGuiKey)ConfigManager::I("Trigger.Key"))) 
-		{
-			return;
-		}
-	}
-
-	// Use the target selection from Utils with the shared Aimbot FOV
-	AActor* Target = Utils::GetBestTarget(
+	// Ordinary logic: Detection only
+	CurrentTriggerTarget = Utils::GetBestTarget(
 		GVars.PlayerController,
-		ConfigManager::F("Aimbot.MaxFOV"), 
+		5.0f, // Narrow FOV for triggerbot
 		true, // Must have Line Of Sight
 		ConfigManager::S("Aimbot.Bone"),
 		ConfigManager::B("Trigger.TargetAll")
 	);
+}
+
+void Cheats::TriggerHotkey()
+{
+	if (Utils::bIsLoading || !GVars.PlayerController || !CurrentTriggerTarget) return;
 
 	static bool bIsFiringUnderControl = false;
-
-	if (Target)
-	{
-		if (!bIsFiringUnderControl)
-		{
-			// Simulate Mouse Click Down
-			INPUT Input = { 0 };
-			Input.type = INPUT_MOUSE;
-			Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-			SendInput(1, &Input, sizeof(INPUT));
-			bIsFiringUnderControl = true;
-		}
-	}
-	else
-	{
-		if (bIsFiringUnderControl)
-		{
-			// Simulate Mouse Click Up
-			INPUT Input = { 0 };
-			Input.type = INPUT_MOUSE;
-			Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-			SendInput(1, &Input, sizeof(INPUT));
-			bIsFiringUnderControl = false;
-		}
-	}
+    
+    if (CurrentTriggerTarget)
+    {
+        if (!bIsFiringUnderControl)
+        {
+            INPUT Input = { 0 };
+            Input.type = INPUT_MOUSE;
+            Input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+            SendInput(1, &Input, sizeof(INPUT));
+            bIsFiringUnderControl = true;
+        }
+    }
+    else
+    {
+        if (bIsFiringUnderControl)
+        {
+            INPUT Input = { 0 };
+            Input.type = INPUT_MOUSE;
+            Input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+            SendInput(1, &Input, sizeof(INPUT));
+            bIsFiringUnderControl = false;
+        }
+    }
 }

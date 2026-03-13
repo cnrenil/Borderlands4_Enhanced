@@ -85,6 +85,10 @@ struct Cheats
 	static void EnforcePersistence();
 	static void InfiniteAmmo();
 	static void DumpObjects();
+
+	// Hotkey Callbacks
+	static void AimbotHotkey();
+	static void TriggerHotkey();
 	
 	// Modular ProcessEvent Handlers
 	static bool HandleDebugEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
