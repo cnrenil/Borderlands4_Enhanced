@@ -9,6 +9,8 @@ void Cheats::RenderEnabledOptions()
     ImGui::SetWindowPos(ImVec2(10, 30));
 	if (ConfigManager::B("Player.GodMode")) ImGui::TextColored(Color, Localization::T("GODMODE"));
 	if (ConfigManager::B("Player.InfAmmo")) ImGui::TextColored(Color, Localization::T("INF_AMMO"));
+	if (ConfigManager::B("Player.InfVehicleBoost")) ImGui::TextColored(Color, Localization::T("INF_VEHICLE_BOOST"));
+	if (ConfigManager::B("Player.InfGlideStamina")) ImGui::TextColored(Color, Localization::T("INF_GLIDE_STAMINA"));
 	if (ConfigManager::B("Aimbot.Enabled")) ImGui::TextColored(Color, Localization::T("AIMBOT"));
 	if (ConfigManager::B("Player.ESP")) ImGui::TextColored(Color, Localization::T("ESP"));
 	ImGui::End();

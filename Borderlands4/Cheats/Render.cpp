@@ -2,11 +2,17 @@
 
 namespace
 {
+    void AutoSetVariablesLocked()
+    {
+        std::scoped_lock GVarsLock(gGVarsMutex);
+        GVars.AutoSetVariables();
+    }
+
     bool TryAutoSetVariablesForRender()
     {
         __try
         {
-            GVars.AutoSetVariables();
+            AutoSetVariablesLocked();
             return true;
         }
         __except (EXCEPTION_EXECUTE_HANDLER)

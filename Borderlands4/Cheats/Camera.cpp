@@ -55,13 +55,31 @@ namespace
 
 	bool IsValidShadowCamera(SDK::ACameraActor* CameraActor)
 	{
-		return CameraActor && SDK::UKismetSystemLibrary::IsValid(CameraActor);
+		if (!CameraActor) return false;
+		if (!Utils::IsValidActor(CameraActor)) return false;
+
+		__try
+		{
+			if (!CameraActor->IsA(SDK::ACameraActor::StaticClass())) return false;
+			if (!CameraActor->CameraComponent) return false;
+			if (IsBadReadPtr(CameraActor->CameraComponent, sizeof(void*))) return false;
+			return true;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			return false;
+		}
 	}
 
 	SDK::ACameraActor* EnsureShadowCamera(SDK::AOakPlayerController* OakPC, SDK::AOakCharacter* OakChar)
 	{
-		if (IsValidShadowCamera(GVars.CameraActor))
-			return GVars.CameraActor;
+		SDK::ACameraActor* CachedCamera = nullptr;
+		{
+			std::scoped_lock GVarsLock(gGVarsMutex);
+			CachedCamera = GVars.CameraActor;
+		}
+		if (IsValidShadowCamera(CachedCamera))
+			return CachedCamera;
 
 		SDK::FTransform SpawnTransform{};
 		SpawnTransform.Rotation = SDK::UKismetMathLibrary::Conv_RotatorToQuaternion(OakPC->GetControlRotation());
@@ -78,10 +96,19 @@ namespace
 
 		if (!Spawned) return nullptr;
 
-		GVars.CameraActor = static_cast<SDK::ACameraActor*>(
+		SDK::ACameraActor* SpawnedCamera = static_cast<SDK::ACameraActor*>(
 			SDK::UGameplayStatics::FinishSpawningActor(Spawned, SpawnTransform, SDK::ESpawnActorScaleMethod::MultiplyWithRoot));
 
-		return IsValidShadowCamera(GVars.CameraActor) ? GVars.CameraActor : nullptr;
+		if (IsValidShadowCamera(SpawnedCamera))
+		{
+			std::scoped_lock GVarsLock(gGVarsMutex);
+			GVars.CameraActor = SpawnedCamera;
+			return SpawnedCamera;
+		}
+
+		std::scoped_lock GVarsLock(gGVarsMutex);
+		GVars.CameraActor = nullptr;
+		return nullptr;
 	}
 
 	void UpdateCameraModes()
@@ -90,6 +117,7 @@ namespace
 		SDK::AOakPlayerController* OakPC = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
 		SDK::AOakCharacter* OakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
 		if (!OakPC || !OakChar || !OakPC->PlayerCameraManager) return;
+		if (!Utils::IsValidActor(OakPC) || !Utils::IsValidActor(OakChar)) return;
 
 		static float LastTransitionTime = 0.0f;
 		const float CurrentTime = (float)ImGui::GetTime();
@@ -290,9 +318,14 @@ void Cheats::UpdateCamera()
 	Cheats::ChangeFOV();
 	UpdateCameraModes();
 
-	if (IsValidShadowCamera(GVars.CameraActor) && GVars.CameraActor->CameraComponent)
+	SDK::ACameraActor* Cam = nullptr;
 	{
-		GVars.CameraActor->CameraComponent->SetFieldOfView(GetAppliedFOV(true));
+		std::scoped_lock GVarsLock(gGVarsMutex);
+		Cam = GVars.CameraActor;
+	}
+	if (IsValidShadowCamera(Cam) && Cam->CameraComponent)
+	{
+		Cam->CameraComponent->SetFieldOfView(GetAppliedFOV(true));
 	}
 
 	if (ConfigManager::B("Misc.EnableFOV"))

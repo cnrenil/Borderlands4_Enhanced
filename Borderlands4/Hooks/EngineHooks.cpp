@@ -177,11 +177,17 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 	// Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "SafeUpdateHooks: Hooks Status (PE: %d, PS: %d, CM: %d)", bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 }
 
+static void AutoSetVariablesLocked()
+{
+	std::scoped_lock GVarsLock(gGVarsMutex);
+	GVars.AutoSetVariables();
+}
+
 static bool TryAutoSetVariablesMainThread()
 {
 	__try
 	{
-		GVars.AutoSetVariables();
+		AutoSetVariablesLocked();
 		return true;
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)

@@ -101,6 +101,8 @@ void GUI::RenderMenu()
                 {
                     ImGui::SliderFloat(Localization::T("FLIGHT_SPEED"), &F("Player.FlightSpeed"), 1.0f, 20.0f, "%.1f");
                 }
+                ImGui::Checkbox(Localization::T("INF_VEHICLE_BOOST"), &B("Player.InfVehicleBoost"));
+                ImGui::Checkbox(Localization::T("INF_GLIDE_STAMINA"), &B("Player.InfGlideStamina"));
                 
                 const bool bTPEnabled = B("Player.ThirdPerson");
                 const bool bOTSEnabled = B("Player.OverShoulder");
@@ -319,6 +321,10 @@ void GUI::RenderMenu()
                 
                 ImGui::Separator();
                 ImGui::Checkbox(Localization::T("INSTANT_RELOAD"), &B("Weapon.InstantReload"));
+                GUI::HostOnlyTooltip();
+                ImGui::Checkbox(Localization::T("INSTANT_SWAP"), &B("Weapon.InstantSwap"));
+                GUI::HostOnlyTooltip();
+                ImGui::Checkbox(Localization::T("NO_AMMO_CONSUME"), &B("Weapon.NoAmmoConsume"));
                 GUI::HostOnlyTooltip();
                 
                 ImGui::Separator();

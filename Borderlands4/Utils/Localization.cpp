@@ -87,6 +87,8 @@ namespace Localization
         Register("SPEED_VALUE", "Speed Multiplier", (const char*)u8"速度倍率");
         Register("FLIGHT", "Flight Mode", (const char*)u8"飞行模式");
         Register("FLIGHT_SPEED", "Flight Speed", (const char*)u8"飞行速度");
+        Register("INF_VEHICLE_BOOST", "Infinite Vehicle Boost", (const char*)u8"无限车辆氮气");
+        Register("INF_GLIDE_STAMINA", "Infinite Glide Stamina", (const char*)u8"无限滑翔体力");
         
         // 6. Camera / Third Person
         Register("THIRD_PERSON", "Third Person", (const char*)u8"第三人称");
@@ -153,6 +155,8 @@ namespace Localization
         Register("REQUIRE_KEY_HELD", "Require Key Held", (const char*)u8"需要热键配合");
         Register("TARGET_ALL", "Target All", (const char*)u8"目标所有单位");
         Register("INSTANT_RELOAD", "Instant Reload", (const char*)u8"秒换弹 (瞬时装填装弹)");
+        Register("INSTANT_SWAP", "Instant Weapon Swap", (const char*)u8"秒切枪 (跳过切枪动画)");
+        Register("NO_AMMO_CONSUME", "No Ammo Consume", (const char*)u8"射击不耗弹");
         
         // 12. Misc Settings
         Register("MISC_SETTINGS", "Misc Settings", (const char*)u8"杂项设置");

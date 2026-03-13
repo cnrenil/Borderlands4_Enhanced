@@ -68,6 +68,8 @@ namespace ConfigManager
         Register("Weapon.HomingRange", 50.0f);
         Register("Weapon.FireRate", 1.0f);
         Register("Weapon.InstantReload", false);
+        Register("Weapon.InstantSwap", false);
+        Register("Weapon.NoAmmoConsume", false);
 
         // Player / CVars
         Register("Player.GodMode", false);
@@ -84,6 +86,8 @@ namespace ConfigManager
         Register("Player.Freecam", false);
         Register("Player.Flight", false);
         Register("Player.FlightSpeed", 1.0f);
+        Register("Player.InfVehicleBoost", false);
+        Register("Player.InfGlideStamina", false);
         Register("Player.ESP", true);
 
         // SilentAim
