@@ -16,7 +16,7 @@ void Cheats::Render()
         GVars.AutoSetVariables();
         HotkeyManager::Update();
 
-        if (!Utils::bIsLoading)
+        if (Utils::bIsInGame)
         {
             Logger::LogThrottled(Logger::Level::Debug, "Render", 10000, "Cheats::Render: Logic thread active (not loading)");
             if (ConfigManager::B("Player.ESP")) UpdateESP();
@@ -33,7 +33,7 @@ void Cheats::Render()
 
     // --- Visualizations ---
     // 1. Logic-based visualizations (Draw FOV, Snaplines)
-    if (ConfigManager::B("Aimbot.Enabled"))
+    if (Utils::bIsInGame && ConfigManager::B("Aimbot.Enabled"))
     {
         if (ConfigManager::B("Aimbot.DrawFOV"))
             Utils::DrawFOV(ConfigManager::F("Aimbot.MaxFOV"), ConfigManager::F("Aimbot.FOVThickness"));
@@ -42,16 +42,18 @@ void Cheats::Render()
             Utils::DrawSnapLine(AimbotTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
     }
 
-    if (ConfigManager::B("Weapon.HomingProjectiles") && bHasSilentAimTarget && ConfigManager::B("Aimbot.DrawArrow"))
+    if (Utils::bIsInGame && ConfigManager::B("Weapon.HomingProjectiles") && bHasSilentAimTarget && ConfigManager::B("Aimbot.DrawArrow"))
     {
         Utils::DrawSnapLine(SilentAimTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
     }
 
     // 2. World-based visualizations (ESP)
-    RenderESP();
+    if (Utils::bIsInGame)
+        RenderESP();
 
     // 3. UI Overlays (Active Features List)
-    RenderEnabledOptions();
+    if (Utils::bIsInGame)
+        RenderEnabledOptions();
 
     // 4. Main Menu
     GUI::RenderMenu();

@@ -7,7 +7,7 @@ void Cheats::Aimbot()
     bHasAimbotTarget = false;
     CurrentAimbotTarget = nullptr;
 
-	if (!ConfigManager::B("Aimbot.Enabled") || Utils::bIsLoading) return;
+	if (!ConfigManager::B("Aimbot.Enabled") || !Utils::bIsInGame) return;
 	if (!GVars.POV || !GVars.PlayerController || !GVars.Character) return;
 
 	// Ordinary logic: Target acquisition and visual state
@@ -46,7 +46,7 @@ void Cheats::Aimbot()
 void Cheats::AimbotHotkey()
 {
 	// 真正自瞄逻辑：负责旋转相机视角
-	if (Utils::bIsLoading || !GVars.PlayerController || !GVars.POV || !CurrentAimbotTarget) return;
+	if (!Utils::bIsInGame || !GVars.PlayerController || !GVars.POV || !CurrentAimbotTarget) return;
 
     ACharacter* TargetChar = reinterpret_cast<ACharacter*>(CurrentAimbotTarget);
     FVector CameraPos = GVars.POV->Location;
@@ -71,4 +71,3 @@ void Cheats::AimbotHotkey()
 		GVars.PlayerController->ClientSetRotation(DesiredRot, true);
 	}
 }
-

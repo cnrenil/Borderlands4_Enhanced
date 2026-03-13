@@ -3,7 +3,7 @@
 
 void Cheats::WeaponModifiers()
 {
-	if (!GVars.Character || Utils::bIsLoading) return;
+	if (!GVars.Character || !Utils::bIsInGame) return;
 	for (uint8 i = 0; i < 4; i++) {
 		SDK::AWeapon* weapon = SDK::UWeaponStatics::GetWeapon(GVars.Character, i);
 		if (!weapon) continue;

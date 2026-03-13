@@ -5,7 +5,7 @@ static AActor* CurrentTriggerTarget = nullptr;
 void Cheats::TriggerBot()
 {
     CurrentTriggerTarget = nullptr;
-	if (!ConfigManager::B("Trigger.Enabled") || Utils::bIsLoading || !GVars.PlayerController || !GVars.Character) return;
+	if (!ConfigManager::B("Trigger.Enabled") || !Utils::bIsInGame || !GVars.PlayerController || !GVars.Character) return;
 	if (ImGui::GetIO().WantCaptureMouse) return;
 
 	// Ordinary logic: Detection only
@@ -20,7 +20,7 @@ void Cheats::TriggerBot()
 
 void Cheats::TriggerHotkey()
 {
-	if (Utils::bIsLoading || !GVars.PlayerController || !CurrentTriggerTarget) return;
+	if (!Utils::bIsInGame || !GVars.PlayerController || !CurrentTriggerTarget) return;
 
 	static bool bIsFiringUnderControl = false;
     

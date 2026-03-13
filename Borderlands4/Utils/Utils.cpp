@@ -332,6 +332,17 @@ bool Utils::IsInLoadingState()
     return false;
 }
 
+bool Utils::IsInPlayableState()
+{
+    if (Utils::bIsLoading) return false;
+    if (!GVars.World || !GVars.World->VTable) return false;
+    if (!GVars.Level || !GVars.GameState) return false;
+    if (!GVars.PlayerController || !GVars.PlayerController->VTable) return false;
+    if (!GVars.PlayerController->PlayerCameraManager || !GVars.PlayerController->PlayerCameraManager->VTable) return false;
+    if (!GVars.Character || !GVars.Character->VTable) return false;
+    return true;
+}
+
 void cerrf(const char* Format, ...)
 {
     va_list Args;

@@ -24,7 +24,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
     bInsideHook = true;
     try {
-        if (!Utils::bIsLoading) {
+        if (Utils::bIsInGame) {
             // Block Input when Menu is open
             if (GUI::ShowMenu && Function) {
                 // Use a more efficient check if possible, or just be careful with GetName()

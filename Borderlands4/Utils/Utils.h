@@ -151,11 +151,16 @@ struct Variables
 		{
 			Logger::LogThrottled(Logger::Level::Info, "GVars", 5000, "AutoSetVariables: Waiting for World/VTable...");
 			Utils::bIsLoading = true;
+			Utils::bIsInGame = false;
 			return;
 		}
 
 		this->Level = this->World->PersistentLevel;
-		if (!this->Level) return;
+		if (!this->Level) {
+			Utils::bIsLoading = true;
+			Utils::bIsInGame = false;
+			return;
+		}
 
 		this->GameState = this->World->GameState;
 
@@ -163,6 +168,7 @@ struct Variables
 		Utils::bIsLoading = Utils::IsInLoadingState();
 		if (Utils::bIsLoading) {
 			Logger::LogThrottled(Logger::Level::Info, "GVars", 5000, "AutoSetVariables: Game is in loading state.");
+			Utils::bIsInGame = false;
 			return;
 		}
 
@@ -183,6 +189,7 @@ struct Variables
 
 		if (!this->PlayerController || !this->PlayerController->VTable) {
 			Logger::LogThrottled(Logger::Level::Info, "GVars", 5000, "AutoSetVariables: Waiting for PlayerController...");
+			Utils::bIsInGame = false;
 			return;
 		}
 
@@ -212,6 +219,8 @@ struct Variables
 		// Update Screen size
 		if (ImGui::GetCurrentContext())
 			ScreenSize = ImGui::GetIO().DisplaySize;
+
+		Utils::bIsInGame = Utils::IsInPlayableState();
 	}
 } inline GVars;
 

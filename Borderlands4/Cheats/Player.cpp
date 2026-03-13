@@ -16,7 +16,7 @@ void Cheats::EnforcePersistence()
 	static SDK::ACharacter* LastCharacter = nullptr;
 	static SDK::UWorld* LastWorld = nullptr;
 
-	if (Utils::bIsLoading || !GVars.PlayerController || !GVars.Character) {
+	if (!Utils::bIsInGame || !GVars.PlayerController || !GVars.Character) {
 		LastCharacter = nullptr;
 		LastWorld = nullptr;
 		return;

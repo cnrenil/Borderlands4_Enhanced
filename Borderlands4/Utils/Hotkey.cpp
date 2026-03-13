@@ -51,7 +51,8 @@ namespace HotkeyManager
     void Update()
     {
         // Don't process game-affecting hotkeys if loading, but allow menu toggle
-        bool IsLoading = Utils::bIsLoading;
+		bool IsLoading = Utils::bIsLoading;
+		bool IsInGame = Utils::bIsInGame;
 
         for (auto& hk : Hotkeys)
         {
@@ -61,7 +62,7 @@ namespace HotkeyManager
                 bool bIsMenuKey = (hk.Name == "Misc.MenuKey");
                 
                 // If loading, only allow the menu key
-                if (IsLoading && !bIsMenuKey) continue;
+				if ((IsLoading || !IsInGame) && !bIsMenuKey) continue;
 
                 if (currentKey >= ImGuiKey_NamedKey_BEGIN && currentKey < ImGuiKey_NamedKey_END)
                 {
