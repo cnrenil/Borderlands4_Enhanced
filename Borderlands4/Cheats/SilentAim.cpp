@@ -1,9 +1,8 @@
 #include "pch.h"
 
-
-
 void Cheats::SilentAimHoming()
 {
+    bHasSilentAimTarget = false;
 	if (!ConfigManager::B("Weapon.HomingProjectiles") || !GVars.Character || !GVars.PlayerController || !GVars.World) return;
 
 	AActor* Target = Utils::GetBestTarget(
@@ -28,18 +27,15 @@ void Cheats::SilentAimHoming()
 		}
 		else
 		{
-			// Fallback to the highest bone if targeted bone is not found
 			TargetPos = Utils::GetHighestBone(TargetChar);
 		}
 	} else {
 		TargetPos = Target->K2_GetActorLocation();
 	}
 
-	// Draw Tracer Line for Silent Aim if enabled
-	if (ConfigManager::B("Aimbot.DrawArrow"))
-	{
-		Utils::DrawSnapLine(TargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
-	}
+    // Update Cache for rendering
+    bHasSilentAimTarget = true;
+    SilentAimTargetPos = TargetPos;
 
 	TArray<AActor*> Projectiles;
 	UGameplayStatics::GetAllActorsOfClass(Utils::GetWorldSafe(), AOakProjectile::StaticClass(), &Projectiles);
@@ -48,11 +44,9 @@ void Cheats::SilentAimHoming()
 		AOakProjectile* Proj = static_cast<AOakProjectile*>(Projectiles[i]);
 		if (Utils::IsValidActor(Proj) && Proj->GetInstigator() == GVars.Character) {
 			float dist = Proj->K2_GetActorLocation().GetDistanceToInMeters(TargetPos);
-			// Only home in if within sensible range and not already too close
 			if (dist > 0.5f && dist < ConfigManager::F("Weapon.HomingRange")) {
 				Proj->K2_SetActorLocation(TargetPos, false, nullptr, false);
 			}
 		}
 	}
 }
-

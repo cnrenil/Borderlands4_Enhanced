@@ -153,6 +153,7 @@
     <ClCompile Include="Cheats\Debug.cpp" />
     <ClCompile Include="Cheats\SilentAim.cpp" />
     <ClCompile Include="Cheats\TriggerBot.cpp" />
+    <ClCompile Include="Cheats\Render.cpp" />
     <ClCompile Include="Config\ConfigManager.cpp" />
     <ClCompile Include="DLLMain.cpp" />
     <ClCompile Include="GUI\Menu.cpp" />

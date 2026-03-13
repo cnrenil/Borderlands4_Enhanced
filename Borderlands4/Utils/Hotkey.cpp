@@ -41,22 +41,24 @@ namespace HotkeyManager
 
     void Update()
     {
-        if (Utils::bIsLoading) return;
+        // Don't process game-affecting hotkeys if loading, but allow menu toggle
+        bool IsLoading = Utils::bIsLoading;
 
         for (auto& hk : Hotkeys)
         {
-            // Only execute if a callback is registered and the menu isn't capturing the key (except for the menu key itself)
             if (hk.Callback)
             {
                 ImGuiKey currentKey = (ImGuiKey)ConfigManager::I(hk.Name);
-                
-                // Special case for menu toggle - allow it even if menu is open
                 bool bIsMenuKey = (hk.Name == "Misc.MenuKey");
                 
+                // If loading, only allow the menu key
+                if (IsLoading && !bIsMenuKey) continue;
+
                 if (ImGui::IsKeyPressed(currentKey, false))
                 {
                     if (bIsMenuKey || !ImGui::GetIO().WantCaptureKeyboard)
                     {
+                        LOG_INFO("Hotkey", "Triggered: %s (Key: %s)", hk.Label.c_str(), ImGui::GetKeyName(currentKey));
                         hk.Callback();
                     }
                 }

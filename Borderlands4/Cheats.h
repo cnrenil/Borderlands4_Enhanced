@@ -59,6 +59,7 @@ struct Cheats
 	static void DrawReticle();
 	static void TriggerBot();
 	static void RenderEnabledOptions();
+	static void Render();
 	static void ChangeFOV();
 	static void Lean();
 	static void AutoWin();
@@ -95,5 +96,11 @@ struct Cheats
 	static void UpdateMovement();
 	static void UpdateWeapon();
 	static void UpdateCamera();
+
+    // Cross-thread Rendering Helpers
+    static inline FVector AimbotTargetPos;
+    static inline bool bHasAimbotTarget = false;
+    static inline FVector SilentAimTargetPos;
+    static inline bool bHasSilentAimTarget = false;
 
 };

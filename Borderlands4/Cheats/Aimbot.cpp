@@ -4,14 +4,12 @@ bool Init = false;
 
 void Cheats::Aimbot()
 {
+    bHasAimbotTarget = false;
 	if (!ConfigManager::B("Aimbot.Enabled") || Utils::bIsLoading) return;
-
-	if (ConfigManager::B("Aimbot.DrawFOV"))
-		Utils::DrawFOV(ConfigManager::F("Aimbot.MaxFOV"), ConfigManager::F("Aimbot.FOVThickness"));
 
 	if (!GVars.POV || !GVars.PlayerController || !GVars.Level || !GVars.Character) return;
 
-	// Aimbot key check (if required)
+	// Aimbot key check (using SDK/Engine safe method if possible, or sticking to current for logic)
 	bool AimbotKeyDown = ImGui::IsKeyDown((ImGuiKey)ConfigManager::I("Aimbot.Key"));
 
 	if (ConfigManager::B("Aimbot.RequireKeyHeld") && !AimbotKeyDown)
@@ -47,7 +45,6 @@ void Cheats::Aimbot()
 	}
 	else
 	{
-		// Fallback to the highest bone if the requested bone doesn't exist (e.g., drones, turrets)
 		TargetPos = Utils::GetHighestBone(TargetChar);
 	}
 
@@ -56,8 +53,9 @@ void Cheats::Aimbot()
 	if (ConfigManager::F("Aimbot.MinDistance") > Dist || Dist > ConfigManager::F("Aimbot.MaxDistance"))
 		return;
 
-	if (ConfigManager::B("Aimbot.DrawArrow"))
-		Utils::DrawSnapLine(TargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
+    // Cache the target for the rendering thread
+    bHasAimbotTarget = true;
+    AimbotTargetPos = TargetPos;
 
 	// Simple target rotation calculation
 	FRotator DesiredRot = Utils::GetRotationToTarget(CameraPos, TargetPos);
@@ -80,3 +78,4 @@ void Cheats::Aimbot()
 		GVars.PlayerController->ClientSetRotation(DesiredRot, true);
 	}
 }
+

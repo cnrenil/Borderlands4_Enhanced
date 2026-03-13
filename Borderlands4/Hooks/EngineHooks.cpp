@@ -13,13 +13,33 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	if (Cleaning.load())
 		return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 
-	if (uMsg == WM_SIZE && wParam != SIZE_MINIMIZED)
-	{
-		Resizing.store(true);
+	switch (uMsg) {
+		case WM_SIZE:
+			if (wParam != SIZE_MINIMIZED) Resizing.store(true);
+			break;
+		case WM_EXITSIZEMOVE:
+			Resizing.store(false);
+			break;
 	}
 
-	if (GUI::ShowMenu && ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
-		return true;
+	if (GUI::ShowMenu) {
+		// Pass to ImGui first
+		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
+		
+		// Block mouse/keyboard messages from reaching the game
+		switch (uMsg) {
+			case WM_MOUSEMOVE:
+			case WM_LBUTTONDOWN: case WM_LBUTTONUP: case WM_LBUTTONDBLCLK:
+			case WM_RBUTTONDOWN: case WM_RBUTTONUP: case WM_RBUTTONDBLCLK:
+			case WM_MBUTTONDOWN: case WM_MBUTTONUP: case WM_MBUTTONDBLCLK:
+			case WM_MOUSEWHEEL: case WM_MOUSEHWHEEL:
+			case WM_XBUTTONDOWN: case WM_XBUTTONUP: case WM_XBUTTONDBLCLK:
+			case WM_KEYDOWN: case WM_SYSKEYDOWN:
+			case WM_KEYUP: case WM_SYSKEYUP:
+			case WM_CHAR:
+				return 0;
+		}
+	}
 
 	return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }
@@ -187,24 +207,37 @@ DWORD MainThread(HMODULE hModule)
 
 	ConfigManager::LoadSettings();
 
+	LOG_INFO("System", "Waiting for stable game state...");
+	Sleep(2000); 
+
 	bool bIsProcessEventHooked = false;
 	bool bIsPlayerStateHooked = false;
 	bool bIsCameraManagerHooked = false;
 
 	while (!Cleaning.load())
 	{
+		// Bootstrap: If we don't have a PlayerController, try to get one even before hooks are active
+		// This is necessary because the hook logic itself relies on GVars.PlayerController
+		if (!bIsProcessEventHooked || !GVars.PlayerController)
+		{
+			GVars.AutoSetVariables();
+		}
+
+		// Only update logic hooks if we aren't loading, aren't resizing, 
+		// and the window is actually in focus (optional but helps stability)
 		if (!Utils::bIsLoading && !Resizing.load())
 		{
 			SafeUpdateHooks(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 		}
 		
+		// If a resize happened, wait a bit for it to settle
 		if (Resizing.load()) 
 		{
-			Sleep(100);
-			Resizing.store(false); 
+			Sleep(500);
+			// Note: Resizing may be set to false by ResizeBuffers hook in d3d12hook
 		}
 
-		Sleep(100);
+		Sleep(200);
 	}
 	
 	Cleanup(hModule);

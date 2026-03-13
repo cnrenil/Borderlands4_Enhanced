@@ -10,6 +10,7 @@ extern WNDPROC oWndProc;
 extern HWND g_hWnd;
 extern LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 extern std::atomic<int> g_PresentCount;
+extern std::atomic<bool> Resizing;
 
 namespace d3d12hook {
     PresentD3D12            oPresentD3D12 = nullptr;
@@ -37,8 +38,45 @@ namespace d3d12hook {
     static bool                   gShutdown = false;
     static bool                   gAfterFirstPresent = false;
 
+    // --- Stability: track resize state and early-injection grace period ---
+    static DWORD                  gFirstPresentTime = 0;
+    static bool                   gFirstPresentSeen = false;
+    // Grace period (ms) after first Present before we initialize ImGui.
+    // This lets the game finish HDR / DLSS / swapchain setup.
+    static constexpr DWORD        INIT_GRACE_PERIOD_MS = 5000;
+
     inline void LogHRESULT(const char* label, HRESULT hr) {
         printf("[d3d12hook] %s: hr=0x%08X\n", label, hr);
+    }
+
+    // Release all overlay GPU resources (but NOT the ImGui context itself).
+    static void ReleaseOverlayResources() {
+        // Wait for GPU to finish our overlay work before releasing
+        if (gOverlayFence && gCommandQueue && gFenceEvent) {
+            UINT64 completed = gOverlayFence->GetCompletedValue();
+            if (completed < gOverlayFenceValue) {
+                gOverlayFence->SetEventOnCompletion(gOverlayFenceValue, gFenceEvent);
+                WaitForSingleObject(gFenceEvent, 2000); // bounded wait
+            }
+        }
+
+        if (gCommandList) { gCommandList->Release(); gCommandList = nullptr; }
+        if (gOverlayFence) { gOverlayFence->Release(); gOverlayFence = nullptr; }
+        if (gFenceEvent) { CloseHandle(gFenceEvent); gFenceEvent = nullptr; }
+        gOverlayFenceValue = 0;
+
+        if (gFrameContexts) {
+            for (UINT i = 0; i < gBufferCount; ++i) {
+                if (gFrameContexts[i].renderTarget) { gFrameContexts[i].renderTarget->Release(); gFrameContexts[i].renderTarget = nullptr; }
+                if (gFrameContexts[i].allocator) { gFrameContexts[i].allocator->Release(); gFrameContexts[i].allocator = nullptr; }
+            }
+            delete[] gFrameContexts;
+            gFrameContexts = nullptr;
+        }
+
+        if (gHeapRTV) { gHeapRTV->Release(); gHeapRTV = nullptr; }
+        if (gHeapSRV) { gHeapSRV->Release(); gHeapSRV = nullptr; }
+        if (gDevice) { gDevice->Release(); gDevice = nullptr; }
     }
 
     void InitImGuiAndResources(IDXGISwapChain3* pSwapChain) {
@@ -64,19 +102,30 @@ namespace d3d12hook {
         rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
         rtvHeapDesc.NumDescriptors = gBufferCount;
         rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-        if (FAILED(gDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&gHeapRTV)))) return;
+        if (FAILED(gDevice->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&gHeapRTV)))) {
+            gDevice->Release(); gDevice = nullptr;
+            return;
+        }
 
         // Create SRV Heap (for ImGui)
         D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
         srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
         srvHeapDesc.NumDescriptors = 100; 
         srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-        if (FAILED(gDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&gHeapSRV)))) return;
+        if (FAILED(gDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&gHeapSRV)))) {
+            gHeapRTV->Release(); gHeapRTV = nullptr;
+            gDevice->Release(); gDevice = nullptr;
+            return;
+        }
 
         // Create Frame Contexts
-        gFrameContexts = new FrameContext[gBufferCount];
+        gFrameContexts = new FrameContext[gBufferCount]();
         for (UINT i = 0; i < gBufferCount; ++i) {
-            gDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&gFrameContexts[i].allocator));
+            if (FAILED(gDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&gFrameContexts[i].allocator)))) {
+                // Cleanup on failure
+                ReleaseOverlayResources();
+                return;
+            }
             
             ID3D12Resource* back = nullptr;
             if (SUCCEEDED(pSwapChain->GetBuffer(i, IID_PPV_ARGS(&back)))) {
@@ -119,15 +168,16 @@ namespace d3d12hook {
         // Sync Objects
         gDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&gOverlayFence));
         gFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+        gOverlayFenceValue = 0;
         
         gInitialized = true;
         printf("[d3d12hook] Success: ImGui and DX12 resources fully initialized!\n");
     }
 
     void RenderImGui(IDXGISwapChain3* pSwapChain) {
-        static UINT64 lastFrameCount = 0;
-        UINT64 currentFrameCount = 0;
-        
+        // Don't render while a resize is in progress
+        if (Resizing.load()) return;
+
         static uint64_t last_rendered_frame = 0;
         uint64_t current_time = GetTickCount64();
         
@@ -144,37 +194,39 @@ namespace d3d12hook {
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
         
-        GVars.AutoSetVariables();
-        
         try {
-            Cheats::UpdateESP();
-            Cheats::RenderESP();
-            Cheats::Aimbot();
-            Cheats::WeaponModifiers();
-            Cheats::ChangeFOV();
-            HotkeyManager::Update();
+            // All rendering logic is now consolidated into Cheats::Render()
+            Cheats::Render();
         } catch (...) {}
-
-        GUI::RenderMenu();
 
         ImGui::Render();
 
         UINT frameIdx = pSwapChain->GetCurrentBackBufferIndex();
+        if (frameIdx >= gBufferCount) return; // Safety check
         FrameContext& ctx = gFrameContexts[frameIdx];
+        if (!ctx.renderTarget || !ctx.allocator) return; // Safety check
 
-        // Wait for fence
+        // Wait for fence with a bounded timeout to avoid hangs
         if (gOverlayFence && gOverlayFence->GetCompletedValue() < gOverlayFenceValue) {
             if (SUCCEEDED(gOverlayFence->SetEventOnCompletion(gOverlayFenceValue, gFenceEvent))) {
-                WaitForSingleObject(gFenceEvent, INFINITE);
+                DWORD waitResult = WaitForSingleObject(gFenceEvent, 1000);
+                if (waitResult == WAIT_TIMEOUT) {
+                    printf("[d3d12hook] WARNING: Fence wait timed out, skipping frame.\n");
+                    return; // Skip this frame rather than hang
+                }
             }
         }
 
-        ctx.allocator->Reset();
+        HRESULT hr = ctx.allocator->Reset();
+        if (FAILED(hr)) return; // Allocator reset failed, skip frame
+
         if (!gCommandList) {
-            gDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, ctx.allocator, nullptr, IID_PPV_ARGS(&gCommandList));
+            hr = gDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, ctx.allocator, nullptr, IID_PPV_ARGS(&gCommandList));
+            if (FAILED(hr)) return;
             gCommandList->Close();
         }
-        gCommandList->Reset(ctx.allocator, nullptr);
+        hr = gCommandList->Reset(ctx.allocator, nullptr);
+        if (FAILED(hr)) return;
 
         D3D12_RESOURCE_BARRIER barrier = {};
         barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -195,19 +247,35 @@ namespace d3d12hook {
         gCommandList->ResourceBarrier(1, &barrier);
         gCommandList->Close();
 
-        oExecuteCommandListsD3D12(gCommandQueue, 1, (ID3D12CommandList* const*)&gCommandList);
+        ID3D12CommandList* ppCommandLists[] = { gCommandList };
+        oExecuteCommandListsD3D12(gCommandQueue, 1, ppCommandLists);
         gCommandQueue->Signal(gOverlayFence, ++gOverlayFenceValue);
     }
 
     long __stdcall hookPresentD3D12(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags) {
         if (gShutdown) return oPresentD3D12(pSwapChain, SyncInterval, Flags);
 
+        // Track first Present time for grace period
+        if (!gFirstPresentSeen) {
+            gFirstPresentSeen = true;
+            gFirstPresentTime = GetTickCount();
+            printf("[d3d12hook] First Present detected, starting %dms grace period for game init...\n", INIT_GRACE_PERIOD_MS);
+        }
+
         gAfterFirstPresent = true;
         if (!gCommandQueue) return oPresentD3D12(pSwapChain, SyncInterval, Flags);
 
-        if (!gInitialized) InitImGuiAndResources(pSwapChain);
+        // Don't initialize during the grace period — let the game finish
+        // HDR / DLSS / swapchain setup first.
+        if (!gInitialized) {
+            DWORD elapsed = GetTickCount() - gFirstPresentTime;
+            if (elapsed < INIT_GRACE_PERIOD_MS) {
+                return oPresentD3D12(pSwapChain, SyncInterval, Flags);
+            }
+            InitImGuiAndResources(pSwapChain);
+        }
 
-        if (gInitialized) {
+        if (gInitialized && !Resizing.load()) {
             static bool insert_was_down = false;
             if ((GetAsyncKeyState(VK_INSERT) & 0x8000)) {
                 if (!insert_was_down) {
@@ -227,12 +295,26 @@ namespace d3d12hook {
     long __stdcall hookPresent1D3D12(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags, const DXGI_PRESENT_PARAMETERS* pParams) {
         if (gShutdown) return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
 
+        // Track first Present time for grace period
+        if (!gFirstPresentSeen) {
+            gFirstPresentSeen = true;
+            gFirstPresentTime = GetTickCount();
+            printf("[d3d12hook] First Present1 detected, starting %dms grace period for game init...\n", INIT_GRACE_PERIOD_MS);
+        }
+
         gAfterFirstPresent = true;
         if (!gCommandQueue) return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
 
-        if (!gInitialized) InitImGuiAndResources(pSwapChain);
+        // Don't initialize during the grace period
+        if (!gInitialized) {
+            DWORD elapsed = GetTickCount() - gFirstPresentTime;
+            if (elapsed < INIT_GRACE_PERIOD_MS) {
+                return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
+            }
+            InitImGuiAndResources(pSwapChain);
+        }
 
-        if (gInitialized) {
+        if (gInitialized && !Resizing.load()) {
             RenderImGui(pSwapChain);
             g_PresentCount.fetch_add(1);
         }
@@ -256,22 +338,31 @@ namespace d3d12hook {
     }
 
     HRESULT __stdcall hookResizeBuffersD3D12(IDXGISwapChain3* pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags) {
+        printf("[d3d12hook] ResizeBuffers detected (%ux%u, fmt=%d), cleaning up...\n", Width, Height, (int)NewFormat);
+        
+        // Signal that we're resizing — Present hook will skip rendering
+        Resizing.store(true);
+
         if (gInitialized) {
-            printf("[d3d12hook] ResizeBuffers detected, resetting resources...\n");
+            // Shut down ImGui backends
             ImGui_ImplDX12_Shutdown();
             ImGui_ImplWin32_Shutdown();
-            
-            if (gCommandList) { gCommandList->Release(); gCommandList = nullptr; }
-            if (gHeapRTV) { gHeapRTV->Release(); gHeapRTV = nullptr; }
-            if (gHeapSRV) { gHeapSRV->Release(); gHeapSRV = nullptr; }
-            for (UINT i = 0; i < gBufferCount; ++i) {
-                if (gFrameContexts[i].renderTarget) gFrameContexts[i].renderTarget->Release();
-                if (gFrameContexts[i].allocator) gFrameContexts[i].allocator->Release();
-            }
-            delete[] gFrameContexts; gFrameContexts = nullptr;
+            ImGui::DestroyContext();
+
+            // Release all our GPU resources
+            ReleaseOverlayResources();
+
             gInitialized = false;
         }
-        return oResizeBuffersD3D12(pSwapChain, BufferCount, Width, Height, NewFormat, SwapChainFlags);
+
+        // Call the original ResizeBuffers
+        HRESULT hr = oResizeBuffersD3D12(pSwapChain, BufferCount, Width, Height, NewFormat, SwapChainFlags);
+
+        // Clear resize flag — the next Present call will re-initialize
+        Resizing.store(false);
+
+        printf("[d3d12hook] ResizeBuffers completed (hr=0x%08X). Will re-init on next Present.\n", hr);
+        return hr;
     }
 
     void release() {
@@ -285,6 +376,8 @@ namespace d3d12hook {
             ImGui_ImplDX12_Shutdown();
             ImGui_ImplWin32_Shutdown();
             ImGui::DestroyContext();
+
+            ReleaseOverlayResources();
             gInitialized = false;
         }
 

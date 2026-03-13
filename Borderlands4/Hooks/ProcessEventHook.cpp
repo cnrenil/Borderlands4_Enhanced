@@ -19,16 +19,31 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 		return;
 	}
 
-	bInsideHook = true;
-	try {
+    bInsideHook = true;
+    try {
         if (!Utils::bIsLoading) {
+            // Block Input when Menu is open
+            if (GUI::ShowMenu && Function) {
+                // Use a more efficient check if possible, or just be careful with GetName()
+                std::string fnName = Function->GetName();
+                if (fnName.find("InputKey") != std::string::npos ||
+                    fnName.find("InputAxis") != std::string::npos ||
+                    fnName.find("InputTouch") != std::string::npos) 
+                {
+                    // CRITICAL FIX: To block, we must return WITHOUT calling oProcessEvent
+                    bInsideHook = false;
+                    g_ProcessEventCount.fetch_sub(1);
+                    return; 
+                }
+            }
+
             // Modular Handlers
             if (Cheats::HandleDebugEvents(Object, Function, Params)) goto Exit;
             if (Cheats::HandleMovementEvents(Object, Function, Params)) goto Exit;
             if (Cheats::HandleWeaponEvents(Object, Function, Params)) goto Exit;
             if (Cheats::HandleCameraEvents(Object, Function, Params)) goto Exit;
         }
-	}
+    }
 	catch (...) {
 		Logger::LogThrottled(Logger::Level::Error, "Hook", 1000, "CRASH in hkProcessEvent");
 	}
