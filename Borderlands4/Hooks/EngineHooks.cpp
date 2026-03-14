@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Utils/AntiDebug.h"
 
 extern HWND g_hWnd;
 extern WNDPROC oWndProc;

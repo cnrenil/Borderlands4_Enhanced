@@ -16,6 +16,21 @@ namespace
         float BrakingDecelerationFlying = -1.0f;
         float MaxGroundSpeedScaleValue = -1.0f;
         float MaxGroundSpeedScaleBase = -1.0f;
+        float CustomTimeDilationValue = -1.0f;
+        float CustomTimeDilationBase = -1.0f;
+    };
+
+    struct VehicleOriginalState
+    {
+        bool Captured = false;
+        float MaxSpeedValue = -1.0f;
+        float MaxSpeedBase = -1.0f;
+        float BoostMaxSpeedValue = -1.0f;
+        float BoostMaxSpeedBase = -1.0f;
+        float MaxAccelValue = -1.0f;
+        float MaxAccelBase = -1.0f;
+        float BoostMaxAccelValue = -1.0f;
+        float BoostMaxAccelBase = -1.0f;
     };
 
     static SDK::UOakCharacterMovementComponent* g_LastMoveComp = nullptr;
@@ -31,6 +46,9 @@ namespace
     static float g_OriginalDashCostValue = -1.0f;
     static float g_OriginalDashCostBase = -1.0f;
     static double g_LastGlideRefreshTime = 0.0;
+    static SDK::FVehicleAttributesState* g_LastVehicleAttrState = nullptr;
+    static VehicleOriginalState g_OriginalVehicleState{};
+    static bool g_WasVehicleSpeedHackOn = false;
 
     void ResetMovementState()
     {
@@ -45,6 +63,9 @@ namespace
         g_OriginalDashCostValue = -1.0f;
         g_OriginalDashCostBase = -1.0f;
         g_LastGlideRefreshTime = 0.0;
+        g_LastVehicleAttrState = nullptr;
+        g_OriginalVehicleState = VehicleOriginalState{};
+        g_WasVehicleSpeedHackOn = false;
     }
 
     void CaptureMovementOriginals(SDK::UOakCharacterMovementComponent* Move)
@@ -72,6 +93,15 @@ namespace
             g_OriginalMoveState.MaxGroundSpeedScaleValue = Move->MaxGroundSpeedScale.Value;
         if (g_OriginalMoveState.MaxGroundSpeedScaleBase <= 0.01f && Move->MaxGroundSpeedScale.BaseValue > 0.01f)
             g_OriginalMoveState.MaxGroundSpeedScaleBase = Move->MaxGroundSpeedScale.BaseValue;
+
+        SDK::AActor* owner = Move->GetOwner();
+        if (owner)
+        {
+            if (g_OriginalMoveState.CustomTimeDilationValue <= 0.01f && owner->CustomTimeDilation.Value > 0.01f)
+                g_OriginalMoveState.CustomTimeDilationValue = owner->CustomTimeDilation.Value;
+            if (g_OriginalMoveState.CustomTimeDilationBase <= 0.01f && owner->CustomTimeDilation.BaseValue > 0.01f)
+                g_OriginalMoveState.CustomTimeDilationBase = owner->CustomTimeDilation.BaseValue;
+        }
     }
 
     float ResolveBase(float Original, float Current, float Fallback)
@@ -117,6 +147,99 @@ namespace
         }
 
         return nullptr;
+    }
+
+    SDK::FVehicleAttributesState* GetVehicleAttributesState()
+    {
+        SDK::AOakVehicle* localVehicle = GetControlledVehicle();
+        for (int i = 0; i < SDK::UObject::GObjects->Num(); i++)
+        {
+            SDK::UObject* obj = SDK::UObject::GObjects->GetByIndex(i);
+            if (!obj || obj->IsDefaultObject())
+                continue;
+
+            if (!obj->IsA(SDK::UVehicleDriverComponent::StaticClass()))
+                continue;
+
+            auto* driverComp = static_cast<SDK::UVehicleDriverComponent*>(obj);
+            if (!driverComp)
+                continue;
+
+            if (localVehicle)
+            {
+                SDK::AActor* owner = driverComp->GetOwner();
+                if (!owner || owner != localVehicle)
+                    continue;
+            }
+
+            return &driverComp->VehicleAttributesState;
+        }
+        return nullptr;
+    }
+
+    void ApplyVehicleSpeedMultiplier()
+    {
+        const bool enabled = ConfigManager::B("Player.VehicleSpeedEnabled");
+        SDK::FVehicleAttributesState* attrState = GetVehicleAttributesState();
+
+        if (!enabled)
+        {
+            if (g_WasVehicleSpeedHackOn && g_OriginalVehicleState.Captured && attrState)
+            {
+                if (g_OriginalVehicleState.MaxSpeedValue > 0.01f) attrState->maxspeed.Value = g_OriginalVehicleState.MaxSpeedValue;
+                if (g_OriginalVehicleState.MaxSpeedBase > 0.01f) attrState->maxspeed.BaseValue = g_OriginalVehicleState.MaxSpeedBase;
+                if (g_OriginalVehicleState.BoostMaxSpeedValue > 0.01f) attrState->BoostMaxSpeed.Value = g_OriginalVehicleState.BoostMaxSpeedValue;
+                if (g_OriginalVehicleState.BoostMaxSpeedBase > 0.01f) attrState->BoostMaxSpeed.BaseValue = g_OriginalVehicleState.BoostMaxSpeedBase;
+                if (g_OriginalVehicleState.MaxAccelValue > 0.01f) attrState->MaxAccel.Value = g_OriginalVehicleState.MaxAccelValue;
+                if (g_OriginalVehicleState.MaxAccelBase > 0.01f) attrState->MaxAccel.BaseValue = g_OriginalVehicleState.MaxAccelBase;
+                if (g_OriginalVehicleState.BoostMaxAccelValue > 0.01f) attrState->BoostMaxAccel.Value = g_OriginalVehicleState.BoostMaxAccelValue;
+                if (g_OriginalVehicleState.BoostMaxAccelBase > 0.01f) attrState->BoostMaxAccel.BaseValue = g_OriginalVehicleState.BoostMaxAccelBase;
+
+                g_WasVehicleSpeedHackOn = false;
+                g_LastVehicleAttrState = nullptr;
+                g_OriginalVehicleState = VehicleOriginalState{};
+            }
+
+            return;
+        }
+
+        if (!attrState)
+            return;
+
+        if (g_LastVehicleAttrState != attrState)
+        {
+            g_LastVehicleAttrState = attrState;
+            g_OriginalVehicleState = VehicleOriginalState{};
+        }
+
+        if (!g_OriginalVehicleState.Captured)
+        {
+            g_OriginalVehicleState.MaxSpeedValue = attrState->maxspeed.Value;
+            g_OriginalVehicleState.MaxSpeedBase = attrState->maxspeed.BaseValue;
+            g_OriginalVehicleState.BoostMaxSpeedValue = attrState->BoostMaxSpeed.Value;
+            g_OriginalVehicleState.BoostMaxSpeedBase = attrState->BoostMaxSpeed.BaseValue;
+            g_OriginalVehicleState.MaxAccelValue = attrState->MaxAccel.Value;
+            g_OriginalVehicleState.MaxAccelBase = attrState->MaxAccel.BaseValue;
+            g_OriginalVehicleState.BoostMaxAccelValue = attrState->BoostMaxAccel.Value;
+            g_OriginalVehicleState.BoostMaxAccelBase = attrState->BoostMaxAccel.BaseValue;
+            g_OriginalVehicleState.Captured = true;
+        }
+
+        const float speedMultiplier = std::clamp(ConfigManager::F("Player.VehicleSpeed"), 0.1f, 50.0f);
+        const float baseMaxSpeed = ResolveBase(g_OriginalVehicleState.MaxSpeedBase, attrState->maxspeed.BaseValue, 1.0f);
+        const float baseBoostMaxSpeed = ResolveBase(g_OriginalVehicleState.BoostMaxSpeedBase, attrState->BoostMaxSpeed.BaseValue, baseMaxSpeed);
+        const float baseMaxAccel = ResolveBase(g_OriginalVehicleState.MaxAccelBase, attrState->MaxAccel.BaseValue, 1.0f);
+        const float baseBoostMaxAccel = ResolveBase(g_OriginalVehicleState.BoostMaxAccelBase, attrState->BoostMaxAccel.BaseValue, baseMaxAccel);
+
+        attrState->maxspeed.Value = baseMaxSpeed * speedMultiplier;
+        attrState->maxspeed.BaseValue = baseMaxSpeed * speedMultiplier;
+        attrState->BoostMaxSpeed.Value = baseBoostMaxSpeed * speedMultiplier;
+        attrState->BoostMaxSpeed.BaseValue = baseBoostMaxSpeed * speedMultiplier;
+        attrState->MaxAccel.Value = baseMaxAccel * speedMultiplier;
+        attrState->MaxAccel.BaseValue = baseMaxAccel * speedMultiplier;
+        attrState->BoostMaxAccel.Value = baseBoostMaxAccel * speedMultiplier;
+        attrState->BoostMaxAccel.BaseValue = baseBoostMaxAccel * speedMultiplier;
+        g_WasVehicleSpeedHackOn = true;
     }
 
     void ApplyInfiniteGlideStamina()
@@ -225,6 +348,46 @@ namespace
             vehicle->ServerRecomputeBoostCost();
 
     }
+
+    SDK::AInventoryGadget* GetLocalInventoryGadget()
+    {
+        SDK::UWorld* world = Utils::GetWorldSafe();
+        if (!world || !world->PersistentLevel || !GVars.Character)
+            return nullptr;
+
+        SDK::AInventoryGadget* firstGadget = nullptr;
+        const int32_t count = world->PersistentLevel->Actors.Num();
+        for (int32_t i = 0; i < count; i++)
+        {
+            SDK::AActor* actor = world->PersistentLevel->Actors[i];
+            if (!actor || !actor->IsA(SDK::AInventoryGadget::StaticClass()))
+                continue;
+
+            SDK::AInventoryGadget* gadget = static_cast<SDK::AInventoryGadget*>(actor);
+            if (!gadget) continue;
+
+            if (!firstGadget) firstGadget = gadget;
+            if (gadget->OwningCharacter == GVars.Character)
+                return gadget;
+        }
+
+        return firstGadget;
+    }
+
+    void ApplyInfiniteGrenades()
+    {
+        if (!ConfigManager::B("Player.InfGrenades"))
+            return;
+
+        SDK::AInventoryGadget* gadget = GetLocalInventoryGadget();
+        if (!gadget) return;
+
+        gadget->CooldownTime.Value = 0.0f;
+        gadget->CooldownTime.BaseValue = 0.0f;
+        gadget->NumberOfCharges = 1000;
+        gadget->MaxNumberOfCharges.Value = 1000;
+        gadget->MaxNumberOfCharges.BaseValue = 1000;
+    }
 }
 
 static float LastPinTime = 0.0f;
@@ -308,22 +471,14 @@ void Cheats::SetPlayerSpeed()
 
 	if (ConfigManager::B("Player.SpeedEnabled")) {
 		const float speedMultiplier = std::clamp(ConfigManager::F("Player.Speed"), 0.1f, 20.0f);
-		const float baseWalk = ResolveBase(g_OriginalMoveState.MaxWalkSpeed, OakMove->MaxWalkSpeed, 600.0f);
-		const float baseWalkCrouched = ResolveBase(g_OriginalMoveState.MaxWalkSpeedCrouched, OakMove->MaxWalkSpeedCrouched, baseWalk * 0.5f);
-		const float baseSwim = ResolveBase(g_OriginalMoveState.MaxSwimSpeed, OakMove->MaxSwimSpeed, baseWalk);
-		const float baseCustom = ResolveBase(g_OriginalMoveState.MaxCustomMovementSpeed, OakMove->MaxCustomMovementSpeed, baseWalk);
-		const float baseAccel = ResolveBase(g_OriginalMoveState.MaxAcceleration, OakMove->MaxAcceleration, 2048.0f);
-		const float baseBrakeWalk = ResolveBase(g_OriginalMoveState.BrakingDecelerationWalking, OakMove->BrakingDecelerationWalking, 2048.0f);
 		const float baseGroundScale = ResolveBase(g_OriginalMoveState.MaxGroundSpeedScaleBase, OakMove->MaxGroundSpeedScale.BaseValue, 1.0f);
+		const float baseTimeDilation = ResolveBase(g_OriginalMoveState.CustomTimeDilationBase, OakChar->CustomTimeDilation.BaseValue, 1.0f);
 
-		OakMove->MaxWalkSpeed = baseWalk * speedMultiplier;
-		OakMove->MaxWalkSpeedCrouched = baseWalkCrouched * speedMultiplier;
-		OakMove->MaxSwimSpeed = baseSwim * speedMultiplier;
-		OakMove->MaxCustomMovementSpeed = baseCustom * speedMultiplier;
-		OakMove->MaxAcceleration = baseAccel * speedMultiplier;
-		OakMove->BrakingDecelerationWalking = baseBrakeWalk * speedMultiplier;
+		// Keep writing every frame because gameplay effects can reset these.
 		OakMove->MaxGroundSpeedScale.Value = baseGroundScale * speedMultiplier;
 		OakMove->MaxGroundSpeedScale.BaseValue = baseGroundScale * speedMultiplier;
+		OakChar->CustomTimeDilation.Value = baseTimeDilation * speedMultiplier;
+		OakChar->CustomTimeDilation.BaseValue = baseTimeDilation * speedMultiplier;
 
 		// Some movement states ignore speed caps but still use current velocity.
 		const float velocityRatio = speedMultiplier / (std::max)(g_LastSpeedMultiplier, 0.01f);
@@ -332,14 +487,10 @@ void Cheats::SetPlayerSpeed()
 		g_WasSpeedHackOn = true;
 	}
 	else if (g_WasSpeedHackOn) {
-		if (g_OriginalMoveState.MaxWalkSpeed > 0.01f) OakMove->MaxWalkSpeed = g_OriginalMoveState.MaxWalkSpeed;
-		if (g_OriginalMoveState.MaxWalkSpeedCrouched > 0.01f) OakMove->MaxWalkSpeedCrouched = g_OriginalMoveState.MaxWalkSpeedCrouched;
-		if (g_OriginalMoveState.MaxSwimSpeed > 0.01f) OakMove->MaxSwimSpeed = g_OriginalMoveState.MaxSwimSpeed;
-		if (g_OriginalMoveState.MaxCustomMovementSpeed > 0.01f) OakMove->MaxCustomMovementSpeed = g_OriginalMoveState.MaxCustomMovementSpeed;
-		if (g_OriginalMoveState.MaxAcceleration > 0.01f) OakMove->MaxAcceleration = g_OriginalMoveState.MaxAcceleration;
-		if (g_OriginalMoveState.BrakingDecelerationWalking > 0.01f) OakMove->BrakingDecelerationWalking = g_OriginalMoveState.BrakingDecelerationWalking;
 		if (g_OriginalMoveState.MaxGroundSpeedScaleValue > 0.01f) OakMove->MaxGroundSpeedScale.Value = g_OriginalMoveState.MaxGroundSpeedScaleValue;
 		if (g_OriginalMoveState.MaxGroundSpeedScaleBase > 0.01f) OakMove->MaxGroundSpeedScale.BaseValue = g_OriginalMoveState.MaxGroundSpeedScaleBase;
+		if (g_OriginalMoveState.CustomTimeDilationValue > 0.01f) OakChar->CustomTimeDilation.Value = g_OriginalMoveState.CustomTimeDilationValue;
+		if (g_OriginalMoveState.CustomTimeDilationBase > 0.01f) OakChar->CustomTimeDilation.BaseValue = g_OriginalMoveState.CustomTimeDilationBase;
 		g_LastSpeedMultiplier = 1.0f;
 		g_WasSpeedHackOn = false;
 	}
@@ -427,6 +578,8 @@ void Cheats::UpdateMovement()
 {
     Cheats::SetPlayerSpeed();
     Cheats::Flight();
+    ApplyInfiniteGrenades();
+    ApplyVehicleSpeedMultiplier();
     ApplyInfiniteGlideStamina();
     ApplyInfiniteVehicleBoost();
     DiscoveryPinWatcher();

@@ -98,6 +98,7 @@ struct Cheats
 		bool bCallOriginal);
 	static bool HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 	static bool HandleAimbotEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
+	static void HandleConstructedObject(const SDK::UObject* Object);
 	static bool HandleWeaponEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 	static bool HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 	

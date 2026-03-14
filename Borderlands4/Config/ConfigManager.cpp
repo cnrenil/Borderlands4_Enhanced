@@ -51,6 +51,7 @@ namespace ConfigManager
         Register("Aimbot.UseMouseInput", true);
         Register("Aimbot.MouseSensitivity", 1.0f);
         Register("Aimbot.Bone", std::string("Head"));
+        Register("Aimbot.StaticConstructOffset", 0);
 
         // TriggerBot
         Register("Trigger.Enabled", false);
@@ -76,6 +77,7 @@ namespace ConfigManager
         Register("Player.GodMode", false);
         Register("Player.Demigod", false);
         Register("Player.InfAmmo", false);
+        Register("Player.InfGrenades", false);
         Register("Player.NoTarget", false);
         Register("Player.PlayersOnly", false);
         Register("Player.GameSpeed", 1.0f);
@@ -88,6 +90,8 @@ namespace ConfigManager
         Register("Player.Flight", false);
         Register("Player.FlightSpeed", 1.0f);
         Register("Player.InfVehicleBoost", false);
+        Register("Player.VehicleSpeedEnabled", false);
+        Register("Player.VehicleSpeed", 1.0f);
         Register("Player.InfGlideStamina", false);
         Register("Player.ESP", true);
 

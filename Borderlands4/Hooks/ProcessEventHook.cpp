@@ -12,6 +12,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 {
 	g_ProcessEventCount.fetch_add(1);
 	static thread_local bool bInsideHook = false;
+	bool bSkipOriginal = false;
 
     // Use a very high throttle interval to avoid spamming, but enough to see it's alive
     // Logger::LogThrottled(Logger::Level::Debug, "PE", 10000, "hkProcessEvent: Alive and being called by engine");
@@ -66,10 +67,10 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
             }
 
             // Modular Handlers
-            if (Cheats::HandleMovementEvents(Object, Function, Params)) goto Exit;
-            if (Cheats::HandleAimbotEvents(Object, Function, Params)) goto Exit;
-            if (Cheats::HandleWeaponEvents(Object, Function, Params)) goto Exit;
-            if (Cheats::HandleCameraEvents(Object, Function, Params)) goto Exit;
+            if (Cheats::HandleMovementEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
+            if (Cheats::HandleAimbotEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
+            if (Cheats::HandleWeaponEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
+            if (Cheats::HandleCameraEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
         }
     }
 	catch (...) {
@@ -78,7 +79,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
 Exit:
 	bInsideHook = false;
-	Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, true);
+	Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, !bSkipOriginal);
 
 	g_ProcessEventCount.fetch_sub(1);
 }

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Utils/AntiDebug.h"
 
 
 #define MAJORVERSION 0
@@ -84,6 +85,7 @@ void GUI::RenderMenu()
                 ImGui::Checkbox(Localization::T("ESP"), &B("Player.ESP"));
                 ImGui::Checkbox(Localization::T("AIMBOT"), &B("Aimbot.Enabled"));
                 ImGui::Checkbox(Localization::T("INF_AMMO"), &B("Player.InfAmmo"));
+                ImGui::Checkbox(Localization::T("INF_GRENADES"), &B("Player.InfGrenades"));
                 ImGui::Checkbox(Localization::T("GODMODE"), &B("Player.GodMode"));
                 ImGui::Checkbox(Localization::T("DEMIGOD"), &B("Player.Demigod"));
                 ImGui::Checkbox(Localization::T("NO_TARGET"), &B("Player.NoTarget"));
@@ -101,6 +103,11 @@ void GUI::RenderMenu()
                     ImGui::SliderFloat(Localization::T("FLIGHT_SPEED"), &F("Player.FlightSpeed"), 1.0f, 20.0f, "%.1f");
                 }
                 ImGui::Checkbox(Localization::T("INF_VEHICLE_BOOST"), &B("Player.InfVehicleBoost"));
+                ImGui::Checkbox(Localization::T("VEHICLE_SPEED_HACK"), &B("Player.VehicleSpeedEnabled"));
+                if (B("Player.VehicleSpeedEnabled"))
+                {
+                    ImGui::SliderFloat(Localization::T("VEHICLE_SPEED_VALUE"), &F("Player.VehicleSpeed"), 1.0f, 20.0f, "%.1f");
+                }
                 ImGui::Checkbox(Localization::T("INF_GLIDE_STAMINA"), &B("Player.InfGlideStamina"));
                 
                 const bool bTPEnabled = B("Player.ThirdPerson");
@@ -353,7 +360,9 @@ void GUI::RenderMenu()
                         else Logger::StopRecording();
                     }
 
-                    if (ImGui::Button("Dump GObjects")) Cheats::DumpObjects();
+                    if (ImGui::Button(Localization::T("DUMP_GOBJECTS"))) Cheats::DumpObjects();
+                    if (ImGui::Button(Localization::T("KILL_SYMBIOTE"))) { AntiDebug::Bypass(); }
+                    GUI::AddDefaultTooltip(Localization::T("KILL_SYMBIOTE_TOOLTIP"));
                     
                     ImGui::TreePop();
                 }

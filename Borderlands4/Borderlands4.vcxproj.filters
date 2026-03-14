@@ -23,6 +23,12 @@
     <Filter Include="Source Files\Hooks">
       <UniqueIdentifier>{2e692223-bab2-41b2-97c4-c25f4b14b4bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Config">
+      <UniqueIdentifier>{5d2aaea9-a3b0-4d68-8f14-5f12f4385d2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GUI">
+      <UniqueIdentifier>{b6b2d774-2144-4fd4-84ba-9fb953f0ee52}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DLLMain.cpp">
@@ -140,10 +146,10 @@
       <Filter>Source Files\Cheats</Filter>
     </ClCompile>
     <ClCompile Include="Config\ConfigManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Config</Filter>
     </ClCompile>
     <ClCompile Include="GUI\Menu.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\GUI</Filter>
     </ClCompile>
     <ClCompile Include="Hooks\EngineHooks.cpp">
       <Filter>Source Files\Hooks</Filter>
@@ -169,7 +175,7 @@
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Cheats.h">
-      <Filter>Source Files\Cheats</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Source Files</Filter>

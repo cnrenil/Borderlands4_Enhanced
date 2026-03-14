@@ -221,6 +221,8 @@
     <ClCompile Include="Utils\Utils.cpp" />
     <ClCompile Include="Utils\Hotkey.cpp" />
     <ClCompile Include="Utils\Logger.cpp" />
+    <ClCompile Include="Utils\Memory.cpp" />
+    <ClCompile Include="Utils\AntiDebug.cpp" />
     <ClCompile Include="Borderlands4_SDK\SDK\GbxGame_functions.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -246,6 +248,8 @@
     <ClInclude Include="Utils\Utils.h" />
     <ClInclude Include="Utils\Hotkey.h" />
     <ClInclude Include="Utils\Logger.h" />
+    <ClInclude Include="Utils\Memory.h" />
+    <ClInclude Include="Utils\AntiDebug.h" />
     <ClInclude Include="Borderlands4_SDK\SDK\Basic.hpp" />
     <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_classes.hpp" />
     <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_structs.hpp" />

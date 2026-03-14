@@ -118,13 +118,50 @@ namespace
 		if (!bFoundFireBehavior) return true;
 		return automaticBurstCount > 1;
 	}
+
+	float GetInputDoubleClickTimeMs()
+	{
+		const SDK::UInputSettings* inputSettings = SDK::UInputSettings::GetDefaultObj();
+		if (!inputSettings) return 220.0f;
+
+		const float ms = inputSettings->DoubleClickTime * 1000.0f;
+		return std::clamp(ms, 80.0f, 450.0f);
+	}
+
+	float GetWeaponTapIntervalMs(const SDK::AWeapon* weapon, bool bIsAutomaticWeapon)
+	{
+		float bestFireRate = 0.0f;
+		if (weapon)
+		{
+			for (int i = 0; i < weapon->behaviors.Num(); i++)
+			{
+				SDK::UWeaponBehavior* behavior = weapon->behaviors[i];
+				if (!behavior || !behavior->IsA(SDK::UWeaponBehavior_Fire::StaticClass()))
+					continue;
+
+				const auto* fireBehavior = static_cast<SDK::UWeaponBehavior_Fire*>(behavior);
+				bestFireRate = (std::max)(bestFireRate, fireBehavior->firerate.Value);
+				bestFireRate = (std::max)(bestFireRate, fireBehavior->firerate.BaseValue);
+			}
+		}
+
+		float intervalMs = bIsAutomaticWeapon ? 95.0f : 140.0f;
+		if (bestFireRate > 0.05f)
+		{
+			intervalMs = 1000.0f / bestFireRate;
+		}
+
+		if (bIsAutomaticWeapon)
+			return std::clamp(intervalMs, 45.0f, 180.0f);
+		return std::clamp(intervalMs, 65.0f, 260.0f);
+	}
 }
 
 void Cheats::TriggerBot()
 {
 	static bool bIsFiringUnderControl = false;
-	static bool bPendingSemiRelease = false;
-	static uint64_t LastSemiTapTimeMs = 0;
+	static uint64_t NextTapTimeMs = 0;
+	static uint64_t PendingReleaseTimeMs = 0;
 	extern std::atomic<int> g_PresentCount;
 
 	auto ReleaseControl = [&]()
@@ -134,7 +171,8 @@ void Cheats::TriggerBot()
 				SendMouseLeftUp();
 				bIsFiringUnderControl = false;
 			}
-			bPendingSemiRelease = false;
+			NextTapTimeMs = 0;
+			PendingReleaseTimeMs = 0;
 			Cheats::bTriggerSuppressMouseInput.store(false);
 		};
 
@@ -172,41 +210,28 @@ void Cheats::TriggerBot()
 
 	SDK::AWeapon* activeWeapon = GetLikelyActiveWeapon();
 	const bool bIsAutomaticWeapon = IsWeaponAutomatic(activeWeapon);
-
-	if (bIsAutomaticWeapon)
-	{
-		if (!bIsFiringUnderControl)
-		{
-			SendMouseLeftDown();
-			bIsFiringUnderControl = true;
-		}
-		bPendingSemiRelease = false;
-		Cheats::bTriggerSuppressMouseInput.store(true);
-		return;
-	}
-
-	// Semi-auto: tap at a controlled rate instead of holding.
-	if (bPendingSemiRelease && bIsFiringUnderControl)
+	const uint64_t nowMs = GetTickCount64();
+	if (bIsFiringUnderControl && PendingReleaseTimeMs > 0 && nowMs >= PendingReleaseTimeMs)
 	{
 		SendMouseLeftUp();
 		bIsFiringUnderControl = false;
-		bPendingSemiRelease = false;
+		PendingReleaseTimeMs = 0;
 		Cheats::bTriggerSuppressMouseInput.store(false);
 	}
 
-	const float fireRateMultiplier = (std::max)(0.1f, ConfigManager::F("Weapon.FireRate"));
-	const uint64_t nowMs = GetTickCount64();
-	float tapInterval = 150.0f / fireRateMultiplier;
-	tapInterval = (std::max)(35.0f, tapInterval);
-	tapInterval = (std::min)(220.0f, tapInterval);
-	const uint64_t tapIntervalMs = static_cast<uint64_t>(tapInterval);
+	float tapIntervalMs = GetWeaponTapIntervalMs(activeWeapon, bIsAutomaticWeapon);
+	// Avoid sending taps faster than engine input pacing can reliably process.
+	const float enginePacingFloorMs = GetInputDoubleClickTimeMs() * 0.5f;
+	tapIntervalMs = (std::max)(tapIntervalMs, enginePacingFloorMs);
+	const uint64_t tapInterval = static_cast<uint64_t>(tapIntervalMs);
+	const uint64_t holdMs = static_cast<uint64_t>(std::clamp(tapIntervalMs * 0.18f, 8.0f, 24.0f));
 
-	if (!bIsFiringUnderControl && (nowMs - LastSemiTapTimeMs) >= tapIntervalMs)
+	if (!bIsFiringUnderControl && nowMs >= NextTapTimeMs)
 	{
 		SendMouseLeftDown();
 		bIsFiringUnderControl = true;
-		bPendingSemiRelease = true;
-		LastSemiTapTimeMs = nowMs;
+		PendingReleaseTimeMs = nowMs + holdMs;
+		NextTapTimeMs = nowMs + tapInterval;
 		Cheats::bTriggerSuppressMouseInput.store(true);
 	}
 }

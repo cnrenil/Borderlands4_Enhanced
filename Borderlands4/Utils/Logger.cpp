@@ -56,7 +56,7 @@ namespace Logger
         }
     }
 
-    void InternalLog(Level level, const std::string& category, const char* format, va_list args)
+    void InternalLog(Level level, const char* category, const char* format, va_list args)
     {
         // 1. Format the message
         char buffer[2048];
@@ -71,14 +71,14 @@ namespace Logger
         std::lock_guard<std::mutex> lock(LogMutex);
 
         // 2. Add to history
-        LogHistory.push_back({ level, category, message, now });
+        LogHistory.push_back({ level, category ? category : "None", message, now });
         if (LogHistory.size() > 500) LogHistory.erase(LogHistory.begin());
 
         // 3. Build full string
         std::stringstream ss;
         ss << "[" << std::put_time(&timeinfo, "%H:%M:%S") << "] "
            << "[" << std::left << std::setw(5) << LevelToString(level) << "] "
-           << "[" << std::left << std::setw(10) << category << "] "
+           << "[" << std::left << std::setw(10) << (category ? category : "None") << "] "
            << message << "\n";
         
         std::string finalLog = ss.str();
@@ -97,6 +97,14 @@ namespace Logger
     }
 
     void Log(Level level, const std::string& category, const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format);
+        InternalLog(level, category.c_str(), format, args);
+        va_end(args);
+    }
+
+    void RawLog(Level level, const char* category, const char* format, ...)
     {
         va_list args;
         va_start(args, format);
@@ -122,7 +130,7 @@ namespace Logger
 
         va_list args;
         va_start(args, format);
-        InternalLog(level, category, format, args);
+        InternalLog(level, category.c_str(), format, args);
         va_end(args);
     }
 

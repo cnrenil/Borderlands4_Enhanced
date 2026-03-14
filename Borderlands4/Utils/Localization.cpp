@@ -71,6 +71,7 @@ namespace Localization
         Register("SPEED_X_1F", "Speed x%.1f", (const char*)u8"速度修改 x%.1f");
         Register("GAME_SPEED_X_F", "Game Speed: x%.1f", (const char*)u8"游戏速度: x%.1f");
         Register("INF_AMMO", "Infinite Ammo", (const char*)u8"无限弹药");
+        Register("INF_GRENADES", "Infinite Grenades", (const char*)u8"无限手雷");
         Register("VOLATILE_HINT", "Note: Toggles like God Mode and Infinite Ammo must be manually enabled after injection for safety.", (const char*)u8"提示：无敌模式和无限弹药等切换类功能在重启后需手动开启。");
  
         // 4. Player Tab - Core Features
@@ -88,6 +89,8 @@ namespace Localization
         Register("FLIGHT", "Flight Mode", (const char*)u8"飞行模式");
         Register("FLIGHT_SPEED", "Flight Speed", (const char*)u8"飞行速度");
         Register("INF_VEHICLE_BOOST", "Infinite Vehicle Boost", (const char*)u8"无限车辆氮气");
+        Register("VEHICLE_SPEED_HACK", "Vehicle Speed Hack", (const char*)u8"载具加速");
+        Register("VEHICLE_SPEED_VALUE", "Vehicle Speed Multiplier", (const char*)u8"载具速度倍率");
         Register("INF_GLIDE_STAMINA", "Infinite Glide Stamina", (const char*)u8"无限滑翔体力");
         
         // 6. Camera / Third Person
@@ -180,6 +183,10 @@ namespace Localization
         Register("SAVE_SETTINGS", "Save Settings", (const char*)u8"保存设置");
         Register("LOAD_SETTINGS", "Load Settings", (const char*)u8"加载设置");
         Register("SILENT_AIM_SETTINGS", "Silent Aim Settings", (const char*)u8"静默自瞄设置 (Silent Aim Settings)");
+        
+        Register("DUMP_GOBJECTS", "Dump GObjects", (const char*)u8"导出 GObjects (SDK)");
+        Register("KILL_SYMBIOTE", "Kill Symbiote (Anti-Debug)", (const char*)u8"干掉反调试 (Symbiote)");
+        Register("KILL_SYMBIOTE_TOOLTIP", "Manually search and kill the Symbiote anti-debug thread.", (const char*)u8"手动搜索并终止 Symbiote 反调试线程。");
         
         // 14. Hotkeys
         Register("HOTKEY_TAB_HELP", "Click on a button to change the bound key. Press ESC to cancel.", (const char*)u8"点击按钮修改对应热键。按 ESC 取消。");

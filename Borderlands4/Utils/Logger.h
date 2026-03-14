@@ -28,6 +28,7 @@ namespace Logger
 
     // Standard Logging
     void Log(Level level, const std::string& category, const char* format, ...);
+    void RawLog(Level level, const char* category, const char* format, ...);
 
     // Throttled Logging (only logs if 'intervalMs' has passed since last log with same category + format)
     void LogThrottled(Level level, const std::string& category, int intervalMs, const char* format, ...);
