@@ -229,6 +229,7 @@ void GUI::RenderMenu()
                 {
                     ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &B("Aimbot.LOS"));
                     ImGui::Checkbox(Localization::T("SILENT_AIM"), &B("Aimbot.Silent"));
+                    ImGui::Checkbox(Localization::T("TRIGGERBOT"), &B("Trigger.Enabled"));
                     ImGui::Checkbox(Localization::T("DRAW_FOV"), &B("Aimbot.DrawFOV"));
                     ImGui::Checkbox(Localization::T("DRAW_ARROW"), &B("Aimbot.DrawArrow"));
                     ImGui::Checkbox(Localization::T("SMOOTH_AIM"), &B("Aimbot.Smooth"));
@@ -247,6 +248,14 @@ void GUI::RenderMenu()
                             if (is_selected) ImGui::SetItemDefaultFocus();
                         }
                         ImGui::EndCombo();
+                    }
+
+                    if (B("Trigger.Enabled"))
+                    {
+                        ImGui::Indent();
+                        ImGui::Checkbox(Localization::T("REQUIRE_KEY_HELD"), &B("Trigger.RequireKeyHeld"));
+                        ImGui::Checkbox(Localization::T("TARGET_ALL"), &B("Trigger.TargetAll"));
+                        ImGui::Unindent();
                     }
                     ImGui::TreePop();
                 }
@@ -320,17 +329,6 @@ void GUI::RenderMenu()
                     ImGui::SliderFloat(Localization::T("HOMING_RANGE"), &F("Weapon.HomingRange"), 1.0f, 200.0f);
                 }
                 
-                ImGui::Separator();
-                ImGui::Checkbox(Localization::T("TRIGGERBOT"), &B("Trigger.Enabled"));
-                
-                if (B("Trigger.Enabled"))
-                {
-                    ImGui::Indent();
-                    ImGui::Checkbox(Localization::T("REQUIRE_KEY_HELD"), &B("Trigger.RequireKeyHeld"));
-                    ImGui::Checkbox(Localization::T("TARGET_ALL"), &B("Trigger.TargetAll"));
-                    ImGui::Unindent();
-                }
-
                 ImGui::EndTabItem();
             }
 
