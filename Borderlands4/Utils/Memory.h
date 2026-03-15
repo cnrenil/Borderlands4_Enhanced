@@ -14,4 +14,19 @@ namespace Memory
 
     // Resolve a near-call (E8 rel32) target from an instruction address.
     uintptr_t ResolveRelativeCallTarget(uintptr_t callInstructionAddress);
+
+    // Patch instance vtable slot to detour and optionally capture original.
+    bool PatchVTableSlot(void* instance, size_t slotIndex, void* detour, void** originalOut);
+
+    // Install a simple absolute jump detour and build a trampoline with stolen bytes.
+    // stolenLen must cover whole instructions and be at least 12 bytes on x64.
+    bool HookFunctionAbsolute(void* target, void* detour, void** originalOut, size_t stolenLen);
+
+    // Dump vtable slots around centerIndex for diagnostics.
+    void DumpVTableWindow(
+        void** vtable,
+        size_t centerIndex,
+        size_t radius,
+        const char* tag,
+        const char* logTag = "MemoryDbg");
 }

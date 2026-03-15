@@ -1,44 +1,50 @@
 #pragma once
 #include <mutex>
 
-inline bool AimbotKeyDown = false;
-
-struct BulletTracer {
-	std::vector<FVector> Points;
-	float CreationTime;
-	int32 Seed;    // Used to match hits from Server_HitscanHit
-	bool bClosed;  // Whether we've already reached MaxPoints or finished
-};
-
-inline std::mutex TracerMutex;
-inline std::vector<BulletTracer> BulletTracersList;
-
-struct BoneListStruct
+namespace SilentAimHooks
 {
-	std::string HeadBone = "Head";
-	std::string NeckBone = "Neck";
-	std::string ChestBone = "Spine3";
-	std::string StomachBone = "Spine2";
-	std::string PelvisBone = "Hips";
-	std::string LeftShoulderBone = "L_Upperarm";
-	std::string LeftElbowBone = "L_Forearm";
-	std::string LeftHandBone = "L_Hand";
-	std::string RightShoulderBone = "R_Upperarm";
-	std::string RightElbowBone = "R_Forearm";
-	std::string RightHandBone = "R_Hand";
-	std::string LeftThighBone = "L_Thigh";
-	std::string LeftShinBone = "L_Shin";
-	std::string LeftFootBone = "L_Foot";
-	std::string RightThighBone = "R_Thigh";
-	std::string RightShinBone = "R_Shin";
-	std::string RightFootBone = "R_Foot";
-} inline BoneList;
+	void UpdateTarget(SDK::AActor* target, const SDK::FVector& targetPos);
+	void Tick();
+	void OnAimbotHotkey();
+	void ResetArm();
+}
 
-#include "Config/ConfigManager.h"
-#include "Utils/Localization.h"
+namespace CheatsData
+{
+	struct BulletTracer
+	{
+		std::vector<FVector> Points;
+		float CreationTime;
+		int32 Seed;    // Used to match hits from Server_HitscanHit
+		bool bClosed;  // Whether we've already reached MaxPoints or finished
+	};
 
-// Note: Configuration settings are now managed centrally by ConfigManager.
-// Use ConfigManager::B("Section.Key") for bools, F() for floats, etc.
+	inline std::mutex TracerMutex;
+	inline std::vector<BulletTracer> BulletTracers;
+
+	struct BoneListConfig
+	{
+		std::string HeadBone = "Head";
+		std::string NeckBone = "Neck";
+		std::string ChestBone = "Spine3";
+		std::string StomachBone = "Spine2";
+		std::string PelvisBone = "Hips";
+		std::string LeftShoulderBone = "L_Upperarm";
+		std::string LeftElbowBone = "L_Forearm";
+		std::string LeftHandBone = "L_Hand";
+		std::string RightShoulderBone = "R_Upperarm";
+		std::string RightElbowBone = "R_Forearm";
+		std::string RightHandBone = "R_Hand";
+		std::string LeftThighBone = "L_Thigh";
+		std::string LeftShinBone = "L_Shin";
+		std::string LeftFootBone = "L_Foot";
+		std::string RightThighBone = "R_Thigh";
+		std::string RightShinBone = "R_Shin";
+		std::string RightFootBone = "R_Foot";
+	};
+
+	inline BoneListConfig BoneList;
+}
 
 struct Cheats
 {

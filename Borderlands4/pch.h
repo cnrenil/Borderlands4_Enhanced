@@ -64,6 +64,7 @@ using namespace SDK;
 #include "Utils/Localization.h"
 #include "Utils/Hotkey.h"
 #include "Utils/Memory.h"
+#include "Utils/NativeInterop.h"
 #include "Utils/Utils.h"
 #include "Engine.h"
 #include "Cheats.h"
