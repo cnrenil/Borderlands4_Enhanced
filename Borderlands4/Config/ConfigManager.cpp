@@ -52,6 +52,9 @@ namespace ConfigManager
         Register("Aimbot.MouseSensitivity", 1.0f);
         Register("Aimbot.Bone", std::string("Head"));
         Register("Aimbot.StaticConstructOffset", 0);
+        Register("Aimbot.NativeProjectileHook", true);
+        Register("Aimbot.ProjectileBuildCallRVA", 0x148FAC6);
+        Register("Aimbot.ProjectileBuildRVA", 0x14903B4);
 
         // TriggerBot
         Register("Trigger.Enabled", false);

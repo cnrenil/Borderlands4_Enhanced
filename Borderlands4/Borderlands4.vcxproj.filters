@@ -46,6 +46,15 @@
     <ClCompile Include="Utils\Logger.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\Memory.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\AntiDebug.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Input.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="ImGui\backends\imgui_impl_dx12.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -172,6 +181,12 @@
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Utils\Logger.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Memory.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\AntiDebug.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="Cheats.h">

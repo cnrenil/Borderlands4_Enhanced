@@ -5,22 +5,6 @@ static std::atomic<int> g_LastTriggerHotkeyFrame{ -1 };
 
 namespace
 {
-	void SendMouseLeftDown()
-	{
-		INPUT input{};
-		input.type = INPUT_MOUSE;
-		input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-		SendInput(1, &input, sizeof(INPUT));
-	}
-
-	void SendMouseLeftUp()
-	{
-		INPUT input{};
-		input.type = INPUT_MOUSE;
-		input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-		SendInput(1, &input, sizeof(INPUT));
-	}
-
 	SDK::AWeapon* GetLikelyActiveWeapon()
 	{
 		APawn* controlledPawn = nullptr;
@@ -168,7 +152,7 @@ void Cheats::TriggerBot()
 		{
 			if (bIsFiringUnderControl)
 			{
-				SendMouseLeftUp();
+				Utils::SendMouseLeftUp();
 				bIsFiringUnderControl = false;
 			}
 			NextTapTimeMs = 0;
@@ -213,7 +197,7 @@ void Cheats::TriggerBot()
 	const uint64_t nowMs = GetTickCount64();
 	if (bIsFiringUnderControl && PendingReleaseTimeMs > 0 && nowMs >= PendingReleaseTimeMs)
 	{
-		SendMouseLeftUp();
+		Utils::SendMouseLeftUp();
 		bIsFiringUnderControl = false;
 		PendingReleaseTimeMs = 0;
 		Cheats::bTriggerSuppressMouseInput.store(false);
@@ -228,7 +212,7 @@ void Cheats::TriggerBot()
 
 	if (!bIsFiringUnderControl && nowMs >= NextTapTimeMs)
 	{
-		SendMouseLeftDown();
+		Utils::SendMouseLeftDown();
 		bIsFiringUnderControl = true;
 		PendingReleaseTimeMs = nowMs + holdMs;
 		NextTapTimeMs = nowMs + tapInterval;

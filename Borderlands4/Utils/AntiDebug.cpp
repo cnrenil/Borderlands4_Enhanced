@@ -1,8 +1,4 @@
 #include "pch.h"
-#include "AntiDebug.h"
-#include "Memory.h"
-#include <tlhelp32.h>
-#include <winternl.h>
 
 typedef NTSTATUS(NTAPI* pNtQueryInformationThread)(
     HANDLE          ThreadHandle,
@@ -16,7 +12,6 @@ typedef NTSTATUS(NTAPI* pNtQueryInformationThread)(
 
 namespace AntiDebug
 {
-    // Inner function to handle logic, avoiding C2712 (mixing SEH with C++ objects)
     static void InternalBypass()
     {
         LOG_INFO("AntiDebug", "Starting advanced safe search for Symbiote thread...");
@@ -29,10 +24,8 @@ namespace AntiDebug
 
         std::vector<uintptr_t> found_addrs;
         for (const char* p : patterns) {
-            // First try scanning the main module (fast)
             uintptr_t addr = Memory::FindPattern(p);
             
-            // If not found, scan the entire process memory (thorough)
             if (!addr) {
                 LOG_DEBUG("AntiDebug", "Pattern not in main module, trying Global scan...");
                 addr = Memory::FindPatternGlobal(p);
@@ -42,9 +35,6 @@ namespace AntiDebug
                 found_addrs.push_back(addr);
                 LOG_INFO("AntiDebug", "Symbiote logic found at 0x%llX. Patching to 'ret'...", addr);
 
-                // Strategy 1: Logic Neutralization (Entry Patching)
-                // We patch the entry point to 'ret' (0xC3) so the thread logic immediately returns.
-                // This is safer than killing if there is a 'Watchdog' thread monitoring it.
                 unsigned char ret_opcode = 0xC3; 
                 DWORD old_protect;
                 if (VirtualProtect((LPVOID)addr, 1, PAGE_EXECUTE_READWRITE, &old_protect)) {
@@ -100,7 +90,6 @@ namespace AntiDebug
                                     if (TerminateThread(hThread, 0)) {
                                         killedCount++;
                                     } else {
-                                        // Fallback: Even if we can't kill it, the logic is likely already patched.
                                         LOG_WARN("AntiDebug", "Could not kill thread %d (Access Denied?), but logic at 0x%llX was patched.", 
                                             te.th32ThreadID, patternAddr);
                                     }
@@ -126,8 +115,6 @@ namespace AntiDebug
         }
         __except (EXCEPTION_EXECUTE_HANDLER) 
         {
-            // Use RawLog instead of Log to avoid temporary std::string objects
-            // which are forbidden in a function with __try/SEH.
             Logger::RawLog(Logger::Level::Error, "AntiDebug", "Critical error during Anti-Debug bypass! (SEH Caught)");
         }
     }

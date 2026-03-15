@@ -76,6 +76,8 @@ struct Utils
 	static ETeamAttitude GetAttitude(AActor* Target);
 	static float GetHealthPercent(AActor* Actor);
 	static FVector GetHighestBone(ACharacter* TargetChar);
+	static void SendMouseLeftDown();
+	static void SendMouseLeftUp();
 
     static inline std::atomic<bool> bIsLoading = false;
     static inline std::atomic<bool> bIsInGame = false;

@@ -48,7 +48,14 @@ void Cheats::Render()
         {
             Logger::LogThrottled(Logger::Level::Debug, "Render", 10000, "Cheats::Render: Logic thread active (not loading)");
             if (ConfigManager::B("Player.ESP")) UpdateESP();
-            if (ConfigManager::B("Aimbot.Enabled")) Aimbot();
+            if (ConfigManager::B("Aimbot.Enabled"))
+            {
+                Aimbot();
+                if (!ConfigManager::B("Aimbot.RequireKeyHeld"))
+                {
+                    AimbotHotkey();
+                }
+            }
 
             UpdateMovement();
             UpdateWeapon();

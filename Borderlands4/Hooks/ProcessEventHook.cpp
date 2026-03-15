@@ -13,12 +13,24 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 	g_ProcessEventCount.fetch_add(1);
 	static thread_local bool bInsideHook = false;
 	bool bSkipOriginal = false;
+    const bool bDebugEnabled = (ConfigManager::ConfigMap.count("Misc.Debug") && ConfigManager::B("Misc.Debug"));
+    auto DispatchDebugOrOriginal = [&](bool bCallOriginal)
+    {
+        if (bDebugEnabled)
+        {
+            Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, bCallOriginal);
+        }
+        else if (bCallOriginal && oProcessEvent)
+        {
+            oProcessEvent(Object, Function, Params);
+        }
+    };
 
     // Use a very high throttle interval to avoid spamming, but enough to see it's alive
     // Logger::LogThrottled(Logger::Level::Debug, "PE", 10000, "hkProcessEvent: Alive and being called by engine");
 
 	if (!Object || !Function || Cleaning.load() || bInsideHook) {
-		Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, true);
+		DispatchDebugOrOriginal(true);
 		g_ProcessEventCount.fetch_sub(1);
 		return;
 	}
@@ -51,7 +63,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
                 {
                     // CRITICAL FIX: To block, we must return WITHOUT calling oProcessEvent
                     bInsideHook = false;
-                    Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, false);
+                    DispatchDebugOrOriginal(false);
                     g_ProcessEventCount.fetch_sub(1);
                     return; 
                 }
@@ -61,7 +73,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
             if (Cheats::bTriggerSuppressMouseInput.load() && IsMouseInputEvent(fnName))
             {
                 bInsideHook = false;
-                Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, false);
+                DispatchDebugOrOriginal(false);
                 g_ProcessEventCount.fetch_sub(1);
                 return;
             }
@@ -79,7 +91,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
 Exit:
 	bInsideHook = false;
-	Cheats::HandleDebugEvents(Object, Function, Params, oProcessEvent, !bSkipOriginal);
+	DispatchDebugOrOriginal(!bSkipOriginal);
 
 	g_ProcessEventCount.fetch_sub(1);
 }

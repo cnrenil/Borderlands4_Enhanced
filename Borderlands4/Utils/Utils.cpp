@@ -508,3 +508,19 @@ FVector Utils::GetHighestBone(ACharacter* TargetChar)
     }
     return BestPos;
 }
+
+void Utils::SendMouseLeftDown()
+{
+    INPUT input{};
+    input.type = INPUT_MOUSE;
+    input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+    SendInput(1, &input, sizeof(INPUT));
+}
+
+void Utils::SendMouseLeftUp()
+{
+    INPUT input{};
+    input.type = INPUT_MOUSE;
+    input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+    SendInput(1, &input, sizeof(INPUT));
+}

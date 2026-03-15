@@ -46,9 +46,9 @@ namespace d3d12hook {
     // Grace period (ms) after first Present before we initialize ImGui.
     // This lets the game finish HDR / DLSS / swapchain setup.
     static constexpr DWORD        INIT_GRACE_PERIOD_MS = 5000;
-    // Extra cooldown after each ResizeBuffers. Splash -> main window transitions
-    // can trigger several swapchain reconfigurations; stay fully passive during this phase.
-    static constexpr DWORD        POST_RESIZE_COOLDOWN_MS = 10000;
+    // Extra cooldown after each ResizeBuffers.
+    // Keep it short; set to 0 to disable completely.
+    static constexpr DWORD        POST_RESIZE_COOLDOWN_MS = 500;
     static DWORD                  gLastResizeTime = 0;
 
     static bool IsInPostResizeCooldown() {

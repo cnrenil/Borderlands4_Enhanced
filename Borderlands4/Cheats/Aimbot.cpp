@@ -1,360 +1,532 @@
 #include "pch.h"
 
 static AActor* CurrentAimbotTarget = nullptr;
+
 namespace
 {
 	static SDK::FVector g_SilentRedirectTargetPos{};
 	static double g_LastSilentArmTime = 0.0;
-	static double g_LastSilentProjectileEventTime = 0.0;
-	static double g_LastSilentPathProbeTime = 0.0;
-	static std::unordered_map<std::string, double> g_SilentPathLastLogTime;
-	static SDK::ALightProjectileManager* g_CachedLightProjectileManager = nullptr;
-	static double g_LastLightProjectileManagerLookupTime = 0.0;
-	static double g_LastSilentLegacyScanTime = 0.0;
-	struct ProjectileSilentAssignment
+
+	static std::atomic<bool> g_NativeProjectileHookInstalled{ false };
+	static std::atomic<bool> g_NativeProjectileHookAttempted{ false };
+	static double g_LastNativeHookAttemptTime = 0.0;
+	static uintptr_t g_NativeProjectileHookAddress = 0;
+	static std::mutex g_SilentHookInstallMutex;
+
+	static std::atomic<bool> g_StartFireHookInstalled{ false };
+	static std::atomic<bool> g_StartFireHookAttempted{ false };
+	static double g_LastStartFireHookAttemptTime = 0.0;
+	static uintptr_t g_StartFireHookAddress = 0;
+	static constexpr size_t kStartFireVTableOffset = 0xBC8; // IDA: APlayerController::execStartFire -> call [vtable + 0xBC8]
+	static constexpr size_t kStartFireVTableIndex = kStartFireVTableOffset / sizeof(void*);
+	static constexpr size_t kPCWeaponBridgeOffset = 0x3D0;  // IDA: sub_147A9FAFE reads [PlayerController + 0x3D0]
+	static constexpr size_t kWeaponFireVTableOffset = 0x660; // IDA: jmp qword ptr [vtable + 0x660]
+	static constexpr size_t kWeaponFireVTableIndex = kWeaponFireVTableOffset / sizeof(void*);
+
+	static std::atomic<bool> g_WeaponFireHookInstalled{ false };
+	static std::atomic<bool> g_WeaponFireHookAttempted{ false };
+	static double g_LastWeaponFireHookAttemptTime = 0.0;
+	static uintptr_t g_WeaponFireHookAddress = 0;
+
+	struct NativeVec3
 	{
-		SDK::TWeakObjectPtr<SDK::AActor> Target;
-		double LastSeenTime = 0.0;
+		double X;
+		double Y;
+		double Z;
 	};
-	static std::unordered_map<SDK::ULightProjectile*, ProjectileSilentAssignment> g_SilentProjectileAssignments;
-	struct PendingSilentSnapshot
-	{
-		SDK::TWeakObjectPtr<SDK::AActor> Target;
-		SDK::FVector TargetPos{};
-		double CapturedAt = 0.0;
-		uint64 Sequence = 0;
-	};
-	static PendingSilentSnapshot g_PendingSilentSnapshot{};
-	static uint64 g_PendingSnapshotSeq = 0;
+
+	using ProjectileContextBuildFn = __int64(__fastcall*)(
+		__int64 a1,
+		__int64 a2,
+		unsigned int* a3,
+		__int64 a4,
+		__int64 a5,
+		__int64 a6,
+		__int64 a7,
+		__int64 a8,
+		__int64 a9,
+		__int64 a10);
+
+	using LightSpawnCommitFn = void(__fastcall*)(__int64 a1, __int64 a2);
+
+	using StartFireFn = __int64(__fastcall*)(SDK::APlayerController* controller, uint8 fireModeNum);
+	using WeaponFireBridgeFn = __int64(__fastcall*)(void* weaponBridge, unsigned int fireModeNum);
+
+	static ProjectileContextBuildFn oProjectileContextBuild = nullptr;
+	static LightSpawnCommitFn oLightSpawnCommit = nullptr;
+	static StartFireFn oStartFire = nullptr;
+	static WeaponFireBridgeFn oWeaponFireBridge = nullptr;
+	static constexpr uintptr_t kProjectileContextBuildRVA = 0x15EDCCA; // IDA: sub_1415EDCCA
+	static constexpr uintptr_t kLightSpawnCommitRVA = 0x115C2F0;       // IDA: sub_14115C2F0
 
 	double NowSeconds()
 	{
 		return static_cast<double>(GetTickCount64()) * 0.001;
 	}
 
-	bool IsLocalActor(const SDK::AActor* Actor)
+	bool IsSilentArmed()
 	{
-		if (!Actor) return false;
-		const SDK::AActor* localCharacter = GVars.Character;
-		const SDK::AActor* controlledPawn = (GVars.PlayerController ? static_cast<SDK::AActor*>(GVars.PlayerController->Pawn) : nullptr);
-		return Actor == localCharacter || Actor == controlledPawn;
+		return ConfigManager::B("Aimbot.Enabled") &&
+			ConfigManager::B("Aimbot.Silent") &&
+			ConfigManager::B("Aimbot.NativeProjectileHook") &&
+			CurrentAimbotTarget &&
+			Utils::IsValidActor(CurrentAimbotTarget) &&
+			(NowSeconds() - g_LastSilentArmTime) <= 0.8;
 	}
 
-	bool IsLocalLightProjectileSpawn(const SDK::FLightProjectileSpawnData& SpawnData)
+	void LogSilentState(const char* where)
 	{
-		SDK::AActor* localCharacter = GVars.Character;
-		SDK::AActor* controlledPawn = (GVars.PlayerController ? static_cast<SDK::AActor*>(GVars.PlayerController->Pawn) : nullptr);
-		SDK::AActor* instigator = SpawnData.instigator.Get();
-		SDK::AActor* source = SpawnData.Source.Get();
-		SDK::AActor* damageCauser = SpawnData.DamageCauser.Get();
-
-		if (localCharacter && (instigator == localCharacter || source == localCharacter || damageCauser == localCharacter))
-			return true;
-		if (controlledPawn && (instigator == controlledPawn || source == controlledPawn || damageCauser == controlledPawn))
-			return true;
-		return false;
+		Logger::LogThrottled(
+			Logger::Level::Debug,
+			"SilentAimDbg",
+			1000,
+			"%s: enabled=%d silent=%d native=%d target=%p armAge=%.3f",
+			where,
+			ConfigManager::B("Aimbot.Enabled") ? 1 : 0,
+			ConfigManager::B("Aimbot.Silent") ? 1 : 0,
+			ConfigManager::B("Aimbot.NativeProjectileHook") ? 1 : 0,
+			CurrentAimbotTarget,
+			(NowSeconds() - g_LastSilentArmTime));
 	}
 
-	bool IsLocalWeapon(const SDK::AWeapon* Weapon)
+	void DumpVTableWindow(void** vtable, size_t centerIndex, size_t radius, const char* tag)
 	{
-		if (!Weapon || !GVars.Character) return false;
-		auto* localChar = reinterpret_cast<SDK::AOakCharacter*>(GVars.Character);
-		for (const auto& slot : localChar->ActiveWeapons.Slots)
+		if (!vtable) return;
+
+		MEMORY_BASIC_INFORMATION mbi{};
+		if (VirtualQuery(vtable, &mbi, sizeof(mbi)) == 0 ||
+			mbi.State != MEM_COMMIT ||
+			(mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) != 0)
 		{
-			if (slot.Weapon == Weapon) return true;
-		}
-		return false;
-	}
-
-	bool IsLikelyFirePathName(const std::string& functionName)
-	{
-		return functionName.find("Fire") != std::string::npos ||
-			functionName.find("Hit") != std::string::npos ||
-			functionName.find("Trace") != std::string::npos ||
-			functionName.find("Shot") != std::string::npos ||
-			functionName.find("Damage") != std::string::npos ||
-			functionName.find("Projectile") != std::string::npos ||
-			functionName.find("Impact") != std::string::npos ||
-			functionName.find("Use") != std::string::npos ||
-			functionName.find("StartUsing") != std::string::npos ||
-			functionName.find("StopUsing") != std::string::npos ||
-			functionName.find("Server") != std::string::npos;
-	}
-
-	bool IsLikelyFirePathClass(const std::string& className)
-	{
-		return className.find("Weapon") != std::string::npos ||
-			className.find("Behavior") != std::string::npos ||
-			className.find("Projectile") != std::string::npos ||
-			className.find("OakPlayerController") != std::string::npos ||
-			className.find("OakCharacter") != std::string::npos;
-	}
-
-	SDK::ALightProjectileManager* FindLightProjectileManager()
-	{
-		if (g_CachedLightProjectileManager)
-		{
-			if (Utils::IsValidActor(g_CachedLightProjectileManager))
-			{
-				return g_CachedLightProjectileManager;
-			}
-			g_CachedLightProjectileManager = nullptr;
-		}
-
-		const double now = NowSeconds();
-		if ((now - g_LastLightProjectileManagerLookupTime) < 0.25) return nullptr;
-		g_LastLightProjectileManagerLookupTime = now;
-
-		SDK::UWorld* world = Utils::GetWorldSafe();
-		if (!world) return nullptr;
-
-		auto FindInLevel = [](SDK::ULevel* level) -> SDK::ALightProjectileManager*
-		{
-			if (!level) return nullptr;
-			for (int32 i = 0; i < level->Actors.Num(); ++i)
-			{
-				SDK::AActor* actor = level->Actors[i];
-				if (!actor) continue;
-				if (!actor->IsA(SDK::ALightProjectileManager::StaticClass())) continue;
-				return static_cast<SDK::ALightProjectileManager*>(actor);
-			}
-			return nullptr;
-		};
-
-		if (SDK::ALightProjectileManager* mgr = FindInLevel(world->PersistentLevel))
-		{
-			g_CachedLightProjectileManager = mgr;
-			return mgr;
-		}
-
-		for (int32 i = 0; i < world->StreamingLevels.Num(); ++i)
-		{
-			SDK::ULevelStreaming* streaming = world->StreamingLevels[i];
-			if (!streaming) continue;
-			SDK::ULevel* loadedLevel = streaming->GetLoadedLevel();
-			if (SDK::ALightProjectileManager* mgr = FindInLevel(loadedLevel))
-			{
-				g_CachedLightProjectileManager = mgr;
-				return mgr;
-			}
-		}
-
-		return nullptr;
-	}
-
-	bool IsProjectileOwnedByLocalPlayer(SDK::ULightProjectile* proj)
-	{
-		if (!proj) return false;
-		SDK::AActor* localCharacter = GVars.Character;
-		SDK::AActor* localPawn = (GVars.PlayerController ? static_cast<SDK::AActor*>(GVars.PlayerController->Pawn) : nullptr);
-		if (!localCharacter && !localPawn) return false;
-
-		SDK::AActor* instigator = proj->GetAssociatedActor(SDK::ELightProjectileQueryActorType::Instigator);
-		SDK::AActor* source = proj->GetAssociatedActor(SDK::ELightProjectileQueryActorType::Source);
-		SDK::AActor* damageCauser = proj->GetAssociatedActor(SDK::ELightProjectileQueryActorType::DamageCauser);
-
-		if (localCharacter && (instigator == localCharacter || source == localCharacter || damageCauser == localCharacter)) return true;
-		if (localPawn && (instigator == localPawn || source == localPawn || damageCauser == localPawn)) return true;
-		return false;
-	}
-
-	bool ApplySilentToSingleProjectile(SDK::ULightProjectile* proj, SDK::AActor* currentTarget, const SDK::FVector& currentTargetPos);
-
-	void SetWeakActor(SDK::TWeakObjectPtr<SDK::AActor>& weakPtr, SDK::AActor* actor)
-	{
-		if (!actor)
-		{
-			weakPtr.ObjectIndex = 0;
-			weakPtr.ObjectSerialNumber = 0;
+			Logger::LogThrottled(
+				Logger::Level::Debug,
+				"SilentAimDbg",
+				1000,
+				"%s vtable unreadable: vtable=%p",
+				tag,
+				vtable);
 			return;
 		}
-		weakPtr.ObjectIndex = actor->Index;
-		weakPtr.ObjectSerialNumber = 0;
-	}
 
-	SDK::AActor* ResolveWeakActor(const SDK::TWeakObjectPtr<SDK::AActor>& weakPtr)
-	{
-		return const_cast<SDK::TWeakObjectPtr<SDK::AActor>&>(weakPtr).Get();
-	}
-
-	void CaptureSilentSnapshot(SDK::AActor* target, const SDK::FVector& targetPos)
-	{
-		if (!target) return;
-		SetWeakActor(g_PendingSilentSnapshot.Target, target);
-		g_PendingSilentSnapshot.TargetPos = targetPos;
-		g_PendingSilentSnapshot.CapturedAt = NowSeconds();
-		g_PendingSilentSnapshot.Sequence = ++g_PendingSnapshotSeq;
-		Logger::LogThrottled(
-			Logger::Level::Debug,
-			"SilentAim",
-			120,
-			"Spawn snapshot captured. seq=%llu target=%s",
-			static_cast<unsigned long long>(g_PendingSilentSnapshot.Sequence),
-			target->GetName().c_str());
-	}
-
-	bool GetRecentSilentSnapshot(SDK::AActor*& outTarget, SDK::FVector& outTargetPos)
-	{
-		outTarget = ResolveWeakActor(g_PendingSilentSnapshot.Target);
-		outTargetPos = g_PendingSilentSnapshot.TargetPos;
-		if (!outTarget) return false;
-		return (NowSeconds() - g_PendingSilentSnapshot.CapturedAt) <= 1.0;
-	}
-
-	void ApplySilentHomingProjectiles(SDK::AActor* currentTarget, const SDK::FVector& currentTargetPos)
-	{
-		if (!currentTarget) return;
-
-		SDK::ALightProjectileManager* mgr = FindLightProjectileManager();
-
-		int changedCount = 0;
-		auto ApplyToProjectile = [&](SDK::ULightProjectile* proj)
+		const size_t begin = (centerIndex > radius) ? (centerIndex - radius) : 0;
+		const size_t end = centerIndex + radius;
+		for (size_t i = begin; i <= end; ++i)
 		{
-			if (ApplySilentToSingleProjectile(proj, currentTarget, currentTargetPos)) ++changedCount;
-		};
+			void* fn = vtable[i];
 
-		if (mgr)
-		{
-			for (int i = 0; i < mgr->ActiveProjectiles.Num(); ++i)
-			{
-				ApplyToProjectile(mgr->ActiveProjectiles[i]);
-			}
-		}
-
-		// Cleanup stale assignments for projectiles that no longer exist in active processing window.
-		const double now = NowSeconds();
-		for (auto it = g_SilentProjectileAssignments.begin(); it != g_SilentProjectileAssignments.end();)
-		{
-			if (!it->first || (now - it->second.LastSeenTime) > 2.5)
-			{
-				it = g_SilentProjectileAssignments.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
-
-		if (changedCount > 0)
-		{
 			Logger::LogThrottled(
 				Logger::Level::Debug,
-				"SilentAim",
-				160,
-				"Homing redirect applied to %d light projectile(s). current target=%s",
-				changedCount,
-				currentTarget->GetName().c_str());
-		}
-		else
-		{
-			Logger::LogThrottled(
-				Logger::Level::Debug,
-				"SilentAim",
-				1200,
-				"LightProjectileManager found but no local active light projectiles.");
+				"SilentAimDbg",
+				1000,
+				"%s vtable[0x%zX] = %p",
+				tag,
+				i * sizeof(void*),
+				fn);
 		}
 	}
 
-	bool ApplySilentToSingleProjectile(SDK::ULightProjectile* proj, SDK::AActor* currentTarget, const SDK::FVector& currentTargetPos)
+	bool ReadVec3Param(const void* param, SDK::FVector& out)
 	{
-		if (!proj || !currentTarget) return false;
-		if (!IsProjectileOwnedByLocalPlayer(proj)) return false;
-
-		const std::wstring boneNameWide = UtfN::StringToWString(ConfigManager::S("Aimbot.Bone"));
-		const SDK::FName homingBone = SDK::UKismetStringLibrary::Conv_StringToName(boneNameWide.c_str());
-		const double now = NowSeconds();
-
-		auto& assignment = g_SilentProjectileAssignments[proj];
-		if (!assignment.Target.Get())
+		if (!param) return false;
+		__try
 		{
-			assignment.Target.ObjectIndex = currentTarget->Index;
-			assignment.Target.ObjectSerialNumber = 0;
+			const NativeVec3* v = reinterpret_cast<const NativeVec3*>(param);
+			if (!std::isfinite(v->X) || !std::isfinite(v->Y) || !std::isfinite(v->Z)) return false;
+			out = SDK::FVector{ v->X, v->Y, v->Z };
+			return true;
 		}
-		assignment.LastSeenTime = now;
-
-		SDK::AActor* assignedTarget = assignment.Target.Get();
-		if (!assignedTarget)
+		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
-			assignedTarget = currentTarget;
-			assignment.Target.ObjectIndex = currentTarget->Index;
-			assignment.Target.ObjectSerialNumber = 0;
+			return false;
 		}
-
-		SDK::FVector targetPos = currentTargetPos;
-		SDK::USceneComponent* targetComp = nullptr;
-		if (assignedTarget->IsA(SDK::ACharacter::StaticClass()))
-		{
-			SDK::ACharacter* assignedChar = reinterpret_cast<SDK::ACharacter*>(assignedTarget);
-			if (assignedChar->Mesh)
-			{
-				targetComp = assignedChar->Mesh;
-				if (assignedChar->Mesh->GetBoneIndex(homingBone) != -1)
-				{
-					targetPos = assignedChar->Mesh->GetBoneTransform(homingBone, SDK::ERelativeTransformSpace::RTS_World).Translation;
-				}
-				else
-				{
-					targetPos = Utils::GetHighestBone(assignedChar);
-				}
-			}
-		}
-		else
-		{
-			targetPos = assignedTarget->K2_GetActorLocation();
-		}
-
-		const SDK::FVector delta{
-			targetPos.X - proj->Location.X,
-			targetPos.Y - proj->Location.Y,
-			targetPos.Z - proj->Location.Z
-		};
-		const float lenSq = static_cast<float>(delta.X * delta.X + delta.Y * delta.Y + delta.Z * delta.Z);
-		if (lenSq > 0.0001f)
-		{
-			const float len = sqrtf(lenSq);
-			const SDK::FVector dir{ delta.X / len, delta.Y / len, delta.Z / len };
-			float speed = static_cast<float>(
-				sqrt(proj->Velocity.X * proj->Velocity.X +
-					proj->Velocity.Y * proj->Velocity.Y +
-					proj->Velocity.Z * proj->Velocity.Z));
-			if (speed < 1.0f)
-			{
-				speed = (proj->maxspeed > 1.0f) ? proj->maxspeed : 25000.0f;
-			}
-			proj->Velocity = SDK::FVector{ dir.X * speed, dir.Y * speed, dir.Z * speed };
-		}
-
-		proj->HomingTurnSpeedScale = 10000.0f;
-		proj->GravityScale = 0.0f;
-		proj->SetHoming(true);
-		proj->SetHomingTarget(assignedTarget, targetComp, homingBone, SDK::FVector{ 0.0, 0.0, 0.0 });
-		proj->SetHomingTargetLocation(targetPos);
-		return true;
 	}
 
-	bool RedirectLightProjectileSpawnDirection(SDK::FLightProjectileSpawnData& SpawnData, const SDK::FVector& TargetPos)
+	void WriteVec3Param(void* param, const SDK::FVector& value)
 	{
-		const SDK::FVector delta = TargetPos - SpawnData.Location;
-		const float lenSq = (float)(delta.X * delta.X + delta.Y * delta.Y + delta.Z * delta.Z);
-		if (lenSq < 0.0001f) return false;
+		if (!param) return;
+		__try
+		{
+			NativeVec3* v = reinterpret_cast<NativeVec3*>(param);
+			v->X = value.X;
+			v->Y = value.Y;
+			v->Z = value.Z;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+		}
+	}
+
+	bool RedirectDirectionFromSource(const SDK::FVector& source, void* dirOut, const char* tag)
+	{
+		const SDK::FVector toTarget = g_SilentRedirectTargetPos - source;
+		const float lenSq = static_cast<float>(toTarget.X * toTarget.X + toTarget.Y * toTarget.Y + toTarget.Z * toTarget.Z);
+		if (lenSq <= 0.0001f) return false;
 
 		const float len = sqrtf(lenSq);
-		SDK::FVector newDirection{ delta.X / len, delta.Y / len, delta.Z / len };
-		SpawnData.Direction = newDirection;
-		SpawnData.EndLocation = TargetPos;
-		return true;
-	}
-
-	void LogRedirected(const char* Path, const SDK::FLightProjectileSpawnData& SpawnData)
-	{
+		const SDK::FVector dir{ toTarget.X / len, toTarget.Y / len, toTarget.Z / len };
+		WriteVec3Param(dirOut, dir);
 		Logger::LogThrottled(
 			Logger::Level::Debug,
 			"SilentAim",
-			300,
-			"%s redirected. newDir=(%.3f, %.3f, %.3f) end=(%.1f, %.1f, %.1f)",
-			Path,
-			SpawnData.Direction.X, SpawnData.Direction.Y, SpawnData.Direction.Z,
-			SpawnData.EndLocation.X, SpawnData.EndLocation.Y, SpawnData.EndLocation.Z);
+			90,
+			"%s direction redirected. dir=(%.4f, %.4f, %.4f)",
+			tag,
+			dir.X, dir.Y, dir.Z);
+		return true;
+	}
+
+	__int64 __fastcall hkProjectileContextBuild(
+		__int64 a1,
+		__int64 a2,
+		unsigned int* a3,
+		__int64 a4,
+		__int64 a5,
+		__int64 a6,
+		__int64 a7,
+		__int64 a8,
+		__int64 a9,
+		__int64 a10)
+	{
+		Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 600, "hkProjectileContextBuild hit");
+		if (IsSilentArmed())
+		{
+			SDK::FVector source = (GVars.POV ? GVars.POV->Location : SDK::FVector{ 0.0, 0.0, 0.0 });
+			ReadVec3Param(reinterpret_cast<void*>(a6), source);
+			RedirectDirectionFromSource(source, reinterpret_cast<void*>(a7), "ProjectileContext");
+		}
+		return oProjectileContextBuild ? oProjectileContextBuild(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) : 0;
+	}
+
+	void __fastcall hkLightSpawnCommit(__int64 a1, __int64 a2)
+	{
+		Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 600, "hkLightSpawnCommit hit a2=0x%llX", static_cast<unsigned long long>(a2));
+		if (IsSilentArmed() && a2)
+		{
+			// IDA sub_143D5B106 shows source at +0x20 and direction at +0x38 in the light spawn data blob.
+			SDK::FVector source = (GVars.POV ? GVars.POV->Location : SDK::FVector{ 0.0, 0.0, 0.0 });
+			ReadVec3Param(reinterpret_cast<void*>(a2 + 0x20), source);
+			RedirectDirectionFromSource(source, reinterpret_cast<void*>(a2 + 0x38), "LightSpawnCommit");
+		}
+		if (oLightSpawnCommit)
+		{
+			oLightSpawnCommit(a1, a2);
+		}
+	}
+
+	bool EnsureNativeProjectileHook()
+	{
+		std::lock_guard<std::mutex> guard(g_SilentHookInstallMutex);
+		if (g_NativeProjectileHookInstalled.load()) return true;
+		LogSilentState("EnsureNativeProjectileHook.enter");
+
+		const double now = NowSeconds();
+		if (g_NativeProjectileHookAttempted.load() && (now - g_LastNativeHookAttemptTime) < 2.0)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 800, "EnsureNativeProjectileHook throttled");
+			return false;
+		}
+
+		g_NativeProjectileHookAttempted.store(true);
+		g_LastNativeHookAttemptTime = now;
+
+		const uintptr_t imageBase = reinterpret_cast<uintptr_t>(GetModuleHandle(nullptr));
+		if (!imageBase)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 1000, "EnsureNativeProjectileHook: imageBase null");
+			return false;
+		}
+
+		const uintptr_t projectileContextTarget = imageBase + kProjectileContextBuildRVA;
+		const uintptr_t lightCommitTarget = imageBase + kLightSpawnCommitRVA;
+
+		MH_STATUS createStatus = MH_CreateHook(
+			reinterpret_cast<LPVOID>(projectileContextTarget),
+			&hkProjectileContextBuild,
+			reinterpret_cast<LPVOID*>(&oProjectileContextBuild));
+		if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
+		{
+			Logger::LogThrottled(
+				Logger::Level::Error,
+				"SilentAim",
+				2000,
+				"ProjectileContext hook create failed. status=%d(%s) addr=0x%llX",
+				static_cast<int>(createStatus),
+				MH_StatusToString(createStatus),
+				static_cast<unsigned long long>(projectileContextTarget));
+			return false;
+		}
+
+		createStatus = MH_CreateHook(
+			reinterpret_cast<LPVOID>(lightCommitTarget),
+			&hkLightSpawnCommit,
+			reinterpret_cast<LPVOID*>(&oLightSpawnCommit));
+		if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
+		{
+			Logger::LogThrottled(
+				Logger::Level::Error,
+				"SilentAim",
+				2000,
+				"LightSpawnCommit hook create failed. status=%d(%s) addr=0x%llX",
+				static_cast<int>(createStatus),
+				MH_StatusToString(createStatus),
+				static_cast<unsigned long long>(lightCommitTarget));
+			return false;
+		}
+
+		MH_STATUS enableStatus = MH_EnableHook(reinterpret_cast<LPVOID>(projectileContextTarget));
+		if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
+		{
+			Logger::LogThrottled(
+				Logger::Level::Error,
+				"SilentAim",
+				2000,
+				"ProjectileContext hook enable failed. status=%d(%s) addr=0x%llX",
+				static_cast<int>(enableStatus),
+				MH_StatusToString(enableStatus),
+				static_cast<unsigned long long>(projectileContextTarget));
+			return false;
+		}
+
+		enableStatus = MH_EnableHook(reinterpret_cast<LPVOID>(lightCommitTarget));
+		if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
+		{
+			Logger::LogThrottled(
+				Logger::Level::Error,
+				"SilentAim",
+				2000,
+				"LightSpawnCommit hook enable failed. status=%d(%s) addr=0x%llX",
+				static_cast<int>(enableStatus),
+				MH_StatusToString(enableStatus),
+				static_cast<unsigned long long>(lightCommitTarget));
+			return false;
+		}
+
+		g_NativeProjectileHookAddress = projectileContextTarget;
+		g_NativeProjectileHookInstalled.store(true);
+		Logger::LogThrottled(
+			Logger::Level::Info,
+			"SilentAim",
+			10000,
+			"Native fire-path hooks installed. ProjectileContext=0x%llX LightCommit=0x%llX",
+			static_cast<unsigned long long>(projectileContextTarget),
+			static_cast<unsigned long long>(lightCommitTarget));
+		return true;
+	}
+
+	__int64 __fastcall hkStartFire(SDK::APlayerController* controller, uint8 fireModeNum)
+	{
+		if (controller == GVars.PlayerController &&
+			ConfigManager::B("Aimbot.Enabled") &&
+			ConfigManager::B("Aimbot.Silent") &&
+			CurrentAimbotTarget &&
+			Utils::IsValidActor(CurrentAimbotTarget))
+		{
+			g_SilentRedirectTargetPos = Cheats::AimbotTargetPos;
+			g_LastSilentArmTime = NowSeconds();
+			Logger::LogThrottled(
+				Logger::Level::Debug,
+				"SilentAim",
+				120,
+				"StartFire hook armed. mode=%u target=%s",
+				static_cast<unsigned>(fireModeNum),
+				CurrentAimbotTarget->GetName().c_str());
+		}
+
+		return oStartFire ? oStartFire(controller, fireModeNum) : 0;
+	}
+
+	__int64 __fastcall hkWeaponFireBridge(void* weaponBridge, unsigned int fireModeNum)
+	{
+		Logger::LogThrottled(
+			Logger::Level::Debug,
+			"SilentAimDbg",
+			200,
+			"hkWeaponFireBridge hit. bridge=%p mode=%u",
+			weaponBridge,
+			static_cast<unsigned>(fireModeNum));
+
+		if (ConfigManager::B("Aimbot.Enabled") &&
+			ConfigManager::B("Aimbot.Silent") &&
+			CurrentAimbotTarget &&
+			Utils::IsValidActor(CurrentAimbotTarget))
+		{
+			g_SilentRedirectTargetPos = Cheats::AimbotTargetPos;
+			g_LastSilentArmTime = NowSeconds();
+		}
+
+		return oWeaponFireBridge ? oWeaponFireBridge(weaponBridge, fireModeNum) : 0;
+	}
+
+	bool EnsureStartFireHook()
+	{
+		std::lock_guard<std::mutex> guard(g_SilentHookInstallMutex);
+		if (g_StartFireHookInstalled.load()) return true;
+		if (!GVars.PlayerController)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 1000, "EnsureStartFireHook: PlayerController null");
+			return false;
+		}
+
+		const double now = NowSeconds();
+		if (g_StartFireHookAttempted.load() && (now - g_LastStartFireHookAttemptTime) < 1.0)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 600, "EnsureStartFireHook throttled");
+			return false;
+		}
+
+		g_StartFireHookAttempted.store(true);
+		g_LastStartFireHookAttemptTime = now;
+
+		void*** thisAsVTable = reinterpret_cast<void***>(GVars.PlayerController);
+		if (!thisAsVTable || !*thisAsVTable)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 1000, "EnsureStartFireHook: vtable unavailable");
+			return false;
+		}
+
+		void** vtable = *thisAsVTable;
+		void* target = vtable[kStartFireVTableIndex];
+		if (!target)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 1000, "EnsureStartFireHook: startfire slot null");
+			return false;
+		}
+
+		MH_STATUS createStatus = MH_CreateHook(target, &hkStartFire, reinterpret_cast<LPVOID*>(&oStartFire));
+		if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
+		{
+			Logger::LogThrottled(
+				Logger::Level::Error,
+				"SilentAim",
+				2000,
+				"StartFire hook create failed. status=%d(%s) addr=0x%llX",
+				static_cast<int>(createStatus),
+				MH_StatusToString(createStatus),
+				static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(target)));
+			return false;
+		}
+
+		MH_STATUS enableStatus = MH_EnableHook(target);
+		if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
+		{
+			Logger::LogThrottled(
+				Logger::Level::Error,
+				"SilentAim",
+				2000,
+				"StartFire hook enable failed. status=%d(%s) addr=0x%llX",
+				static_cast<int>(enableStatus),
+				MH_StatusToString(enableStatus),
+				static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(target)));
+			return false;
+		}
+
+		g_StartFireHookAddress = reinterpret_cast<uintptr_t>(target);
+		g_StartFireHookInstalled.store(true);
+		Logger::LogThrottled(
+			Logger::Level::Info,
+			"SilentAim",
+			10000,
+			"StartFire hook installed at 0x%llX (vtable+0x%zX)",
+			static_cast<unsigned long long>(g_StartFireHookAddress),
+			kStartFireVTableOffset);
+		return true;
+	}
+
+	bool EnsureWeaponFireHook()
+	{
+		std::lock_guard<std::mutex> guard(g_SilentHookInstallMutex);
+		if (!GVars.PlayerController)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 1000, "EnsureWeaponFireHook: PlayerController null");
+			return false;
+		}
+
+		const double now = NowSeconds();
+		if (g_WeaponFireHookAttempted.load() && (now - g_LastWeaponFireHookAttemptTime) < 1.0)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 600, "EnsureWeaponFireHook throttled");
+			return false;
+		}
+
+		void* weaponBridge = *reinterpret_cast<void**>(reinterpret_cast<uintptr_t>(GVars.PlayerController) + kPCWeaponBridgeOffset);
+		if (!weaponBridge)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 1000, "EnsureWeaponFireHook: weapon bridge null (+0x%zX)", kPCWeaponBridgeOffset);
+			return false;
+		}
+		Logger::LogThrottled(
+			Logger::Level::Debug,
+			"SilentAimDbg",
+			1000,
+			"EnsureWeaponFireHook: weaponBridge=%p (PC=%p)",
+			weaponBridge,
+			GVars.PlayerController);
+
+		void*** bridgeAsVTable = reinterpret_cast<void***>(weaponBridge);
+		if (!bridgeAsVTable || !*bridgeAsVTable)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 1000, "EnsureWeaponFireHook: bridge vtable unavailable");
+			return false;
+		}
+
+		void** bridgeVTable = *bridgeAsVTable;
+		DumpVTableWindow(bridgeVTable, kWeaponFireVTableIndex, 4, "WeaponBridge");
+		void* target = bridgeVTable[kWeaponFireVTableIndex];
+		if (!target)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "SilentAimDbg", 1000, "EnsureWeaponFireHook: bridge slot null (+0x%zX)", kWeaponFireVTableOffset);
+			DumpVTableWindow(bridgeVTable, kWeaponFireVTableIndex, 8, "WeaponBridgeNullSlot");
+			return false;
+		}
+
+		if (g_WeaponFireHookInstalled.load() && g_WeaponFireHookAddress == reinterpret_cast<uintptr_t>(target))
+		{
+			return true;
+		}
+
+		g_WeaponFireHookAttempted.store(true);
+		g_LastWeaponFireHookAttemptTime = now;
+
+		MH_STATUS createStatus = MH_CreateHook(target, &hkWeaponFireBridge, reinterpret_cast<LPVOID*>(&oWeaponFireBridge));
+		if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
+		{
+			Logger::LogThrottled(
+				Logger::Level::Error,
+				"SilentAim",
+				2000,
+				"WeaponFire bridge hook create failed. status=%d(%s) addr=0x%llX",
+				static_cast<int>(createStatus),
+				MH_StatusToString(createStatus),
+				static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(target)));
+			DumpVTableWindow(bridgeVTable, kWeaponFireVTableIndex, 8, "WeaponBridgeHookCreateFail");
+			return false;
+		}
+
+		MH_STATUS enableStatus = MH_EnableHook(target);
+		if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
+		{
+			Logger::LogThrottled(
+				Logger::Level::Error,
+				"SilentAim",
+				2000,
+				"WeaponFire bridge hook enable failed. status=%d(%s) addr=0x%llX",
+				static_cast<int>(enableStatus),
+				MH_StatusToString(enableStatus),
+				static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(target)));
+			return false;
+		}
+
+		g_WeaponFireHookAddress = reinterpret_cast<uintptr_t>(target);
+		g_WeaponFireHookInstalled.store(true);
+		Logger::LogThrottled(
+			Logger::Level::Info,
+			"SilentAim",
+			8000,
+			"WeaponFire bridge hook installed at 0x%llX (PC+0x%zX -> vtable+0x%zX)",
+			static_cast<unsigned long long>(g_WeaponFireHookAddress),
+			kPCWeaponBridgeOffset,
+			kWeaponFireVTableOffset);
+		return true;
 	}
 }
 
@@ -366,7 +538,6 @@ void Cheats::Aimbot()
 	if (!ConfigManager::B("Aimbot.Enabled") || !Utils::bIsInGame) return;
 	if (!GVars.POV || !GVars.PlayerController || !Utils::GetSelfActor()) return;
 
-	// Ordinary logic: Target acquisition and visual state
 	CurrentAimbotTarget = Utils::GetBestTarget(
 		GVars.PlayerController,
 		ConfigManager::F("Aimbot.MaxFOV"),
@@ -375,13 +546,14 @@ void Cheats::Aimbot()
 		ConfigManager::B("Aimbot.TargetAll")
 	);
 
-	if (CurrentAimbotTarget && CurrentAimbotTarget->IsA(ACharacter::StaticClass())) 
+	if (CurrentAimbotTarget && CurrentAimbotTarget->IsA(ACharacter::StaticClass()))
 	{
 		ACharacter* TargetChar = reinterpret_cast<ACharacter*>(CurrentAimbotTarget);
-		
+
 		static std::string CachedBoneString = "";
 		static FName CachedBoneName;
-		if (CachedBoneString != ConfigManager::S("Aimbot.Bone")) {
+		if (CachedBoneString != ConfigManager::S("Aimbot.Bone"))
+		{
 			std::wstring WideString = UtfN::StringToWString(ConfigManager::S("Aimbot.Bone"));
 			CachedBoneName = UKismetStringLibrary::Conv_StringToName(WideString.c_str());
 			CachedBoneString = ConfigManager::S("Aimbot.Bone");
@@ -393,7 +565,6 @@ void Cheats::Aimbot()
 		else
 			TargetPos = Utils::GetHighestBone(TargetChar);
 
-		// Cache for snaplines
 		bHasAimbotTarget = true;
 		AimbotTargetPos = TargetPos;
 	}
@@ -401,55 +572,49 @@ void Cheats::Aimbot()
 
 void Cheats::AimbotHotkey()
 {
-	// 真正自瞄逻辑：负责旋转相机视角 / 静默重定向武装
-	if (!Utils::bIsInGame || !GVars.PlayerController || !GVars.POV || !CurrentAimbotTarget)
+	if (!Utils::bIsInGame || !GVars.PlayerController || !GVars.POV)
 	{
 		g_LastSilentArmTime = 0.0;
-		g_SilentProjectileAssignments.clear();
-		SetWeakActor(g_PendingSilentSnapshot.Target, nullptr);
-		g_PendingSilentSnapshot.CapturedAt = 0.0;
 		return;
 	}
 
-    FVector CameraPos = GVars.POV->Location;
-    FVector TargetPos = AimbotTargetPos;
+	FVector CameraPos = GVars.POV->Location;
+	FVector TargetPos = AimbotTargetPos;
 
 	if (ConfigManager::B("Aimbot.Silent"))
 	{
+		EnsureStartFireHook();
+		EnsureWeaponFireHook();
+		if (ConfigManager::B("Aimbot.NativeProjectileHook"))
+		{
+			EnsureNativeProjectileHook();
+		}
+
+		if (!CurrentAimbotTarget)
+		{
+			const bool bLmbDown = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
+			if (!bLmbDown || (NowSeconds() - g_LastSilentArmTime) > 0.6)
+			{
+				g_LastSilentArmTime = 0.0;
+			}
+			return;
+		}
+
 		g_SilentRedirectTargetPos = TargetPos;
 		g_LastSilentArmTime = NowSeconds();
-		if (CurrentAimbotTarget)
-		{
-			// Keep a low-rate fallback scan; primary path is OnBegin hook-based assignment.
-			const double now = NowSeconds();
-			if ((now - g_LastSilentLegacyScanTime) > 0.12)
-			{
-				g_LastSilentLegacyScanTime = now;
-				ApplySilentHomingProjectiles(CurrentAimbotTarget, TargetPos);
-			}
-		}
-		if ((g_LastSilentArmTime - g_LastSilentProjectileEventTime) > 1.5)
-		{
-				Logger::LogThrottled(
-					Logger::Level::Debug,
-					"SilentAim",
-					1200,
-					"Armed but no projectile spawn events detected recently. Current weapon may be hitscan or uses another fire path.");
-			}
+
 		Logger::LogThrottled(
 			Logger::Level::Debug,
 			"SilentAim",
 			250,
 			"Silent redirect armed. target=(%.1f, %.1f, %.1f)",
 			TargetPos.X, TargetPos.Y, TargetPos.Z);
-			return;
+		return;
 	}
-	g_LastSilentArmTime = 0.0;
-	g_SilentProjectileAssignments.clear();
-	SetWeakActor(g_PendingSilentSnapshot.Target, nullptr);
-	g_PendingSilentSnapshot.CapturedAt = 0.0;
 
-    // Actual execution of rotation
+	if (!CurrentAimbotTarget) return;
+	g_LastSilentArmTime = 0.0;
+
 	FRotator DesiredRot = Utils::GetRotationToTarget(CameraPos, TargetPos);
 	FRotator CurrentRot = GVars.PlayerController->ControlRotation;
 
@@ -471,351 +636,13 @@ void Cheats::AimbotHotkey()
 
 bool Cheats::HandleAimbotEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params)
 {
-	if (!ConfigManager::B("Aimbot.Enabled") || !ConfigManager::B("Aimbot.Silent")) return false;
-	if (!Object || !Function || !Params || !Object->Class) return false;
-
-	const std::string functionName = Function->GetName();
-	const std::string className = Object->Class->GetName();
-	const double now = NowSeconds();
-	const bool bArmed = (now - g_LastSilentArmTime) <= 0.35;
-	if (!bArmed)
-	{
-		return false;
-	}
-
-	// Primary hook-based silent path: bind target as each light projectile begins.
-	if (functionName == "OnBegin" && className.find("LightProjectileScript") != std::string::npos)
-	{
-		struct LightProjectileOnBeginParams { SDK::ULightProjectile* projectile; };
-		auto* p = reinterpret_cast<LightProjectileOnBeginParams*>(Params);
-		if (p && p->projectile && CurrentAimbotTarget)
-		{
-			if (ApplySilentToSingleProjectile(p->projectile, CurrentAimbotTarget, g_SilentRedirectTargetPos))
-			{
-				g_LastSilentProjectileEventTime = now;
-				Logger::LogThrottled(
-					Logger::Level::Debug,
-					"SilentAim",
-					100,
-					"Hooked OnBegin: projectile %d bound to %s",
-					p->projectile->SyncID,
-					CurrentAimbotTarget->GetName().c_str());
-			}
-		}
-		return false;
-	}
-
-	// Additional lifecycle hooks: apply directly when a projectile object receives creation-related events.
-	if (Object->IsA(SDK::ULightProjectile::StaticClass()))
-	{
-		const bool bProjectileLifecycleEvent =
-			functionName == "OnBegin" ||
-			functionName == "ReceiveBeginPlay" ||
-			functionName == "OnActivated" ||
-			functionName == "OnSpawned" ||
-			functionName == "Initialize" ||
-			functionName == "ReceiveTick";
-		if (bProjectileLifecycleEvent)
-		{
-			SDK::AActor* snapshotTarget = nullptr;
-			SDK::FVector snapshotPos{};
-			if (!GetRecentSilentSnapshot(snapshotTarget, snapshotPos))
-			{
-				snapshotTarget = CurrentAimbotTarget;
-				snapshotPos = g_SilentRedirectTargetPos;
-			}
-			if (snapshotTarget)
-			{
-				auto* projectile = static_cast<SDK::ULightProjectile*>(const_cast<SDK::UObject*>(Object));
-				if (ApplySilentToSingleProjectile(projectile, snapshotTarget, snapshotPos))
-				{
-					g_LastSilentProjectileEventTime = now;
-					Logger::LogThrottled(
-						Logger::Level::Debug,
-						"SilentAim",
-						90,
-						"Projectile lifecycle hook applied. fn=%s proj=%d target=%s seq=%llu",
-						functionName.c_str(),
-						projectile->SyncID,
-						snapshotTarget->GetName().c_str(),
-						static_cast<unsigned long long>(g_PendingSilentSnapshot.Sequence));
-				}
-			}
-		}
-	}
-
-	// Aggressive probe while LMB is held: capture more candidate fire chains for stubborn hitscan weapons.
-	const bool bLmbDown = (GetAsyncKeyState(VK_LBUTTON) & 0x8000) != 0;
-	if (bLmbDown)
-	{
-		const bool bProbeNoise =
-			functionName.find("CameraTransition") != std::string::npos ||
-			functionName.find("UpdateLevelVisibility") != std::string::npos;
-		if (!bProbeNoise && (IsLikelyFirePathName(functionName) || IsLikelyFirePathClass(className)))
-		{
-			const std::string key = className + "::" + functionName;
-			const auto it = g_SilentPathLastLogTime.find(key);
-			const bool bShouldLog = (it == g_SilentPathLastLogTime.end()) || ((now - it->second) > 2.0);
-			if (bShouldLog)
-			{
-				g_SilentPathLastLogTime[key] = now;
-				Logger::LogThrottled(
-					Logger::Level::Debug,
-					"SilentAimPath",
-					40,
-					"Aggressive fire-path candidate: %s",
-					key.c_str());
-			}
-		}
-	}
-
-	// Path probe first: while armed, capture likely local fire chain events even if not projectile-based.
-	const bool bProbeName =
-		functionName.find("Server") != std::string::npos ||
-		functionName.find("StartUsing") != std::string::npos ||
-		functionName.find("StopUsing") != std::string::npos ||
-		functionName.find("Fire") != std::string::npos ||
-		functionName.find("Hit") != std::string::npos ||
-		functionName.find("Trace") != std::string::npos ||
-		functionName.find("Shot") != std::string::npos ||
-		functionName.find("Impact") != std::string::npos ||
-		functionName.find("Damage") != std::string::npos ||
-		functionName.find("Projectile") != std::string::npos ||
-		functionName.find("Reload") != std::string::npos;
-	const bool bProbeNoise =
-		functionName.find("CameraTransition") != std::string::npos ||
-		functionName.find("UpdateLevelVisibility") != std::string::npos;
-	const bool bProbeClass =
-		className.find("Weapon") != std::string::npos ||
-		className.find("Projectile") != std::string::npos ||
-		className.find("OakPlayerController") != std::string::npos;
-
-	if (bProbeName && !bProbeNoise && bProbeClass)
-	{
-		bool bLikelyLocal = false;
-		if (Object->IsA(SDK::AWeapon::StaticClass()))
-		{
-			bLikelyLocal = IsLocalWeapon(reinterpret_cast<const SDK::AWeapon*>(Object));
-		}
-		else
-		{
-			// Helper/static classes: still useful for path discovery.
-			bLikelyLocal = true;
-		}
-
-		if (bLikelyLocal && (now - g_LastSilentPathProbeTime) > 0.08)
-		{
-			g_LastSilentPathProbeTime = now;
-			Logger::LogThrottled(
-				Logger::Level::Debug,
-				"SilentAimPath",
-				80,
-				"Candidate fire path: %s::%s",
-				className.c_str(),
-				functionName.c_str());
-		}
-	}
-
-	const bool bLightPath = functionName.find("SpawnLightProjectile") != std::string::npos;
-	const bool bProjectilePath = functionName.find("SpawnProjectile_") != std::string::npos;
-	if (!bLightPath && !bProjectilePath)
-	{
-		return false;
-	}
-	g_LastSilentProjectileEventTime = now;
-
-	// ----- LightProjectile paths -----
-	struct LightDataParams { SDK::FLightProjectileSpawnData Data; };
-	struct LightQueryParams { uint8 Pad_00[0x28]; SDK::FLightProjectileSpawnData ProjectileData; };
-	struct LightQueryConstParams { SDK::FLightProjectileSpawnData ProjectileData; };
-	struct LightThrowAtActorParams { uint8 Pad_00[0x230]; SDK::AActor* target; };
-	struct LightThrowAtLocationParams { uint8 Pad_00[0x230]; SDK::FVector Location; };
-
-	if (functionName == "SpawnLightProjectile" ||
-		functionName == "SpawnLightProjectile_Source" ||
-		functionName == "SpawnLightProjectile_ThrowAtCrosshair" ||
-		functionName == "SpawnLightProjectileAsync")
-	{
-		auto* p = reinterpret_cast<LightDataParams*>(Params);
-		if (!p || !IsLocalLightProjectileSpawn(p->Data))
-		{
-			Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 1000, "Light path not local; skip.");
-			return false;
-		}
-		if (RedirectLightProjectileSpawnDirection(p->Data, g_SilentRedirectTargetPos))
-		{
-			LogRedirected(functionName.c_str(), p->Data);
-			if (CurrentAimbotTarget) CaptureSilentSnapshot(CurrentAimbotTarget, g_SilentRedirectTargetPos);
-		}
-		return false;
-	}
-
-	if (functionName == "SpawnLightProjectiles_Query")
-	{
-		auto* p = reinterpret_cast<LightQueryParams*>(Params);
-		if (!p || !IsLocalLightProjectileSpawn(p->ProjectileData))
-		{
-			Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 1000, "Light query path not local; skip.");
-			return false;
-		}
-		if (RedirectLightProjectileSpawnDirection(p->ProjectileData, g_SilentRedirectTargetPos))
-		{
-			LogRedirected(functionName.c_str(), p->ProjectileData);
-			if (CurrentAimbotTarget) CaptureSilentSnapshot(CurrentAimbotTarget, g_SilentRedirectTargetPos);
-		}
-		return false;
-	}
-
-	if (functionName == "SpawnLightProjectiles_Query_Const")
-	{
-		auto* p = reinterpret_cast<LightQueryConstParams*>(Params);
-		if (!p || !IsLocalLightProjectileSpawn(p->ProjectileData))
-		{
-			Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 1000, "Light query const path not local; skip.");
-			return false;
-		}
-		if (RedirectLightProjectileSpawnDirection(p->ProjectileData, g_SilentRedirectTargetPos))
-		{
-			LogRedirected(functionName.c_str(), p->ProjectileData);
-			if (CurrentAimbotTarget) CaptureSilentSnapshot(CurrentAimbotTarget, g_SilentRedirectTargetPos);
-		}
-		return false;
-	}
-
-	if (functionName == "SpawnLightProjectile_ThrowAtActor")
-	{
-		auto* p = reinterpret_cast<LightThrowAtActorParams*>(Params);
-		if (p && CurrentAimbotTarget)
-		{
-			p->target = CurrentAimbotTarget;
-			Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 300, "ThrowAtActor target overridden -> %s", CurrentAimbotTarget->GetName().c_str());
-		}
-
-		auto* pd = reinterpret_cast<LightDataParams*>(Params);
-		if (pd && IsLocalLightProjectileSpawn(pd->Data) &&
-			RedirectLightProjectileSpawnDirection(pd->Data, g_SilentRedirectTargetPos))
-		{
-			LogRedirected(functionName.c_str(), pd->Data);
-			if (CurrentAimbotTarget) CaptureSilentSnapshot(CurrentAimbotTarget, g_SilentRedirectTargetPos);
-		}
-		return false;
-	}
-
-	if (functionName == "SpawnLightProjectile_ThrowAtLocation")
-	{
-		auto* p = reinterpret_cast<LightThrowAtLocationParams*>(Params);
-		if (p)
-		{
-			p->Location = g_SilentRedirectTargetPos;
-			Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 300, "ThrowAtLocation overridden -> (%.1f, %.1f, %.1f)",
-				p->Location.X, p->Location.Y, p->Location.Z);
-		}
-
-		auto* pd = reinterpret_cast<LightDataParams*>(Params);
-		if (pd && IsLocalLightProjectileSpawn(pd->Data) &&
-			RedirectLightProjectileSpawnDirection(pd->Data, g_SilentRedirectTargetPos))
-		{
-			LogRedirected(functionName.c_str(), pd->Data);
-			if (CurrentAimbotTarget) CaptureSilentSnapshot(CurrentAimbotTarget, g_SilentRedirectTargetPos);
-		}
-		return false;
-	}
-
-	// ----- ProjectileStatics paths -----
-	struct ProjectileThrowAtActorParams { uint8 Pad_00[0x40]; SDK::AActor* Source; uint8 Pad_48[0x90]; SDK::AActor* target; };
-	struct ProjectileThrowAtActorConstParams { uint8 Pad_00[0x18]; SDK::AActor* Source; uint8 Pad_20[0x90]; SDK::AActor* target; };
-	struct ProjectileThrowAtLocationParams { uint8 Pad_00[0x40]; SDK::AActor* Source; uint8 Pad_48[0x90]; SDK::FVector Location; };
-	struct ProjectileThrowAtLocationConstParams { uint8 Pad_00[0x18]; SDK::AActor* Source; uint8 Pad_20[0x90]; SDK::FVector Location; };
-
-	if ((functionName == "SpawnProjectile_ThrowAtActor" || functionName == "SpawnProjectile_ThrowAtActor_Const") && CurrentAimbotTarget)
-	{
-		if (functionName == "SpawnProjectile_ThrowAtActor")
-		{
-			auto* p = reinterpret_cast<ProjectileThrowAtActorParams*>(Params);
-			if (p && IsLocalActor(p->Source))
-			{
-				p->target = CurrentAimbotTarget;
-				Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 300, "ProjectileStatics ThrowAtActor target overridden -> %s", CurrentAimbotTarget->GetName().c_str());
-			}
-		}
-		else
-		{
-			auto* p = reinterpret_cast<ProjectileThrowAtActorConstParams*>(Params);
-			if (p && IsLocalActor(p->Source))
-			{
-				p->target = CurrentAimbotTarget;
-				Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 300, "ProjectileStatics ThrowAtActor_Const target overridden -> %s", CurrentAimbotTarget->GetName().c_str());
-			}
-		}
-		return false;
-	}
-
-	if (functionName == "SpawnProjectile_ThrowAtLocation" || functionName == "SpawnProjectile_ThrowAtLocation_Const")
-	{
-		if (functionName == "SpawnProjectile_ThrowAtLocation")
-		{
-			auto* p = reinterpret_cast<ProjectileThrowAtLocationParams*>(Params);
-			if (p && IsLocalActor(p->Source))
-			{
-				p->Location = g_SilentRedirectTargetPos;
-				Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 300, "ProjectileStatics ThrowAtLocation overridden -> (%.1f, %.1f, %.1f)",
-					p->Location.X, p->Location.Y, p->Location.Z);
-			}
-		}
-		else
-		{
-			auto* p = reinterpret_cast<ProjectileThrowAtLocationConstParams*>(Params);
-			if (p && IsLocalActor(p->Source))
-			{
-				p->Location = g_SilentRedirectTargetPos;
-				Logger::LogThrottled(Logger::Level::Debug, "SilentAim", 300, "ProjectileStatics ThrowAtLocation_Const overridden -> (%.1f, %.1f, %.1f)",
-					p->Location.X, p->Location.Y, p->Location.Z);
-			}
-		}
-		return false;
-	}
-
-	if (functionName == "SpawnProjectile_ThrowAtCrosshair" || functionName == "SpawnProjectile_ThrowAtCrosshair_Const")
-	{
-		Logger::LogThrottled(
-			Logger::Level::Debug,
-			"SilentAim",
-			1000,
-			"%s detected. This path currently uses SourceRotation/trajectory, location override is unavailable in this hook.",
-			functionName.c_str());
-		return false;
-	}
-
+	(void)Object;
+	(void)Function;
+	(void)Params;
 	return false;
 }
 
 void Cheats::HandleConstructedObject(const SDK::UObject* Object)
 {
-	if (!Object || !Object->Class) return;
-	if (!ConfigManager::B("Aimbot.Enabled") || !ConfigManager::B("Aimbot.Silent")) return;
-	if (!Utils::bIsInGame) return;
-	if (!Object->IsA(SDK::ULightProjectile::StaticClass())) return;
-
-	SDK::AActor* snapshotTarget = nullptr;
-	SDK::FVector snapshotPos{};
-	if (!GetRecentSilentSnapshot(snapshotTarget, snapshotPos))
-	{
-		snapshotTarget = CurrentAimbotTarget;
-		snapshotPos = g_SilentRedirectTargetPos;
-	}
-	if (!snapshotTarget) return;
-
-	auto* projectile = static_cast<SDK::ULightProjectile*>(const_cast<SDK::UObject*>(Object));
-	if (ApplySilentToSingleProjectile(projectile, snapshotTarget, snapshotPos))
-	{
-		g_LastSilentProjectileEventTime = NowSeconds();
-		Logger::LogThrottled(
-			Logger::Level::Debug,
-			"SilentAim",
-			80,
-			"StaticConstruct hook applied. proj=%d target=%s seq=%llu",
-			projectile->SyncID,
-			snapshotTarget->GetName().c_str(),
-			static_cast<unsigned long long>(g_PendingSilentSnapshot.Sequence));
-	}
+	(void)Object;
 }

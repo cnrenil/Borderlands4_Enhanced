@@ -88,6 +88,7 @@ struct Cheats
 	// Hotkey Callbacks
 	static void AimbotHotkey();
 	static void TriggerHotkey();
+	static void DebugF7Handler();
 	
 	// Modular ProcessEvent Handlers
 	static void HandleDebugEvents(
@@ -106,6 +107,7 @@ struct Cheats
 	static void UpdateMovement();
 	static void UpdateWeapon();
 	static void UpdateCamera();
+	static void UpdateDebug();
 
 	// Cross-thread Rendering Helpers
 	static inline FVector AimbotTargetPos;

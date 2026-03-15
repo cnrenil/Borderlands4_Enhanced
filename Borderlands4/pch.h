@@ -9,6 +9,8 @@
 #include <d3d11.h>
 #include <d3d12.h>
 #include <dxgi1_4.h>
+#include <tlhelp32.h>
+#include <winternl.h>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3d12.lib")
@@ -61,6 +63,7 @@ using namespace SDK;
 #include "Config/ConfigManager.h"
 #include "Utils/Localization.h"
 #include "Utils/Hotkey.h"
+#include "Utils/Memory.h"
 #include "Utils/Utils.h"
 #include "Engine.h"
 #include "Cheats.h"

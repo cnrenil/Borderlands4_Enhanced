@@ -97,4 +97,22 @@ namespace Memory
 
         return 0;
     }
+
+    uintptr_t ResolveRelativeCallTarget(uintptr_t callInstructionAddress)
+    {
+        if (!callInstructionAddress) return 0;
+
+        __try
+        {
+            const uint8_t opcode = *reinterpret_cast<uint8_t*>(callInstructionAddress);
+            if (opcode != 0xE8) return 0; // near call rel32
+
+            const int32_t rel = *reinterpret_cast<int32_t*>(callInstructionAddress + 1);
+            return callInstructionAddress + 5 + static_cast<intptr_t>(rel);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER)
+        {
+            return 0;
+        }
+    }
 }

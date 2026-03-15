@@ -50,6 +50,10 @@ namespace HotkeyManager
         Register("Misc.DumpKey", "DUMP_OBJECTS_KEY", ImGuiKey_F8, []() {
             Cheats::DumpObjects();
         });
+
+        Register("Misc.DebugF7Key", "DEBUG_F7_KEY", ImGuiKey_F7, []() {
+            Cheats::DebugF7Handler();
+        });
     }
 
     void Update()
