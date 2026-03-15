@@ -22,11 +22,14 @@ namespace ConfigManager
         Register("ESP.ShowBox", true);
         Register("ESP.ShowEnemyDistance", true);
         Register("ESP.ShowEnemyName", true);
+        Register("ESP.ShowLootName", false);
         Register("ESP.Bones", true);
         Register("ESP.BoneOpacity", 1.0f);
         Register("ESP.EnemyColor", ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
         Register("ESP.TeamColor", ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
         Register("ESP.TargetColor", ImVec4(0.7f, 0.0f, 1.0f, 1.0f));
+        Register("ESP.LootColor", ImVec4(1.0f, 0.9f, 0.2f, 1.0f));
+        Register("ESP.LootMaxDistance", 250.0f);
         Register("ESP.LOS", false);
         Register("ESP.BulletTracers", true);
         Register("ESP.TracerRainbow", true);

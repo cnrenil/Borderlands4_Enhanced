@@ -17,6 +17,14 @@ struct ESPActorCache {
 	std::vector<std::pair<ImVec2, ImVec2>> SkeletonLines;
 };
 
+struct ESPLootCache {
+	FVector2D ScreenPos;
+	ImU32 Color;
+	FString Name;
+	float Distance;
+	bool bValidScreen;
+};
+
 struct ESPTracerCache {
 	ImVec2 Start;
 	ImVec2 End;
@@ -36,6 +44,7 @@ namespace
 	{
 		std::mutex Mutex;
 		std::vector<ESPActorCache> CachedActors;
+		std::vector<ESPLootCache> CachedLoot;
 		std::vector<ESPTracerCache> CachedTracers;
 	};
 
@@ -99,6 +108,7 @@ void Cheats::UpdateESP()
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
 		state.CachedActors.clear();
+		state.CachedLoot.clear();
 		state.CachedTracers.clear();
 		return;
 	}
@@ -108,6 +118,7 @@ void Cheats::UpdateESP()
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
 		state.CachedActors.clear();
+		state.CachedLoot.clear();
 		state.CachedTracers.clear();
 		return;
 	}
@@ -253,6 +264,36 @@ void Cheats::UpdateESP()
 	}
 
 	std::vector<ESPTracerCache> NewTracers;
+	std::vector<ESPLootCache> NewLoot;
+	if (ConfigManager::B("ESP.ShowLootName") && GVars.Level)
+	{
+		float maxDistance = ConfigManager::F("ESP.LootMaxDistance");
+		if (maxDistance <= 0.0f) maxDistance = 250.0f;
+		const ImU32 lootColor = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.LootColor"));
+		const int32_t actorCount = GVars.Level->Actors.Num();
+
+		for (int32_t i = 0; i < actorCount; i++)
+		{
+			AActor* Actor = GVars.Level->Actors[i];
+			if (!Actor || !Actor->IsA(SDK::AInventoryPickup::StaticClass())) continue;
+
+			const FVector actorLoc = Actor->K2_GetActorLocation();
+			const float distance = SafeDistanceMeters(CameraLocation, actorLoc);
+			if (distance < 0.0f || distance > maxDistance) continue;
+
+			FVector2D screen;
+			if (!ProjectForOverlay(actorLoc, screen)) continue;
+
+			ESPLootCache Cache{};
+			Cache.bValidScreen = true;
+			Cache.ScreenPos = screen;
+			Cache.Color = lootColor;
+			Cache.Distance = distance;
+			Cache.Name = UKismetSystemLibrary::GetDisplayName(Actor);
+			NewLoot.push_back(Cache);
+		}
+	}
+
 	if (ConfigManager::B("ESP.BulletTracers") && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
 	{
 		std::lock_guard<std::mutex> lock(CheatsData::TracerMutex);
@@ -369,6 +410,7 @@ void Cheats::UpdateESP()
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
 		state.CachedActors = std::move(NewCache);
+		state.CachedLoot = std::move(NewLoot);
 		state.CachedTracers = std::move(NewTracers);
 	}
 }
@@ -379,11 +421,13 @@ void Cheats::RenderESP()
 	UCanvas* Canvas = Utils::GetCurrentCanvas();
 
 	std::vector<ESPActorCache> LocalActors;
+	std::vector<ESPLootCache> LocalLoot;
 	std::vector<ESPTracerCache> LocalTracers;
 	{
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
 		LocalActors = state.CachedActors;
+		LocalLoot = state.CachedLoot;
 		LocalTracers = state.CachedTracers;
 	}
 
@@ -467,8 +511,13 @@ void Cheats::RenderESP()
 
 		if (ConfigManager::B("ESP.ShowEnemyName"))
 		{
+			const float minScale = 0.6f;
+			const float maxScale = 1.0f;
+			const float t = std::clamp(Actor.Distance / 150.0f, 0.0f, 1.0f);
+			const float nameScale = maxScale - (maxScale - minScale) * t;
+			const FVector2D scale(nameScale, nameScale);
 			if (Canvas)
-				Utils::DrawCanvasText(Canvas, Actor.Name, FVector2D((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15), Utils::U32ToLinearColor(Actor.Color));
+				Utils::DrawCanvasText(Canvas, Actor.Name, FVector2D((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15), Utils::U32ToLinearColor(Actor.Color), scale);
 			else
 				ImGui::GetBackgroundDrawList()->AddText(
 					ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15),
@@ -476,6 +525,27 @@ void Cheats::RenderESP()
 					Actor.Name.ToString().c_str()
 				);
 		}
+	}
+
+	for (const auto& Loot : LocalLoot)
+	{
+		const float minScale = 0.55f;
+		const float maxScale = 0.95f;
+		float maxDistance = ConfigManager::F("ESP.LootMaxDistance");
+		if (maxDistance < 1.0f) maxDistance = 1.0f;
+		const float t = std::clamp(Loot.Distance / maxDistance, 0.0f, 1.0f);
+		const float nameScale = maxScale - (maxScale - minScale) * t;
+		const FVector2D scale(nameScale, nameScale);
+		const FVector2D drawPos(Loot.ScreenPos.X, Loot.ScreenPos.Y);
+
+		if (Canvas)
+			Utils::DrawCanvasText(Canvas, Loot.Name, drawPos, Utils::U32ToLinearColor(Loot.Color), scale);
+		else
+			ImGui::GetBackgroundDrawList()->AddText(
+				ImVec2(drawPos.X, drawPos.Y),
+				Loot.Color,
+				Loot.Name.ToString().c_str()
+			);
 	}
 
 	if (ConfigManager::B("ESP.BulletTracers"))

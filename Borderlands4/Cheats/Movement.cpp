@@ -152,6 +152,9 @@ namespace
     SDK::FVehicleAttributesState* GetVehicleAttributesState()
     {
         SDK::AOakVehicle* localVehicle = GetControlledVehicle();
+        if (!localVehicle)
+            return nullptr;
+
         for (int i = 0; i < SDK::UObject::GObjects->Num(); i++)
         {
             SDK::UObject* obj = SDK::UObject::GObjects->GetByIndex(i);

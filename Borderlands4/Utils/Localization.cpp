@@ -175,6 +175,9 @@ namespace Localization
         Register("SHOW_DISTANCE", "Show Distance", (const char*)u8"显示敌方距离");
         Register("SHOW_BONES", "Show Bones", (const char*)u8"显示骨骼");
         Register("SHOW_NAME", "Show Name", (const char*)u8"显示敌方名称");
+        Register("SHOW_LOOT_NAME", "Show Loot Name", (const char*)u8"显示掉落物名称");
+        Register("LOOT_COLOR", "Loot Color", (const char*)u8"掉落物颜色");
+        Register("LOOT_MAX_DISTANCE", "Loot Max Distance (m)", (const char*)u8"掉落物最大距离(米)");
         Register("ENEMY_COLOR", "Enemy Color", (const char*)u8"敌人颜色");
         Register("DEBUG", "Debug", (const char*)u8"调试");
         Register("ENABLE_EVENT_DEBUG_LOGS", "Enable Event Debug Logs", (const char*)u8"启用事件调试日志");

@@ -10,27 +10,19 @@ namespace
         static UFont* CachedFont = nullptr;
         if (CachedFont) return CachedFont;
 
-        const char* candidates[] = {
-            "Font GbxSubtitleFont.GbxSubtitleFont",
-            "Font Industry-Medium-HoloText.Industry-Medium-HoloText",
-            "Font Industry.Industry",
-            "Font Roboto.Roboto",
-            "Font RobotoDistanceField.RobotoDistanceField",
-            "Font DroidSansMono.DroidSansMono",
-            "Font Transient.DefaultRegularFont",
-            "Font Transient.DefaultTinyFont",
-            "Font Engine.Default__Font",
-        };
-
-        for (const char* name : candidates)
+        if (UEngine* Engine = UEngine::GetEngine())
         {
-            if (UFont* font = UObject::FindObject<UFont>(name))
-            {
-                CachedFont = font;
-                break;
+            if (Engine->SmallFont) {
+                CachedFont = Engine->SmallFont;
+                return CachedFont;
+            }
+            if (Engine->TinyFont) {
+                CachedFont = Engine->TinyFont;
+                return CachedFont;
             }
         }
 
+        CachedFont = UObject::FindObject<UFont>("Font Engine.Default__Font");
         return CachedFont;
     }
 
@@ -232,10 +224,7 @@ void Utils::DrawCanvasText(UCanvas* Canvas, const FString& Text, const FVector2D
         UEngine* Engine = UEngine::GetEngine();
         if (Engine)
         {
-            if (Engine->SubtitleFont) Font = Engine->SubtitleFont;
-            else if (Engine->LargeFont) Font = Engine->LargeFont;
-            else if (Engine->MediumFont) Font = Engine->MediumFont;
-            else if (Engine->SmallFont) Font = Engine->SmallFont;
+            if (Engine->SmallFont) Font = Engine->SmallFont;
             else if (Engine->TinyFont) Font = Engine->TinyFont;
         }
     }

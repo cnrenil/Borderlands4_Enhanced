@@ -341,6 +341,12 @@ void GUI::RenderMenu()
                     ImGui::Checkbox(Localization::T("SHOW_DISTANCE"), &B("ESP.ShowEnemyDistance"));
                     ImGui::Checkbox(Localization::T("SHOW_BONES"), &B("ESP.Bones"));
                     ImGui::Checkbox(Localization::T("SHOW_NAME"), &B("ESP.ShowEnemyName"));
+                    ImGui::Checkbox(Localization::T("SHOW_LOOT_NAME"), &B("ESP.ShowLootName"));
+                    if (B("ESP.ShowLootName"))
+                    {
+                        ImGui::SliderFloat(Localization::T("LOOT_MAX_DISTANCE"), &F("ESP.LootMaxDistance"), 10.0f, 1000.0f, "%.0f");
+                        ImGui::ColorEdit4(Localization::T("LOOT_COLOR"), (float*)&Color("ESP.LootColor"), ImGuiColorEditFlags_NoInputs);
+                    }
                     
                     ImGui::ColorEdit4(Localization::T("ENEMY_COLOR"), (float*)&Color("ESP.EnemyColor"), ImGuiColorEditFlags_NoInputs);
                     
