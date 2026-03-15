@@ -76,7 +76,7 @@ namespace Localization
  
         // 4. Player Tab - Core Features
         Register("ESP", "ESP", (const char*)u8"透视");
-        Register("AIMBOT", "Aimbot", (const char*)u8"静默自瞄");
+        Register("AIMBOT", "Aimbot", (const char*)u8"自瞄");
         Register("SILENT_AIM", "Silent Aim", (const char*)u8"静默自瞄");
         Register("GODMODE", "GodMode", (const char*)u8"无敌模式");
         Register("DEMIGOD", "Demigod", (const char*)u8"半神模式");
@@ -132,13 +132,13 @@ namespace Localization
         Register("VC_TICKETS", "Vault Card Tickets", (const char*)u8"卡片/奖牌");
         
         // 10. Aimbot Tab
-        Register("STANDARD_AIMBOT_SETTINGS", "Standard Aimbot Settings", (const char*)u8"静默自瞄设置");
+        Register("STANDARD_AIMBOT_SETTINGS", "Standard Aimbot Settings", (const char*)u8"自瞄设置");
         Register("REQUIRE_LOS", "Require LOS", (const char*)u8"需要可见性");
         Register("DRAW_FOV", "Draw FOV", (const char*)u8"显示视野范围");
         Register("DRAW_ARROW", "Draw Arrow", (const char*)u8"显示指向箭头");
         Register("SMOOTH_AIM", "Smooth Aim", (const char*)u8"平滑自瞄");
         Register("SMOOTHING", "Smoothing", (const char*)u8"平滑系数");
-        Register("AIMBOT_FOV", "Aimbot FOV", (const char*)u8"静默自瞄视野");
+        Register("AIMBOT_FOV", "Aimbot FOV", (const char*)u8"自瞄视野");
         Register("MAX_DISTANCE", "Max Distance", (const char*)u8"最大距离");
         Register("TARGET_BONE", "Target Bone", (const char*)u8"目标骨骼");
         Register("CHOOSE_BONE_TOOLTIP", "Choose the bone to inject damage directly to. E.g Head = 100% Critical Hit", (const char*)u8"选择要直接注入伤害的部位。例如 头部 = 100% 暴击");
@@ -152,8 +152,7 @@ namespace Localization
         Register("NO_SPREAD", "No Spread", (const char*)u8"无扩散");
         Register("RECOIL_REDUCTION", "Recoil Reduction %", (const char*)u8"后坐力减免比例");
         Register("NO_SWAY", "No Sway", (const char*)u8"无武器摇晃");
-        Register("HOMING_PROJECTILES", "Homing Projectiles", (const char*)u8"自导子弹");
-        Register("HOMING_RANGE", "Homing Range", (const char*)u8"自导范围");
+        Register("MAGIC_BULLETS", "Magic Bullets", (const char*)u8"魔法子弹");
         Register("TRIGGERBOT", "TriggerBot", (const char*)u8"自动开火");
         Register("REQUIRE_KEY_HELD", "Require Key Held", (const char*)u8"需要热键配合");
         Register("TARGET_ALL", "Target All", (const char*)u8"目标所有单位");
@@ -193,7 +192,7 @@ namespace Localization
         Register("PRESS_ANY_KEY", "Press Any Key...", (const char*)u8"等待输入...");
         Register("UNKNOWN_KEY", "Unknown", (const char*)u8"未知按键");
         Register("RESET", "Reset", (const char*)u8"重置");
-        Register("AIMBOT_KEY", "Aimbot Key", (const char*)u8"静默自瞄热键");
+        Register("AIMBOT_KEY", "Aimbot Key", (const char*)u8"自瞄热键");
         Register("TRIGGER_KEY", "TriggerBot Key", (const char*)u8"自动开火热键");
         Register("MENU_KEY", "Menu Toggle Key", (const char*)u8"菜单切换按键");
         Register("UNHOOK_KEY", "Unhook Key", (const char*)u8"卸载取消 Hook 热键");

@@ -55,6 +55,7 @@ namespace ConfigManager
         Register("Aimbot.NativeProjectileHook", true);
         Register("Aimbot.ProjectileBuildCallRVA", 0x148FAC6);
         Register("Aimbot.ProjectileBuildRVA", 0x14903B4);
+        Register("Aimbot.Magic", false);
 
         // TriggerBot
         Register("Trigger.Enabled", false);
@@ -69,8 +70,6 @@ namespace ConfigManager
         Register("Weapon.NoSpread", false);
         Register("Weapon.RecoilReduction", 1.0f);
         Register("Weapon.NoSway", false);
-        Register("Weapon.HomingProjectiles", false);
-        Register("Weapon.HomingRange", 50.0f);
         Register("Weapon.FireRate", 1.0f);
         Register("Weapon.InstantReload", false);
         Register("Weapon.InstantSwap", false);
@@ -205,6 +204,23 @@ namespace ConfigManager
                 try { v.z = std::stof(buf); } catch (...) {}
                 GetPrivateProfileStringA(section.c_str(), (name + "_W").c_str(), std::to_string(v.w).c_str(), buf, sizeof(buf), path.c_str());
                 try { v.w = std::stof(buf); } catch (...) {}
+            }
+        }
+
+        char modernBuf[512]{};
+        char legacyBuf[512]{};
+
+        GetPrivateProfileStringA("Aimbot", "Magic", "", modernBuf, sizeof(modernBuf), path.c_str());
+        if (modernBuf[0] == '\0')
+        {
+            GetPrivateProfileStringA("Aimbot", "HomingProjectiles", "", legacyBuf, sizeof(legacyBuf), path.c_str());
+            if (legacyBuf[0] == '\0')
+            {
+                GetPrivateProfileStringA("Weapon", "HomingProjectiles", "", legacyBuf, sizeof(legacyBuf), path.c_str());
+            }
+            if (legacyBuf[0] != '\0')
+            {
+                B("Aimbot.Magic") = std::atoi(legacyBuf) != 0;
             }
         }
         

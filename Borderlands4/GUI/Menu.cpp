@@ -228,7 +228,14 @@ void GUI::RenderMenu()
                 if (ImGui::TreeNode(Localization::T("STANDARD_AIMBOT_SETTINGS")))
                 {
                     ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &B("Aimbot.LOS"));
+                    ImGui::Checkbox(Localization::T("REQUIRE_KEY_HELD"), &B("Aimbot.RequireKeyHeld"));
                     ImGui::Checkbox(Localization::T("SILENT_AIM"), &B("Aimbot.Silent"));
+                    if (B("Aimbot.Silent"))
+                    {
+                        ImGui::Indent();
+                        ImGui::Checkbox(Localization::T("MAGIC_BULLETS"), &B("Aimbot.Magic"));
+                        ImGui::Unindent();
+                    }
                     ImGui::Checkbox(Localization::T("TRIGGERBOT"), &B("Trigger.Enabled"));
                     ImGui::Checkbox(Localization::T("DRAW_FOV"), &B("Aimbot.DrawFOV"));
                     ImGui::Checkbox(Localization::T("DRAW_ARROW"), &B("Aimbot.DrawArrow"));
@@ -321,13 +328,6 @@ void GUI::RenderMenu()
                 GUI::HostOnlyTooltip();
                 ImGui::Checkbox(Localization::T("NO_AMMO_CONSUME"), &B("Weapon.NoAmmoConsume"));
                 GUI::HostOnlyTooltip();
-                
-                ImGui::Separator();
-                ImGui::Checkbox(Localization::T("HOMING_PROJECTILES"), &B("Weapon.HomingProjectiles"));
-                if (B("Weapon.HomingProjectiles"))
-                {
-                    ImGui::SliderFloat(Localization::T("HOMING_RANGE"), &F("Weapon.HomingRange"), 1.0f, 200.0f);
-                }
                 
                 ImGui::EndTabItem();
             }

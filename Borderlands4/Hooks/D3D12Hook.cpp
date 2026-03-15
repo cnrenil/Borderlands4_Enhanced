@@ -39,6 +39,8 @@ namespace d3d12hook {
     static bool                   gAfterFirstPresent = false;
     static IDXGISwapChain3*       gTrackedSwapChain = nullptr;
     static bool                   gNeedQueueRecapture = true;
+    static DXGI_FORMAT            gSwapChainFormat = DXGI_FORMAT_UNKNOWN;
+    static bool                   gSwapChainWasHdr = false;
 
     // --- Stability: track resize state and early-injection grace period ---
     static DWORD                  gFirstPresentTime = 0;
@@ -75,6 +77,8 @@ namespace d3d12hook {
         gFirstPresentTime = 0;
         gAfterFirstPresent = false;
         gNeedQueueRecapture = true;
+        gSwapChainFormat = DXGI_FORMAT_UNKNOWN;
+        gSwapChainWasHdr = false;
         ReleaseCapturedQueue();
         if (reason) {
             LOG_DEBUG("DX12Hook", "Startup tracking reset: %s\n", reason);
@@ -83,6 +87,21 @@ namespace d3d12hook {
 
     inline void LogHRESULT(const char* label, HRESULT hr) {
         LOG_ERROR("DX12Hook", "%s: hr=0x%08X\n", label, hr);
+    }
+
+    static bool IsHdrFormat(DXGI_FORMAT format) {
+        return format == DXGI_FORMAT_R10G10B10A2_UNORM ||
+            format == DXGI_FORMAT_R16G16B16A16_FLOAT;
+    }
+
+    static void RefreshSwapChainColorState(IDXGISwapChain3* pSwapChain) {
+        if (!pSwapChain) return;
+
+        DXGI_SWAP_CHAIN_DESC desc = {};
+        if (SUCCEEDED(pSwapChain->GetDesc(&desc))) {
+            gSwapChainFormat = desc.BufferDesc.Format;
+        }
+        gSwapChainWasHdr = IsHdrFormat(gSwapChainFormat);
     }
 
     // Release all overlay GPU resources (but NOT the ImGui context itself).
@@ -127,6 +146,7 @@ namespace d3d12hook {
         pSwapChain->GetDesc(&desc);
         gBufferCount = desc.BufferCount;
         g_hWnd = desc.OutputWindow;
+        gSwapChainFormat = desc.BufferDesc.Format;
 
         // Hook WndProc for Input
         if (g_hWnd && !oWndProc) {
@@ -303,6 +323,16 @@ namespace d3d12hook {
             ResetStartupTracking("SwapChain changed");
         }
 
+        RefreshSwapChainColorState(pSwapChain);
+        if (gSwapChainWasHdr) {
+            Logger::LogThrottled(
+                Logger::Level::Info,
+                "DX12Hook",
+                5000,
+                "HDR swapchain detected. Leaving game colorspace unchanged to avoid SDR washout. fmt=%d",
+                static_cast<int>(gSwapChainFormat));
+        }
+
         // Track first Present time for grace period
         if (!gFirstPresentSeen) {
             gFirstPresentSeen = true;
@@ -347,6 +377,16 @@ namespace d3d12hook {
         if (pSwapChain != gTrackedSwapChain) {
             gTrackedSwapChain = pSwapChain;
             ResetStartupTracking("SwapChain changed (Present1)");
+        }
+
+        RefreshSwapChainColorState(pSwapChain);
+        if (gSwapChainWasHdr) {
+            Logger::LogThrottled(
+                Logger::Level::Info,
+                "DX12Hook",
+                5000,
+                "HDR swapchain detected on Present1. Leaving game colorspace unchanged to avoid SDR washout. fmt=%d",
+                static_cast<int>(gSwapChainFormat));
         }
 
         // Track first Present time for grace period

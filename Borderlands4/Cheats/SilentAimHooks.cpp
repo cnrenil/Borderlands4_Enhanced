@@ -12,8 +12,10 @@ namespace SilentAimHooks
 	{
 		static std::atomic<int> g_LastAimbotHotkeyFrame{ -1 };
 		static SDK::FVector g_SilentRedirectTargetPos{};
-		static double g_LastSilentArmTime = 0.0;
 		static std::mutex g_HookInstallMutex;
+		static std::atomic<unsigned int> g_PendingSilentRedirects{ 0 };
+		thread_local bool g_ThreadSilentRedirectActive = false;
+		thread_local SDK::FVector g_ThreadSilentRedirectTargetPos{};
 
 		static std::atomic<bool> g_NativeProjectileHookInstalled{ false };
 		static std::atomic<bool> g_NativeProjectileHookAttempted{ false };
@@ -70,8 +72,12 @@ namespace SilentAimHooks
 		static constexpr size_t kFireParamsMuzzleOriginOffset = 40 * sizeof(__int64);
 		static constexpr size_t kFireParamsExplicitRotOffset = 46 * sizeof(__int64);
 
-		static constexpr double kArmWindowSeconds = 0.8;
 		static constexpr double kLocalSourceMaxDist = 5000.0;
+		static constexpr double kMagicSpawnBacktrackUnits = 12.0;
+		static constexpr double kMagicTraceHalfSpanUnits = 12.0;
+		static constexpr int kDebugLogIntervalMs = 1000;
+		static constexpr int kInfoLogIntervalMs = 3000;
+		static constexpr int kErrorLogIntervalMs = 3000;
 
 		static uintptr_t g_FireProjectileLoopAddr = 0;
 		static uintptr_t g_FireDirectionTraceAddr = 0;
@@ -92,16 +98,21 @@ namespace SilentAimHooks
 			return ConfigManager::B("Aimbot.Enabled") &&
 				ConfigManager::B("Aimbot.Silent") &&
 				ConfigManager::B("Aimbot.NativeProjectileHook") &&
-				IsAimbotActivationAllowed() &&
 				g_CurrentAimbotTarget &&
 				Utils::IsValidActor(g_CurrentAimbotTarget) &&
-				(NowSeconds() - g_LastSilentArmTime) <= kArmWindowSeconds;
+				g_PendingSilentRedirects.load() > 0;
+		}
+
+		bool IsMagicEnabled()
+		{
+			return ConfigManager::B("Aimbot.Magic");
 		}
 
 		void ArmSilentRedirect()
 		{
 			if (!ConfigManager::B("Aimbot.Enabled") ||
 				!ConfigManager::B("Aimbot.Silent") ||
+				!ConfigManager::B("Aimbot.NativeProjectileHook") ||
 				!IsAimbotActivationAllowed() ||
 				!g_CurrentAimbotTarget ||
 				!Utils::IsValidActor(g_CurrentAimbotTarget))
@@ -110,7 +121,53 @@ namespace SilentAimHooks
 			}
 
 			g_SilentRedirectTargetPos = g_LatestTargetPos;
-			g_LastSilentArmTime = NowSeconds();
+			g_PendingSilentRedirects.fetch_add(1);
+		}
+
+		void ClearPendingSilentRedirects()
+		{
+			g_PendingSilentRedirects.store(0);
+			g_ThreadSilentRedirectActive = false;
+		}
+
+		bool TryActivateThreadSilentRedirect()
+		{
+			if (!ConfigManager::B("Aimbot.Enabled") ||
+				!ConfigManager::B("Aimbot.Silent") ||
+				!ConfigManager::B("Aimbot.NativeProjectileHook") ||
+				!g_CurrentAimbotTarget ||
+				!Utils::IsValidActor(g_CurrentAimbotTarget))
+			{
+				return false;
+			}
+
+			unsigned int pending = g_PendingSilentRedirects.load();
+			while (pending > 0)
+			{
+				if (g_PendingSilentRedirects.compare_exchange_weak(pending, pending - 1))
+				{
+					g_ThreadSilentRedirectTargetPos = g_SilentRedirectTargetPos;
+					g_ThreadSilentRedirectActive = true;
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		bool EnsureThreadSilentRedirectActive()
+		{
+			if (g_ThreadSilentRedirectActive)
+			{
+				return true;
+			}
+
+			return TryActivateThreadSilentRedirect();
+		}
+
+		void FinishThreadSilentRedirect()
+		{
+			g_ThreadSilentRedirectActive = false;
 		}
 
 		bool IsLikelyLocalFireSource(const SDK::FVector& source)
@@ -163,6 +220,54 @@ namespace SilentAimHooks
 			}
 		}
 
+		SDK::FVector AddVector(const SDK::FVector& a, const SDK::FVector& b)
+		{
+			return SDK::FVector{ a.X + b.X, a.Y + b.Y, a.Z + b.Z };
+		}
+
+		SDK::FVector SubtractVector(const SDK::FVector& a, const SDK::FVector& b)
+		{
+			return SDK::FVector{ a.X - b.X, a.Y - b.Y, a.Z - b.Z };
+		}
+
+		SDK::FVector ScaleVector(const SDK::FVector& v, double scale)
+		{
+			return SDK::FVector{
+				static_cast<float>(v.X * scale),
+				static_cast<float>(v.Y * scale),
+				static_cast<float>(v.Z * scale)
+			};
+		}
+
+		SDK::FVector NormalizeVector(const SDK::FVector& v)
+		{
+			const double lenSq =
+				static_cast<double>(v.X) * static_cast<double>(v.X) +
+				static_cast<double>(v.Y) * static_cast<double>(v.Y) +
+				static_cast<double>(v.Z) * static_cast<double>(v.Z);
+			if (lenSq <= 1e-6)
+			{
+				return SDK::FVector{ 1.0f, 0.0f, 0.0f };
+			}
+
+			const double invLen = 1.0 / sqrt(lenSq);
+			return ScaleVector(v, invLen);
+		}
+
+		SDK::FVector BuildMagicSpawnPosition(const SDK::FVector& source, const SDK::FVector& target)
+		{
+			const SDK::FVector dir = NormalizeVector(SubtractVector(target, source));
+			return SubtractVector(target, ScaleVector(dir, kMagicSpawnBacktrackUnits));
+		}
+
+		void BuildMagicTraceSegment(const SDK::FVector& source, const SDK::FVector& target, SDK::FVector& outStart, SDK::FVector& outEnd)
+		{
+			const SDK::FVector dir = NormalizeVector(SubtractVector(target, source));
+			const SDK::FVector offset = ScaleVector(dir, kMagicTraceHalfSpanUnits);
+			outStart = SubtractVector(target, offset);
+			outEnd = AddVector(target, offset);
+		}
+
 		__int64 __fastcall hkFireProjectileLoop(__int64 weapon, __int64* fireParams, int shotIndex, int shotCount, unsigned __int8 simulate)
 		{
 			SDK::FVector aimOrigin{};
@@ -174,12 +279,14 @@ namespace SilentAimHooks
 			const bool explicitRotOk = ReadVec3At(fireParams, kFireParamsExplicitRotOffset, explicitRot);
 			const bool flagsOk = ReadU64At(fireParams, kFireParamsFlagsOffset, flags);
 			const bool armed = IsSilentArmed();
-			const bool likelyLocal = armed && muzzleOriginOk && IsLikelyLocalFireSource(muzzleOrigin);
+			const bool localSource = muzzleOriginOk && IsLikelyLocalFireSource(muzzleOrigin);
+			const bool likelyLocal = localSource && EnsureThreadSilentRedirectActive();
 			void* caller = _ReturnAddress();
 
-			Logger::Log(
+			Logger::LogThrottled(
 				Logger::Level::Debug,
 				"SilentAimDbg",
+				kDebugLogIntervalMs,
 				"FireProjectileLoop hit. caller=%p weapon=%p params=%p shot=%d/%d simulate=%u flagsOk=%d flags=0x%llX aimOk=%d aim=(%.4f, %.4f, %.4f) muzzleOk=%d muzzle=(%.4f, %.4f, %.4f) rotOk=%d rot=(%.4f, %.4f, %.4f) armed=%d local=%d",
 				caller,
 				reinterpret_cast<void*>(weapon),
@@ -200,7 +307,17 @@ namespace SilentAimHooks
 
 			if (likelyLocal && fireParams)
 			{
-				SDK::FRotator desiredRot = Utils::GetRotationToTarget(muzzleOrigin, g_SilentRedirectTargetPos);
+				const SDK::FVector redirectTarget = g_ThreadSilentRedirectTargetPos;
+				SDK::FVector redirectSource = muzzleOriginOk ? muzzleOrigin : (aimOriginOk ? aimOrigin : redirectTarget);
+				if (IsMagicEnabled())
+				{
+					const SDK::FVector magicSpawn = BuildMagicSpawnPosition(redirectSource, redirectTarget);
+					WriteVec3At(fireParams, kFireParamsAimOriginOffset, magicSpawn);
+					WriteVec3At(fireParams, kFireParamsMuzzleOriginOffset, magicSpawn);
+					redirectSource = magicSpawn;
+				}
+
+				SDK::FRotator desiredRot = Utils::GetRotationToTarget(redirectSource, redirectTarget);
 				ClampRotator(desiredRot);
 				WriteVec3At(fireParams, kFireParamsExplicitRotOffset, SDK::FVector{ desiredRot.Pitch, desiredRot.Yaw, desiredRot.Roll });
 
@@ -209,13 +326,15 @@ namespace SilentAimHooks
 					WriteU64At(fireParams, kFireParamsFlagsOffset, flags | 8ull);
 				}
 
-				Logger::Log(
+				Logger::LogThrottled(
 					Logger::Level::Debug,
 					"SilentAimDbg",
-					"FireProjectileLoop redirected. caller=%p target=(%.4f, %.4f, %.4f) rot=(%.4f, %.4f, %.4f) flagsBefore=0x%llX flagsAfter=0x%llX",
+					kDebugLogIntervalMs,
+					"FireProjectileLoop redirected. caller=%p target=(%.4f, %.4f, %.4f) rot=(%.4f, %.4f, %.4f) magic=%d flagsBefore=0x%llX flagsAfter=0x%llX",
 					caller,
-					g_SilentRedirectTargetPos.X, g_SilentRedirectTargetPos.Y, g_SilentRedirectTargetPos.Z,
+					redirectTarget.X, redirectTarget.Y, redirectTarget.Z,
 					desiredRot.Pitch, desiredRot.Yaw, desiredRot.Roll,
+					IsMagicEnabled() ? 1 : 0,
 					static_cast<unsigned long long>(flags),
 					static_cast<unsigned long long>(flags | 8ull));
 			}
@@ -229,13 +348,15 @@ namespace SilentAimHooks
 					simulate)
 				: 0;
 
-			Logger::Log(
+			Logger::LogThrottled(
 				Logger::Level::Debug,
 				"SilentAimDbg",
+				kDebugLogIntervalMs,
 				"FireProjectileLoop return. caller=%p weapon=%p result=%p",
 				caller,
 				reinterpret_cast<void*>(weapon),
 				reinterpret_cast<void*>(result));
+			FinishThreadSilentRedirect();
 			return result;
 		}
 
@@ -254,12 +375,15 @@ namespace SilentAimHooks
 			const bool startOk = startParam && NativeInterop::ReadVec3Param(startParam, start);
 			const bool endOk = endParam && NativeInterop::ReadVec3Param(endParam, end);
 			const bool armed = IsSilentArmed();
-			const bool likelyLocal = armed && startOk && IsLikelyLocalFireSource(start);
+			const bool hadActiveRedirect = g_ThreadSilentRedirectActive;
+			const bool localSource = startOk && IsLikelyLocalFireSource(start);
+			const bool likelyLocal = localSource && EnsureThreadSilentRedirectActive();
 			void* caller = _ReturnAddress();
 
-			Logger::Log(
+			Logger::LogThrottled(
 				Logger::Level::Debug,
 				"SilentAimDbg",
+				kDebugLogIntervalMs,
 				"FireDirectionTrace hit. caller=%p weapon=%p out=%p startOk=%d start=(%.4f, %.4f, %.4f) endOk=%d end=(%.4f, %.4f, %.4f) useAlt=%u scale=%.4f allowThrough=%u armed=%d local=%d ctx=%p",
 				caller,
 				weapon,
@@ -277,17 +401,35 @@ namespace SilentAimHooks
 
 			if (likelyLocal && endParam)
 			{
-				NativeInterop::WriteVec3Param(const_cast<void*>(endParam), g_SilentRedirectTargetPos);
-				Logger::Log(
+				const SDK::FVector redirectTarget = g_ThreadSilentRedirectTargetPos;
+				if (IsMagicEnabled())
+				{
+					SDK::FVector magicStart = redirectTarget;
+					SDK::FVector magicEnd = redirectTarget;
+					BuildMagicTraceSegment(startOk ? start : redirectTarget, redirectTarget, magicStart, magicEnd);
+					if (startParam)
+					{
+						NativeInterop::WriteVec3Param(startParam, magicStart);
+					}
+					NativeInterop::WriteVec3Param(const_cast<void*>(endParam), magicEnd);
+				}
+				else
+				{
+					NativeInterop::WriteVec3Param(const_cast<void*>(endParam), redirectTarget);
+				}
+
+				Logger::LogThrottled(
 					Logger::Level::Debug,
 					"SilentAimDbg",
-					"FireDirectionTrace redirected. caller=%p target=(%.4f, %.4f, %.4f) previousEnd=(%.4f, %.4f, %.4f)",
+					kDebugLogIntervalMs,
+					"FireDirectionTrace redirected. caller=%p target=(%.4f, %.4f, %.4f) previousEnd=(%.4f, %.4f, %.4f) magic=%d",
 					caller,
-					g_SilentRedirectTargetPos.X, g_SilentRedirectTargetPos.Y, g_SilentRedirectTargetPos.Z,
-					end.X, end.Y, end.Z);
+					redirectTarget.X, redirectTarget.Y, redirectTarget.Z,
+					end.X, end.Y, end.Z,
+					IsMagicEnabled() ? 1 : 0);
 			}
 
-			return oFireDirectionTrace
+			void* result = oFireDirectionTrace
 				? oFireDirectionTrace(
 					weapon,
 						outTrace,
@@ -298,6 +440,11 @@ namespace SilentAimHooks
 						traceScale,
 						allowThroughActors)
 				: nullptr;
+			if (!hadActiveRedirect)
+			{
+				FinishThreadSilentRedirect();
+			}
+			return result;
 		}
 
 		__int64 __fastcall hkWeaponBehaviorFireProjectile(void* behaviorThis)
@@ -325,16 +472,17 @@ namespace SilentAimHooks
 				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
-					300,
+					kErrorLogIntervalMs,
 					"%s pattern not found.",
 					tag ? tag : "Unknown");
 				return 0;
 			}
 
 			cache = addr;
-			Logger::Log(
+			Logger::LogThrottled(
 				Logger::Level::Info,
 				"SilentAim",
+				kInfoLogIntervalMs,
 				"%s resolved at 0x%llX",
 				tag ? tag : "Unknown",
 				static_cast<unsigned long long>(addr));
@@ -367,9 +515,10 @@ namespace SilentAimHooks
 						fallbackLen))
 					{
 						installedFlag.store(true);
-						Logger::Log(
+						Logger::LogThrottled(
 							Logger::Level::Info,
 							"SilentAim",
+							kInfoLogIntervalMs,
 							"%s hook installed via absolute detour fallback. addr=0x%llX len=%zu",
 							tag ? tag : "NativeHook",
 							static_cast<unsigned long long>(target),
@@ -377,18 +526,20 @@ namespace SilentAimHooks
 						return true;
 					}
 
-					Logger::Log(
+					Logger::LogThrottled(
 						Logger::Level::Error,
 						"SilentAim",
+						kErrorLogIntervalMs,
 						"%s hook blocked after MEMORY_ALLOC and fallback failed. addr=0x%llX",
 						tag ? tag : "NativeHook",
 						static_cast<unsigned long long>(target));
 					return false;
 				}
 
-				Logger::Log(
+				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
+					kErrorLogIntervalMs,
 					"%s hook create failed. status=%d(%s) addr=0x%llX",
 					tag ? tag : "NativeHook",
 					static_cast<int>(createStatus),
@@ -400,9 +551,10 @@ namespace SilentAimHooks
 			MH_STATUS enableStatus = MH_EnableHook(reinterpret_cast<LPVOID>(target));
 			if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
 			{
-				Logger::Log(
+				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
+					kErrorLogIntervalMs,
 					"%s hook enable failed. status=%d(%s) addr=0x%llX",
 					tag ? tag : "NativeHook",
 					static_cast<int>(enableStatus),
@@ -412,9 +564,10 @@ namespace SilentAimHooks
 			}
 
 			installedFlag.store(true);
-			Logger::Log(
+			Logger::LogThrottled(
 				Logger::Level::Info,
 				"SilentAim",
+				kInfoLogIntervalMs,
 				"%s hook installed. addr=0x%llX",
 				tag ? tag : "NativeHook",
 				static_cast<unsigned long long>(target));
@@ -437,7 +590,7 @@ namespace SilentAimHooks
 				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
-					300,
+					kErrorLogIntervalMs,
 					"WeaponBehavior_FireProjectile vtable slot is null. slot=%zu",
 					kWeaponBehaviorFireProjectileSlot);
 				return false;
@@ -462,15 +615,16 @@ namespace SilentAimHooks
 				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
-					300,
+					kErrorLogIntervalMs,
 					"WeaponBehavior_FireProjectile vtable patch failed. slot=%zu",
 					kWeaponBehaviorFireProjectileSlot);
 				return false;
 			}
 
-			Logger::Log(
+			Logger::LogThrottled(
 				Logger::Level::Info,
 				"SilentAim",
+				kInfoLogIntervalMs,
 				"WeaponBehavior_FireProjectile vtable patched. slot=%zu target=%p",
 				kWeaponBehaviorFireProjectileSlot,
 				target);
@@ -526,7 +680,7 @@ namespace SilentAimHooks
 				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
-					300,
+					kErrorLogIntervalMs,
 					"Native fire hooks not installed. loop=0x%llX trace=0x%llX",
 					static_cast<unsigned long long>(fireProjectileLoopTarget),
 					static_cast<unsigned long long>(fireDirectionTraceTarget));
@@ -565,9 +719,10 @@ namespace SilentAimHooks
 					}
 				}
 
-				Logger::Log(
+				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
+					kErrorLogIntervalMs,
 					"WeaponBehavior_FireProjectile hook create failed. status=%d(%s) addr=0x%llX",
 					static_cast<int>(createStatus),
 					MH_StatusToString(createStatus),
@@ -578,9 +733,10 @@ namespace SilentAimHooks
 			MH_STATUS enableStatus = MH_EnableHook(target);
 			if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
 			{
-				Logger::Log(
+				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
+					kErrorLogIntervalMs,
 					"WeaponBehavior_FireProjectile hook enable failed. status=%d(%s) addr=0x%llX",
 					static_cast<int>(enableStatus),
 					MH_StatusToString(enableStatus),
@@ -589,9 +745,10 @@ namespace SilentAimHooks
 			}
 
 			g_WeaponBehaviorFireHookInstalled.store(true);
-			Logger::Log(
+			Logger::LogThrottled(
 				Logger::Level::Info,
 				"SilentAim",
+				kInfoLogIntervalMs,
 				"WeaponBehavior_FireProjectile hook installed. target=0x%llX slot=%zu",
 				static_cast<unsigned long long>(reinterpret_cast<uintptr_t>(target)),
 				kWeaponBehaviorFireProjectileSlot);
@@ -603,6 +760,10 @@ namespace SilentAimHooks
 	{
 		g_CurrentAimbotTarget = target;
 		g_LatestTargetPos = targetPos;
+		if (!target)
+		{
+			ClearPendingSilentRedirects();
+		}
 	}
 
 	void Tick()
@@ -626,6 +787,6 @@ namespace SilentAimHooks
 
 	void ResetArm()
 	{
-		g_LastSilentArmTime = 0.0;
+		ClearPendingSilentRedirects();
 	}
 }

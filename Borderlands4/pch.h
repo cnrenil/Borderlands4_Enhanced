@@ -8,7 +8,7 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3d12.h>
-#include <dxgi1_4.h>
+#include <dxgi1_6.h>
 #include <tlhelp32.h>
 #include <winternl.h>
 
