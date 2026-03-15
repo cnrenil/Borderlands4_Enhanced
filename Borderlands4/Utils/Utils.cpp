@@ -3,6 +3,8 @@
 
 namespace
 {
+    thread_local UCanvas* g_CurrentCanvas = nullptr;
+
     // Guard against stale UObject pointers during map transition/game shutdown.
     bool IsReadableUObject(const void* Ptr)
     {
@@ -111,6 +113,106 @@ AActor* Utils::GetSelfActor()
 unsigned Utils::ConvertImVec4toU32(ImVec4 Color)
 {
     return IM_COL32((int)(Color.x * 255.0f), (int)(Color.y * 255.0f), (int)(Color.z * 255.0f), (int)(Color.w * 255.0f));
+}
+
+void Utils::SetCurrentCanvas(UCanvas* Canvas)
+{
+    g_CurrentCanvas = Canvas;
+}
+
+UCanvas* Utils::GetCurrentCanvas()
+{
+    return g_CurrentCanvas;
+}
+
+FLinearColor Utils::ImVec4ToLinearColor(const ImVec4& Color)
+{
+    return FLinearColor(Color.x, Color.y, Color.z, Color.w);
+}
+
+FLinearColor Utils::U32ToLinearColor(ImU32 Color)
+{
+    const float inv255 = 1.0f / 255.0f;
+    return FLinearColor(
+        ((Color >> IM_COL32_R_SHIFT) & 0xFF) * inv255,
+        ((Color >> IM_COL32_G_SHIFT) & 0xFF) * inv255,
+        ((Color >> IM_COL32_B_SHIFT) & 0xFF) * inv255,
+        ((Color >> IM_COL32_A_SHIFT) & 0xFF) * inv255);
+}
+
+void Utils::DrawCanvasLine(UCanvas* Canvas, const FVector2D& A, const FVector2D& B, float Thickness, const FLinearColor& Color)
+{
+    if (!Canvas) return;
+    Canvas->K2_DrawLine(A, B, Thickness, Color);
+}
+
+void Utils::DrawCanvasBox(UCanvas* Canvas, const FVector2D& Position, const FVector2D& Size, float Thickness, const FLinearColor& Color)
+{
+    if (!Canvas) return;
+    Canvas->K2_DrawBox(Position, Size, Thickness, Color);
+}
+
+void Utils::DrawCanvasFilledRect(UCanvas* Canvas, const FVector2D& Position, const FVector2D& Size, const FLinearColor& Color)
+{
+    if (!Canvas || Size.X <= 0.0 || Size.Y <= 0.0) return;
+
+    UTexture2D* FillTexture = Canvas->DefaultTexture ? Canvas->DefaultTexture : nullptr;
+    if (!FillTexture)
+    {
+        UEngine* Engine = UEngine::GetEngine();
+        FillTexture = Engine ? Engine->DefaultTexture : nullptr;
+    }
+    if (!FillTexture) return;
+
+    Canvas->K2_DrawTexture(
+        FillTexture,
+        Position,
+        Size,
+        FVector2D(0.0, 0.0),
+        FVector2D(1.0, 1.0),
+        Color,
+        EBlendMode::BLEND_Translucent,
+        0.0f,
+        FVector2D(0.0, 0.0));
+}
+
+void Utils::DrawCanvasCircle(UCanvas* Canvas, const FVector2D& Center, float Radius, int32 Sides, float Thickness, const FLinearColor& Color)
+{
+    if (!Canvas || Radius <= 0.0f || Sides < 3) return;
+
+    const float step = (2.0f * static_cast<float>(std::numbers::pi)) / static_cast<float>(Sides);
+    FVector2D prev(Center.X + Radius, Center.Y);
+    for (int32 i = 1; i <= Sides; ++i)
+    {
+        const float angle = step * static_cast<float>(i);
+        const FVector2D next(
+            Center.X + std::cos(angle) * Radius,
+            Center.Y + std::sin(angle) * Radius);
+        DrawCanvasLine(Canvas, prev, next, Thickness, Color);
+        prev = next;
+    }
+}
+
+void Utils::DrawCanvasText(UCanvas* Canvas, const std::string& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale, bool bCenterX, bool bCenterY, bool bOutlined)
+{
+    if (!Canvas || Text.empty()) return;
+
+    UEngine* Engine = UEngine::GetEngine();
+    UFont* Font = Engine ? (Engine->SmallFont ? Engine->SmallFont : Engine->TinyFont) : nullptr;
+    const FString RenderText(UtfN::StringToWString(Text).c_str());
+    Canvas->K2_DrawText(
+        Font,
+        RenderText,
+        Position,
+        Scale,
+        Color,
+        0.0f,
+        FLinearColor(0.0f, 0.0f, 0.0f, Color.A),
+        FVector2D(1.0f, 1.0f),
+        bCenterX,
+        bCenterY,
+        bOutlined,
+        FLinearColor(0.0f, 0.0f, 0.0f, Color.A));
 }
 
 ALightProjectileManager* Utils::GetLightProjManager()
@@ -353,7 +455,12 @@ void Utils::DrawFOV(float MaxFOV, float Thickness = 1.0f)
     float MaxFOVNormalized = MaxFOV / 90.0f;
     float RadiusPixels = MaxFOVNormalized * ((float)ViewportSize.Y * 0.5f);
 
-    // Draw using ImGui (pixel radius)
+    if (UCanvas* Canvas = GetCurrentCanvas())
+    {
+        DrawCanvasCircle(Canvas, Center, RadiusPixels, 64, Thickness, FLinearColor(1.0f, 0.0f, 0.0f, 1.0f));
+        return;
+    }
+
     ImGui::GetBackgroundDrawList()->AddCircle(ImVec2(Center.X, Center.Y), RadiusPixels, IM_COL32(255, 0, 0, 255), 64, Thickness);
 }
 
@@ -366,8 +473,27 @@ void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
 
     ImVec2 Center = GetAimScreenCenter();
     ImVec2 Target((float)ScreenPos.X, (float)ScreenPos.Y);
+
+    if (UCanvas* Canvas = GetCurrentCanvas())
+    {
+        const FVector2D centerVec(Center.x, Center.y);
+        const FVector2D targetVec(Target.x, Target.y);
+        DrawCanvasLine(Canvas, centerVec, targetVec, Thickness, FLinearColor(1.0f, 1.0f, 1.0f, 0.7f));
+
+        const float angle = atan2f(Target.y - Center.y, Target.x - Center.x);
+        const float arrowSize = 10.0f;
+        const FVector2D p1(
+            Target.x - arrowSize * cosf(angle - 0.5f),
+            Target.y - arrowSize * sinf(angle - 0.5f));
+        const FVector2D p2(
+            Target.x - arrowSize * cosf(angle + 0.5f),
+            Target.y - arrowSize * sinf(angle + 0.5f));
+        DrawCanvasLine(Canvas, targetVec, p1, Thickness, FLinearColor(1.0f, 1.0f, 1.0f, 0.85f));
+        DrawCanvasLine(Canvas, targetVec, p2, Thickness, FLinearColor(1.0f, 1.0f, 1.0f, 0.85f));
+        DrawCanvasCircle(Canvas, targetVec, 2.5f, 12, 1.5f, FLinearColor(0.0f, 1.0f, 0.0f, 1.0f));
+        return;
+    }
     
-    // Draw the main line
     ImGui::GetBackgroundDrawList()->AddLine(Center, Target, IM_COL32(255, 255, 255, 180), Thickness);
     
     // Draw an arrow head

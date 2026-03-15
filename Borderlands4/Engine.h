@@ -18,7 +18,7 @@ struct Hooks
 		void** pcVTable = nullptr;
 		void** psVTable = nullptr;
 		void** cmVTable = nullptr;
-		void** viewportVTable = nullptr;
+		void** hudVTable = nullptr;
 	};
 
 	static State& GetState();
@@ -28,6 +28,4 @@ struct Hooks
 };
 
 extern void(*oProcessEvent)(const UObject*, UFunction*, void*);
-extern void(*oPostRender)(UObject*, class UCanvas*);
 void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params);
-void hkPostRender(UObject* ViewportClient, class UCanvas* Canvas);

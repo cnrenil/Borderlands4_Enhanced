@@ -3,8 +3,31 @@
 void Cheats::RenderEnabledOptions()
 {
 	if (!ConfigManager::B("Misc.RenderOptions")) return;
+	UCanvas* Canvas = Utils::GetCurrentCanvas();
 	float Hue = fmodf((float)ImGui::GetTime() * 0.2f, 1.0f);
 	ImVec4 Color = ImColor::HSV(Hue, 1.f, 1.f);
+	if (Canvas)
+	{
+		FVector2D pos(10.0f, 30.0f);
+		const FVector2D step(0.0f, 16.0f);
+		const FLinearColor textColor = Utils::ImVec4ToLinearColor(Color);
+		auto DrawEntry = [&](bool enabled, const char* key)
+		{
+			if (!enabled) return;
+			Utils::DrawCanvasText(Canvas, Localization::T(key), pos, textColor);
+			pos.Y += step.Y;
+		};
+
+		DrawEntry(ConfigManager::B("Player.GodMode"), "GODMODE");
+		DrawEntry(ConfigManager::B("Player.InfAmmo"), "INF_AMMO");
+		DrawEntry(ConfigManager::B("Player.InfGrenades"), "INF_GRENADES");
+		DrawEntry(ConfigManager::B("Player.InfVehicleBoost"), "INF_VEHICLE_BOOST");
+		DrawEntry(ConfigManager::B("Player.InfGlideStamina"), "INF_GLIDE_STAMINA");
+		DrawEntry(ConfigManager::B("Aimbot.Enabled"), "AIMBOT");
+		DrawEntry(ConfigManager::B("Player.ESP"), "ESP");
+		return;
+	}
+
 	ImGui::Begin(Localization::T("ACTIVE_FEATURES_LIST"), nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar);
     ImGui::SetWindowPos(ImVec2(10, 30));
 	if (ConfigManager::B("Player.GodMode")) ImGui::TextColored(Color, Localization::T("GODMODE"));

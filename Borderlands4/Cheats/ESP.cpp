@@ -376,6 +376,7 @@ void Cheats::UpdateESP()
 void Cheats::RenderESP()
 {
 	if (!ConfigManager::B("Player.ESP")) return;
+	UCanvas* Canvas = Utils::GetCurrentCanvas();
 
 	std::vector<ESPActorCache> LocalActors;
 	std::vector<ESPTracerCache> LocalTracers;
@@ -396,18 +397,26 @@ void Cheats::RenderESP()
 		{
 			for (const auto& Line : Actor.SkeletonLines)
 			{
-				ImGui::GetBackgroundDrawList()->AddLine(Line.first, Line.second, Actor.Color, 2.0f);
+				if (Canvas)
+					Utils::DrawCanvasLine(Canvas, FVector2D(Line.first.x, Line.first.y), FVector2D(Line.second.x, Line.second.y), 2.0f, Utils::U32ToLinearColor(Actor.Color));
+				else
+					ImGui::GetBackgroundDrawList()->AddLine(Line.first, Line.second, Actor.Color, 2.0f);
 			}
 		}
 
 		// Box
 		if (ConfigManager::B("ESP.ShowBox"))
 		{
-			ImGui::GetBackgroundDrawList()->AddRect(
-				ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y),
-				ImVec2((float)Actor.TopScreen.X + Width / 2, (float)Actor.BottomScreen.Y),
-				Actor.Color, 0.0f, 0, 1.0f
-			);
+			const FVector2D boxPos((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y);
+			const FVector2D boxSize(Width, Height);
+			if (Canvas)
+				Utils::DrawCanvasBox(Canvas, boxPos, boxSize, 1.0f, Utils::U32ToLinearColor(Actor.Color));
+			else
+				ImGui::GetBackgroundDrawList()->AddRect(
+					ImVec2(boxPos.X, boxPos.Y),
+					ImVec2(boxPos.X + boxSize.X, boxPos.Y + boxSize.Y),
+					Actor.Color, 0.0f, 0, 1.0f
+				);
 		}
 
 		// Health Bar
@@ -417,11 +426,14 @@ void Cheats::RenderESP()
 		float BarY = (float)Actor.TopScreen.Y;
 
 		// Background
-		ImGui::GetBackgroundDrawList()->AddRectFilled(
-			ImVec2(BarX, BarY),
-			ImVec2(BarX + BarWidth, BarY + BarHeight),
-			IM_COL32(0, 0, 0, 150)
-		);
+		if (Canvas)
+			Utils::DrawCanvasFilledRect(Canvas, FVector2D(BarX, BarY), FVector2D(BarWidth, BarHeight), FLinearColor(0.0f, 0.0f, 0.0f, 0.6f));
+		else
+			ImGui::GetBackgroundDrawList()->AddRectFilled(
+				ImVec2(BarX, BarY),
+				ImVec2(BarX + BarWidth, BarY + BarHeight),
+				IM_COL32(0, 0, 0, 150)
+			);
 
 		// Health Fill
 		ImU32 HealthColor = IM_COL32(0, 255, 0, 255);
@@ -429,31 +441,40 @@ void Cheats::RenderESP()
 		else if (Actor.HealthPct < 0.7f) HealthColor = IM_COL32(255, 255, 0, 255);
 
 		float FillHeight = BarHeight * Actor.HealthPct;
-		ImGui::GetBackgroundDrawList()->AddRectFilled(
-			ImVec2(BarX, BarY + BarHeight - FillHeight),
-			ImVec2(BarX + BarWidth, BarY + BarHeight),
-			HealthColor
-		);
+		if (Canvas)
+			Utils::DrawCanvasFilledRect(Canvas, FVector2D(BarX, BarY + BarHeight - FillHeight), FVector2D(BarWidth, FillHeight), Utils::U32ToLinearColor(HealthColor));
+		else
+			ImGui::GetBackgroundDrawList()->AddRectFilled(
+				ImVec2(BarX, BarY + BarHeight - FillHeight),
+				ImVec2(BarX + BarWidth, BarY + BarHeight),
+				HealthColor
+			);
 
 		// Distance and Name
 		if (ConfigManager::B("ESP.ShowEnemyDistance"))
 		{
 			char DistanceText[32];
 			snprintf(DistanceText, sizeof(DistanceText), "%.0f m", Actor.Distance);
-			ImGui::GetBackgroundDrawList()->AddText(
-				ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.BottomScreen.Y + 2),
-				IM_COL32(255, 255, 255, 255),
-				DistanceText
-			);
+			if (Canvas)
+				Utils::DrawCanvasText(Canvas, DistanceText, FVector2D((float)Actor.TopScreen.X - Width / 2, (float)Actor.BottomScreen.Y + 2), FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+			else
+				ImGui::GetBackgroundDrawList()->AddText(
+					ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.BottomScreen.Y + 2),
+					IM_COL32(255, 255, 255, 255),
+					DistanceText
+				);
 		}
 
 		if (ConfigManager::B("ESP.ShowEnemyName"))
 		{
-			ImGui::GetBackgroundDrawList()->AddText(
-				ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15),
-				Actor.Color,
-				Actor.Name.c_str()
-			);
+			if (Canvas)
+				Utils::DrawCanvasText(Canvas, Actor.Name, FVector2D((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15), Utils::U32ToLinearColor(Actor.Color));
+			else
+				ImGui::GetBackgroundDrawList()->AddText(
+					ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15),
+					Actor.Color,
+					Actor.Name.c_str()
+				);
 		}
 	}
 
@@ -462,14 +483,31 @@ void Cheats::RenderESP()
 		for (const auto& Tracer : LocalTracers)
 		{
 			if (Tracer.bVisible) {
-				ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorSegment, 6.0f);
-				ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorGlow, 3.0f);
-				ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorCore, 1.0f);
+				if (Canvas)
+				{
+					Utils::DrawCanvasLine(Canvas, FVector2D(Tracer.Start.x, Tracer.Start.y), FVector2D(Tracer.End.x, Tracer.End.y), 6.0f, Utils::U32ToLinearColor(Tracer.ColorSegment));
+					Utils::DrawCanvasLine(Canvas, FVector2D(Tracer.Start.x, Tracer.Start.y), FVector2D(Tracer.End.x, Tracer.End.y), 3.0f, Utils::U32ToLinearColor(Tracer.ColorGlow));
+					Utils::DrawCanvasLine(Canvas, FVector2D(Tracer.Start.x, Tracer.Start.y), FVector2D(Tracer.End.x, Tracer.End.y), 1.0f, Utils::U32ToLinearColor(Tracer.ColorCore));
+				}
+				else
+				{
+					ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorSegment, 6.0f);
+					ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorGlow, 3.0f);
+					ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorCore, 1.0f);
+				}
 			}
 
 			if (Tracer.bImpact) {
-				ImGui::GetBackgroundDrawList()->AddCircleFilled(Tracer.ImpactPos, 6.5f, Tracer.ColorImpactOuter);
-				ImGui::GetBackgroundDrawList()->AddCircleFilled(Tracer.ImpactPos, 4.0f, Tracer.ColorImpactInner);
+				if (Canvas)
+				{
+					Utils::DrawCanvasCircle(Canvas, FVector2D(Tracer.ImpactPos.x, Tracer.ImpactPos.y), 6.5f, 16, 2.0f, Utils::U32ToLinearColor(Tracer.ColorImpactOuter));
+					Utils::DrawCanvasCircle(Canvas, FVector2D(Tracer.ImpactPos.x, Tracer.ImpactPos.y), 4.0f, 16, 2.0f, Utils::U32ToLinearColor(Tracer.ColorImpactInner));
+				}
+				else
+				{
+					ImGui::GetBackgroundDrawList()->AddCircleFilled(Tracer.ImpactPos, 6.5f, Tracer.ColorImpactOuter);
+					ImGui::GetBackgroundDrawList()->AddCircleFilled(Tracer.ImpactPos, 4.0f, Tracer.ColorImpactInner);
+				}
 			}
 		}
 	}
@@ -481,18 +519,33 @@ void Cheats::RenderESP()
 		const ImU32 inner = IM_COL32(255, 255, 255, 255);
 		const float gap = 3.0f;
 		const float len = 8.0f;
-		auto* draw = ImGui::GetBackgroundDrawList();
-
-		draw->AddCircle(center, 2.0f, outer, 12, 2.0f);
-		draw->AddCircle(center, 1.0f, inner, 12, 1.5f);
-		draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), outer, 2.5f);
-		draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), outer, 2.5f);
-		draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), outer, 2.5f);
-		draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), outer, 2.5f);
-
-		draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), inner, 1.2f);
-		draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), inner, 1.2f);
-		draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), inner, 1.2f);
-		draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), inner, 1.2f);
+		if (Canvas)
+		{
+			const FVector2D centerVec(center.x, center.y);
+			Utils::DrawCanvasCircle(Canvas, centerVec, 2.0f, 12, 2.0f, Utils::U32ToLinearColor(outer));
+			Utils::DrawCanvasCircle(Canvas, centerVec, 1.0f, 12, 1.5f, Utils::U32ToLinearColor(inner));
+			Utils::DrawCanvasLine(Canvas, FVector2D(center.x - gap - len, center.y), FVector2D(center.x - gap, center.y), 2.5f, Utils::U32ToLinearColor(outer));
+			Utils::DrawCanvasLine(Canvas, FVector2D(center.x + gap, center.y), FVector2D(center.x + gap + len, center.y), 2.5f, Utils::U32ToLinearColor(outer));
+			Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y - gap - len), FVector2D(center.x, center.y - gap), 2.5f, Utils::U32ToLinearColor(outer));
+			Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y + gap), FVector2D(center.x, center.y + gap + len), 2.5f, Utils::U32ToLinearColor(outer));
+			Utils::DrawCanvasLine(Canvas, FVector2D(center.x - gap - len, center.y), FVector2D(center.x - gap, center.y), 1.2f, Utils::U32ToLinearColor(inner));
+			Utils::DrawCanvasLine(Canvas, FVector2D(center.x + gap, center.y), FVector2D(center.x + gap + len, center.y), 1.2f, Utils::U32ToLinearColor(inner));
+			Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y - gap - len), FVector2D(center.x, center.y - gap), 1.2f, Utils::U32ToLinearColor(inner));
+			Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y + gap), FVector2D(center.x, center.y + gap + len), 1.2f, Utils::U32ToLinearColor(inner));
+		}
+		else
+		{
+			auto* draw = ImGui::GetBackgroundDrawList();
+			draw->AddCircle(center, 2.0f, outer, 12, 2.0f);
+			draw->AddCircle(center, 1.0f, inner, 12, 1.5f);
+			draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), outer, 2.5f);
+			draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), outer, 2.5f);
+			draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), outer, 2.5f);
+			draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), outer, 2.5f);
+			draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), inner, 1.2f);
+			draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), inner, 1.2f);
+			draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), inner, 1.2f);
+			draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), inner, 1.2f);
+		}
 	}
 }

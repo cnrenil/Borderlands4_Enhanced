@@ -5,6 +5,8 @@ namespace
     struct RenderState
     {
         uint32_t LastUpdateFrame = 0xFFFFFFFF;
+        uint32_t LastCanvasTickPresentFrame = 0xFFFFFFFF;
+        uint64_t LastCanvasTickTimeMs = 0;
     };
 
     RenderState& GetRenderState()
@@ -36,48 +38,47 @@ namespace
     }
 }
 
-void Cheats::Render()
+void Cheats::GameThreadCanvasTick(UCanvas* Canvas)
 {
-    // --- Logic Update (Moved from PostRender for stability) ---
-    // This ensures that even if our PostRender hook fails, the logic still ticks
     extern std::atomic<int> g_PresentCount;
-    int currentFrame = g_PresentCount.load();
+    const int currentFrame = g_PresentCount.load();
     auto& renderState = GetRenderState();
+    if (renderState.LastCanvasTickPresentFrame == static_cast<uint32_t>(currentFrame))
+        return;
 
-    if (renderState.LastUpdateFrame != currentFrame)
+    Utils::SetCurrentCanvas(Canvas);
+    renderState.LastCanvasTickPresentFrame = static_cast<uint32_t>(currentFrame);
+    renderState.LastCanvasTickTimeMs = GetTickCount64();
+
+    if (!TryAutoSetVariablesForRender())
     {
-        renderState.LastUpdateFrame = currentFrame;
-
-        // Perform essential updates
-        if (!TryAutoSetVariablesForRender())
-            Logger::LogThrottled(Logger::Level::Warning, "Render", 1000, "Render tick: AutoSetVariables exception, skipping frame");
-        HotkeyManager::Update();
-        // Camera controls should keep working even if gameplay-state detection is conservative.
-        UpdateCamera();
-
-        if (Utils::bIsInGame)
-        {
-            Logger::LogThrottled(Logger::Level::Debug, "Render", 10000, "Cheats::Render: Logic thread active (not loading)");
-            if (ConfigManager::B("Player.ESP")) UpdateESP();
-            if (ConfigManager::B("Aimbot.Enabled"))
-            {
-                Aimbot();
-                if (!ConfigManager::B("Aimbot.RequireKeyHeld"))
-                {
-                    AimbotHotkey();
-                }
-            }
-
-            UpdateMovement();
-            UpdateWeapon();
-
-            EnforcePersistence();
-            ChangeGameRenderSettings();
-        }
+        Logger::LogThrottled(Logger::Level::Warning, "CanvasTick", 1000, "GameThread canvas tick: AutoSetVariables exception, skipping frame");
+        Utils::SetCurrentCanvas(nullptr);
+        return;
     }
 
-    // --- Visualizations ---
-    // 1. Logic-based visualizations (Draw FOV, Snaplines)
+    // Camera and gameplay-facing updates should run on the game thread.
+    UpdateCamera();
+
+    if (Utils::bIsInGame)
+    {
+        Logger::LogThrottled(Logger::Level::Debug, "CanvasTick", 10000, "Cheats::GameThreadCanvasTick: HUD/game-thread logic active");
+        if (ConfigManager::B("Player.ESP")) UpdateESP();
+        if (ConfigManager::B("Aimbot.Enabled"))
+        {
+            Aimbot();
+            if (!ConfigManager::B("Aimbot.RequireKeyHeld"))
+            {
+                AimbotHotkey();
+            }
+        }
+
+        UpdateMovement();
+        UpdateWeapon();
+        EnforcePersistence();
+        ChangeGameRenderSettings();
+    }
+
     if (Utils::bIsInGame && ConfigManager::B("Aimbot.Enabled"))
     {
         if (ConfigManager::B("Aimbot.DrawFOV"))
@@ -87,14 +88,35 @@ void Cheats::Render()
             Utils::DrawSnapLine(AimbotTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
     }
 
-    // 2. World-based visualizations (ESP)
     if (Utils::bIsInGame)
         RenderESP();
 
-    // 3. UI Overlays (Active Features List)
     if (Utils::bIsInGame)
         RenderEnabledOptions();
 
-    // 4. Main Menu
+    Utils::SetCurrentCanvas(nullptr);
+}
+
+void Cheats::Render()
+{
+    extern std::atomic<int> g_PresentCount;
+    const int currentFrame = g_PresentCount.load();
+    auto& renderState = GetRenderState();
+
+    // Fallback path if the HUD canvas tick stalls for long enough.
+    if (renderState.LastUpdateFrame != currentFrame)
+    {
+        renderState.LastUpdateFrame = static_cast<uint32_t>(currentFrame);
+        HotkeyManager::Update();
+
+        const uint64_t nowMs = GetTickCount64();
+        if (renderState.LastCanvasTickTimeMs == 0 || (nowMs - renderState.LastCanvasTickTimeMs) > 500)
+        {
+            Logger::LogThrottled(Logger::Level::Warning, "Render", 3000, "HUD canvas tick timeout, using Present fallback for logic");
+            GameThreadCanvasTick(nullptr);
+        }
+    }
+
+    // Main Menu remains on ImGui.
     GUI::RenderMenu();
 }

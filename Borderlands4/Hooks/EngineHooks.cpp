@@ -70,7 +70,7 @@ void Cleanup(HMODULE hModule)
 }
 
 // Wrapper for SEH to avoid C2712
-static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerStateHooked, bool& bIsCameraManagerHooked)
+static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerStateHooked, bool& bIsCameraManagerHooked, bool& bIsHudHooked)
 {
 	auto& hookState = Hooks::GetState();
 	__try {
@@ -108,6 +108,22 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 			else
 			{
 				bIsCameraManagerHooked = false;
+			}
+		}
+
+		if (bIsHudHooked)
+		{
+			if (GVars.PlayerController && GVars.PlayerController->MyHUD)
+			{
+				void** currentHUDVTable = *reinterpret_cast<void***>(GVars.PlayerController->MyHUD);
+				if (currentHUDVTable && currentHUDVTable != hookState.hudVTable)
+				{
+					bIsHudHooked = false;
+				}
+			}
+			else
+			{
+				bIsHudHooked = false;
 			}
 		}
 		
@@ -157,24 +173,49 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 					}
 				}
 			}
+
+			if (!bIsHudHooked && GVars.PlayerController && GVars.PlayerController->MyHUD)
+			{
+				void** hudVTable = *reinterpret_cast<void***>(GVars.PlayerController->MyHUD);
+				if (hudVTable && !IsBadReadPtr(hudVTable, sizeof(void*) * 80))
+				{
+					if (hudVTable[73] != &hkProcessEvent) {
+						DWORD old;
+						if (VirtualProtect(&hudVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old)) {
+							hudVTable[73] = (void*)hkProcessEvent;
+							VirtualProtect(&hudVTable[73], sizeof(void*), old, &old);
+
+							hookState.hudVTable = hudVTable;
+							bIsHudHooked = true;
+						}
+					}
+					else {
+						hookState.hudVTable = hudVTable;
+						bIsHudHooked = true;
+					}
+				}
+			}
 		}
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {
 		bIsPlayerStateHooked = false;
 		bIsCameraManagerHooked = false;
+		bIsHudHooked = false;
 	}
 }
 
-static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHooked, bool& bIsCameraManagerHooked)
+static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHooked, bool& bIsCameraManagerHooked, bool& bIsHudHooked)
 {
 	bool prevPS = bIsPlayerStateHooked;
 	bool prevCM = bIsCameraManagerHooked;
+	bool prevHUD = bIsHudHooked;
 
-	InternalUpdateHooksSEH(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
+	InternalUpdateHooksSEH(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked, bIsHudHooked);
 
 	// Log success outside SEH to allow using std::string conversion in LOG_DEBUG
 	if (!prevPS && bIsPlayerStateHooked) LOG_DEBUG("Hook", "SUCCESS: PlayerState ProcessEvent Hooked!");
 	if (!prevCM && bIsCameraManagerHooked) LOG_DEBUG("Hook", "SUCCESS: CameraManager ProcessEvent Hooked!");
+	if (!prevHUD && bIsHudHooked) LOG_DEBUG("Hook", "SUCCESS: HUD ProcessEvent Hooked!");
 
 	// Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "SafeUpdateHooks: Hooks Status (PE: %d, PS: %d, CM: %d)", bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 }
@@ -228,6 +269,7 @@ DWORD MainThread(HMODULE hModule)
 	bool bIsProcessEventHooked = false;
 	bool bIsPlayerStateHooked = false;
 	bool bIsCameraManagerHooked = false;
+	bool bIsHudHooked = false;
 	bool bDx12Hooked = false;
 	DWORD lastDx12HookAttemptTick = 0;
 
@@ -264,7 +306,7 @@ DWORD MainThread(HMODULE hModule)
         // to finish hooking PostRender even if actors aren't loaded yet.
 		if (!Resizing.load())
 		{
-			SafeUpdateHooks(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
+			SafeUpdateHooks(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked, bIsHudHooked);
 		}
 		
 		// If a resize happened, wait a bit for it to settle

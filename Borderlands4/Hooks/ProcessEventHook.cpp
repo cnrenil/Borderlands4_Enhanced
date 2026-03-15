@@ -6,17 +6,70 @@ namespace
 }
 
 void(*oProcessEvent)(const UObject*, UFunction*, void*) = nullptr;
-void(*oPostRender)(UObject*, class UCanvas*) = nullptr;
 
 extern std::atomic<bool> Cleaning;
 extern std::atomic<int> g_ProcessEventCount;
 extern std::atomic<int> g_PresentCount;
+
+static bool TryRunGameThreadCanvasTick(UCanvas* Canvas)
+{
+	__try
+	{
+		Cheats::GameThreadCanvasTick(Canvas);
+		return true;
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		return false;
+	}
+}
+
+static UCanvas* TryGetHudCanvas(AHUD* Hud)
+{
+	__try
+	{
+		return Hud ? Hud->Canvas : nullptr;
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		return nullptr;
+	}
+}
+
+static bool ShouldRunHudCanvasTick(const UObject* Object, const UFunction* Function, AHUD*& OutHud)
+{
+	OutHud = nullptr;
+	if (!Object || !Function)
+		return false;
+	if (!Object->IsA(AHUD::StaticClass()))
+		return false;
+	if (Function->GetName() != "ReceiveDrawHUD")
+		return false;
+
+	OutHud = static_cast<AHUD*>(const_cast<UObject*>(Object));
+	return OutHud != nullptr;
+}
+
+static void TryRunHudCanvasTick(AHUD* Hud)
+{
+	if (!Hud || Cleaning.load())
+		return;
+
+	UCanvas* Canvas = TryGetHudCanvas(Hud);
+	if (Canvas)
+	{
+		Logger::LogThrottled(Logger::Level::Debug, "Hook", 5000, "ReceiveDrawHUD canvas tick via ProcessEvent (Canvas: %p)", Canvas);
+		TryRunGameThreadCanvasTick(Canvas);
+	}
+}
 
 void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 {
 	g_ProcessEventCount.fetch_add(1);
 	static thread_local bool bInsideHook = false;
 	bool bSkipOriginal = false;
+	bool bRunHudCanvasTick = false;
+	AHUD* HudForCanvasTick = nullptr;
     const bool bDebugEnabled = (ConfigManager::ConfigMap.count("Misc.Debug") && ConfigManager::B("Misc.Debug"));
     auto DispatchDebugOrOriginal = [&](bool bCallOriginal)
     {
@@ -88,6 +141,12 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
             if (Cheats::HandleWeaponEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
             if (Cheats::HandleCameraEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
         }
+
+		if (Object->IsA(AHUD::StaticClass()) && Function->GetName() == "ReceiveDrawHUD")
+		{
+			HudForCanvasTick = static_cast<AHUD*>(const_cast<UObject*>(Object));
+			bRunHudCanvasTick = (HudForCanvasTick != nullptr);
+		}
     }
 	catch (...) {
 		Logger::LogThrottled(Logger::Level::Error, "Hook", 1000, "CRASH in hkProcessEvent");
@@ -97,15 +156,10 @@ Exit:
 	bInsideHook = false;
 	DispatchDebugOrOriginal(!bSkipOriginal);
 
+	if (!bSkipOriginal && bRunHudCanvasTick)
+		TryRunHudCanvasTick(HudForCanvasTick);
+
 	g_ProcessEventCount.fetch_sub(1);
-}
-
-void hkPostRender(UObject* ViewportClient, class UCanvas* Canvas)
-{
-	// Log throttled to confirm if this hook is even active
-	Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "hkPostRender: Hook called (Canvas: %p)", Canvas);
-
-	if (oPostRender) oPostRender(ViewportClient, Canvas);
 }
 
 void Hooks::UnhookAll()
@@ -144,13 +198,13 @@ void Hooks::UnhookAll()
 		}
 	}
 
-	if (state.viewportVTable && oPostRender)
+	if (state.hudVTable && oProcessEvent)
 	{
-		if (VirtualProtect(&state.viewportVTable[0x6D], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
+		if (VirtualProtect(&state.hudVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
 		{
-			state.viewportVTable[0x6D] = (void*)oPostRender;
-			VirtualProtect(&state.viewportVTable[0x6D], sizeof(void*), old, &old);
-			LOG_INFO("Hook", "Restored ViewportClient PostRender.");
+			state.hudVTable[73] = (void*)oProcessEvent;
+			VirtualProtect(&state.hudVTable[73], sizeof(void*), old, &old);
+			LOG_INFO("Hook", "Restored HUD ProcessEvent.");
 		}
 	}
 }
@@ -173,40 +227,6 @@ bool Hooks::HookProcessEvent()
 
 	if (TempVTable[processEventIdx] == &hkProcessEvent)
 	{
-		if (!oPostRender)
-		{
-			UWorld* World = Utils::GetWorldSafe();
-			if (World && World->OwningGameInstance && World->OwningGameInstance->LocalPlayers.Num() > 0)
-			{
-				UObject* ViewportClient = World->OwningGameInstance->LocalPlayers[0]->ViewportClient;
-				if (ViewportClient)
-				{
-					Logger::Log(Logger::Level::Info, "Hook", "Found ViewportClient, attempting PostRender hook...");
-					state.viewportVTable = *reinterpret_cast<void***>(ViewportClient);
-                    int postRenderIndex = 0x6D;
-                    if (state.viewportVTable && state.viewportVTable[postRenderIndex] != &hkPostRender)
-                    {
-                        oPostRender = reinterpret_cast<void(*)(UObject*, class UCanvas*)>(state.viewportVTable[postRenderIndex]);
-                        DWORD oldP;
-                        if (VirtualProtect(&state.viewportVTable[postRenderIndex], sizeof(void*), PAGE_EXECUTE_READWRITE, &oldP))
-                        {
-                            state.viewportVTable[postRenderIndex] = &hkPostRender;
-                            VirtualProtect(&state.viewportVTable[postRenderIndex], sizeof(void*), oldP, &oldP);
-                            LOG_INFO("Hook", "SUCCESS: PostRender Hooked!");
-                        }
-                        else {
-                            Logger::Log(Logger::Level::Error, "Hook", "PostRender: VirtualProtect failed!");
-                        }
-                    }
-				}
-                else {
-                    Logger::LogThrottled(Logger::Level::Info, "Hook", 10000, "PostRender ERROR: ViewportClient is NULL");
-                }
-			}
-            else {
-                Logger::LogThrottled(Logger::Level::Info, "Hook", 10000, "PostRender ERROR: GameInstance/LocalPlayers missing");
-            }
-		}
 		return true;
 	}
 
