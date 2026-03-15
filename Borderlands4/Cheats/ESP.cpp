@@ -11,7 +11,7 @@ struct ESPActorCache {
 	FVector2D BottomScreen;
 	ImU32 Color;
 	float HealthPct;
-	std::string Name;
+	FString Name;
 	float Distance;
 	bool bValidScreen;
 	std::vector<std::pair<ImVec2, ImVec2>> SkeletonLines;
@@ -193,7 +193,7 @@ void Cheats::UpdateESP()
 			Cache.Distance = Distance;
 			if (ConfigManager::B("ESP.ShowEnemyName"))
 			{
-				Cache.Name = UKismetSystemLibrary::GetDisplayName(TargetActor).ToString();
+				Cache.Name = UKismetSystemLibrary::GetDisplayName(TargetActor);
 			}
 
 			// Don't draw skeletons for far away targets to save FPS (Skeletal LOD)
@@ -473,7 +473,7 @@ void Cheats::RenderESP()
 				ImGui::GetBackgroundDrawList()->AddText(
 					ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15),
 					Actor.Color,
-					Actor.Name.c_str()
+					Actor.Name.ToString().c_str()
 				);
 		}
 	}

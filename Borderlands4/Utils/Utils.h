@@ -69,6 +69,7 @@ struct Utils
 	static void DrawCanvasFilledRect(class UCanvas* Canvas, const FVector2D& Position, const FVector2D& Size, const FLinearColor& Color);
 	static void DrawCanvasCircle(class UCanvas* Canvas, const FVector2D& Center, float Radius, int32 Sides, float Thickness, const FLinearColor& Color);
 	static void DrawCanvasText(class UCanvas* Canvas, const std::string& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale = FVector2D(1.0f, 1.0f), bool bCenterX = false, bool bCenterY = false, bool bOutlined = true);
+	static void DrawCanvasText(class UCanvas* Canvas, const class FString& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale = FVector2D(1.0f, 1.0f), bool bCenterX = false, bool bCenterY = false, bool bOutlined = true);
 	static FVector FRotatorToVector(const FRotator& Rot);
 	static PlayerCheatData& GetPlayerCheats(ACharacter* Player);
 	static bool IsValidActor(AActor* Actor);

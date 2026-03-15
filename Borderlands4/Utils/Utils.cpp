@@ -5,6 +5,35 @@ namespace
 {
     thread_local UCanvas* g_CurrentCanvas = nullptr;
 
+    UFont* ResolveHudFont()
+    {
+        static UFont* CachedFont = nullptr;
+        if (CachedFont) return CachedFont;
+
+        const char* candidates[] = {
+            "Font GbxSubtitleFont.GbxSubtitleFont",
+            "Font Industry-Medium-HoloText.Industry-Medium-HoloText",
+            "Font Industry.Industry",
+            "Font Roboto.Roboto",
+            "Font RobotoDistanceField.RobotoDistanceField",
+            "Font DroidSansMono.DroidSansMono",
+            "Font Transient.DefaultRegularFont",
+            "Font Transient.DefaultTinyFont",
+            "Font Engine.Default__Font",
+        };
+
+        for (const char* name : candidates)
+        {
+            if (UFont* font = UObject::FindObject<UFont>(name))
+            {
+                CachedFont = font;
+                break;
+            }
+        }
+
+        return CachedFont;
+    }
+
     // Guard against stale UObject pointers during map transition/game shutdown.
     bool IsReadableUObject(const void* Ptr)
     {
@@ -193,16 +222,26 @@ void Utils::DrawCanvasCircle(UCanvas* Canvas, const FVector2D& Center, float Rad
     }
 }
 
-void Utils::DrawCanvasText(UCanvas* Canvas, const std::string& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale, bool bCenterX, bool bCenterY, bool bOutlined)
+void Utils::DrawCanvasText(UCanvas* Canvas, const FString& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale, bool bCenterX, bool bCenterY, bool bOutlined)
 {
-    if (!Canvas || Text.empty()) return;
+    if (!Canvas || !Text) return;
 
-    UEngine* Engine = UEngine::GetEngine();
-    UFont* Font = Engine ? (Engine->SmallFont ? Engine->SmallFont : Engine->TinyFont) : nullptr;
-    const FString RenderText(UtfN::StringToWString(Text).c_str());
+    UFont* Font = ResolveHudFont();
+    if (!Font)
+    {
+        UEngine* Engine = UEngine::GetEngine();
+        if (Engine)
+        {
+            if (Engine->SubtitleFont) Font = Engine->SubtitleFont;
+            else if (Engine->LargeFont) Font = Engine->LargeFont;
+            else if (Engine->MediumFont) Font = Engine->MediumFont;
+            else if (Engine->SmallFont) Font = Engine->SmallFont;
+            else if (Engine->TinyFont) Font = Engine->TinyFont;
+        }
+    }
     Canvas->K2_DrawText(
         Font,
-        RenderText,
+        Text,
         Position,
         Scale,
         Color,
@@ -213,6 +252,13 @@ void Utils::DrawCanvasText(UCanvas* Canvas, const std::string& Text, const FVect
         bCenterY,
         bOutlined,
         FLinearColor(0.0f, 0.0f, 0.0f, Color.A));
+}
+
+void Utils::DrawCanvasText(UCanvas* Canvas, const std::string& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale, bool bCenterX, bool bCenterY, bool bOutlined)
+{
+    if (!Canvas || Text.empty()) return;
+    const FString RenderText(UtfN::StringToWString(Text).c_str());
+    DrawCanvasText(Canvas, RenderText, Position, Color, Scale, bCenterX, bCenterY, bOutlined);
 }
 
 ALightProjectileManager* Utils::GetLightProjManager()

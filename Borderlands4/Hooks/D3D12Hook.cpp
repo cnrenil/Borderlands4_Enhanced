@@ -41,6 +41,8 @@ namespace d3d12hook {
     static bool                   gNeedQueueRecapture = true;
     static DXGI_FORMAT            gSwapChainFormat = DXGI_FORMAT_UNKNOWN;
     static bool                   gSwapChainWasHdr = false;
+    static DXGI_FORMAT            gLastLoggedFormat = DXGI_FORMAT_UNKNOWN;
+    static bool                   gLastLoggedHdr = false;
 
     // --- Stability: track resize state and early-injection grace period ---
     static DWORD                  gFirstPresentTime = 0;
@@ -79,6 +81,8 @@ namespace d3d12hook {
         gNeedQueueRecapture = true;
         gSwapChainFormat = DXGI_FORMAT_UNKNOWN;
         gSwapChainWasHdr = false;
+        gLastLoggedFormat = DXGI_FORMAT_UNKNOWN;
+        gLastLoggedHdr = false;
         ReleaseCapturedQueue();
         if (reason) {
             LOG_DEBUG("DX12Hook", "Startup tracking reset: %s\n", reason);
@@ -324,13 +328,17 @@ namespace d3d12hook {
         }
 
         RefreshSwapChainColorState(pSwapChain);
-        if (gSwapChainWasHdr) {
-            Logger::LogThrottled(
-                Logger::Level::Info,
-                "DX12Hook",
-                5000,
-                "HDR swapchain detected. Leaving game colorspace unchanged to avoid SDR washout. fmt=%d",
-                static_cast<int>(gSwapChainFormat));
+        if (gSwapChainFormat != gLastLoggedFormat || gSwapChainWasHdr != gLastLoggedHdr) {
+            if (gSwapChainWasHdr) {
+                Logger::LogThrottled(
+                    Logger::Level::Debug,
+                    "DX12Hook",
+                    2000,
+                    "HDR swapchain detected. Leaving game colorspace unchanged to avoid SDR washout. fmt=%d",
+                    static_cast<int>(gSwapChainFormat));
+            }
+            gLastLoggedFormat = gSwapChainFormat;
+            gLastLoggedHdr = gSwapChainWasHdr;
         }
 
         // Track first Present time for grace period
@@ -380,13 +388,17 @@ namespace d3d12hook {
         }
 
         RefreshSwapChainColorState(pSwapChain);
-        if (gSwapChainWasHdr) {
-            Logger::LogThrottled(
-                Logger::Level::Info,
-                "DX12Hook",
-                5000,
-                "HDR swapchain detected on Present1. Leaving game colorspace unchanged to avoid SDR washout. fmt=%d",
-                static_cast<int>(gSwapChainFormat));
+        if (gSwapChainFormat != gLastLoggedFormat || gSwapChainWasHdr != gLastLoggedHdr) {
+            if (gSwapChainWasHdr) {
+                Logger::LogThrottled(
+                    Logger::Level::Debug,
+                    "DX12Hook",
+                    2000,
+                    "HDR swapchain detected on Present1. Leaving game colorspace unchanged to avoid SDR washout. fmt=%d",
+                    static_cast<int>(gSwapChainFormat));
+            }
+            gLastLoggedFormat = gSwapChainFormat;
+            gLastLoggedHdr = gSwapChainWasHdr;
         }
 
         // Track first Present time for grace period

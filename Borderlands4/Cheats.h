@@ -97,7 +97,6 @@ struct Cheats
 	// Hotkey Callbacks
 	static void AimbotHotkey();
 	static void TriggerHotkey();
-	static void DebugF7Handler();
 	
 	// Modular ProcessEvent Handlers
 	static void HandleDebugEvents(

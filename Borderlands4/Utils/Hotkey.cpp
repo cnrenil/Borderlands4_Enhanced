@@ -51,9 +51,6 @@ namespace HotkeyManager
             Cheats::DumpObjects();
         });
 
-        Register("Misc.DebugF7Key", "DEBUG_F7_KEY", ImGuiKey_F7, []() {
-            Cheats::DebugF7Handler();
-        });
     }
 
     void Update()
