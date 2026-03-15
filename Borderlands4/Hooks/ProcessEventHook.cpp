@@ -1,8 +1,12 @@
 #include "pch.h"
 
+namespace
+{
+	Hooks::State g_HookState{};
+}
 
-void(*oProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*) = nullptr;
-void(*oPostRender)(SDK::UObject*, class SDK::UCanvas*) = nullptr;
+void(*oProcessEvent)(const UObject*, UFunction*, void*) = nullptr;
+void(*oPostRender)(UObject*, class UCanvas*) = nullptr;
 
 extern std::atomic<bool> Cleaning;
 extern std::atomic<int> g_ProcessEventCount;
@@ -107,53 +111,54 @@ void hkPostRender(UObject* ViewportClient, class UCanvas* Canvas)
 void Hooks::UnhookAll()
 {
 	LOG_INFO("Hook", "Unhooking all VTable hooks...");
+	auto& state = GetState();
 
 	DWORD old;
-	if (pcVTable && oProcessEvent)
+	if (state.pcVTable && oProcessEvent)
 	{
-		if (VirtualProtect(&pcVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
+		if (VirtualProtect(&state.pcVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
 		{
-			pcVTable[73] = (void*)oProcessEvent;
-			VirtualProtect(&pcVTable[73], sizeof(void*), old, &old);
+			state.pcVTable[73] = (void*)oProcessEvent;
+			VirtualProtect(&state.pcVTable[73], sizeof(void*), old, &old);
 			LOG_INFO("Hook", "Restored PlayerController ProcessEvent.");
 		}
 	}
 
-	if (cmVTable && oProcessEvent)
+	if (state.cmVTable && oProcessEvent)
 	{
-		if (VirtualProtect(&cmVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
+		if (VirtualProtect(&state.cmVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
 		{
-			cmVTable[73] = (void*)oProcessEvent;
-			VirtualProtect(&cmVTable[73], sizeof(void*), old, &old);
+			state.cmVTable[73] = (void*)oProcessEvent;
+			VirtualProtect(&state.cmVTable[73], sizeof(void*), old, &old);
 			LOG_INFO("Hook", "Restored CameraManager ProcessEvent.");
 		}
 	}
 
-	if (psVTable && oProcessEvent)
+	if (state.psVTable && oProcessEvent)
 	{
-		if (VirtualProtect(&psVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
+		if (VirtualProtect(&state.psVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
 		{
-			psVTable[73] = (void*)oProcessEvent;
-			VirtualProtect(&psVTable[73], sizeof(void*), old, &old);
+			state.psVTable[73] = (void*)oProcessEvent;
+			VirtualProtect(&state.psVTable[73], sizeof(void*), old, &old);
 			LOG_INFO("Hook", "Restored PlayerState ProcessEvent.");
 		}
 	}
 
-	if (viewportVTable && oPostRender)
+	if (state.viewportVTable && oPostRender)
 	{
-		if (VirtualProtect(&viewportVTable[0x6D], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
+		if (VirtualProtect(&state.viewportVTable[0x6D], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
 		{
-			viewportVTable[0x6D] = (void*)oPostRender;
-			VirtualProtect(&viewportVTable[0x6D], sizeof(void*), old, &old);
+			state.viewportVTable[0x6D] = (void*)oPostRender;
+			VirtualProtect(&state.viewportVTable[0x6D], sizeof(void*), old, &old);
 			LOG_INFO("Hook", "Restored ViewportClient PostRender.");
 		}
 	}
 }
 
-void** Hooks::pcVTable = nullptr;
-void** Hooks::psVTable = nullptr;
-void** Hooks::cmVTable = nullptr;
-void** Hooks::viewportVTable = nullptr;
+Hooks::State& Hooks::GetState()
+{
+	return g_HookState;
+}
 
 bool Hooks::HookProcessEvent()
 {
@@ -162,7 +167,8 @@ bool Hooks::HookProcessEvent()
 	void** TempVTable = *reinterpret_cast<void***>(GVars.PlayerController);
 	if (!TempVTable) return false;
 
-	pcVTable = TempVTable;
+	auto& state = GetState();
+	state.pcVTable = TempVTable;
 	int processEventIdx = 73;
 
 	if (TempVTable[processEventIdx] == &hkProcessEvent)
@@ -176,16 +182,16 @@ bool Hooks::HookProcessEvent()
 				if (ViewportClient)
 				{
 					Logger::Log(Logger::Level::Info, "Hook", "Found ViewportClient, attempting PostRender hook...");
-					viewportVTable = *reinterpret_cast<void***>(ViewportClient);
+					state.viewportVTable = *reinterpret_cast<void***>(ViewportClient);
                     int postRenderIndex = 0x6D;
-                    if (viewportVTable && viewportVTable[postRenderIndex] != &hkPostRender)
+                    if (state.viewportVTable && state.viewportVTable[postRenderIndex] != &hkPostRender)
                     {
-                        oPostRender = reinterpret_cast<void(*)(SDK::UObject*, class SDK::UCanvas*)>(viewportVTable[postRenderIndex]);
+                        oPostRender = reinterpret_cast<void(*)(UObject*, class UCanvas*)>(state.viewportVTable[postRenderIndex]);
                         DWORD oldP;
-                        if (VirtualProtect(&viewportVTable[postRenderIndex], sizeof(void*), PAGE_EXECUTE_READWRITE, &oldP))
+                        if (VirtualProtect(&state.viewportVTable[postRenderIndex], sizeof(void*), PAGE_EXECUTE_READWRITE, &oldP))
                         {
-                            viewportVTable[postRenderIndex] = &hkPostRender;
-                            VirtualProtect(&viewportVTable[postRenderIndex], sizeof(void*), oldP, &oldP);
+                            state.viewportVTable[postRenderIndex] = &hkPostRender;
+                            VirtualProtect(&state.viewportVTable[postRenderIndex], sizeof(void*), oldP, &oldP);
                             LOG_INFO("Hook", "SUCCESS: PostRender Hooked!");
                         }
                         else {
@@ -204,7 +210,7 @@ bool Hooks::HookProcessEvent()
 		return true;
 	}
 
-	oProcessEvent = reinterpret_cast<void(*)(const SDK::UObject*, SDK::UFunction*, void*)>(TempVTable[processEventIdx]);
+	oProcessEvent = reinterpret_cast<void(*)(const UObject*, UFunction*, void*)>(TempVTable[processEventIdx]);
 	if (!oProcessEvent) return false;
 
 	DWORD oldProtect;

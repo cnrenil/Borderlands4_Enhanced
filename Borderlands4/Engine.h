@@ -1,8 +1,6 @@
 #pragma once
 #include "pch.h"
 
-using namespace SDK;
-
 struct Engine
 {
 	static bool HookPresent();
@@ -15,16 +13,21 @@ struct Engine
 
 struct Hooks
 {
-	static void** pcVTable;
-	static void** psVTable;
-	static void** cmVTable;
-	static void** viewportVTable;
+	struct State
+	{
+		void** pcVTable = nullptr;
+		void** psVTable = nullptr;
+		void** cmVTable = nullptr;
+		void** viewportVTable = nullptr;
+	};
+
+	static State& GetState();
 
 	static bool HookProcessEvent();
 	static void UnhookAll();
 };
 
-extern void(*oProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*);
-extern void(*oPostRender)(SDK::UObject*, class SDK::UCanvas*);
-void hkProcessEvent(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
-void hkPostRender(SDK::UObject* ViewportClient, class SDK::UCanvas* Canvas);
+extern void(*oProcessEvent)(const UObject*, UFunction*, void*);
+extern void(*oPostRender)(UObject*, class UCanvas*);
+void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params);
+void hkPostRender(UObject* ViewportClient, class UCanvas* Canvas);

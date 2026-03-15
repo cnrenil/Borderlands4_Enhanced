@@ -36,8 +36,6 @@ struct PlayerCheatData
 
 inline std::unordered_map<ACharacter*, PlayerCheatData> PlayerCheatMap;
 
-
-
 inline float GetDistance(AActor* Actor, FVector AActorLocation)
 {
 	if (!Actor || !Actor->RootComponent)
@@ -95,7 +93,7 @@ struct Variables
 	std::vector<ACharacter*> UnitCache;
 	int CacheTimer = 0;
 	ImVec2 ScreenSize;
-	SDK::ACameraActor* CameraActor = nullptr;
+	ACameraActor* CameraActor = nullptr;
 
 	Variables() {
 		Reset();
@@ -244,7 +242,7 @@ static inline float Length3(const FVector& V)
 static inline FVector Normalize(const FVector& V)
 {
 	float L = Length3(V);
-	if (L <= 0.0001f) return FVector{ 0,0,0 };
+	if (L <= 0.0001f) return FVector{ 0, 0, 0 };
 	return FVector{ V.X / L, V.Y / L, V.Z / L };
 }
 

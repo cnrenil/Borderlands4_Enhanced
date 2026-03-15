@@ -1,9 +1,11 @@
 #pragma once
 #include <mutex>
+#include <string>
+#include <vector>
 
 namespace SilentAimHooks
 {
-	void UpdateTarget(SDK::AActor* target, const SDK::FVector& targetPos);
+	void UpdateTarget(AActor* target, const FVector& targetPos);
 	void Tick();
 	void OnAimbotHotkey();
 	void ResetArm();
@@ -98,16 +100,16 @@ struct Cheats
 	
 	// Modular ProcessEvent Handlers
 	static void HandleDebugEvents(
-		const SDK::UObject* Object,
-		SDK::UFunction* Function,
+		const UObject* Object,
+		UFunction* Function,
 		void* Params,
-		void(*OriginalProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*),
+		void(*OriginalProcessEvent)(const UObject*, UFunction*, void*),
 		bool bCallOriginal);
-	static bool HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
-	static bool HandleAimbotEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
-	static void HandleConstructedObject(const SDK::UObject* Object);
-	static bool HandleWeaponEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
-	static bool HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
+	static bool HandleMovementEvents(const UObject* Object, UFunction* Function, void* Params);
+	static bool HandleAimbotEvents(const UObject* Object, UFunction* Function, void* Params);
+	static void HandleConstructedObject(const UObject* Object);
+	static bool HandleWeaponEvents(const UObject* Object, UFunction* Function, void* Params);
+	static bool HandleCameraEvents(const UObject* Object, UFunction* Function, void* Params);
 	
 	// Modular Update Handlers
 	static void UpdateMovement();

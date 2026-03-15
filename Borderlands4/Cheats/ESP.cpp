@@ -1,5 +1,6 @@
 #include "pch.h"
 
+
 int32 ViewportX = 0.0f;
 int32 ViewportY = 0.0f;
 
@@ -29,9 +30,21 @@ struct ESPTracerCache {
 	ImU32 ColorImpactInner;
 };
 
-std::mutex ESPMutex;
-std::vector<ESPActorCache> CachedESPActors;
-std::vector<ESPTracerCache> CachedESPTracers;
+namespace
+{
+	struct ESPState
+	{
+		std::mutex Mutex;
+		std::vector<ESPActorCache> CachedActors;
+		std::vector<ESPTracerCache> CachedTracers;
+	};
+
+	ESPState& GetESPState()
+	{
+		static ESPState state;
+		return state;
+	}
+}
 
 struct BonePair { FName Parent; FName Child; };
 
@@ -53,8 +66,8 @@ static bool ProjectForOverlay(const FVector& worldPos, FVector2D& outScreen)
 static bool IsOTSAdsActive()
 {
 	if (!ConfigManager::B("Player.ThirdPerson") && !ConfigManager::B("Player.OverShoulder")) return false;
-	if (!GVars.Character || !GVars.Character->IsA(SDK::AOakCharacter::StaticClass())) return false;
-	const SDK::AOakCharacter* oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+	if (!GVars.Character || !GVars.Character->IsA(AOakCharacter::StaticClass())) return false;
+	const AOakCharacter* oakChar = static_cast<AOakCharacter*>(GVars.Character);
 	return ((uint8)oakChar->ZoomState.State != 0);
 }
 
@@ -83,17 +96,19 @@ void Cheats::UpdateESP()
 	AActor* SelfActor = Utils::GetSelfActor();
 	if (!ConfigManager::B("Player.ESP") || !Utils::bIsInGame || !GVars.PlayerController || !GVars.Level || !SelfActor || !GVars.World || !GVars.World->VTable)
 	{
-		std::lock_guard<std::mutex> lock(ESPMutex);
-		CachedESPActors.clear();
-		CachedESPTracers.clear();
+		auto& state = GetESPState();
+		std::lock_guard<std::mutex> lock(state.Mutex);
+		state.CachedActors.clear();
+		state.CachedTracers.clear();
 		return;
 	}
 
 	if (!GVars.PlayerController->PlayerCameraManager || !GVars.PlayerController->PlayerCameraManager->VTable)
 	{
-		std::lock_guard<std::mutex> lock(ESPMutex);
-		CachedESPActors.clear();
-		CachedESPTracers.clear();
+		auto& state = GetESPState();
+		std::lock_guard<std::mutex> lock(state.Mutex);
+		state.CachedActors.clear();
+		state.CachedTracers.clear();
 		return;
 	}
 
@@ -133,11 +148,11 @@ void Cheats::UpdateESP()
 
 		if (TargetActor->Mesh)
 		{
-			int HeadIdx = TargetActor->Mesh->GetBoneIndex(UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(BoneList.HeadBone).c_str()));
+			int HeadIdx = TargetActor->Mesh->GetBoneIndex(UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(CheatsData::BoneList.HeadBone).c_str()));
 			int RootIdx = TargetActor->Mesh->GetBoneIndex(UKismetStringLibrary::Conv_StringToName(L"Root"));
 			if (HeadIdx != -1)
 			{
-				FVector HeadPos = TargetActor->Mesh->GetBoneTransform(UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(BoneList.HeadBone).c_str()), ERelativeTransformSpace::RTS_World).Translation;
+				FVector HeadPos = TargetActor->Mesh->GetBoneTransform(UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(CheatsData::BoneList.HeadBone).c_str()), ERelativeTransformSpace::RTS_World).Translation;
 				TopPos = HeadPos + FVector(0, 0, 20.0f); // Give head some padding
 				
 				if (RootIdx != -1) {
@@ -240,18 +255,18 @@ void Cheats::UpdateESP()
 	std::vector<ESPTracerCache> NewTracers;
 	if (ConfigManager::B("ESP.BulletTracers") && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
 	{
-		std::lock_guard<std::mutex> lock(TracerMutex);
+		std::lock_guard<std::mutex> lock(CheatsData::TracerMutex);
 		float CurrentTime = std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
 		
 		const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
 		FVector CamLoc = CameraPOV.Location;
 		FVector CamFwd = Utils::FRotatorToVector(CameraPOV.Rotation);
 
-		for (auto it = BulletTracersList.begin(); it != BulletTracersList.end(); )
+		for (auto it = CheatsData::BulletTracers.begin(); it != CheatsData::BulletTracers.end(); )
 		{
 			if (CurrentTime - it->CreationTime > ConfigManager::F("ESP.TracerDuration"))
 			{
-				it = BulletTracersList.erase(it);
+				it = CheatsData::BulletTracers.erase(it);
 				continue;
 			}
 			
@@ -351,9 +366,10 @@ void Cheats::UpdateESP()
 	}
 
 	{
-		std::lock_guard<std::mutex> lock(ESPMutex);
-		CachedESPActors = std::move(NewCache);
-		CachedESPTracers = std::move(NewTracers);
+		auto& state = GetESPState();
+		std::lock_guard<std::mutex> lock(state.Mutex);
+		state.CachedActors = std::move(NewCache);
+		state.CachedTracers = std::move(NewTracers);
 	}
 }
 
@@ -364,9 +380,10 @@ void Cheats::RenderESP()
 	std::vector<ESPActorCache> LocalActors;
 	std::vector<ESPTracerCache> LocalTracers;
 	{
-		std::lock_guard<std::mutex> lock(ESPMutex);
-		LocalActors = CachedESPActors;
-		LocalTracers = CachedESPTracers;
+		auto& state = GetESPState();
+		std::lock_guard<std::mutex> lock(state.Mutex);
+		LocalActors = state.CachedActors;
+		LocalTracers = state.CachedTracers;
 	}
 
 	for (const auto& Actor : LocalActors)

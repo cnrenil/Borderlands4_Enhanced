@@ -1,28 +1,38 @@
 #include "pch.h"
 
-static AActor* CurrentTriggerTarget = nullptr;
-static std::atomic<int> g_LastTriggerHotkeyFrame{ -1 };
 
 namespace
 {
-	SDK::AWeapon* GetLikelyActiveWeapon()
+	struct TriggerState
+	{
+		AActor* CurrentTarget = nullptr;
+		std::atomic<int> LastHotkeyFrame{ -1 };
+	};
+
+	TriggerState& GetTriggerState()
+	{
+		static TriggerState state;
+		return state;
+	}
+
+	AWeapon* GetLikelyActiveWeapon()
 	{
 		APawn* controlledPawn = nullptr;
 		if (GVars.PlayerController && Utils::IsValidActor(GVars.PlayerController))
 			controlledPawn = GVars.PlayerController->Pawn;
 
-		if (controlledPawn && Utils::IsValidActor(controlledPawn) && controlledPawn->IsA(SDK::AOakVehicle::StaticClass()))
+		if (controlledPawn && Utils::IsValidActor(controlledPawn) && controlledPawn->IsA(AOakVehicle::StaticClass()))
 		{
-			auto* vehicle = reinterpret_cast<SDK::AOakVehicle*>(controlledPawn);
+			auto* vehicle = reinterpret_cast<AOakVehicle*>(controlledPawn);
 
 			for (const auto& slot : vehicle->ActiveWeapons.Slots)
 			{
-				SDK::AWeapon* weapon = slot.Weapon;
+				AWeapon* weapon = slot.Weapon;
 				if (weapon && Utils::IsValidActor(weapon))
 					return weapon;
 			}
 
-			for (SDK::AWeapon* weapon : vehicle->VehicleWeapons)
+			for (AWeapon* weapon : vehicle->VehicleWeapons)
 			{
 				if (weapon && Utils::IsValidActor(weapon))
 					return weapon;
@@ -33,14 +43,14 @@ namespace
 		if (!weaponUser || !Utils::IsValidActor(weaponUser)) return nullptr;
 
 		// Prefer the active weapon slots from OakCharacter when available.
-		if (weaponUser->IsA(SDK::AOakCharacter::StaticClass()))
+		if (weaponUser->IsA(AOakCharacter::StaticClass()))
 		{
-			auto* oakCharacter = reinterpret_cast<SDK::AOakCharacter*>(weaponUser);
-			SDK::AWeapon* firstValid = nullptr;
+			auto* oakCharacter = reinterpret_cast<AOakCharacter*>(weaponUser);
+			AWeapon* firstValid = nullptr;
 
 			for (const auto& slot : oakCharacter->ActiveWeapons.Slots)
 			{
-				SDK::AWeapon* weapon = slot.Weapon;
+				AWeapon* weapon = slot.Weapon;
 				if (!weapon || !Utils::IsValidActor(weapon)) continue;
 				if (!firstValid) firstValid = weapon;
 
@@ -61,14 +71,14 @@ namespace
 		// Fallback to user weapon slots.
 		for (uint8 i = 0; i < 4; i++)
 		{
-			SDK::AWeapon* weapon = SDK::UWeaponStatics::GetWeapon(weaponUser, i);
+			AWeapon* weapon = UWeaponStatics::GetWeapon(weaponUser, i);
 			if (weapon && Utils::IsValidActor(weapon)) return weapon;
 		}
 
 		return nullptr;
 	}
 
-	bool IsWeaponAutomatic(const SDK::AWeapon* weapon)
+	bool IsWeaponAutomatic(const AWeapon* weapon)
 	{
 		if (!weapon) return false;
 
@@ -77,18 +87,18 @@ namespace
 
 		for (int i = 0; i < weapon->behaviors.Num(); i++)
 		{
-			SDK::UWeaponBehavior* behavior = weapon->behaviors[i];
+			UWeaponBehavior* behavior = weapon->behaviors[i];
 			if (!behavior) continue;
 
-			if (behavior->IsA(SDK::UWeaponBehavior_FireBeam::StaticClass()))
+			if (behavior->IsA(UWeaponBehavior_FireBeam::StaticClass()))
 			{
 				return true;
 			}
 
-			if (behavior->IsA(SDK::UWeaponBehavior_Fire::StaticClass()))
+			if (behavior->IsA(UWeaponBehavior_Fire::StaticClass()))
 			{
 				bFoundFireBehavior = true;
-				const auto* fireBehavior = static_cast<SDK::UWeaponBehavior_Fire*>(behavior);
+				const auto* fireBehavior = static_cast<UWeaponBehavior_Fire*>(behavior);
 				automaticBurstCount = (std::max)(automaticBurstCount, fireBehavior->AutomaticBurstCount.Value);
 				automaticBurstCount = (std::max)(automaticBurstCount, fireBehavior->AutomaticBurstCount.BaseValue);
 
@@ -105,25 +115,25 @@ namespace
 
 	float GetInputDoubleClickTimeMs()
 	{
-		const SDK::UInputSettings* inputSettings = SDK::UInputSettings::GetDefaultObj();
+		const UInputSettings* inputSettings = UInputSettings::GetDefaultObj();
 		if (!inputSettings) return 220.0f;
 
 		const float ms = inputSettings->DoubleClickTime * 1000.0f;
 		return std::clamp(ms, 80.0f, 450.0f);
 	}
 
-	float GetWeaponTapIntervalMs(const SDK::AWeapon* weapon, bool bIsAutomaticWeapon)
+	float GetWeaponTapIntervalMs(const AWeapon* weapon, bool bIsAutomaticWeapon)
 	{
 		float bestFireRate = 0.0f;
 		if (weapon)
 		{
 			for (int i = 0; i < weapon->behaviors.Num(); i++)
 			{
-				SDK::UWeaponBehavior* behavior = weapon->behaviors[i];
-				if (!behavior || !behavior->IsA(SDK::UWeaponBehavior_Fire::StaticClass()))
+				UWeaponBehavior* behavior = weapon->behaviors[i];
+				if (!behavior || !behavior->IsA(UWeaponBehavior_Fire::StaticClass()))
 					continue;
 
-				const auto* fireBehavior = static_cast<SDK::UWeaponBehavior_Fire*>(behavior);
+				const auto* fireBehavior = static_cast<UWeaponBehavior_Fire*>(behavior);
 				bestFireRate = (std::max)(bestFireRate, fireBehavior->firerate.Value);
 				bestFireRate = (std::max)(bestFireRate, fireBehavior->firerate.BaseValue);
 			}
@@ -160,7 +170,8 @@ void Cheats::TriggerBot()
 			Cheats::bTriggerSuppressMouseInput.store(false);
 		};
 
-	CurrentTriggerTarget = nullptr;
+	auto& triggerState = GetTriggerState();
+	triggerState.CurrentTarget = nullptr;
 	if (!ConfigManager::B("Trigger.Enabled") || !Utils::bIsInGame || !GVars.PlayerController || !Utils::GetSelfActor())
 	{
 		ReleaseControl();
@@ -173,7 +184,7 @@ void Cheats::TriggerBot()
 	}
 
 	// Target acquisition
-	CurrentTriggerTarget = Utils::GetBestTarget(
+	triggerState.CurrentTarget = Utils::GetBestTarget(
 		GVars.PlayerController,
 		5.0f, // Narrow FOV for triggerbot
 		true, // Must have Line Of Sight
@@ -182,8 +193,8 @@ void Cheats::TriggerBot()
 	);
 
 	const int currentFrame = g_PresentCount.load();
-	const bool bHotkeyHeld = (g_LastTriggerHotkeyFrame.load() == currentFrame);
-	const bool bCanFire = CurrentTriggerTarget &&
+	const bool bHotkeyHeld = (triggerState.LastHotkeyFrame.load() == currentFrame);
+	const bool bCanFire = triggerState.CurrentTarget &&
 		(!ConfigManager::B("Trigger.RequireKeyHeld") || bHotkeyHeld);
 
 	if (!bCanFire)
@@ -192,7 +203,7 @@ void Cheats::TriggerBot()
 		return;
 	}
 
-	SDK::AWeapon* activeWeapon = GetLikelyActiveWeapon();
+	AWeapon* activeWeapon = GetLikelyActiveWeapon();
 	const bool bIsAutomaticWeapon = IsWeaponAutomatic(activeWeapon);
 	const uint64_t nowMs = GetTickCount64();
 	if (bIsFiringUnderControl && PendingReleaseTimeMs > 0 && nowMs >= PendingReleaseTimeMs)
@@ -224,5 +235,5 @@ void Cheats::TriggerHotkey()
 {
 	if (!Utils::bIsInGame) return;
 	extern std::atomic<int> g_PresentCount;
-	g_LastTriggerHotkeyFrame.store(g_PresentCount.load());
+	GetTriggerState().LastHotkeyFrame.store(g_PresentCount.load());
 }

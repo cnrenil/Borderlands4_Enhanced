@@ -72,6 +72,7 @@ void Cleanup(HMODULE hModule)
 // Wrapper for SEH to avoid C2712
 static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerStateHooked, bool& bIsCameraManagerHooked)
 {
+	auto& hookState = Hooks::GetState();
 	__try {
 		if (!bIsProcessEventHooked && GVars.PlayerController)
 		{
@@ -83,7 +84,7 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 			if (GVars.Character && GVars.Character->PlayerState)
 			{
 				void** currentPSVTable = *reinterpret_cast<void***>(GVars.Character->PlayerState);
-				if (currentPSVTable && currentPSVTable != Hooks::psVTable)
+				if (currentPSVTable && currentPSVTable != hookState.psVTable)
 				{
 					bIsPlayerStateHooked = false; 
 				}
@@ -99,7 +100,7 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 			if (GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
 			{
 				void** currentCMVTable = *reinterpret_cast<void***>(GVars.PlayerController->PlayerCameraManager);
-				if (currentCMVTable && currentCMVTable != Hooks::cmVTable)
+				if (currentCMVTable && currentCMVTable != hookState.cmVTable)
 				{
 					bIsCameraManagerHooked = false;
 				}
@@ -123,13 +124,13 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 							psVTable[73] = (void*)hkProcessEvent;
 							VirtualProtect(&psVTable[73], sizeof(void*), old, &old);
 							
-							Hooks::psVTable = psVTable; 
+							hookState.psVTable = psVTable; 
 							bIsPlayerStateHooked = true;
 							// LOG_INFO moved outside because SEH can't mix with RAII
 						}
 					}
 					else {
-						Hooks::psVTable = psVTable;
+						hookState.psVTable = psVTable;
 						bIsPlayerStateHooked = true;
 					}
 				}
@@ -146,12 +147,12 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 							cmVTable[73] = (void*)hkProcessEvent;
 							VirtualProtect(&cmVTable[73], sizeof(void*), old, &old);
 							
-							Hooks::cmVTable = cmVTable; 
+							hookState.cmVTable = cmVTable; 
 							bIsCameraManagerHooked = true;
 						}
 					}
 					else {
-						Hooks::cmVTable = cmVTable;
+						hookState.cmVTable = cmVTable;
 						bIsCameraManagerHooked = true;
 					}
 				}

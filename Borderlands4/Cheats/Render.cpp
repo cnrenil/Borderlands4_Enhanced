@@ -2,6 +2,17 @@
 
 namespace
 {
+    struct RenderState
+    {
+        uint32_t LastUpdateFrame = 0xFFFFFFFF;
+    };
+
+    RenderState& GetRenderState()
+    {
+        static RenderState state;
+        return state;
+    }
+
     void AutoSetVariablesLocked()
     {
         std::scoped_lock GVarsLock(gGVarsMutex);
@@ -29,13 +40,13 @@ void Cheats::Render()
 {
     // --- Logic Update (Moved from PostRender for stability) ---
     // This ensures that even if our PostRender hook fails, the logic still ticks
-    static uint32_t LastUpdateFrame = 0xFFFFFFFF;
     extern std::atomic<int> g_PresentCount;
     int currentFrame = g_PresentCount.load();
+    auto& renderState = GetRenderState();
 
-    if (LastUpdateFrame != currentFrame)
+    if (renderState.LastUpdateFrame != currentFrame)
     {
-        LastUpdateFrame = currentFrame;
+        renderState.LastUpdateFrame = currentFrame;
 
         // Perform essential updates
         if (!TryAutoSetVariablesForRender())

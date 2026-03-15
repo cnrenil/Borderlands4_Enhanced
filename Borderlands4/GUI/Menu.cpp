@@ -15,11 +15,11 @@ namespace GUI
 }
 
 static const std::pair<const char*, std::string> BoneOptions[] = {
-	{"Head", BoneList.HeadBone},
-	{"Neck", BoneList.NeckBone},
-	{"Chest", BoneList.ChestBone},
-	{"Stomach", BoneList.StomachBone},
-	{"Pelvis", BoneList.PelvisBone}
+	{"Head", CheatsData::BoneList.HeadBone},
+	{"Neck", CheatsData::BoneList.NeckBone},
+	{"Chest", CheatsData::BoneList.ChestBone},
+	{"Stomach", CheatsData::BoneList.StomachBone},
+	{"Pelvis", CheatsData::BoneList.PelvisBone}
 };
 
 void GUI::AddDefaultTooltip(const char* desc)

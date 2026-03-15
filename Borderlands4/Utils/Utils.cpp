@@ -1,5 +1,6 @@
 #include "pch.h"
 
+
 namespace
 {
     // Guard against stale UObject pointers during map transition/game shutdown.
@@ -93,9 +94,9 @@ AActor* Utils::GetSelfActor()
     else if (GVars.Pawn && Utils::IsValidActor(GVars.Pawn))
         pawn = GVars.Pawn;
 
-    if (pawn && pawn->IsA(SDK::AOakVehicle::StaticClass()))
+    if (pawn && pawn->IsA(AOakVehicle::StaticClass()))
     {
-        auto* vehicle = reinterpret_cast<SDK::AOakVehicle*>(pawn);
+        auto* vehicle = reinterpret_cast<AOakVehicle*>(pawn);
         if (vehicle->DriverPawn && Utils::IsValidActor(vehicle->DriverPawn))
             return vehicle->DriverPawn;
         return vehicle;

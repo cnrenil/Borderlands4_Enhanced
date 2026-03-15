@@ -1,20 +1,46 @@
 #include "pch.h"
 
-static SDK::AActor* CurrentAimbotTarget = nullptr;
+
+namespace
+{
+	AActor* g_CurrentAimbotTarget = nullptr;
+
+	void ClearAimbotTarget()
+	{
+		Cheats::bHasAimbotTarget = false;
+		g_CurrentAimbotTarget = nullptr;
+		SilentAimHooks::UpdateTarget(nullptr, FVector{});
+	}
+
+	FName GetConfiguredAimbotBone()
+	{
+		static std::string cachedBoneString;
+		static FName cachedBoneName;
+
+		const std::string& bone = ConfigManager::S("Aimbot.Bone");
+		if (cachedBoneString != bone)
+		{
+			cachedBoneName = UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(bone).c_str());
+			cachedBoneString = bone;
+		}
+
+		return cachedBoneName;
+	}
+}
 
 void Cheats::Aimbot()
 {
 	bHasAimbotTarget = false;
-	CurrentAimbotTarget = nullptr;
+	g_CurrentAimbotTarget = nullptr;
 
 	if (!ConfigManager::B("Aimbot.Enabled") || !Utils::bIsInGame)
 	{
-		SilentAimHooks::UpdateTarget(nullptr, FVector{});
+		ClearAimbotTarget();
 		return;
 	}
 	if (!GVars.POV || !GVars.PlayerController || !Utils::GetSelfActor())
 	{
-		SilentAimHooks::UpdateTarget(nullptr, FVector{});
+		ClearAimbotTarget();
 		return;
 	}
 
@@ -23,7 +49,7 @@ void Cheats::Aimbot()
 		SilentAimHooks::Tick();
 	}
 
-	CurrentAimbotTarget = Utils::GetBestTarget(
+	g_CurrentAimbotTarget = Utils::GetBestTarget(
 		GVars.PlayerController,
 		ConfigManager::F("Aimbot.MaxFOV"),
 		ConfigManager::B("Aimbot.LOS"),
@@ -31,32 +57,24 @@ void Cheats::Aimbot()
 		ConfigManager::B("Aimbot.TargetAll")
 	);
 
-	if (CurrentAimbotTarget && CurrentAimbotTarget->IsA(ACharacter::StaticClass()))
+	if (g_CurrentAimbotTarget && g_CurrentAimbotTarget->IsA(ACharacter::StaticClass()))
 	{
-		ACharacter* targetChar = reinterpret_cast<ACharacter*>(CurrentAimbotTarget);
-
-		static std::string cachedBoneString;
-		static FName cachedBoneName;
-		if (cachedBoneString != ConfigManager::S("Aimbot.Bone"))
-		{
-			std::wstring wideString = UtfN::StringToWString(ConfigManager::S("Aimbot.Bone"));
-			cachedBoneName = UKismetStringLibrary::Conv_StringToName(wideString.c_str());
-			cachedBoneString = ConfigManager::S("Aimbot.Bone");
-		}
+		ACharacter* targetChar = reinterpret_cast<ACharacter*>(g_CurrentAimbotTarget);
+		const FName targetBone = GetConfiguredAimbotBone();
 
 		FVector targetPos;
-		if (targetChar->Mesh && targetChar->Mesh->GetBoneIndex(cachedBoneName) != -1)
-			targetPos = targetChar->Mesh->GetBoneTransform(cachedBoneName, ERelativeTransformSpace::RTS_World).Translation;
+		if (targetChar->Mesh && targetChar->Mesh->GetBoneIndex(targetBone) != -1)
+			targetPos = targetChar->Mesh->GetBoneTransform(targetBone, ERelativeTransformSpace::RTS_World).Translation;
 		else
 			targetPos = Utils::GetHighestBone(targetChar);
 
 		bHasAimbotTarget = true;
 		AimbotTargetPos = targetPos;
-		SilentAimHooks::UpdateTarget(CurrentAimbotTarget, AimbotTargetPos);
+		SilentAimHooks::UpdateTarget(g_CurrentAimbotTarget, AimbotTargetPos);
 		return;
 	}
 
-	SilentAimHooks::UpdateTarget(nullptr, FVector{});
+	ClearAimbotTarget();
 }
 
 void Cheats::AimbotHotkey()
@@ -74,7 +92,7 @@ void Cheats::AimbotHotkey()
 		return;
 	}
 
-	if (!CurrentAimbotTarget)
+	if (!g_CurrentAimbotTarget)
 	{
 		return;
 	}
@@ -104,7 +122,7 @@ void Cheats::AimbotHotkey()
 	}
 }
 
-bool Cheats::HandleAimbotEvents(const SDK::UObject* object, SDK::UFunction* function, void* params)
+bool Cheats::HandleAimbotEvents(const UObject* object, UFunction* function, void* params)
 {
 	(void)object;
 	(void)function;
@@ -112,7 +130,7 @@ bool Cheats::HandleAimbotEvents(const SDK::UObject* object, SDK::UFunction* func
 	return false;
 }
 
-void Cheats::HandleConstructedObject(const SDK::UObject* object)
+void Cheats::HandleConstructedObject(const UObject* object)
 {
 	(void)object;
 }
