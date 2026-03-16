@@ -9,6 +9,7 @@ namespace Logger
     static std::vector<LogEntry> LogHistory;
     static std::map<std::string, std::chrono::steady_clock::time_point> ThrottleMap;
     static bool bIsRecording = false;
+    static HANDLE ConsoleHandle = INVALID_HANDLE_VALUE;
 
     static const char* LevelToString(Level level) {
         switch (level) {
@@ -24,6 +25,7 @@ namespace Logger
     void Initialize()
     {
         std::lock_guard<std::mutex> lock(LogMutex);
+        ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
         
         char path[MAX_PATH];
         GetModuleFileNameA(NULL, path, MAX_PATH);
@@ -34,6 +36,22 @@ namespace Logger
         if (LogFile.is_open()) {
             LogFile << "[SYSTEM] Logger Initialized at " << logPath << "\n";
         }
+    }
+
+    static void WriteToConsole(const std::string& text)
+    {
+        if (ConsoleHandle == nullptr || ConsoleHandle == INVALID_HANDLE_VALUE)
+            return;
+
+        DWORD consoleMode = 0;
+        DWORD charsWritten = 0;
+        if (GetConsoleMode(ConsoleHandle, &consoleMode))
+        {
+            WriteConsoleA(ConsoleHandle, text.c_str(), static_cast<DWORD>(text.size()), &charsWritten, nullptr);
+            return;
+        }
+
+        WriteFile(ConsoleHandle, text.data(), static_cast<DWORD>(text.size()), &charsWritten, nullptr);
     }
 
     static void InternalStopRecording()
@@ -86,7 +104,7 @@ namespace Logger
         // 4. Output to Console (if enabled in UI or always for Errors)
         if (level >= Level::Info || (ConfigManager::ConfigMap.count("Misc.Debug") && ConfigManager::B("Misc.Debug")))
         {
-            printf("%s", finalLog.c_str());
+            WriteToConsole(finalLog);
         }
 
         // 5. Output to File

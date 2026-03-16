@@ -7,10 +7,8 @@
 #define NOMINMAX
 #endif
 
-#ifdef _DEBUG
-#define BL4_DEBUG_BUILD 1
-#else
-#define BL4_DEBUG_BUILD 0
+#ifndef BL4_DEBUG_BUILD
+#error BL4_DEBUG_BUILD must be defined by the project configuration.
 #endif
 
 // Windows and Graphics

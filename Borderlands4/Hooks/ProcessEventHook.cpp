@@ -3,6 +3,7 @@
 namespace
 {
 	Hooks::State g_HookState{};
+	std::atomic<bool> g_LoggedHudCanvasHook{ false };
 }
 
 void(*oProcessEvent)(const UObject*, UFunction*, void*) = nullptr;
@@ -58,6 +59,10 @@ static void TryRunHudCanvasTick(AHUD* Hud)
 	UCanvas* Canvas = TryGetHudCanvas(Hud);
 	if (Canvas)
 	{
+		if (!g_LoggedHudCanvasHook.exchange(true))
+		{
+			LOG_INFO("Hook", "ReceiveDrawHUD canvas hook active. Canvas=%p", Canvas);
+		}
 #if BL4_DEBUG_BUILD
 		Logger::LogThrottled(Logger::Level::Debug, "Hook", 5000, "ReceiveDrawHUD canvas tick via ProcessEvent (Canvas: %p)", Canvas);
 #endif

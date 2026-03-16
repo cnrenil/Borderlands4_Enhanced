@@ -5,7 +5,6 @@ extern HWND g_hWnd;
 extern WNDPROC oWndProc;
 extern std::atomic<bool> Resizing;
 extern std::atomic<bool> Cleaning;
-extern FILE* g_ConsoleOut;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern void hkProcessEvent(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
@@ -60,7 +59,6 @@ void Cleanup(HMODULE hModule)
 	
 	Logger::Shutdown();
 
-	if (g_ConsoleOut) fclose(g_ConsoleOut);
 	FreeConsole();
 
 	HWND hConsole = GetConsoleWindow();
@@ -245,7 +243,8 @@ static bool TryAutoSetVariablesMainThread()
 DWORD MainThread(HMODULE hModule)
 {
 	AllocConsole();
-	freopen_s(&g_ConsoleOut, "CONOUT$", "w", stdout);
+	SetConsoleOutputCP(CP_UTF8);
+	SetConsoleCP(CP_UTF8);
 
     Logger::Initialize();
 	LOG_INFO("System", "Cheat Injecting...");

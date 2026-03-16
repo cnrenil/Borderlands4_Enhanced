@@ -37,6 +37,7 @@ namespace
         uint32_t LastCanvasTickPresentFrame = 0xFFFFFFFF;
         uint64_t LastCanvasTickTimeMs = 0;
         uint64_t LastHudSignalTimeMs = 0;
+        bool LoggedCanvasTickActive = false;
     };
 
     RenderState& GetRenderState()
@@ -77,6 +78,12 @@ namespace
         Utils::SetCurrentCanvas(Canvas);
         renderState.LastCanvasTickPresentFrame = static_cast<uint32_t>(currentFrame);
         renderState.LastCanvasTickTimeMs = GetTickCount64();
+
+        if (Canvas && !renderState.LoggedCanvasTickActive)
+        {
+            renderState.LoggedCanvasTickActive = true;
+            LOG_INFO("CanvasTick", "GameThreadCanvasTick active. Canvas=%p", Canvas);
+        }
 
         if (!TryAutoSetVariablesForRender())
         {
