@@ -4,6 +4,7 @@ namespace
 {
 	bool g_OTSSmoothInitialized = false;
 	SDK::FVector g_OTSSmoothedLoc{};
+	float g_SmoothedShadowFOV = -1.0f;
 
 	bool IsZoomingNow()
 	{
@@ -51,6 +52,27 @@ namespace
 			}
 		}
 		return std::clamp(fov, 20.0f, 180.0f);
+	}
+
+	float UpdateSmoothedShadowFOV(float targetFOV)
+	{
+		if (g_SmoothedShadowFOV < 0.0f || !ConfigManager::B("Player.OverShoulder"))
+		{
+			g_SmoothedShadowFOV = targetFOV;
+			return g_SmoothedShadowFOV;
+		}
+
+		const float currentTime = static_cast<float>(ImGui::GetTime());
+		static float lastTime = currentTime;
+		float deltaSeconds = currentTime - lastTime;
+		lastTime = currentTime;
+		if (deltaSeconds < 0.0f || deltaSeconds > 0.25f)
+			deltaSeconds = 1.0f / 60.0f;
+
+		const float interpSpeed = IsZoomingNow() ? 10.0f : 8.0f;
+		const float alpha = std::clamp(deltaSeconds * interpSpeed, 0.0f, 1.0f);
+		g_SmoothedShadowFOV += (targetFOV - g_SmoothedShadowFOV) * alpha;
+		return g_SmoothedShadowFOV;
 	}
 
 	void ApplyPlayerFOV(float targetFOV)
@@ -258,6 +280,7 @@ namespace
 		else
 		{
 			g_OTSSmoothInitialized = false;
+			g_SmoothedShadowFOV = -1.0f;
 
 			bool bShouldBeInThirdPerson = ConfigManager::B("Player.ThirdPerson");
 			if (ConfigManager::B("Player.ThirdPerson") && bIsZooming && ConfigManager::B("Misc.ThirdPersonADSFirstPerson"))
@@ -365,7 +388,12 @@ void Cheats::UpdateCamera()
 	}
 	if (IsValidShadowCamera(Cam) && Cam->CameraComponent)
 	{
-		Cam->CameraComponent->SetFieldOfView(GetAppliedFOV(true));
+		const float targetShadowFOV = GetAppliedFOV(true);
+		Cam->CameraComponent->SetFieldOfView(UpdateSmoothedShadowFOV(targetShadowFOV));
+	}
+	else
+	{
+		g_SmoothedShadowFOV = -1.0f;
 	}
 
 	if (ConfigManager::B("Misc.EnableFOV"))

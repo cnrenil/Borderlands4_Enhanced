@@ -157,6 +157,8 @@
     <ClCompile Include="Config\ConfigManager.cpp" />
     <ClCompile Include="DLLMain.cpp" />
     <ClCompile Include="GUI\Menu.cpp" />
+    <ClCompile Include="GUI\Overlay.cpp" />
+    <ClCompile Include="GUI\Themes.cpp" />
     <ClCompile Include="Hooks\EngineHooks.cpp" />
     <ClCompile Include="Hooks\Init.cpp" />
     <ClCompile Include="Hooks\D3D12Hook.cpp" />
@@ -243,6 +245,8 @@
     <ClInclude Include="Config\ConfigManager.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GUI\Menu.h" />
+    <ClInclude Include="GUI\Overlay.h" />
+    <ClInclude Include="GUI\Themes.h" />
     <ClInclude Include="Hooks\D3D12Hook.h" />
     <ClInclude Include="Hooks\EngineHooks.h" />
     <ClInclude Include="pch.h" />

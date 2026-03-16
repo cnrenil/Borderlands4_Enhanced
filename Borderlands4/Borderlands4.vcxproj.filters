@@ -166,6 +166,12 @@
     <ClCompile Include="GUI\Menu.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Overlay.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Themes.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
     <ClCompile Include="Hooks\EngineHooks.cpp">
       <Filter>Source Files\Hooks</Filter>
     </ClCompile>
@@ -203,6 +209,12 @@
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Themes.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Overlay.h">
+      <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Borderlands4_SDK\SDK\Basic.hpp">

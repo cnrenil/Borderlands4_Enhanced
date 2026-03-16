@@ -30,17 +30,17 @@ namespace
         auto FindInLevel = [](SDK::ULevel* level) -> SDK::ALightProjectileManager*
         {
             if (!level) return nullptr;
-            const int32 actorCount = level->Actors.Num();
-            if (actorCount <= 0 || actorCount > 200000) return nullptr;
 
-            for (int32 i = 0; i < actorCount; ++i)
+            SDK::ALightProjectileManager* result = nullptr;
+            Utils::ForEachLevelActor(level, [&](SDK::AActor* actor)
             {
-                SDK::AActor* actor = level->Actors[i];
-                if (!actor) continue;
-                if (!actor->IsA(SDK::ALightProjectileManager::StaticClass())) continue;
-                return static_cast<SDK::ALightProjectileManager*>(actor);
-            }
-            return nullptr;
+                if (!actor || !actor->IsA(SDK::ALightProjectileManager::StaticClass()))
+                    return true;
+
+                result = static_cast<SDK::ALightProjectileManager*>(actor);
+                return false;
+            });
+            return result;
         };
 
         if (SDK::ALightProjectileManager* mgr = FindInLevel(world->PersistentLevel))

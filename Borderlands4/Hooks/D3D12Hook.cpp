@@ -1,10 +1,4 @@
 #include "pch.h"
-#include "D3D12Hook.h"
-#include "GUI/Menu.h"
-#include "Engine.h"
-#include "Config/ConfigManager.h"
-#include "Cheats.h"
-#include "Utils/Hotkey.h"
 
 extern WNDPROC oWndProc;
 extern HWND g_hWnd;
@@ -202,28 +196,11 @@ namespace d3d12hook {
             rtvHandle.ptr += rtvSize;
         }
 
-        // ImGui Setup
-        IMGUI_CHECKVERSION();
-        ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-        
-        // Load Font and Build Atlas (CRITICAL FIX)
-        char winDir[MAX_PATH];
-        GetWindowsDirectoryA(winDir, MAX_PATH);
-        std::string fontPath = std::string(winDir) + "\\Fonts\\msyh.ttc";
-        if (GetFileAttributesA(fontPath.c_str()) != INVALID_FILE_ATTRIBUTES) {
-            io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 18.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
-        } else {
-            io.Fonts->AddFontDefault();
+        if (!GUI::Overlay::Initialize(g_hWnd, gDevice, gBufferCount, desc.BufferDesc.Format, gHeapSRV))
+        {
+            ReleaseOverlayResources();
+            return;
         }
-        io.Fonts->Build(); // Ensure font atlas is built before backend init
-
-        ImGui::StyleColorsDark();
-        ImGui_ImplWin32_Init(g_hWnd);
-        ImGui_ImplDX12_Init(gDevice, gBufferCount, desc.BufferDesc.Format, gHeapSRV,
-            gHeapSRV->GetCPUDescriptorHandleForHeapStart(),
-            gHeapSRV->GetGPUDescriptorHandleForHeapStart());
 
         // Sync Objects
         gDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&gOverlayFence));
@@ -251,16 +228,10 @@ namespace d3d12hook {
         last_rendered_frame = current_time;
         last_index = current_index;
 
-        ImGui_ImplDX12_NewFrame();
-        ImGui_ImplWin32_NewFrame();
-        ImGui::NewFrame();
-        
-        try {
-            // All rendering logic is now consolidated into Cheats::Render()
-            Cheats::Render();
-        } catch (...) {}
-
-        ImGui::Render();
+        GUI::Overlay::BeginFrame();
+        GUI::Overlay::BuildFrame();
+        ImDrawData* drawData = GUI::Overlay::GetDrawData();
+        if (!drawData) return;
 
         UINT frameIdx = pSwapChain->GetCurrentBackBufferIndex();
         if (frameIdx >= gBufferCount) return; // Safety check
@@ -301,7 +272,7 @@ namespace d3d12hook {
         ID3D12DescriptorHeap* heaps[] = { gHeapSRV };
         gCommandList->SetDescriptorHeaps(1, heaps);
 
-        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), gCommandList);
+        ImGui_ImplDX12_RenderDrawData(drawData, gCommandList);
 
         barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
         barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
@@ -456,10 +427,7 @@ namespace d3d12hook {
         Resizing.store(true);
 
         if (gInitialized) {
-            // Shut down ImGui backends
-            ImGui_ImplDX12_Shutdown();
-            ImGui_ImplWin32_Shutdown();
-            ImGui::DestroyContext();
+            GUI::Overlay::Shutdown();
 
             // Release all our GPU resources
             ReleaseOverlayResources();
@@ -494,9 +462,7 @@ namespace d3d12hook {
         Sleep(100);
 
         if (gInitialized) {
-            ImGui_ImplDX12_Shutdown();
-            ImGui_ImplWin32_Shutdown();
-            ImGui::DestroyContext();
+            GUI::Overlay::Shutdown();
 
             ReleaseOverlayResources();
             gInitialized = false;

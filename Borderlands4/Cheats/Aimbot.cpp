@@ -11,21 +11,6 @@ namespace
 		g_CurrentAimbotTarget = nullptr;
 		SilentAimHooks::UpdateTarget(nullptr, FVector{});
 	}
-
-	FName GetConfiguredAimbotBone()
-	{
-		static std::string cachedBoneString;
-		static FName cachedBoneName;
-
-		const std::string& bone = ConfigManager::S("Aimbot.Bone");
-		if (cachedBoneString != bone)
-		{
-			cachedBoneName = UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(bone).c_str());
-			cachedBoneString = bone;
-		}
-
-		return cachedBoneName;
-	}
 }
 
 void Cheats::Aimbot()
@@ -49,27 +34,22 @@ void Cheats::Aimbot()
 		SilentAimHooks::Tick();
 	}
 
-	g_CurrentAimbotTarget = Utils::GetBestTarget(
+	const TargetSelectionResult targetResult = Utils::AcquireTarget(
 		GVars.PlayerController,
 		ConfigManager::F("Aimbot.MaxFOV"),
+		ConfigManager::F("Aimbot.MinDistance"),
+		ConfigManager::F("Aimbot.MaxDistance"),
 		ConfigManager::B("Aimbot.LOS"),
 		ConfigManager::S("Aimbot.Bone"),
-		ConfigManager::B("Aimbot.TargetAll")
+		ConfigManager::B("Aimbot.TargetAll"),
+		ConfigManager::I("Aimbot.TargetMode")
 	);
+	g_CurrentAimbotTarget = targetResult.Target;
 
 	if (g_CurrentAimbotTarget && g_CurrentAimbotTarget->IsA(ACharacter::StaticClass()))
 	{
-		ACharacter* targetChar = reinterpret_cast<ACharacter*>(g_CurrentAimbotTarget);
-		const FName targetBone = GetConfiguredAimbotBone();
-
-		FVector targetPos;
-		if (targetChar->Mesh && targetChar->Mesh->GetBoneIndex(targetBone) != -1)
-			targetPos = targetChar->Mesh->GetBoneTransform(targetBone, ERelativeTransformSpace::RTS_World).Translation;
-		else
-			targetPos = Utils::GetHighestBone(targetChar);
-
 		bHasAimbotTarget = true;
-		AimbotTargetPos = targetPos;
+		AimbotTargetPos = targetResult.AimPoint;
 		SilentAimHooks::UpdateTarget(g_CurrentAimbotTarget, AimbotTargetPos);
 		return;
 	}

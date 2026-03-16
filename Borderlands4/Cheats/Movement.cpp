@@ -155,12 +155,23 @@ namespace
         if (!localVehicle)
             return nullptr;
 
+        if (GVars.Character && Utils::IsValidActor(GVars.Character) && GVars.Character->IsA(SDK::AOakCharacter::StaticClass()))
+        {
+            auto* localChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+            SDK::UVehicleDriverComponent* driverComp = localChar->VehicleDriverComponent.Get();
+            if (driverComp)
+            {
+                SDK::AOakVehicle* drivenVehicle = driverComp->VehicleDriverState.DrivenVehicle;
+                if (!drivenVehicle || drivenVehicle == localVehicle)
+                    return &driverComp->VehicleAttributesState;
+            }
+        }
+
         for (int i = 0; i < SDK::UObject::GObjects->Num(); i++)
         {
             SDK::UObject* obj = SDK::UObject::GObjects->GetByIndex(i);
             if (!obj || obj->IsDefaultObject())
                 continue;
-
             if (!obj->IsA(SDK::UVehicleDriverComponent::StaticClass()))
                 continue;
 
@@ -168,14 +179,9 @@ namespace
             if (!driverComp)
                 continue;
 
-            if (localVehicle)
-            {
-                SDK::AActor* owner = driverComp->GetOwner();
-                if (!owner || owner != localVehicle)
-                    continue;
-            }
-
-            return &driverComp->VehicleAttributesState;
+            SDK::AOakVehicle* drivenVehicle = driverComp->VehicleDriverState.DrivenVehicle;
+            if (drivenVehicle && drivenVehicle == localVehicle)
+                return &driverComp->VehicleAttributesState;
         }
         return nullptr;
     }
@@ -359,20 +365,23 @@ namespace
             return nullptr;
 
         SDK::AInventoryGadget* firstGadget = nullptr;
-        const int32_t count = world->PersistentLevel->Actors.Num();
-        for (int32_t i = 0; i < count; i++)
+        Utils::ForEachLevelActor(world->PersistentLevel, [&](SDK::AActor* actor)
         {
-            SDK::AActor* actor = world->PersistentLevel->Actors[i];
             if (!actor || !actor->IsA(SDK::AInventoryGadget::StaticClass()))
-                continue;
+                return true;
 
             SDK::AInventoryGadget* gadget = static_cast<SDK::AInventoryGadget*>(actor);
-            if (!gadget) continue;
+            if (!gadget) return true;
 
             if (!firstGadget) firstGadget = gadget;
             if (gadget->OwningCharacter == GVars.Character)
-                return gadget;
-        }
+            {
+                firstGadget = gadget;
+                return false;
+            }
+
+            return true;
+        });
 
         return firstGadget;
     }
@@ -550,22 +559,18 @@ void Cheats::Flight()
 void Cheats::TeleportLoot()
 {
 	if (!GVars.World || !GVars.Level || !GVars.Character) return;
-	
-	int32_t NumActors = GVars.Level->Actors.Num();
-	if (NumActors < 0 || NumActors > 200000) return;
 
 	SDK::FVector PlayerLoc = GVars.Character->K2_GetActorLocation();
 	SDK::FRotator PlayerRot = GVars.Character->K2_GetActorRotation();
 	PlayerLoc.Z -= 40.f;
 
 	std::vector<SDK::AInventoryPickup*> Gear;
-	for (int i = 0; i < NumActors; i++) {
-		SDK::AActor* Actor = GVars.Level->Actors[i];
-		if (Actor && Actor->IsA(SDK::AInventoryPickup::StaticClass())) {
-			SDK::AInventoryPickup* Pickup = static_cast<SDK::AInventoryPickup*>(Actor);
-			Gear.push_back(Pickup);
-		}
-	}
+	Utils::ForEachLevelActor(GVars.Level, [&](SDK::AActor* Actor)
+	{
+		if (Actor && Actor->IsA(SDK::AInventoryPickup::StaticClass()))
+			Gear.push_back(static_cast<SDK::AInventoryPickup*>(Actor));
+		return true;
+	});
 
 	int item_index = 0;
 	for (auto g : Gear) {

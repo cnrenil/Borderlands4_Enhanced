@@ -7,6 +7,32 @@ namespace Localization
     
     static std::unordered_map<std::string, std::unordered_map<Language, std::string>> Dictionary;
 
+    const char* LocalizedText::Resolve() const
+    {
+        auto it = Values.find(CurrentLanguage);
+        if (it != Values.end())
+            return it->second.c_str();
+
+        it = Values.find(Language::English);
+        if (it != Values.end())
+            return it->second.c_str();
+
+        if (!Values.empty())
+            return Values.begin()->second.c_str();
+
+        return "";
+    }
+
+    LocalizedText LocalizedText::Make(std::initializer_list<std::pair<const Language, std::string>> values)
+    {
+        LocalizedText text;
+        for (const auto& [language, value] : values)
+        {
+            text.Values[language] = value;
+        }
+        return text;
+    }
+
     Language GetSystemLanguage()
     {
         LANGID LangID = GetUserDefaultUILanguage();
@@ -50,6 +76,7 @@ namespace Localization
         Register("HELLO_GREETING", "Hello, Have Fun Cheating!", (const char*)u8"你好, 玩得开心!");
         Register("MENU_TITLE", "Main Menu", (const char*)u8"主菜单");
         Register("LANGUAGE", "Language", (const char*)u8"语言");
+        Register("THEME", "Theme", (const char*)u8"主题");
         Register("VERSION_D_D_D", "Version %d.%d.%d", (const char*)u8"版本 %d.%d.%d");
         Register("THANKS_FOR_USING_THIS_CHEAT_S", "Thanks for using this cheat, %s!", (const char*)u8"感谢使用此辅助, %s!");
         Register("USERNAME_NOT_FOUND_BUT_THANKS_FOR_USING_ANYWAY", "Username not found, but thanks for using anyway!", (const char*)u8"未找到用户名，但仍感谢使用！");
@@ -139,8 +166,12 @@ namespace Localization
         Register("SMOOTH_AIM", "Smooth Aim", (const char*)u8"平滑自瞄");
         Register("SMOOTHING", "Smoothing", (const char*)u8"平滑系数");
         Register("AIMBOT_FOV", "Aimbot FOV", (const char*)u8"自瞄视野");
+        Register("MIN_DISTANCE", "Min Distance", (const char*)u8"最小距离");
         Register("MAX_DISTANCE", "Max Distance", (const char*)u8"最大距离");
         Register("TARGET_BONE", "Target Bone", (const char*)u8"目标骨骼");
+        Register("TARGET_MODE", "Target Mode", (const char*)u8"索敌模式");
+        Register("TARGET_MODE_SCREEN", "Closest To Crosshair", (const char*)u8"准星最近");
+        Register("TARGET_MODE_DISTANCE", "Closest Distance", (const char*)u8"距离最近");
         Register("CHOOSE_BONE_TOOLTIP", "Choose the bone to inject damage directly to. E.g Head = 100% Critical Hit", (const char*)u8"选择要直接注入伤害的部位。例如 头部 = 100% 暴击");
         
         // 11. Weapon Tab
@@ -172,9 +203,11 @@ namespace Localization
         // 13. Config & Debug
         Register("ESP_SETTINGS", "ESP Settings", (const char*)u8"透视设置");
         Register("SHOW_BOX", "Show Box", (const char*)u8"显示方框");
+        Register("SHADED_FILL", "Mesh Highlight", (const char*)u8"人物着色");
         Register("SHOW_DISTANCE", "Show Distance", (const char*)u8"显示敌方距离");
         Register("SHOW_BONES", "Show Bones", (const char*)u8"显示骨骼");
         Register("SHOW_NAME", "Show Name", (const char*)u8"显示敌方名称");
+        Register("SHOW_ENEMY_INDICATOR", "Show Enemy Indicator", (const char*)u8"显示敌人三角指示");
         Register("SHOW_LOOT_NAME", "Show Loot Name", (const char*)u8"显示掉落物名称");
         Register("LOOT_COLOR", "Loot Color", (const char*)u8"掉落物颜色");
         Register("LOOT_MAX_DISTANCE", "Loot Max Distance (m)", (const char*)u8"掉落物最大距离(米)");

@@ -57,7 +57,7 @@ namespace
             const FVector camFwd = Utils::FRotatorToVector(CameraPOV.Rotation);
             const FVector aimPoint = camLoc + (camFwd * 50000.0f);
             FVector2D aimScreen{};
-            if (GVars.PlayerController->ProjectWorldLocationToScreen(aimPoint, &aimScreen, false)) {
+            if (GVars.PlayerController->ProjectWorldLocationToScreen(aimPoint, &aimScreen, true)) {
                 return ImVec2((float)aimScreen.X, (float)aimScreen.Y);
             }
         }
@@ -246,7 +246,9 @@ void Utils::DrawCanvasText(UCanvas* Canvas, const FString& Text, const FVector2D
 void Utils::DrawCanvasText(UCanvas* Canvas, const std::string& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale, bool bCenterX, bool bCenterY, bool bOutlined)
 {
     if (!Canvas || Text.empty()) return;
-    const FString RenderText(UtfN::StringToWString(Text).c_str());
+    std::wstring WideText = UtfN::StringToWString(Text);
+    const int32 textLen = static_cast<int32>(WideText.length() + 1);
+    const FString RenderText(const_cast<wchar_t*>(WideText.c_str()), textLen, textLen);
     DrawCanvasText(Canvas, RenderText, Position, Color, Scale, bCenterX, bCenterY, bOutlined);
 }
 
@@ -257,19 +259,16 @@ ALightProjectileManager* Utils::GetLightProjManager()
         return CachedManager;
         
     if (!GVars.Level) return nullptr;
-    
-    int32_t NumActors = GVars.Level->Actors.Num();
-    if (NumActors < 0 || NumActors > 200000) return nullptr;
 
-    for (int i = 0; i < NumActors; i++)
+    Utils::ForEachLevelActor(GVars.Level, [&](AActor* Actor)
     {
-        AActor* Actor = GVars.Level->Actors[i];
         if (Actor && !IsBadReadPtr(Actor, sizeof(void*)) && Actor->VTable && Actor->IsA(ALightProjectileManager::StaticClass()))
         {
             CachedManager = reinterpret_cast<ALightProjectileManager*>(Actor);
-            return CachedManager;
+            return false;
         }
-    }
+        return true;
+    });
     return nullptr;
 }
 
@@ -279,21 +278,15 @@ void Utils::PrintActors(const char* Exclude)
 	ULevel* Level = GVars.Level;
 	if (Level)
 	{
-		if (Level->Actors.Num() > 0 && Level->Actors.Num() < 100000)
+		Utils::ForEachLevelActor(Level, [&](AActor* Actor)
 		{
-			for (int i = 0; i < Level->Actors.Num(); i++)
-			{
-				AActor* Actor = Level->Actors[i];
-				if (Actor)
-				{
-					if (!Utils::IsValidActor(Actor)) continue;
-					if (Exclude && Actor->GetName().find(Exclude) != std::string::npos)
-						continue;
+			if (!Actor || !Utils::IsValidActor(Actor)) return true;
+			if (Exclude && Actor->GetName().find(Exclude) != std::string::npos)
+				return true;
 
-					LOG_INFO("Scanner", "Actor %d: %s - Class: %s", i, Actor->GetName().c_str(), Actor->Class->Name.ToString().c_str());
-				}
-			}
-		}
+			LOG_INFO("Scanner", "Actor: %s - Class: %s", Actor->GetName().c_str(), Actor->Class->Name.ToString().c_str());
+			return true;
+		});
 	}
 }
 
@@ -355,6 +348,62 @@ bool Utils::IsValidActor(AActor* Actor)
     }
 }
 
+bool Utils::ForEachLevelActor(ULevel* Level, const std::function<bool(AActor*)>& Visitor, int32_t* OutActorCount)
+{
+    if (OutActorCount) *OutActorCount = 0;
+    if (!Level || !Visitor) return false;
+
+    int32_t actorCount = 0;
+    if (!TryReadLevelActorCount(Level, actorCount))
+        return false;
+
+    if (actorCount <= 0 || actorCount > 200000)
+        return false;
+
+    if (OutActorCount) *OutActorCount = actorCount;
+
+    __try
+    {
+        for (int32_t i = 0; i < actorCount; ++i)
+        {
+            if (!Visitor(Level->Actors[i]))
+                break;
+        }
+        return true;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        return false;
+    }
+}
+
+float Utils::GetDistanceMeters(const FVector& A, const FVector& B)
+{
+    const double distanceMeters = static_cast<double>(A.GetDistanceToInMeters(B));
+
+    if (!std::isfinite(distanceMeters))
+        return FLT_MAX;
+
+    return static_cast<float>(distanceMeters);
+}
+
+float Utils::GetDistanceMeters(const AActor* Source, const AActor* Target)
+{
+    if (!Source || !Target)
+        return FLT_MAX;
+    if (IsBadReadPtr(Source, sizeof(void*)) || IsBadReadPtr(Target, sizeof(void*)))
+        return FLT_MAX;
+    if (!Source->VTable || !Target->VTable)
+        return FLT_MAX;
+
+    const FVector sourceLocation = Source->K2_GetActorLocation();
+    const FVector targetLocation = Target->K2_GetActorLocation();
+    const float distanceMeters = sourceLocation.GetDistanceToInMeters(targetLocation);
+    if (!std::isfinite(distanceMeters))
+        return FLT_MAX;
+
+    return distanceMeters;
+}
 
 float Utils::GetFOVFromScreenCoords(const ImVec2& ScreenLocation)
 {
@@ -389,28 +438,40 @@ FVector2D Utils::ImVec2ToFVector2D(ImVec2 Vector)
 	return FVector2D(Vector.x, Vector.y);
 }
 
-AActor* Utils::GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool RequiresLOS, std::string TargetBone, bool TargetAll)
+TargetSelectionResult Utils::AcquireTarget(APlayerController* ViewPoint, float MaxFOV, float MinDistance, float MaxDistance, bool RequiresLOS, std::string TargetBone, bool TargetAll, int TargetMode)
 {
-    if (Utils::bIsLoading || !GVars.World || !GVars.World->VTable) return nullptr;
-    if (!GVars.Level || !GVars.GameState || !ViewPoint || !ViewPoint->PlayerCameraManager) return nullptr;
+    TargetSelectionResult bestResult{};
+    if (Utils::bIsLoading || !GVars.World || !GVars.World->VTable) return bestResult;
+    if (!GVars.Level || !GVars.GameState || !ViewPoint || !ViewPoint->PlayerCameraManager) return bestResult;
 
-    static std::string CachedBoneString = "";
-    static FName CachedBoneName;
-    if (CachedBoneString != TargetBone) {
-        std::wstring WideString = UtfN::StringToWString(TargetBone);
-        CachedBoneName = UKismetStringLibrary::Conv_StringToName(WideString.c_str());
-        CachedBoneString = TargetBone;
-    }
-
-    AActor* BestTarget = nullptr;
-    float BestFOV = MaxFOV;
-
-    FVector CameraLocation = ViewPoint->PlayerCameraManager->CameraCachePrivate.POV.Location;
+    const FVector CameraLocation = ViewPoint->PlayerCameraManager->CameraCachePrivate.POV.Location;
     FVector2D ViewportSize = Utils::ImVec2ToFVector2D(GVars.ScreenSize);
     FVector2D ViewportCenter = Utils::ImVec2ToFVector2D(GetAimScreenCenter());
     float MaxFOVNormalized = MaxFOV / 90.0f;
 
     AActor* SelfActor = Utils::GetSelfActor();
+    const FVector DistanceOrigin = SelfActor ? SelfActor->K2_GetActorLocation() : CameraLocation;
+    const float clampedMinDistance = (std::max)(0.0f, MinDistance);
+    const float clampedMaxDistance = (MaxDistance <= 0.0f) ? FLT_MAX : MaxDistance;
+
+    auto IsBetterCandidate = [&](float candidateDistance, float candidateFOV) -> bool
+    {
+        if (!bestResult.IsValid())
+            return true;
+
+        switch (TargetMode)
+        {
+        case 1:
+            if (candidateDistance < bestResult.DistanceMeters - 0.001f) return true;
+            if (fabsf(candidateDistance - bestResult.DistanceMeters) <= 0.001f && candidateFOV < bestResult.ScreenSpaceFOV) return true;
+            return false;
+        case 0:
+        default:
+            if (candidateFOV < bestResult.ScreenSpaceFOV - 0.001f) return true;
+            if (fabsf(candidateFOV - bestResult.ScreenSpaceFOV) <= 0.001f && candidateDistance < bestResult.DistanceMeters) return true;
+            return false;
+        }
+    };
 
     // Use Cache!
     for (ACharacter* TargetChar : GVars.UnitCache)
@@ -434,8 +495,11 @@ AActor* Utils::GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool Re
             continue;
 
         // Quick Distance Check (optional but good)
-        FVector ActorLoc = TargetChar->K2_GetActorLocation();
-        if (CameraLocation.GetDistanceTo(ActorLoc) > 15000.0f) // 150 meters
+        const FVector ActorLoc = TargetChar->K2_GetActorLocation();
+        const float DistanceMeters = SelfActor
+            ? Utils::GetDistanceMeters(SelfActor, TargetChar)
+            : Utils::GetDistanceMeters(DistanceOrigin, ActorLoc);
+        if (DistanceMeters < clampedMinDistance || DistanceMeters > clampedMaxDistance)
             continue;
 
         // Project to screen first
@@ -452,13 +516,14 @@ AActor* Utils::GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool Re
             continue;
 
         // Now get the actual bone location
-        FVector BoneLocation = TargetChar->Mesh->GetBoneTransform(CachedBoneName, ERelativeTransformSpace::RTS_World).Translation;
+        const FVector BoneLocation = Utils::GetBestAimPoint(TargetChar, TargetBone);
 
         // LOS Check is the most expensive, do it last
+        bool bHasLOS = true;
         if (RequiresLOS)
         {
             // Internal sight check using camera location as origin
-            bool bHasLOS = GVars.PlayerController->LineOfSightTo(TargetChar, CameraLocation, true);
+            bHasLOS = GVars.PlayerController->LineOfSightTo(TargetChar, CameraLocation, true);
             if (!bHasLOS)
                 continue;
         }
@@ -472,14 +537,18 @@ AActor* Utils::GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool Re
 
             float FOV = NormalizedOffset * 90.0f;
 
-            if (NormalizedOffset < MaxFOVNormalized && FOV < BestFOV)
+            if (NormalizedOffset < MaxFOVNormalized && IsBetterCandidate(DistanceMeters, FOV))
             {
-                BestFOV = FOV;
-                BestTarget = TargetChar;
+                bestResult.Target = TargetChar;
+                bestResult.AimPoint = BoneLocation;
+                bestResult.ScreenLocation = ScreenLocation;
+                bestResult.DistanceMeters = DistanceMeters;
+                bestResult.ScreenSpaceFOV = FOV;
+                bestResult.bHasLOS = bHasLOS;
             }
         }
     }
-    return BestTarget;
+    return bestResult;
 }
 
 void Utils::DrawFOV(float MaxFOV, float Thickness = 1.0f)
@@ -503,7 +572,7 @@ void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
 {
     FVector2D ScreenPos;
 
-    if (!GVars.PlayerController->ProjectWorldLocationToScreen(TargetPos, &ScreenPos, false))
+    if (!GVars.PlayerController->ProjectWorldLocationToScreen(TargetPos, &ScreenPos, true))
         return;
 
     ImVec2 Center = GetAimScreenCenter();
@@ -643,6 +712,241 @@ float Utils::GetHealthPercent(AActor* Actor)
 {
 	if (!Actor) return 0.0f;
 	return UDamageStatics::GetHealthPoolPercent(Actor, 0); // layer 0 usually is health
+}
+
+namespace
+{
+    std::string ToLowerAscii(std::string value)
+    {
+        std::transform(value.begin(), value.end(), value.begin(), [](unsigned char c)
+        {
+            return static_cast<char>(std::tolower(c));
+        });
+        return value;
+    }
+
+    bool IsAuxiliaryBoneName(const std::string& boneNameLower)
+    {
+        static const std::array<const char*, 16> kAuxPatterns = {
+            "ik_",
+            "_ik",
+            "twist",
+            "socket",
+            "weapon",
+            "camera",
+            "attach",
+            "fx_",
+            "_fx",
+            "cloth",
+            "corrective",
+            "driver",
+            "ctrl",
+            "control",
+            "virtual",
+            "lookat"
+        };
+
+        if (boneNameLower.find("vb ") != std::string::npos || boneNameLower.find("vb_") != std::string::npos)
+            return true;
+        if (boneNameLower.find("_end") != std::string::npos || boneNameLower.find("end_") != std::string::npos)
+            return true;
+
+        for (const char* pattern : kAuxPatterns)
+        {
+            if (boneNameLower.find(pattern) != std::string::npos)
+                return true;
+        }
+        return false;
+    }
+
+    bool IsFiniteVector(const FVector& point)
+    {
+        return std::isfinite(static_cast<float>(point.X)) &&
+               std::isfinite(static_cast<float>(point.Y)) &&
+               std::isfinite(static_cast<float>(point.Z));
+    }
+
+    bool BuildReliableMeshBounds(ACharacter* TargetChar, FVector& OutOrigin, FVector& OutExtent, std::vector<std::pair<std::string, FVector>>* OutSampledBones)
+    {
+        if (OutSampledBones)
+            OutSampledBones->clear();
+        if (!TargetChar || !TargetChar->Mesh)
+            return false;
+
+        const int32_t numBones = TargetChar->Mesh->GetNumBones();
+        if (numBones <= 0 || numBones > 5000)
+            return false;
+
+        FVector actorOrigin{};
+        FVector actorExtent{};
+        TargetChar->GetActorBounds(false, &actorOrigin, &actorExtent, false);
+        const float maxDx = (std::max)(150.0f, static_cast<float>(actorExtent.X) * 3.5f);
+        const float maxDy = (std::max)(150.0f, static_cast<float>(actorExtent.Y) * 3.5f);
+        const float maxDz = (std::max)(150.0f, static_cast<float>(actorExtent.Z) * 3.5f);
+
+        float minX = FLT_MAX;
+        float minY = FLT_MAX;
+        float minZ = FLT_MAX;
+        float maxX = -FLT_MAX;
+        float maxY = -FLT_MAX;
+        float maxZ = -FLT_MAX;
+
+        const int32_t maxToCheck = (std::min)(numBones, 384);
+        std::vector<std::pair<std::string, FVector>> sampledBones;
+        sampledBones.reserve(maxToCheck);
+
+        for (int32_t i = 0; i < maxToCheck; ++i)
+        {
+            const FName boneName = TargetChar->Mesh->GetBoneName(i);
+            const std::string boneNameStr = boneName.ToString();
+            if (boneNameStr.empty())
+                continue;
+
+            const std::string boneNameLower = ToLowerAscii(boneNameStr);
+            if (IsAuxiliaryBoneName(boneNameLower))
+                continue;
+
+            const FVector point = TargetChar->Mesh->GetBoneTransform(boneName, ERelativeTransformSpace::RTS_World).Translation;
+            if (!IsFiniteVector(point))
+                continue;
+
+            if (fabsf(static_cast<float>(point.X - actorOrigin.X)) > maxDx ||
+                fabsf(static_cast<float>(point.Y - actorOrigin.Y)) > maxDy ||
+                fabsf(static_cast<float>(point.Z - actorOrigin.Z)) > maxDz)
+            {
+                continue;
+            }
+
+            sampledBones.push_back({ boneNameLower, point });
+            minX = (std::min)(minX, static_cast<float>(point.X));
+            minY = (std::min)(minY, static_cast<float>(point.Y));
+            minZ = (std::min)(minZ, static_cast<float>(point.Z));
+            maxX = (std::max)(maxX, static_cast<float>(point.X));
+            maxY = (std::max)(maxY, static_cast<float>(point.Y));
+            maxZ = (std::max)(maxZ, static_cast<float>(point.Z));
+        }
+
+        if (sampledBones.size() < 3)
+            return false;
+
+        OutOrigin = FVector((minX + maxX) * 0.5f, (minY + maxY) * 0.5f, (minZ + maxZ) * 0.5f);
+        OutExtent = FVector((maxX - minX) * 0.5f, (maxY - minY) * 0.5f, (maxZ - minZ) * 0.5f);
+        if (OutExtent.X <= 1.0f || OutExtent.Y <= 1.0f || OutExtent.Z <= 1.0f)
+            return false;
+
+        if (OutSampledBones)
+            *OutSampledBones = std::move(sampledBones);
+        return true;
+    }
+}
+
+bool Utils::GetReliableMeshBounds(ACharacter* TargetChar, FVector& OutOrigin, FVector& OutExtent)
+{
+    return BuildReliableMeshBounds(TargetChar, OutOrigin, OutExtent, nullptr);
+}
+
+FVector Utils::GetBestAimPoint(ACharacter* TargetChar, const std::string& PreferredBone)
+{
+    if (!TargetChar || !Utils::IsValidActor(TargetChar))
+        return FVector{};
+
+    const FVector actorLocation = TargetChar->K2_GetActorLocation();
+    if (!TargetChar->Mesh)
+        return actorLocation;
+
+    FVector origin{};
+    FVector extent{};
+    std::vector<std::pair<std::string, FVector>> sampledBones;
+    const bool hasReliableMeshBounds = BuildReliableMeshBounds(TargetChar, origin, extent, &sampledBones);
+    if (!hasReliableMeshBounds)
+        TargetChar->GetActorBounds(false, &origin, &extent, false);
+
+    auto isPointInsideBounds = [&](const FVector& point, float xySlackScale, float zSlackScale)
+    {
+        const float maxDx = (std::max)(50.0f, static_cast<float>(extent.X) * xySlackScale);
+        const float maxDy = (std::max)(50.0f, static_cast<float>(extent.Y) * xySlackScale);
+        const float maxDz = (std::max)(50.0f, static_cast<float>(extent.Z) * zSlackScale);
+        return fabsf(static_cast<float>(point.X - origin.X)) <= maxDx &&
+               fabsf(static_cast<float>(point.Y - origin.Y)) <= maxDy &&
+               fabsf(static_cast<float>(point.Z - origin.Z)) <= maxDz;
+    };
+
+    auto tryBone = [&](const char* boneName, FVector& outPoint, bool requireInteriorFit) -> bool
+    {
+        const std::string boneNameLower = ToLowerAscii(std::string(boneName));
+        if (IsAuxiliaryBoneName(boneNameLower))
+            return false;
+
+        for (const auto& [sampleName, samplePoint] : sampledBones)
+        {
+            if (sampleName != boneNameLower)
+                continue;
+            if (requireInteriorFit && !isPointInsideBounds(samplePoint, 1.1f, 1.1f))
+                return false;
+
+            outPoint = samplePoint;
+            return true;
+        }
+
+        const FName bone = UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(std::string(boneName)).c_str());
+        if (TargetChar->Mesh->GetBoneIndex(bone) == -1)
+            return false;
+
+        const FVector point = TargetChar->Mesh->GetBoneTransform(bone, ERelativeTransformSpace::RTS_World).Translation;
+        if (!IsFiniteVector(point))
+            return false;
+        if (requireInteriorFit && !isPointInsideBounds(point, 1.1f, 1.1f))
+            return false;
+
+        outPoint = point;
+        return true;
+    };
+
+    FVector aimPoint{};
+    if (!PreferredBone.empty() && tryBone(PreferredBone.c_str(), aimPoint, true))
+        return aimPoint;
+
+    static const std::array<const char*, 12> kCenterMassBones = {
+        "Spine3",
+        "Spine2",
+        "Spine1",
+        "Spine",
+        "Chest",
+        "UpperChest",
+        "Neck",
+        "Hips",
+        "Pelvis",
+        "Root",
+        "Base",
+        "Body"
+    };
+
+    for (const char* boneName : kCenterMassBones)
+    {
+        if (tryBone(boneName, aimPoint, true))
+            return aimPoint;
+    }
+
+    if (!PreferredBone.empty() && tryBone(PreferredBone.c_str(), aimPoint, false))
+        return aimPoint;
+
+    for (const char* boneName : kCenterMassBones)
+    {
+        if (tryBone(boneName, aimPoint, false))
+            return aimPoint;
+    }
+
+    if (hasReliableMeshBounds && extent.Z > 1.0f)
+    {
+        return FVector(origin.X, origin.Y, origin.Z + extent.Z * 0.1f);
+    }
+
+    if (extent.Z > 1.0f)
+    {
+        return FVector(origin.X, origin.Y, origin.Z + extent.Z * 0.15f);
+    }
+
+    return actorLocation;
 }
 
 FVector Utils::GetHighestBone(ACharacter* TargetChar)

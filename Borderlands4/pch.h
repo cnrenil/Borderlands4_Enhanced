@@ -3,6 +3,9 @@
 #define PCH_H
 
 #define _CRT_SECURE_NO_WARNINGS
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
 
 // Windows and Graphics
 #include <Windows.h>
@@ -28,6 +31,7 @@
 #include <mutex>
 #include <cmath>
 #include <algorithm>
+#include <array>
 #include <unordered_set>
 #include <map>
 #include <functional>
@@ -69,6 +73,8 @@ using namespace SDK;
 #include "Engine.h"
 #include "Cheats.h"
 #include "GUI/Menu.h"
+#include "GUI/Overlay.h"
+#include "GUI/Themes.h"
 #include "Hooks/D3D12Hook.h"
 #include "Hooks/EngineHooks.h"
 

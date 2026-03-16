@@ -22,6 +22,8 @@ namespace ConfigManager
         Register("ESP.ShowBox", true);
         Register("ESP.ShowEnemyDistance", true);
         Register("ESP.ShowEnemyName", true);
+        Register("ESP.ShowEnemyIndicator", false);
+        Register("ESP.ShadedFill", true);
         Register("ESP.ShowLootName", false);
         Register("ESP.Bones", true);
         Register("ESP.BoneOpacity", 1.0f);
@@ -54,6 +56,7 @@ namespace ConfigManager
         Register("Aimbot.UseMouseInput", true);
         Register("Aimbot.MouseSensitivity", 1.0f);
         Register("Aimbot.Bone", std::string("Head"));
+        Register("Aimbot.TargetMode", 0);
         Register("Aimbot.StaticConstructOffset", 0);
         Register("Aimbot.NativeProjectileHook", true);
         Register("Aimbot.ProjectileBuildCallRVA", 0x148FAC6);
@@ -127,6 +130,7 @@ namespace ConfigManager
         Register("Misc.OTSADSFOVScale", 1.2f);
         Register("Misc.FreecamBlockInput", true);
         Register("Misc.Language", 0);
+        Register("Misc.Theme", 0);
         Register("Misc.Debug", false);
         Register("Misc.RenderOptions", false);
     }

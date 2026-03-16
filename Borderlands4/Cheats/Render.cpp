@@ -1,12 +1,42 @@
 #include "pch.h"
 
+extern std::atomic<int> g_PresentCount;
+
 namespace
 {
+    bool IsOTSAdsActive()
+    {
+        if (!ConfigManager::B("Player.ThirdPerson") && !ConfigManager::B("Player.OverShoulder"))
+            return false;
+        if (!GVars.Character || !GVars.Character->IsA(AOakCharacter::StaticClass()))
+            return false;
+        const AOakCharacter* oakChar = static_cast<AOakCharacter*>(GVars.Character);
+        return static_cast<uint8>(oakChar->ZoomState.State) != 0;
+    }
+
+    ImVec2 GetCustomReticleScreenPos()
+    {
+        if (!GVars.PlayerController || !GVars.PlayerController->PlayerCameraManager)
+            return ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
+
+        const FMinimalViewInfo& cameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
+        const FVector camLoc = cameraPOV.Location;
+        const FVector camFwd = Utils::FRotatorToVector(cameraPOV.Rotation);
+        const FVector aimPoint = camLoc + (camFwd * 50000.0f);
+
+        FVector2D screen{};
+        if (GVars.PlayerController->ProjectWorldLocationToScreen(aimPoint, &screen, true))
+            return ImVec2(static_cast<float>(screen.X), static_cast<float>(screen.Y));
+
+        return ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
+    }
+
     struct RenderState
     {
         uint32_t LastUpdateFrame = 0xFFFFFFFF;
         uint32_t LastCanvasTickPresentFrame = 0xFFFFFFFF;
         uint64_t LastCanvasTickTimeMs = 0;
+        uint64_t LastHudSignalTimeMs = 0;
     };
 
     RenderState& GetRenderState()
@@ -36,70 +66,118 @@ namespace
             return false;
         }
     }
+
+    void RunGameThreadRenderTick(UCanvas* Canvas, bool bAllowDraw)
+    {
+        const int currentFrame = g_PresentCount.load();
+        auto& renderState = GetRenderState();
+        if (renderState.LastCanvasTickPresentFrame == static_cast<uint32_t>(currentFrame))
+            return;
+
+        Utils::SetCurrentCanvas(Canvas);
+        renderState.LastCanvasTickPresentFrame = static_cast<uint32_t>(currentFrame);
+        renderState.LastCanvasTickTimeMs = GetTickCount64();
+
+        if (!TryAutoSetVariablesForRender())
+        {
+            Logger::LogThrottled(Logger::Level::Warning, "CanvasTick", 1000, "GameThread canvas tick: AutoSetVariables exception, skipping frame");
+            Utils::SetCurrentCanvas(nullptr);
+            return;
+        }
+
+        // Camera and gameplay-facing updates should run on the game thread.
+        Cheats::UpdateCamera();
+
+        if (Utils::bIsInGame)
+        {
+            Logger::LogThrottled(Logger::Level::Debug, "CanvasTick", 10000, "Cheats::GameThreadCanvasTick: HUD/game-thread logic active");
+            if (ConfigManager::B("Player.ESP")) Cheats::UpdateESP();
+            if (ConfigManager::B("Aimbot.Enabled"))
+            {
+                Cheats::Aimbot();
+                if (!ConfigManager::B("Aimbot.RequireKeyHeld"))
+                {
+                    Cheats::AimbotHotkey();
+                }
+            }
+
+            Cheats::UpdateMovement();
+            Cheats::UpdateWeapon();
+            Cheats::EnforcePersistence();
+            Cheats::ChangeGameRenderSettings();
+        }
+
+        if (bAllowDraw && Utils::bIsInGame && ConfigManager::B("Aimbot.Enabled"))
+        {
+            if (ConfigManager::B("Aimbot.DrawFOV"))
+                Utils::DrawFOV(ConfigManager::F("Aimbot.MaxFOV"), ConfigManager::F("Aimbot.FOVThickness"));
+
+            if (Cheats::bHasAimbotTarget && ConfigManager::B("Aimbot.DrawArrow"))
+                Utils::DrawSnapLine(Cheats::AimbotTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
+        }
+
+        if (bAllowDraw && Utils::bIsInGame)
+            Cheats::RenderESP();
+
+        if (bAllowDraw && Utils::bIsInGame)
+            Cheats::DrawReticle();
+
+        if (bAllowDraw && Utils::bIsInGame)
+            Cheats::RenderEnabledOptions();
+
+        Utils::SetCurrentCanvas(nullptr);
+    }
 }
 
 void Cheats::GameThreadCanvasTick(UCanvas* Canvas)
 {
-    extern std::atomic<int> g_PresentCount;
-    const int currentFrame = g_PresentCount.load();
     auto& renderState = GetRenderState();
-    if (renderState.LastCanvasTickPresentFrame == static_cast<uint32_t>(currentFrame))
+    renderState.LastHudSignalTimeMs = GetTickCount64();
+    RunGameThreadRenderTick(Canvas, Canvas != nullptr);
+}
+
+void Cheats::DrawReticle()
+{
+    if (!IsOTSAdsActive())
         return;
 
-    Utils::SetCurrentCanvas(Canvas);
-    renderState.LastCanvasTickPresentFrame = static_cast<uint32_t>(currentFrame);
-    renderState.LastCanvasTickTimeMs = GetTickCount64();
+    const ImVec2 center = GetCustomReticleScreenPos();
+    const ImU32 outer = IM_COL32(0, 0, 0, 180);
+    const ImU32 inner = IM_COL32(255, 255, 255, 255);
+    const float gap = 3.0f;
+    const float len = 8.0f;
 
-    if (!TryAutoSetVariablesForRender())
+    if (UCanvas* Canvas = Utils::GetCurrentCanvas())
     {
-        Logger::LogThrottled(Logger::Level::Warning, "CanvasTick", 1000, "GameThread canvas tick: AutoSetVariables exception, skipping frame");
-        Utils::SetCurrentCanvas(nullptr);
+        const FVector2D centerVec(center.x, center.y);
+        Utils::DrawCanvasCircle(Canvas, centerVec, 2.0f, 12, 2.0f, Utils::U32ToLinearColor(outer));
+        Utils::DrawCanvasCircle(Canvas, centerVec, 1.0f, 12, 1.5f, Utils::U32ToLinearColor(inner));
+        Utils::DrawCanvasLine(Canvas, FVector2D(center.x - gap - len, center.y), FVector2D(center.x - gap, center.y), 2.5f, Utils::U32ToLinearColor(outer));
+        Utils::DrawCanvasLine(Canvas, FVector2D(center.x + gap, center.y), FVector2D(center.x + gap + len, center.y), 2.5f, Utils::U32ToLinearColor(outer));
+        Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y - gap - len), FVector2D(center.x, center.y - gap), 2.5f, Utils::U32ToLinearColor(outer));
+        Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y + gap), FVector2D(center.x, center.y + gap + len), 2.5f, Utils::U32ToLinearColor(outer));
+        Utils::DrawCanvasLine(Canvas, FVector2D(center.x - gap - len, center.y), FVector2D(center.x - gap, center.y), 1.2f, Utils::U32ToLinearColor(inner));
+        Utils::DrawCanvasLine(Canvas, FVector2D(center.x + gap, center.y), FVector2D(center.x + gap + len, center.y), 1.2f, Utils::U32ToLinearColor(inner));
+        Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y - gap - len), FVector2D(center.x, center.y - gap), 1.2f, Utils::U32ToLinearColor(inner));
+        Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y + gap), FVector2D(center.x, center.y + gap + len), 1.2f, Utils::U32ToLinearColor(inner));
         return;
     }
 
-    // Camera and gameplay-facing updates should run on the game thread.
-    UpdateCamera();
-
-    if (Utils::bIsInGame)
-    {
-        Logger::LogThrottled(Logger::Level::Debug, "CanvasTick", 10000, "Cheats::GameThreadCanvasTick: HUD/game-thread logic active");
-        if (ConfigManager::B("Player.ESP")) UpdateESP();
-        if (ConfigManager::B("Aimbot.Enabled"))
-        {
-            Aimbot();
-            if (!ConfigManager::B("Aimbot.RequireKeyHeld"))
-            {
-                AimbotHotkey();
-            }
-        }
-
-        UpdateMovement();
-        UpdateWeapon();
-        EnforcePersistence();
-        ChangeGameRenderSettings();
-    }
-
-    if (Utils::bIsInGame && ConfigManager::B("Aimbot.Enabled"))
-    {
-        if (ConfigManager::B("Aimbot.DrawFOV"))
-            Utils::DrawFOV(ConfigManager::F("Aimbot.MaxFOV"), ConfigManager::F("Aimbot.FOVThickness"));
-
-        if (bHasAimbotTarget && ConfigManager::B("Aimbot.DrawArrow"))
-            Utils::DrawSnapLine(AimbotTargetPos, ConfigManager::F("Aimbot.ArrowThickness"));
-    }
-
-    if (Utils::bIsInGame)
-        RenderESP();
-
-    if (Utils::bIsInGame)
-        RenderEnabledOptions();
-
-    Utils::SetCurrentCanvas(nullptr);
+    auto* draw = ImGui::GetBackgroundDrawList();
+    draw->AddCircle(center, 2.0f, outer, 12, 2.0f);
+    draw->AddCircle(center, 1.0f, inner, 12, 1.5f);
+    draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), outer, 2.5f);
+    draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), outer, 2.5f);
+    draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), outer, 2.5f);
+    draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), outer, 2.5f);
+    draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), inner, 1.2f);
+    draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), inner, 1.2f);
+    draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), inner, 1.2f);
+    draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), inner, 1.2f);
 }
 
 void Cheats::Render()
 {
-    extern std::atomic<int> g_PresentCount;
     const int currentFrame = g_PresentCount.load();
     auto& renderState = GetRenderState();
 
@@ -110,10 +188,13 @@ void Cheats::Render()
         HotkeyManager::Update();
 
         const uint64_t nowMs = GetTickCount64();
-        if (renderState.LastCanvasTickTimeMs == 0 || (nowMs - renderState.LastCanvasTickTimeMs) > 500)
+        const uint64_t lastHudActivityMs = renderState.LastHudSignalTimeMs != 0
+            ? renderState.LastHudSignalTimeMs
+            : renderState.LastCanvasTickTimeMs;
+        if (lastHudActivityMs == 0 || (nowMs - lastHudActivityMs) > 500)
         {
-            Logger::LogThrottled(Logger::Level::Warning, "Render", 3000, "HUD canvas tick timeout, using Present fallback for logic");
-            GameThreadCanvasTick(nullptr);
+            Logger::LogThrottled(Logger::Level::Warning, "Render", 3000, "HUD canvas tick timeout, using Present fallback for logic-only update");
+            RunGameThreadRenderTick(nullptr, false);
         }
     }
 

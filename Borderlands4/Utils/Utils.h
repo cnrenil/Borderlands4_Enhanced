@@ -25,6 +25,18 @@ enum class ETeam
 	TEAM_MAX
 };
 
+struct TargetSelectionResult
+{
+	AActor* Target = nullptr;
+	FVector AimPoint{};
+	FVector2D ScreenLocation{};
+	float DistanceMeters = FLT_MAX;
+	float ScreenSpaceFOV = FLT_MAX;
+	bool bHasLOS = false;
+
+	bool IsValid() const { return Target != nullptr; }
+};
+
 // Per-player cheat settings
 struct PlayerCheatData
 {
@@ -57,7 +69,10 @@ struct Utils
 	static unsigned ConvertImVec4toU32(ImVec4 Color);
 	static void PrintActors(const char* Exclude);
 	static FRotator VectorToRotation(const FVector& Vec);
-	static AActor* GetBestTarget(APlayerController* ViewPoint, float MaxFOV, bool RequiresLOS, std::string TargetBone, bool TargetAll);
+	static TargetSelectionResult AcquireTarget(APlayerController* ViewPoint, float MaxFOV, float MinDistance, float MaxDistance, bool RequiresLOS, std::string TargetBone, bool TargetAll, int TargetMode);
+	static bool ForEachLevelActor(ULevel* Level, const std::function<bool(AActor*)>& Visitor, int32_t* OutActorCount = nullptr);
+	static float GetDistanceMeters(const FVector& A, const FVector& B);
+	static float GetDistanceMeters(const AActor* Source, const AActor* Target);
 	static void DrawFOV(float MaxFOV, float Thickness);
 	static void DrawSnapLine(FVector TargetPos, float Thickness);
 	static void SetCurrentCanvas(class UCanvas* Canvas);
@@ -83,7 +98,9 @@ struct Utils
 	static bool IsInPlayableState();
 	static ETeamAttitude GetAttitude(AActor* Target);
 	static float GetHealthPercent(AActor* Actor);
+	static bool GetReliableMeshBounds(ACharacter* TargetChar, FVector& OutOrigin, FVector& OutExtent);
 	static FVector GetHighestBone(ACharacter* TargetChar);
+	static FVector GetBestAimPoint(ACharacter* TargetChar, const std::string& PreferredBone);
 	static void SendMouseLeftDown();
 	static void SendMouseLeftUp();
 
@@ -127,17 +144,13 @@ struct Variables
 		if (!this->Level) return;
 		this->UnitCache.clear();
 
-		int ActorCount = this->Level->Actors.Num();
-		if (ActorCount <= 0 || ActorCount > 100000) return;
-
-		for (int i = 0; i < ActorCount; i++) {
-			AActor* Actor = this->Level->Actors[i];
-			if (!Actor || !Utils::IsValidActor(Actor)) continue;
-
-			if (Actor->IsA(ACharacter::StaticClass())) {
+		Utils::ForEachLevelActor(this->Level, [&](AActor* Actor)
+		{
+			if (!Actor || !Utils::IsValidActor(Actor)) return true;
+			if (Actor->IsA(ACharacter::StaticClass()))
 				this->UnitCache.push_back(reinterpret_cast<ACharacter*>(Actor));
-			}
-		}
+			return true;
+		});
 	}
 
 	void AutoSetVariables() {

@@ -22,6 +22,18 @@ static const std::pair<const char*, std::string> BoneOptions[] = {
 	{"Pelvis", CheatsData::BoneList.PelvisBone}
 };
 
+static const char* GetTargetModeLabel(int mode)
+{
+	switch (mode)
+	{
+	case 1:
+		return Localization::T("TARGET_MODE_DISTANCE");
+	case 0:
+	default:
+		return Localization::T("TARGET_MODE_SCREEN");
+	}
+}
+
 void GUI::AddDefaultTooltip(const char* desc)
 {
 	if (ImGui::IsItemHovered())
@@ -43,6 +55,11 @@ void GUI::RenderMenu()
 {
 	if (!ShowMenu) return;
 
+    const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+    if (displaySize.x > 0.0f && displaySize.y > 0.0f)
+    {
+        ImGui::SetNextWindowPos(ImVec2(displaySize.x * 0.5f, displaySize.y * 0.5f), ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+    }
 	ImGui::SetNextWindowSize(ImVec2(600, 500), ImGuiCond_FirstUseEver);
 	
 	if (ImGui::Begin(Localization::T("WINDOW_TITLE"), nullptr, ImGuiWindowFlags_NoCollapse))
@@ -59,6 +76,24 @@ void GUI::RenderMenu()
 				{
 					Localization::CurrentLanguage = (Language)CurrentLangIdx;
 				}
+
+                int& themeIndex = ConfigManager::I("Misc.Theme");
+                themeIndex = GUI::ThemeManager::ClampThemeIndex(themeIndex);
+                if (ImGui::BeginCombo(Localization::T("THEME"), GUI::ThemeManager::GetThemeDisplayName(themeIndex)))
+                {
+                    const int themeCount = GUI::ThemeManager::GetThemeCount();
+                    for (int i = 0; i < themeCount; ++i)
+                    {
+                        const bool selected = (themeIndex == i);
+                        if (ImGui::Selectable(GUI::ThemeManager::GetThemeDisplayName(i), selected))
+                        {
+                            themeIndex = i;
+                            GUI::ThemeManager::ApplyByIndex(i);
+                        }
+                        if (selected) ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
 
 				ImGui::Separator();
 
@@ -242,8 +277,23 @@ void GUI::RenderMenu()
                     ImGui::Checkbox(Localization::T("SMOOTH_AIM"), &B("Aimbot.Smooth"));
                     if (B("Aimbot.Smooth"))
                         ImGui::SliderFloat(Localization::T("SMOOTHING"), &F("Aimbot.SmoothingVector"), 1.0f, 20.0f);
+                    ImGui::SeparatorText(Localization::T("TARGET_MODE"));
                     ImGui::SliderFloat(Localization::T("AIMBOT_FOV"), &F("Aimbot.MaxFOV"), 1.0f, 180.0f);
+                    ImGui::SliderFloat(Localization::T("MIN_DISTANCE"), &F("Aimbot.MinDistance"), 0.0f, 100.0f, "%.1f");
                     ImGui::SliderFloat(Localization::T("MAX_DISTANCE"), &F("Aimbot.MaxDistance"), 1.0f, 500.0f);
+                    if (ImGui::BeginCombo(Localization::T("TARGET_MODE"), GetTargetModeLabel(I("Aimbot.TargetMode"))))
+                    {
+                        const bool isScreenSelected = (I("Aimbot.TargetMode") == 0);
+                        if (ImGui::Selectable(Localization::T("TARGET_MODE_SCREEN"), isScreenSelected))
+                            I("Aimbot.TargetMode") = 0;
+                        if (isScreenSelected) ImGui::SetItemDefaultFocus();
+
+                        const bool isDistanceSelected = (I("Aimbot.TargetMode") == 1);
+                        if (ImGui::Selectable(Localization::T("TARGET_MODE_DISTANCE"), isDistanceSelected))
+                            I("Aimbot.TargetMode") = 1;
+                        if (isDistanceSelected) ImGui::SetItemDefaultFocus();
+                        ImGui::EndCombo();
+                    }
                     
                     if (ImGui::BeginCombo(Localization::T("TARGET_BONE"), S("Aimbot.Bone").c_str()))
                     {
@@ -338,9 +388,11 @@ void GUI::RenderMenu()
                 if (ImGui::TreeNode(Localization::T("ESP_SETTINGS")))
                 {
                     ImGui::Checkbox(Localization::T("SHOW_BOX"), &B("ESP.ShowBox"));
+                    ImGui::Checkbox(Localization::T("SHADED_FILL"), &B("ESP.ShadedFill"));
                     ImGui::Checkbox(Localization::T("SHOW_DISTANCE"), &B("ESP.ShowEnemyDistance"));
                     ImGui::Checkbox(Localization::T("SHOW_BONES"), &B("ESP.Bones"));
                     ImGui::Checkbox(Localization::T("SHOW_NAME"), &B("ESP.ShowEnemyName"));
+                    ImGui::Checkbox(Localization::T("SHOW_ENEMY_INDICATOR"), &B("ESP.ShowEnemyIndicator"));
                     ImGui::Checkbox(Localization::T("SHOW_LOOT_NAME"), &B("ESP.ShowLootName"));
                     if (B("ESP.ShowLootName"))
                     {

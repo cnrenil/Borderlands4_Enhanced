@@ -183,14 +183,18 @@ void Cheats::TriggerBot()
 		return;
 	}
 
-	// Target acquisition
-	triggerState.CurrentTarget = Utils::GetBestTarget(
+	// Target acquisition uses the same lock pipeline as aimbot visuals and aim point resolution.
+	const TargetSelectionResult targetResult = Utils::AcquireTarget(
 		GVars.PlayerController,
 		5.0f, // Narrow FOV for triggerbot
+		ConfigManager::F("Aimbot.MinDistance"),
+		ConfigManager::F("Aimbot.MaxDistance"),
 		true, // Must have Line Of Sight
 		ConfigManager::S("Aimbot.Bone"),
-		ConfigManager::B("Trigger.TargetAll")
+		ConfigManager::B("Trigger.TargetAll"),
+		ConfigManager::I("Aimbot.TargetMode")
 	);
+	triggerState.CurrentTarget = targetResult.Target;
 
 	const int currentFrame = g_PresentCount.load();
 	const bool bHotkeyHeld = (triggerState.LastHotkeyFrame.load() == currentFrame);

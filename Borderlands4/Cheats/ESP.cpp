@@ -9,6 +9,8 @@ auto RenderColor = IM_COL32(255, 255, 255, 255);
 struct ESPActorCache {
 	FVector2D TopScreen;
 	FVector2D BottomScreen;
+	FVector2D LeftTopScreen;
+	FVector2D RightBottomScreen;
 	ImU32 Color;
 	float HealthPct;
 	FString Name;
@@ -46,6 +48,8 @@ namespace
 		std::vector<ESPActorCache> CachedActors;
 		std::vector<ESPLootCache> CachedLoot;
 		std::vector<ESPTracerCache> CachedTracers;
+		std::vector<USkeletalMeshComponent*> HighlightedMeshes;
+		uint64_t LastLootRefreshMs = 0;
 	};
 
 	ESPState& GetESPState()
@@ -53,23 +57,78 @@ namespace
 		static ESPState state;
 		return state;
 	}
+
+	constexpr uint64_t kLootRefreshIntervalMs = 250;
+	constexpr int32 kEnemyHighlightStencil = 252;
 }
 
 struct BonePair { FName Parent; FName Child; };
 
-static float SafeDistanceMeters(const FVector& A, const FVector& B)
-{
-	const double dx = (double)A.X - (double)B.X;
-	const double dy = (double)A.Y - (double)B.Y;
-	const double dz = (double)A.Z - (double)B.Z;
-	return (float)(sqrt(dx * dx + dy * dy + dz * dz) / 100.0); // UE units -> meters
-}
-
 static bool ProjectForOverlay(const FVector& worldPos, FVector2D& outScreen)
 {
 	if (!GVars.PlayerController) return false;
-	// Use absolute viewport coords to avoid vertical drift when UE applies letterboxing/constrained view.
-	return GVars.PlayerController->ProjectWorldLocationToScreen(worldPos, &outScreen, false);
+	// Use player-viewport-relative coordinates so OTS/shadow-camera view rect matches UCanvas and ImGui overlay placement.
+	return GVars.PlayerController->ProjectWorldLocationToScreen(worldPos, &outScreen, true);
+}
+
+static bool ProjectActorScreenBounds(AActor* actor, FVector2D& outTopScreen, FVector2D& outBottomScreen, FVector2D& outLeftTopScreen, FVector2D& outRightBottomScreen)
+{
+	if (!actor) return false;
+
+	FVector origin;
+	FVector extent;
+	if (actor->IsA(ACharacter::StaticClass()))
+	{
+		ACharacter* character = static_cast<ACharacter*>(actor);
+		if (!Utils::GetReliableMeshBounds(character, origin, extent))
+			actor->GetActorBounds(false, &origin, &extent, false);
+	}
+	else
+	{
+		actor->GetActorBounds(false, &origin, &extent, false);
+	}
+
+	if (extent.X <= 0.0f || extent.Y <= 0.0f || extent.Z <= 0.0f)
+		return false;
+
+	const FVector corners[8] = {
+		FVector(origin.X - extent.X, origin.Y - extent.Y, origin.Z - extent.Z),
+		FVector(origin.X - extent.X, origin.Y - extent.Y, origin.Z + extent.Z),
+		FVector(origin.X - extent.X, origin.Y + extent.Y, origin.Z - extent.Z),
+		FVector(origin.X - extent.X, origin.Y + extent.Y, origin.Z + extent.Z),
+		FVector(origin.X + extent.X, origin.Y - extent.Y, origin.Z - extent.Z),
+		FVector(origin.X + extent.X, origin.Y - extent.Y, origin.Z + extent.Z),
+		FVector(origin.X + extent.X, origin.Y + extent.Y, origin.Z - extent.Z),
+		FVector(origin.X + extent.X, origin.Y + extent.Y, origin.Z + extent.Z),
+	};
+
+	bool hasProjectedPoint = false;
+	float minX = FLT_MAX;
+	float minY = FLT_MAX;
+	float maxX = -FLT_MAX;
+	float maxY = -FLT_MAX;
+
+	for (const FVector& corner : corners)
+	{
+		FVector2D projected;
+		if (!ProjectForOverlay(corner, projected))
+			continue;
+
+		hasProjectedPoint = true;
+			minX = (std::min)(minX, static_cast<float>(projected.X));
+			minY = (std::min)(minY, static_cast<float>(projected.Y));
+			maxX = (std::max)(maxX, static_cast<float>(projected.X));
+			maxY = (std::max)(maxY, static_cast<float>(projected.Y));
+	}
+
+	if (!hasProjectedPoint || minX >= maxX || minY >= maxY)
+		return false;
+
+	outLeftTopScreen = FVector2D(minX, minY);
+	outRightBottomScreen = FVector2D(maxX, maxY);
+	outTopScreen = FVector2D((minX + maxX) * 0.5f, minY);
+	outBottomScreen = FVector2D((minX + maxX) * 0.5f, maxY);
+	return true;
 }
 
 static bool IsOTSAdsActive()
@@ -99,6 +158,91 @@ static ImVec2 GetCustomReticleScreenPos()
 	return ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);
 }
 
+static void DrawEnemyIndicator(UCanvas* canvas, const ImVec2& screenCenter, float indicatorRadius, const ImVec2& targetScreenPos, ImU32 color)
+{
+	const ImVec2 delta(targetScreenPos.x - screenCenter.x, targetScreenPos.y - screenCenter.y);
+	const float len = sqrtf(delta.x * delta.x + delta.y * delta.y);
+	if (len <= indicatorRadius + 2.0f || len <= 0.001f)
+		return;
+
+	const ImVec2 dir(delta.x / len, delta.y / len);
+	const ImVec2 perp(-dir.y, dir.x);
+	const ImVec2 tip(screenCenter.x + dir.x * (indicatorRadius + 18.0f), screenCenter.y + dir.y * (indicatorRadius + 18.0f));
+	const ImVec2 baseCenter(screenCenter.x + dir.x * (indicatorRadius + 6.0f), screenCenter.y + dir.y * (indicatorRadius + 6.0f));
+	const ImVec2 p1 = tip;
+	const ImVec2 p2(baseCenter.x + perp.x * 7.0f, baseCenter.y + perp.y * 7.0f);
+	const ImVec2 p3(baseCenter.x - perp.x * 7.0f, baseCenter.y - perp.y * 7.0f);
+
+	if (canvas)
+	{
+		const FLinearColor lineColor = Utils::U32ToLinearColor(color);
+		Utils::DrawCanvasLine(canvas, FVector2D(p1.x, p1.y), FVector2D(p2.x, p2.y), 2.0f, lineColor);
+		Utils::DrawCanvasLine(canvas, FVector2D(p2.x, p2.y), FVector2D(p3.x, p3.y), 2.0f, lineColor);
+		Utils::DrawCanvasLine(canvas, FVector2D(p3.x, p3.y), FVector2D(p1.x, p1.y), 2.0f, lineColor);
+	}
+	else
+	{
+		ImGui::GetBackgroundDrawList()->AddTriangleFilled(p1, p2, p3, color);
+	}
+}
+
+static bool IsValidHighlightMesh(USkeletalMeshComponent* Mesh)
+{
+	return Mesh && !IsBadReadPtr(Mesh, sizeof(void*)) && Mesh->VTable;
+}
+
+static void SetMeshHighlightState(USkeletalMeshComponent* Mesh, bool bEnabled)
+{
+	if (!IsValidHighlightMesh(Mesh))
+		return;
+
+	__try
+	{
+		Mesh->SetRenderCustomDepth(bEnabled);
+		if (bEnabled)
+		{
+			Mesh->SetCustomDepthStencilWriteMask(ERendererStencilMask::ERSM_Default);
+			Mesh->SetCustomDepthStencilValue(kEnemyHighlightStencil);
+		}
+		else
+		{
+			Mesh->SetCustomDepthStencilValue(0);
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+	}
+}
+
+static void ClearHighlightedMeshes(ESPState& State)
+{
+	for (USkeletalMeshComponent* Mesh : State.HighlightedMeshes)
+	{
+		SetMeshHighlightState(Mesh, false);
+	}
+	State.HighlightedMeshes.clear();
+}
+
+static void SyncHighlightedMeshes(ESPState& State, const std::vector<USkeletalMeshComponent*>& NextMeshes)
+{
+	std::unordered_set<USkeletalMeshComponent*> nextSet(NextMeshes.begin(), NextMeshes.end());
+	std::unordered_set<USkeletalMeshComponent*> currentSet(State.HighlightedMeshes.begin(), State.HighlightedMeshes.end());
+
+	for (USkeletalMeshComponent* Mesh : State.HighlightedMeshes)
+	{
+		if (nextSet.find(Mesh) == nextSet.end())
+			SetMeshHighlightState(Mesh, false);
+	}
+
+	for (USkeletalMeshComponent* Mesh : NextMeshes)
+	{
+		if (currentSet.find(Mesh) == currentSet.end())
+			SetMeshHighlightState(Mesh, true);
+	}
+
+	State.HighlightedMeshes = NextMeshes;
+}
+
 void Cheats::UpdateESP()
 {
 	Logger::LogThrottled(Logger::Level::Debug, "ESP", 10000, "Cheats::UpdateESP() active");
@@ -107,9 +251,11 @@ void Cheats::UpdateESP()
 	{
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
+		ClearHighlightedMeshes(state);
 		state.CachedActors.clear();
 		state.CachedLoot.clear();
 		state.CachedTracers.clear();
+		state.LastLootRefreshMs = 0;
 		return;
 	}
 
@@ -117,16 +263,18 @@ void Cheats::UpdateESP()
 	{
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
+		ClearHighlightedMeshes(state);
 		state.CachedActors.clear();
 		state.CachedLoot.clear();
 		state.CachedTracers.clear();
+		state.LastLootRefreshMs = 0;
 		return;
 	}
 
-	// Read camera location once by value; don't depend on GVars.POV pointer lifetime here.
-	const FVector CameraLocation = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV.Location;
-	
 	std::vector<ESPActorCache> NewCache;
+	std::vector<USkeletalMeshComponent*> NewHighlightedMeshes;
+	std::unordered_set<USkeletalMeshComponent*> HighlightedMeshSet;
+	const bool bMeshHighlightEnabled = ConfigManager::B("ESP.ShadedFill");
 
 	for (ACharacter* TargetActor : GVars.UnitCache)
 	{
@@ -147,58 +295,28 @@ void Cheats::UpdateESP()
 		if (Attitude == ETeamAttitude::Friendly) Color = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.TeamColor"));
 		else if (Attitude == ETeamAttitude::Neutral) Color = IM_COL32(255, 255, 0, 255); 
 
-			FVector ActorLocation = TargetActor->K2_GetActorLocation();
+			const FVector ActorLocation = TargetActor->K2_GetActorLocation();
 			
 			// Distance check
-			float Distance = SafeDistanceMeters(CameraLocation, ActorLocation);
+			const float Distance = Utils::GetDistanceMeters(SelfActor, TargetActor);
 			if (Distance < 0.0f || Distance > 1000.0f) continue;
 
-		FVector TopPos;
-		FVector BottomPos;
-		bool bBoneBoundsFound = false;
-
-		if (TargetActor->Mesh)
+		if (bMeshHighlightEnabled && TargetActor->Mesh && HighlightedMeshSet.insert(TargetActor->Mesh).second)
 		{
-			int HeadIdx = TargetActor->Mesh->GetBoneIndex(UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(CheatsData::BoneList.HeadBone).c_str()));
-			int RootIdx = TargetActor->Mesh->GetBoneIndex(UKismetStringLibrary::Conv_StringToName(L"Root"));
-			if (HeadIdx != -1)
-			{
-				FVector HeadPos = TargetActor->Mesh->GetBoneTransform(UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(CheatsData::BoneList.HeadBone).c_str()), ERelativeTransformSpace::RTS_World).Translation;
-				TopPos = HeadPos + FVector(0, 0, 20.0f); // Give head some padding
-				
-				if (RootIdx != -1) {
-					BottomPos = TargetActor->Mesh->GetBoneTransform(UKismetStringLibrary::Conv_StringToName(L"Root"), ERelativeTransformSpace::RTS_World).Translation;
-				} else {
-					BottomPos = TargetActor->K2_GetActorLocation() - FVector(0, 0, 90.0f);
-				}
-				bBoneBoundsFound = true;
-			}
+			NewHighlightedMeshes.push_back(TargetActor->Mesh);
 		}
 
-		if (!bBoneBoundsFound)
-		{
-			FVector Origin, Extent;
-			TargetActor->GetActorBounds(false, &Origin, &Extent, false);
-			Extent.X *= 0.5f; 
-			Extent.Y *= 0.5f;
-
-			TopPos = Origin + FVector(0, 0, Extent.Z);
-			BottomPos = Origin - FVector(0, 0, Extent.Z);
-		}
-
-		FVector2D TopScreen, BottomScreen;
-		bool bVisible = ProjectForOverlay(TopPos, TopScreen) &&
-						ProjectForOverlay(BottomPos, BottomScreen);
+		FVector2D TopScreen, BottomScreen, LeftTopScreen, RightBottomScreen;
+		const bool bVisible = ProjectActorScreenBounds(TargetActor, TopScreen, BottomScreen, LeftTopScreen, RightBottomScreen);
 
 		if (bVisible)
 		{
-			float ExtentHeight = abs(TopScreen.Y - BottomScreen.Y);
-			float BoxWidth = ExtentHeight * 0.55f; // Box aspect ratio
-
 			ESPActorCache Cache;
 			Cache.bValidScreen = true;
 			Cache.TopScreen = TopScreen;
 			Cache.BottomScreen = BottomScreen;
+			Cache.LeftTopScreen = LeftTopScreen;
+			Cache.RightBottomScreen = RightBottomScreen;
 			Cache.Color = Color;
 			Cache.HealthPct = HealthPct;
 			Cache.Distance = Distance;
@@ -267,31 +385,63 @@ void Cheats::UpdateESP()
 	std::vector<ESPLootCache> NewLoot;
 	if (ConfigManager::B("ESP.ShowLootName") && GVars.Level)
 	{
-		float maxDistance = ConfigManager::F("ESP.LootMaxDistance");
-		if (maxDistance <= 0.0f) maxDistance = 250.0f;
-		const ImU32 lootColor = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.LootColor"));
-		const int32_t actorCount = GVars.Level->Actors.Num();
-
-		for (int32_t i = 0; i < actorCount; i++)
+		const uint64_t nowMs = GetTickCount64();
+		bool shouldRefreshLoot = false;
 		{
-			AActor* Actor = GVars.Level->Actors[i];
-			if (!Actor || !Actor->IsA(SDK::AInventoryPickup::StaticClass())) continue;
-
-			const FVector actorLoc = Actor->K2_GetActorLocation();
-			const float distance = SafeDistanceMeters(CameraLocation, actorLoc);
-			if (distance < 0.0f || distance > maxDistance) continue;
-
-			FVector2D screen;
-			if (!ProjectForOverlay(actorLoc, screen)) continue;
-
-			ESPLootCache Cache{};
-			Cache.bValidScreen = true;
-			Cache.ScreenPos = screen;
-			Cache.Color = lootColor;
-			Cache.Distance = distance;
-			Cache.Name = UKismetSystemLibrary::GetDisplayName(Actor);
-			NewLoot.push_back(Cache);
+			auto& state = GetESPState();
+			std::lock_guard<std::mutex> lock(state.Mutex);
+			shouldRefreshLoot = state.LastLootRefreshMs == 0 || (nowMs - state.LastLootRefreshMs) >= kLootRefreshIntervalMs;
+			if (!shouldRefreshLoot)
+			{
+				NewLoot = state.CachedLoot;
+			}
 		}
+
+		if (shouldRefreshLoot)
+		{
+			float maxDistance = ConfigManager::F("ESP.LootMaxDistance");
+			if (maxDistance <= 0.0f) maxDistance = 250.0f;
+			const ImU32 lootColor = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.LootColor"));
+			NewLoot.reserve(128);
+
+			if (!Utils::ForEachLevelActor(GVars.Level, [&](AActor* Actor)
+				{
+					if (!Actor || !Utils::IsValidActor(Actor)) return true;
+					if (!Actor->IsA(SDK::AInventoryPickup::StaticClass())) return true;
+
+					const FVector actorLoc = Actor->K2_GetActorLocation();
+					const float distance = Utils::GetDistanceMeters(SelfActor, Actor);
+					if (distance < 0.0f || distance > maxDistance) return true;
+
+					FVector2D screen;
+					if (!ProjectForOverlay(actorLoc, screen)) return true;
+
+					ESPLootCache Cache{};
+					Cache.bValidScreen = true;
+					Cache.ScreenPos = screen;
+					Cache.Color = lootColor;
+					Cache.Distance = distance;
+					Cache.Name = UKismetSystemLibrary::GetDisplayName(Actor);
+					NewLoot.push_back(std::move(Cache));
+					return true;
+				}))
+			{
+				Logger::LogThrottled(Logger::Level::Warning, "ESP", 2000, "Loot ESP skipped: Level->Actors unavailable");
+				auto& state = GetESPState();
+				std::lock_guard<std::mutex> lock(state.Mutex);
+				NewLoot = state.CachedLoot;
+			}
+
+			auto& state = GetESPState();
+			std::lock_guard<std::mutex> lock(state.Mutex);
+			state.LastLootRefreshMs = nowMs;
+		}
+	}
+	else
+	{
+		auto& state = GetESPState();
+		std::lock_guard<std::mutex> lock(state.Mutex);
+		state.LastLootRefreshMs = 0;
 	}
 
 	if (ConfigManager::B("ESP.BulletTracers") && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
@@ -409,6 +559,10 @@ void Cheats::UpdateESP()
 	{
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
+		if (bMeshHighlightEnabled)
+			SyncHighlightedMeshes(state, NewHighlightedMeshes);
+		else
+			ClearHighlightedMeshes(state);
 		state.CachedActors = std::move(NewCache);
 		state.CachedLoot = std::move(NewLoot);
 		state.CachedTracers = std::move(NewTracers);
@@ -433,8 +587,9 @@ void Cheats::RenderESP()
 
 	for (const auto& Actor : LocalActors)
 	{
-		float Height = abs((float)Actor.BottomScreen.Y - (float)Actor.TopScreen.Y);
-		float Width = Height * 0.6f;
+		const float Height = (std::max)(0.0f, (float)Actor.RightBottomScreen.Y - (float)Actor.LeftTopScreen.Y);
+		const float Width = (std::max)(0.0f, (float)Actor.RightBottomScreen.X - (float)Actor.LeftTopScreen.X);
+		if (Height <= 0.0f || Width <= 0.0f) continue;
 
 		// Skeleton
 		if (ConfigManager::B("ESP.Bones") && Actor.SkeletonLines.size() > 0)
@@ -451,23 +606,27 @@ void Cheats::RenderESP()
 		// Box
 		if (ConfigManager::B("ESP.ShowBox"))
 		{
-			const FVector2D boxPos((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y);
+			const FVector2D boxPos((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y);
 			const FVector2D boxSize(Width, Height);
 			if (Canvas)
+			{
 				Utils::DrawCanvasBox(Canvas, boxPos, boxSize, 1.0f, Utils::U32ToLinearColor(Actor.Color));
+			}
 			else
+			{
 				ImGui::GetBackgroundDrawList()->AddRect(
 					ImVec2(boxPos.X, boxPos.Y),
 					ImVec2(boxPos.X + boxSize.X, boxPos.Y + boxSize.Y),
 					Actor.Color, 0.0f, 0, 1.0f
 				);
+			}
 		}
 
 		// Health Bar
 		float BarWidth = 4.0f;
 		float BarHeight = Height;
-		float BarX = (float)Actor.TopScreen.X - Width / 2 - 6.0f;
-		float BarY = (float)Actor.TopScreen.Y;
+		float BarX = (float)Actor.LeftTopScreen.X - 6.0f;
+		float BarY = (float)Actor.LeftTopScreen.Y;
 
 		// Background
 		if (Canvas)
@@ -500,10 +659,10 @@ void Cheats::RenderESP()
 			char DistanceText[32];
 			snprintf(DistanceText, sizeof(DistanceText), "%.0f m", Actor.Distance);
 			if (Canvas)
-				Utils::DrawCanvasText(Canvas, DistanceText, FVector2D((float)Actor.TopScreen.X - Width / 2, (float)Actor.BottomScreen.Y + 2), FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+				Utils::DrawCanvasText(Canvas, DistanceText, FVector2D((float)Actor.LeftTopScreen.X, (float)Actor.RightBottomScreen.Y + 2), FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
 			else
 				ImGui::GetBackgroundDrawList()->AddText(
-					ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.BottomScreen.Y + 2),
+					ImVec2((float)Actor.LeftTopScreen.X, (float)Actor.RightBottomScreen.Y + 2),
 					IM_COL32(255, 255, 255, 255),
 					DistanceText
 				);
@@ -517,13 +676,32 @@ void Cheats::RenderESP()
 			const float nameScale = maxScale - (maxScale - minScale) * t;
 			const FVector2D scale(nameScale, nameScale);
 			if (Canvas)
-				Utils::DrawCanvasText(Canvas, Actor.Name, FVector2D((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15), Utils::U32ToLinearColor(Actor.Color), scale);
+				Utils::DrawCanvasText(Canvas, Actor.Name, FVector2D((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y - 15), Utils::U32ToLinearColor(Actor.Color), scale);
 			else
 				ImGui::GetBackgroundDrawList()->AddText(
-					ImVec2((float)Actor.TopScreen.X - Width / 2, (float)Actor.TopScreen.Y - 15),
+					ImVec2((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y - 15),
 					Actor.Color,
 					Actor.Name.ToString().c_str()
 				);
+		}
+	}
+
+	if (ConfigManager::B("ESP.ShowEnemyIndicator"))
+	{
+		const FVector2D viewportSize = Utils::ImVec2ToFVector2D(GVars.ScreenSize);
+		const ImVec2 screenCenter = IsOTSAdsActive()
+			? GetCustomReticleScreenPos()
+			: ImVec2(GVars.ScreenSize.x * 0.5f, GVars.ScreenSize.y * 0.5f);
+		const float maxFOVNormalized = ConfigManager::F("Aimbot.MaxFOV") / 90.0f;
+		const float indicatorRadius = (std::max)(16.0f, maxFOVNormalized * ((float)viewportSize.Y * 0.5f));
+
+		for (const auto& Actor : LocalActors)
+		{
+			const ImVec2 actorCenter(
+				((float)Actor.LeftTopScreen.X + (float)Actor.RightBottomScreen.X) * 0.5f,
+				((float)Actor.LeftTopScreen.Y + (float)Actor.RightBottomScreen.Y) * 0.5f
+			);
+			DrawEnemyIndicator(Canvas, screenCenter, indicatorRadius, actorCenter, Actor.Color);
 		}
 	}
 
@@ -582,40 +760,4 @@ void Cheats::RenderESP()
 		}
 	}
 
-	if (IsOTSAdsActive())
-	{
-		const ImVec2 center = GetCustomReticleScreenPos();
-		const ImU32 outer = IM_COL32(0, 0, 0, 180);
-		const ImU32 inner = IM_COL32(255, 255, 255, 255);
-		const float gap = 3.0f;
-		const float len = 8.0f;
-		if (Canvas)
-		{
-			const FVector2D centerVec(center.x, center.y);
-			Utils::DrawCanvasCircle(Canvas, centerVec, 2.0f, 12, 2.0f, Utils::U32ToLinearColor(outer));
-			Utils::DrawCanvasCircle(Canvas, centerVec, 1.0f, 12, 1.5f, Utils::U32ToLinearColor(inner));
-			Utils::DrawCanvasLine(Canvas, FVector2D(center.x - gap - len, center.y), FVector2D(center.x - gap, center.y), 2.5f, Utils::U32ToLinearColor(outer));
-			Utils::DrawCanvasLine(Canvas, FVector2D(center.x + gap, center.y), FVector2D(center.x + gap + len, center.y), 2.5f, Utils::U32ToLinearColor(outer));
-			Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y - gap - len), FVector2D(center.x, center.y - gap), 2.5f, Utils::U32ToLinearColor(outer));
-			Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y + gap), FVector2D(center.x, center.y + gap + len), 2.5f, Utils::U32ToLinearColor(outer));
-			Utils::DrawCanvasLine(Canvas, FVector2D(center.x - gap - len, center.y), FVector2D(center.x - gap, center.y), 1.2f, Utils::U32ToLinearColor(inner));
-			Utils::DrawCanvasLine(Canvas, FVector2D(center.x + gap, center.y), FVector2D(center.x + gap + len, center.y), 1.2f, Utils::U32ToLinearColor(inner));
-			Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y - gap - len), FVector2D(center.x, center.y - gap), 1.2f, Utils::U32ToLinearColor(inner));
-			Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y + gap), FVector2D(center.x, center.y + gap + len), 1.2f, Utils::U32ToLinearColor(inner));
-		}
-		else
-		{
-			auto* draw = ImGui::GetBackgroundDrawList();
-			draw->AddCircle(center, 2.0f, outer, 12, 2.0f);
-			draw->AddCircle(center, 1.0f, inner, 12, 1.5f);
-			draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), outer, 2.5f);
-			draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), outer, 2.5f);
-			draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), outer, 2.5f);
-			draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), outer, 2.5f);
-			draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), inner, 1.2f);
-			draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), inner, 1.2f);
-			draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), inner, 1.2f);
-			draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), inner, 1.2f);
-		}
-	}
 }

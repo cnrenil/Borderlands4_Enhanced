@@ -82,12 +82,12 @@ void Cheats::ClearGroundItems()
     if (!GVars.World || !GVars.Level) return;
     SDK::FVector farLoc = { 100000.f, 100000.f, -100000.f };
 
-    for (int i = 0; i < GVars.Level->Actors.Num(); i++) {
-        SDK::AActor* Actor = GVars.Level->Actors[i];
-        if (Actor && Actor->IsA(SDK::AInventoryPickup::StaticClass())) {
+    Utils::ForEachLevelActor(GVars.Level, [&](SDK::AActor* Actor)
+    {
+        if (Actor && Actor->IsA(SDK::AInventoryPickup::StaticClass()))
             Actor->K2_SetActorLocation(farLoc, false, nullptr, false);
-        }
-    }
+        return true;
+    });
 }
 
 void Cheats::SetExperienceLevel(int32 xpAmount)
