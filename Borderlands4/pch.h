@@ -7,6 +7,12 @@
 #define NOMINMAX
 #endif
 
+#ifdef _DEBUG
+#define BL4_DEBUG_BUILD 1
+#else
+#define BL4_DEBUG_BUILD 0
+#endif
+
 // Windows and Graphics
 #include <Windows.h>
 #include <d3d11.h>

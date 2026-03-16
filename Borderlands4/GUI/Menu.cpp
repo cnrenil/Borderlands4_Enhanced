@@ -405,10 +405,11 @@ void GUI::RenderMenu()
                     ImGui::TreePop();
                 }
 
+#if BL4_DEBUG_BUILD
                 if (ImGui::TreeNode(Localization::T("DEBUG")))
                 {
                     ImGui::Checkbox(Localization::T("ENABLE_EVENT_DEBUG_LOGS"), &B("Misc.Debug"));
-                    
+
                     bool bRecording = Logger::IsRecording();
                     if (ImGui::Checkbox(Localization::T("ENABLE_EVENT_RECORDING"), &bRecording))
                     {
@@ -419,9 +420,10 @@ void GUI::RenderMenu()
                     if (ImGui::Button(Localization::T("DUMP_GOBJECTS"))) Cheats::DumpObjects();
                     if (ImGui::Button(Localization::T("KILL_SYMBIOTE"))) { AntiDebug::Bypass(); }
                     GUI::AddDefaultTooltip(Localization::T("KILL_SYMBIOTE_TOOLTIP"));
-                    
+
                     ImGui::TreePop();
                 }
+#endif
                 
                 if (ImGui::Button(Localization::T("SAVE_SETTINGS")))
                     ConfigManager::SaveSettings();

@@ -1,5 +1,30 @@
 #include "pch.h"
 
+#if !BL4_DEBUG_BUILD
+
+void Cheats::HandleDebugEvents(
+    const SDK::UObject* Object,
+    SDK::UFunction* Function,
+    void* Params,
+    void(*OriginalProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*),
+    bool bCallOriginal)
+{
+    if (bCallOriginal && OriginalProcessEvent)
+    {
+        OriginalProcessEvent(Object, Function, Params);
+    }
+}
+
+void Cheats::DumpObjects()
+{
+}
+
+void Cheats::UpdateDebug()
+{
+}
+
+#else
+
 namespace
 {
     static uintptr_t s_LastManagerAddress = 0;
@@ -155,3 +180,5 @@ void Cheats::UpdateDebug()
         reinterpret_cast<void*>(activeMaxAddr),
         mgr->ActiveProjectiles.Num());
 }
+
+#endif

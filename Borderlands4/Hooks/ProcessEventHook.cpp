@@ -58,7 +58,9 @@ static void TryRunHudCanvasTick(AHUD* Hud)
 	UCanvas* Canvas = TryGetHudCanvas(Hud);
 	if (Canvas)
 	{
+#if BL4_DEBUG_BUILD
 		Logger::LogThrottled(Logger::Level::Debug, "Hook", 5000, "ReceiveDrawHUD canvas tick via ProcessEvent (Canvas: %p)", Canvas);
+#endif
 		TryRunGameThreadCanvasTick(Canvas);
 	}
 }
@@ -70,7 +72,11 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 	bool bSkipOriginal = false;
 	bool bRunHudCanvasTick = false;
 	AHUD* HudForCanvasTick = nullptr;
+#if BL4_DEBUG_BUILD
     const bool bDebugEnabled = (ConfigManager::ConfigMap.count("Misc.Debug") && ConfigManager::B("Misc.Debug"));
+#else
+    const bool bDebugEnabled = false;
+#endif
     auto DispatchDebugOrOriginal = [&](bool bCallOriginal)
     {
         if (bDebugEnabled)

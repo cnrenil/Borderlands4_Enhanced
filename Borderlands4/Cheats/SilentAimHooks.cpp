@@ -283,6 +283,7 @@ namespace SilentAimHooks
 			const bool likelyLocal = localSource && EnsureThreadSilentRedirectActive();
 			void* caller = _ReturnAddress();
 
+#if BL4_DEBUG_BUILD
 			Logger::LogThrottled(
 				Logger::Level::Debug,
 				"SilentAimDbg",
@@ -304,6 +305,7 @@ namespace SilentAimHooks
 				explicitRot.X, explicitRot.Y, explicitRot.Z,
 				armed ? 1 : 0,
 				likelyLocal ? 1 : 0);
+#endif
 
 			if (likelyLocal && fireParams)
 			{
@@ -326,6 +328,7 @@ namespace SilentAimHooks
 					WriteU64At(fireParams, kFireParamsFlagsOffset, flags | 8ull);
 				}
 
+#if BL4_DEBUG_BUILD
 				Logger::LogThrottled(
 					Logger::Level::Debug,
 					"SilentAimDbg",
@@ -337,6 +340,7 @@ namespace SilentAimHooks
 					IsMagicEnabled() ? 1 : 0,
 					static_cast<unsigned long long>(flags),
 					static_cast<unsigned long long>(flags | 8ull));
+#endif
 			}
 
 			const __int64 result = oFireProjectileLoop
@@ -348,6 +352,7 @@ namespace SilentAimHooks
 					simulate)
 				: 0;
 
+#if BL4_DEBUG_BUILD
 			Logger::LogThrottled(
 				Logger::Level::Debug,
 				"SilentAimDbg",
@@ -356,6 +361,7 @@ namespace SilentAimHooks
 				caller,
 				reinterpret_cast<void*>(weapon),
 				reinterpret_cast<void*>(result));
+#endif
 			FinishThreadSilentRedirect();
 			return result;
 		}
@@ -380,6 +386,7 @@ namespace SilentAimHooks
 			const bool likelyLocal = localSource && EnsureThreadSilentRedirectActive();
 			void* caller = _ReturnAddress();
 
+#if BL4_DEBUG_BUILD
 			Logger::LogThrottled(
 				Logger::Level::Debug,
 				"SilentAimDbg",
@@ -398,6 +405,7 @@ namespace SilentAimHooks
 				armed ? 1 : 0,
 				likelyLocal ? 1 : 0,
 				reinterpret_cast<void*>(traceContext));
+#endif
 
 			if (likelyLocal && endParam)
 			{
@@ -418,6 +426,7 @@ namespace SilentAimHooks
 					NativeInterop::WriteVec3Param(const_cast<void*>(endParam), redirectTarget);
 				}
 
+#if BL4_DEBUG_BUILD
 				Logger::LogThrottled(
 					Logger::Level::Debug,
 					"SilentAimDbg",
@@ -427,6 +436,7 @@ namespace SilentAimHooks
 					redirectTarget.X, redirectTarget.Y, redirectTarget.Z,
 					end.X, end.Y, end.Z,
 					IsMagicEnabled() ? 1 : 0);
+#endif
 			}
 
 			void* result = oFireDirectionTrace
@@ -449,12 +459,14 @@ namespace SilentAimHooks
 
 		__int64 __fastcall hkWeaponBehaviorFireProjectile(void* behaviorThis)
 		{
+#if BL4_DEBUG_BUILD
 			Logger::LogThrottled(
 				Logger::Level::Debug,
 				"SilentAimDbg",
 				300,
 				"hkWeaponBehaviorFireProjectile hit. this=%p",
 				behaviorThis);
+#endif
 
 			ArmSilentRedirect();
 			return oWeaponBehaviorFireProjectile ? oWeaponBehaviorFireProjectile(behaviorThis) : 0;

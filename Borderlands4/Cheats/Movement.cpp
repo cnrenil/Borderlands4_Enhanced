@@ -424,7 +424,7 @@ void PerformMapTeleport()
 	TelePos.Z = -1000.0f;
 	TargetActor->K2_SetActorLocation(TelePos, true, &HitResult, false);
 
-	if (ConfigManager::B("Misc.Debug")) {
+	if (BL4_DEBUG_BUILD && ConfigManager::B("Misc.Debug")) {
 		SDK::FVector FinalPos = TargetActor->K2_GetActorLocation();
 		printf("[MapTP] Teleported to: %.1f, %.1f, %.1f\n", FinalPos.X, FinalPos.Y, FinalPos.Z);
 	}

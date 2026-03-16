@@ -6,6 +6,51 @@ namespace HotkeyManager
 {
     std::vector<Hotkey> Hotkeys;
 
+    namespace
+    {
+        bool IsValidHotkeyValue(int keyValue)
+        {
+            return keyValue == ImGuiKey_None || (keyValue >= ImGuiKey_NamedKey_BEGIN && keyValue < ImGuiKey_NamedKey_END);
+        }
+
+        ImGuiKey GetSanitizedHotkeyValue(const Hotkey& hk)
+        {
+            int& configuredKey = ConfigManager::I(hk.Name);
+            if (IsValidHotkeyValue(configuredKey))
+            {
+                return static_cast<ImGuiKey>(configuredKey);
+            }
+
+            LOG_WARN("Hotkey", "Invalid key binding for %s: %d. Resetting to default %d.", hk.Name.c_str(), configuredKey, (int)hk.DefaultKey);
+            configuredKey = static_cast<int>(hk.DefaultKey);
+            return hk.DefaultKey;
+        }
+
+        void FormatHotkeyLabel(char* buffer, size_t bufferSize, const Hotkey& hk, ImGuiKey key)
+        {
+            if (hk.bIsBinding)
+            {
+                snprintf(buffer, bufferSize, "%s", Localization::T("PRESS_ANY_KEY"));
+                return;
+            }
+
+            if (key == ImGuiKey_None)
+            {
+                snprintf(buffer, bufferSize, "%s", Localization::T("UNKNOWN_KEY"));
+                return;
+            }
+
+            const char* keyName = ImGui::GetKeyName(key);
+            if (!keyName || keyName[0] == '\0')
+            {
+                snprintf(buffer, bufferSize, "%s (%d)", Localization::T("UNKNOWN_KEY"), (int)key);
+                return;
+            }
+
+            snprintf(buffer, bufferSize, "%s", keyName);
+        }
+    }
+
     void Register(const std::string& name, const std::string& label, ImGuiKey defaultKey, std::function<void()> callback, bool bIsHold)
     {
         // 1. Register in ConfigManager if not already there
@@ -47,9 +92,11 @@ namespace HotkeyManager
             Cheats::ToggleThirdPerson();
         });
 
+#if BL4_DEBUG_BUILD
         Register("Misc.DumpKey", "DUMP_OBJECTS_KEY", ImGuiKey_F8, []() {
             Cheats::DumpObjects();
         });
+#endif
 
     }
 
@@ -63,7 +110,7 @@ namespace HotkeyManager
         {
             if (hk.Callback)
             {
-                ImGuiKey currentKey = (ImGuiKey)ConfigManager::I(hk.Name);
+                ImGuiKey currentKey = GetSanitizedHotkeyValue(hk);
                 bool bIsMenuKey = (hk.Name == "Misc.MenuKey");
                 bool bIsUnhookKey = (hk.Name == "Misc.UnhookKey");
                 
@@ -101,19 +148,9 @@ namespace HotkeyManager
             ImGui::Text("%s:", Localization::T(hk.Label));
             ImGui::SameLine(200);
 
-            char buf[64];
-            ImGuiKey currentKey = (ImGuiKey)ConfigManager::I(hk.Name);
-            
-            if (hk.bIsBinding) {
-                strcpy(buf, Localization::T("PRESS_ANY_KEY"));
-            } else {
-                const char* keyName = ImGui::GetKeyName(currentKey);
-                if (!keyName || keyName[0] == '\0') {
-                    sprintf(buf, "%s (%d)", Localization::T("UNKNOWN_KEY"), (int)currentKey);
-                } else {
-                    strcpy(buf, keyName);
-                }
-            }
+            char buf[64]{};
+            ImGuiKey currentKey = GetSanitizedHotkeyValue(hk);
+            FormatHotkeyLabel(buf, sizeof(buf), hk, currentKey);
 
             if (ImGui::Button(buf, ImVec2(150, 0))) {
                 hk.bIsBinding = true;

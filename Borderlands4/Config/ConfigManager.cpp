@@ -5,6 +5,14 @@ namespace ConfigManager
 {
     std::unordered_map<std::string, ConfigValue> ConfigMap;
 
+    namespace
+    {
+        int ClampInt(int value, int minValue, int maxValue)
+        {
+            return (std::max)(minValue, (std::min)(value, maxValue));
+        }
+    }
+
     void Register(const std::string& key, ConfigValue defaultValue) {
         if (ConfigMap.find(key) == ConfigMap.end()) {
             ConfigMap[key] = defaultValue;
@@ -230,7 +238,9 @@ namespace ConfigManager
                 B("Aimbot.Magic") = std::atoi(legacyBuf) != 0;
             }
         }
-        
-        Localization::CurrentLanguage = (Language)std::get<int>(ConfigMap["Misc.Language"]);
+
+        I("Misc.Language") = ClampInt(I("Misc.Language"), 0, 1);
+        I("Misc.Theme") = GUI::ThemeManager::ClampThemeIndex(I("Misc.Theme"));
+        Localization::CurrentLanguage = static_cast<Language>(I("Misc.Language"));
     }
 }
