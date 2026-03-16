@@ -127,6 +127,9 @@
     <ClCompile Include="Borderlands4_SDK\SDK\AIModule_functions.cpp">
       <Filter>SDK</Filter>
     </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\TemplateSequence_functions.cpp">
+      <Filter>SDK</Filter>
+    </ClCompile>
     <ClCompile Include="Cheats\Aimbot.cpp">
       <Filter>Source Files\Cheats</Filter>
     </ClCompile>
@@ -290,6 +293,9 @@
       <Filter>SDK</Filter>
     </ClInclude>
     <ClInclude Include="Borderlands4_SDK\SDK\AIModule_parameters.hpp">
+      <Filter>SDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Borderlands4_SDK\SDK\TemplateSequence_classes.hpp">
       <Filter>SDK</Filter>
     </ClInclude>
   </ItemGroup>

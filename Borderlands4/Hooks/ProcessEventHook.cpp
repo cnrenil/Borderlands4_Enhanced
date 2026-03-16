@@ -3,7 +3,6 @@
 namespace
 {
 	Hooks::State g_HookState{};
-	std::atomic<bool> g_LoggedHudCanvasHook{ false };
 }
 
 void(*oProcessEvent)(const UObject*, UFunction*, void*) = nullptr;
@@ -12,71 +11,11 @@ extern std::atomic<bool> Cleaning;
 extern std::atomic<int> g_ProcessEventCount;
 extern std::atomic<int> g_PresentCount;
 
-static bool TryRunGameThreadCanvasTick(UCanvas* Canvas)
-{
-	__try
-	{
-		Cheats::GameThreadCanvasTick(Canvas);
-		return true;
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-		return false;
-	}
-}
-
-static UCanvas* TryGetHudCanvas(AHUD* Hud)
-{
-	__try
-	{
-		return Hud ? Hud->Canvas : nullptr;
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-		return nullptr;
-	}
-}
-
-static bool ShouldRunHudCanvasTick(const UObject* Object, const UFunction* Function, AHUD*& OutHud)
-{
-	OutHud = nullptr;
-	if (!Object || !Function)
-		return false;
-	if (!Object->IsA(AHUD::StaticClass()))
-		return false;
-	if (Function->GetName() != "ReceiveDrawHUD")
-		return false;
-
-	OutHud = static_cast<AHUD*>(const_cast<UObject*>(Object));
-	return OutHud != nullptr;
-}
-
-static void TryRunHudCanvasTick(AHUD* Hud)
-{
-	if (!Hud || Cleaning.load())
-		return;
-
-	UCanvas* Canvas = TryGetHudCanvas(Hud);
-	if (Canvas)
-	{
-		if (!g_LoggedHudCanvasHook.exchange(true))
-		{
-			LOG_INFO("Hook", "ReceiveDrawHUD canvas hook active. Canvas=%p", Canvas);
-		}
-#if BL4_DEBUG_BUILD
-		Logger::LogThrottled(Logger::Level::Debug, "Hook", 5000, "ReceiveDrawHUD canvas tick via ProcessEvent (Canvas: %p)", Canvas);
-#endif
-		TryRunGameThreadCanvasTick(Canvas);
-	}
-}
-
 void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 {
 	g_ProcessEventCount.fetch_add(1);
 	static thread_local bool bInsideHook = false;
 	bool bSkipOriginal = false;
-	bool bRunHudCanvasTick = false;
-	AHUD* HudForCanvasTick = nullptr;
 #if BL4_DEBUG_BUILD
     const bool bDebugEnabled = (ConfigManager::ConfigMap.count("Misc.Debug") && ConfigManager::B("Misc.Debug"));
 #else
@@ -153,11 +92,6 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
             if (Cheats::HandleCameraEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
         }
 
-		if (Object->IsA(AHUD::StaticClass()) && Function->GetName() == "ReceiveDrawHUD")
-		{
-			HudForCanvasTick = static_cast<AHUD*>(const_cast<UObject*>(Object));
-			bRunHudCanvasTick = (HudForCanvasTick != nullptr);
-		}
     }
 	catch (...) {
 		Logger::LogThrottled(Logger::Level::Error, "Hook", 1000, "CRASH in hkProcessEvent");
@@ -166,9 +100,6 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 Exit:
 	bInsideHook = false;
 	DispatchDebugOrOriginal(!bSkipOriginal);
-
-	if (!bSkipOriginal && bRunHudCanvasTick)
-		TryRunHudCanvasTick(HudForCanvasTick);
 
 	g_ProcessEventCount.fetch_sub(1);
 }
@@ -209,15 +140,6 @@ void Hooks::UnhookAll()
 		}
 	}
 
-	if (state.hudVTable && oProcessEvent)
-	{
-		if (VirtualProtect(&state.hudVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
-		{
-			state.hudVTable[73] = (void*)oProcessEvent;
-			VirtualProtect(&state.hudVTable[73], sizeof(void*), old, &old);
-			LOG_INFO("Hook", "Restored HUD ProcessEvent.");
-		}
-	}
 }
 
 Hooks::State& Hooks::GetState()

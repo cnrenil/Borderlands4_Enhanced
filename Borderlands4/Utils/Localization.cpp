@@ -163,6 +163,8 @@ namespace Localization
         Register("REQUIRE_LOS", "Require LOS", (const char*)u8"需要可见性");
         Register("DRAW_FOV", "Draw FOV", (const char*)u8"显示视野范围");
         Register("DRAW_ARROW", "Draw Arrow", (const char*)u8"显示指向箭头");
+        Register("FOV_LINE_THICKNESS", "FOV Line Thickness", (const char*)u8"FOV 线条粗细");
+        Register("ARROW_LINE_THICKNESS", "Arrow Line Thickness", (const char*)u8"箭头线条粗细");
         Register("SMOOTH_AIM", "Smooth Aim", (const char*)u8"平滑自瞄");
         Register("SMOOTHING", "Smoothing", (const char*)u8"平滑系数");
         Register("AIMBOT_FOV", "Aimbot FOV", (const char*)u8"自瞄视野");
@@ -172,6 +174,7 @@ namespace Localization
         Register("TARGET_MODE", "Target Mode", (const char*)u8"索敌模式");
         Register("TARGET_MODE_SCREEN", "Closest To Crosshair", (const char*)u8"准星最近");
         Register("TARGET_MODE_DISTANCE", "Closest Distance", (const char*)u8"距离最近");
+        Register("USE_NATIVE_PROJECTILE_HOOK", "Use Native Projectile Hook", (const char*)u8"使用原生投射物 Hook");
         Register("CHOOSE_BONE_TOOLTIP", "Choose the bone to inject damage directly to. E.g Head = 100% Critical Hit", (const char*)u8"选择要直接注入伤害的部位。例如 头部 = 100% 暴击");
         
         // 11. Weapon Tab
@@ -199,21 +202,34 @@ namespace Localization
         Register("ENABLE_VIEWMODEL_FOV", "Enable ViewModel FOV", (const char*)u8"修改武器视角大小");
         Register("VIEWMODEL_FOV_VALUE", "ViewModel FOV Value", (const char*)u8"武器视角角度");
         Register("DISABLE_VOLUMETRIC_CLOUDS", "Disable Volumetric Clouds", (const char*)u8"禁用体积云");
-        
+        Register("SHOW_ACTIVE_FEATURES", "Show Active Features List", (const char*)u8"显示启用项列表");
+        Register("ENABLE_RETICLE", "Enable Reticle", (const char*)u8"启用准星");
+        Register("RETICLE_CROSSHAIR", "Draw Crosshair Arms", (const char*)u8"显示准星十字");
+        Register("RETICLE_SIZE", "Reticle Size", (const char*)u8"准星大小");
+        Register("RETICLE_OFFSET_X", "Reticle Offset X", (const char*)u8"准星偏移 X");
+        Register("RETICLE_OFFSET_Y", "Reticle Offset Y", (const char*)u8"准星偏移 Y");
+        Register("RETICLE_COLOR", "Reticle Color", (const char*)u8"准星颜色");
         // 13. Config & Debug
         Register("ESP_SETTINGS", "ESP Settings", (const char*)u8"透视设置");
+        Register("SHOW_TEAM", "Show Team", (const char*)u8"显示队友");
         Register("SHOW_BOX", "Show Box", (const char*)u8"显示方框");
-        Register("SHADED_FILL", "Mesh Highlight", (const char*)u8"人物着色");
         Register("SHOW_DISTANCE", "Show Distance", (const char*)u8"显示敌方距离");
         Register("SHOW_BONES", "Show Bones", (const char*)u8"显示骨骼");
         Register("SHOW_NAME", "Show Name", (const char*)u8"显示敌方名称");
         Register("SHOW_ENEMY_INDICATOR", "Show Enemy Indicator", (const char*)u8"显示敌人三角指示");
+        Register("SHOW_BULLET_TRACERS", "Show Bullet Tracers", (const char*)u8"显示弹道轨迹");
+        Register("TRACER_RAINBOW", "Rainbow Tracers", (const char*)u8"彩虹轨迹");
+        Register("TRACER_DURATION", "Tracer Duration", (const char*)u8"轨迹持续时间");
+        Register("TRACER_COLOR", "Tracer Color", (const char*)u8"轨迹颜色");
         Register("SHOW_LOOT_NAME", "Show Loot Name", (const char*)u8"显示掉落物名称");
         Register("LOOT_COLOR", "Loot Color", (const char*)u8"掉落物颜色");
         Register("LOOT_MAX_DISTANCE", "Loot Max Distance (m)", (const char*)u8"掉落物最大距离(米)");
         Register("ENEMY_COLOR", "Enemy Color", (const char*)u8"敌人颜色");
+        Register("TEAM_COLOR", "Team Color", (const char*)u8"队友颜色");
         Register("DEBUG", "Debug", (const char*)u8"调试");
         Register("ENABLE_EVENT_DEBUG_LOGS", "Enable Event Debug Logs", (const char*)u8"启用事件调试日志");
+        Register("ENABLE_PING_DUMP", "Enable Ping Dump", (const char*)u8"启用 PingDump");
+        Register("ENABLE_PP_TRACE", "Enable PostProcess Trace", (const char*)u8"启用后处理追踪");
         Register("ENABLE_EVENT_RECORDING", "Enable Event Recording (Save to File)", (const char*)u8"启用事件记录");
         Register("SAVE_SETTINGS", "Save Settings", (const char*)u8"保存设置");
         Register("LOAD_SETTINGS", "Load Settings", (const char*)u8"加载设置");

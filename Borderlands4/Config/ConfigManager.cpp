@@ -31,16 +31,12 @@ namespace ConfigManager
         Register("ESP.ShowEnemyDistance", true);
         Register("ESP.ShowEnemyName", true);
         Register("ESP.ShowEnemyIndicator", false);
-        Register("ESP.ShadedFill", true);
         Register("ESP.ShowLootName", false);
         Register("ESP.Bones", true);
-        Register("ESP.BoneOpacity", 1.0f);
         Register("ESP.EnemyColor", ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
         Register("ESP.TeamColor", ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
-        Register("ESP.TargetColor", ImVec4(0.7f, 0.0f, 1.0f, 1.0f));
         Register("ESP.LootColor", ImVec4(1.0f, 0.9f, 0.2f, 1.0f));
         Register("ESP.LootMaxDistance", 250.0f);
-        Register("ESP.LOS", false);
         Register("ESP.BulletTracers", true);
         Register("ESP.TracerRainbow", true);
         Register("ESP.TracerDuration", 2.0f);
@@ -61,14 +57,9 @@ namespace ConfigManager
         Register("Aimbot.FOVThickness", 1.0f);
         Register("Aimbot.ArrowThickness", 2.0f);
         Register("Aimbot.TargetAll", false);
-        Register("Aimbot.UseMouseInput", true);
-        Register("Aimbot.MouseSensitivity", 1.0f);
         Register("Aimbot.Bone", std::string("Head"));
         Register("Aimbot.TargetMode", 0);
-        Register("Aimbot.StaticConstructOffset", 0);
         Register("Aimbot.NativeProjectileHook", true);
-        Register("Aimbot.ProjectileBuildCallRVA", 0x148FAC6);
-        Register("Aimbot.ProjectileBuildRVA", 0x14903B4);
         Register("Aimbot.Magic", false);
 
         // TriggerBot
@@ -99,7 +90,6 @@ namespace ConfigManager
         Register("Player.GameSpeed", 1.0f);
         Register("Player.SpeedEnabled", false);
         Register("Player.Speed", 1.0f);
-        Register("Player.FOV", 120.0f);
         Register("Player.ThirdPerson", false);
         Register("Player.OverShoulder", false);
         Register("Player.Freecam", false);
@@ -112,11 +102,10 @@ namespace ConfigManager
         Register("Player.ESP", true);
 
         // Misc
-        Register("Misc.Reticle", false);
+        Register("Misc.Reticle", true);
         Register("Misc.ReticleColor", ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
         Register("Misc.ReticleSize", 5.0f);
         Register("Misc.ReticlePosition", ImVec2(0.0f, 0.0f));
-        Register("Misc.ReticleWhenThrowing", false);
         Register("Misc.CrossReticle", true);
         Register("Misc.EnableFOV", false);
         Register("Misc.FOV", 100.0f);
@@ -124,12 +113,9 @@ namespace ConfigManager
         Register("Misc.EnableViewModelFOV", false);
         Register("Misc.ViewModelFOV", 90.0f);
         Register("Misc.DisableVolumetricClouds", false);
-        Register("Misc.ShouldAutoSave", true);
-        Register("Misc.ShouldSaveCVars", true);
         Register("Misc.MapTeleport", false);
         Register("Misc.MapTPWindow", 2.0f);
         Register("Misc.ThirdPersonCentered", false);
-        Register("Misc.ThirdPersonOTS", true);
         Register("Misc.ThirdPersonADSFirstPerson", true);
         Register("Misc.OTS_X", -150.0f);
         Register("Misc.OTS_Y", 60.0f);
@@ -140,6 +126,8 @@ namespace ConfigManager
         Register("Misc.Language", 0);
         Register("Misc.Theme", 0);
         Register("Misc.Debug", false);
+        Register("Misc.PingDump", false);
+        Register("Misc.PostProcessTrace", false);
         Register("Misc.RenderOptions", false);
     }
 

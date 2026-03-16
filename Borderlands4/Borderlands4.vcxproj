@@ -244,6 +244,9 @@
     <ClCompile Include="Borderlands4_SDK\SDK\AIModule_functions.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Borderlands4_SDK\SDK\TemplateSequence_functions.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cheats.h" />
@@ -285,6 +288,7 @@
     <ClInclude Include="Borderlands4_SDK\SDK\AIModule_classes.hpp" />
     <ClInclude Include="Borderlands4_SDK\SDK\AIModule_structs.hpp" />
     <ClInclude Include="Borderlands4_SDK\SDK\AIModule_parameters.hpp" />
+    <ClInclude Include="Borderlands4_SDK\SDK\TemplateSequence_classes.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ImGui\misc\debuggers\imgui.natstepfilter" />

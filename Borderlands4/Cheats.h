@@ -67,7 +67,6 @@ struct Cheats
 	static void TriggerBot();
 	static void RenderEnabledOptions();
 	static void Render();
-	static void GameThreadCanvasTick(class UCanvas* Canvas);
 	static void ChangeFOV();
 	static void Lean();
 	static void AutoWin();

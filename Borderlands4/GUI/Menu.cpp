@@ -264,16 +264,22 @@ void GUI::RenderMenu()
                 {
                     ImGui::Checkbox(Localization::T("REQUIRE_LOS"), &B("Aimbot.LOS"));
                     ImGui::Checkbox(Localization::T("REQUIRE_KEY_HELD"), &B("Aimbot.RequireKeyHeld"));
+                    ImGui::Checkbox(Localization::T("TARGET_ALL"), &B("Aimbot.TargetAll"));
                     ImGui::Checkbox(Localization::T("SILENT_AIM"), &B("Aimbot.Silent"));
                     if (B("Aimbot.Silent"))
                     {
                         ImGui::Indent();
+                        ImGui::Checkbox(Localization::T("USE_NATIVE_PROJECTILE_HOOK"), &B("Aimbot.NativeProjectileHook"));
                         ImGui::Checkbox(Localization::T("MAGIC_BULLETS"), &B("Aimbot.Magic"));
                         ImGui::Unindent();
                     }
                     ImGui::Checkbox(Localization::T("TRIGGERBOT"), &B("Trigger.Enabled"));
                     ImGui::Checkbox(Localization::T("DRAW_FOV"), &B("Aimbot.DrawFOV"));
+                    if (B("Aimbot.DrawFOV"))
+                        ImGui::SliderFloat(Localization::T("FOV_LINE_THICKNESS"), &F("Aimbot.FOVThickness"), 1.0f, 6.0f, "%.1f");
                     ImGui::Checkbox(Localization::T("DRAW_ARROW"), &B("Aimbot.DrawArrow"));
+                    if (B("Aimbot.DrawArrow"))
+                        ImGui::SliderFloat(Localization::T("ARROW_LINE_THICKNESS"), &F("Aimbot.ArrowThickness"), 1.0f, 6.0f, "%.1f");
                     ImGui::Checkbox(Localization::T("SMOOTH_AIM"), &B("Aimbot.Smooth"));
                     if (B("Aimbot.Smooth"))
                         ImGui::SliderFloat(Localization::T("SMOOTHING"), &F("Aimbot.SmoothingVector"), 1.0f, 20.0f);
@@ -319,6 +325,7 @@ void GUI::RenderMenu()
 
                 if (ImGui::TreeNode(Localization::T("MISC_SETTINGS")))
                 {
+                    ImGui::Checkbox(Localization::T("SHOW_ACTIVE_FEATURES"), &B("Misc.RenderOptions"));
                     if (ImGui::Checkbox(Localization::T("ENABLE_FOV_CHANGER"), &B("Misc.EnableFOV")))
                     {
                         if (B("Misc.EnableFOV") && GVars.POV)
@@ -337,6 +344,16 @@ void GUI::RenderMenu()
                         ImGui::SliderFloat(Localization::T("VIEWMODEL_FOV_VALUE"), &F("Misc.ViewModelFOV"), 60.0f, 150.0f);
                     }
                     ImGui::Checkbox(Localization::T("DISABLE_VOLUMETRIC_CLOUDS"), &B("Misc.DisableVolumetricClouds"));
+                    ImGui::Separator();
+                    ImGui::Checkbox(Localization::T("ENABLE_RETICLE"), &B("Misc.Reticle"));
+                    if (B("Misc.Reticle"))
+                    {
+                        ImGui::Checkbox(Localization::T("RETICLE_CROSSHAIR"), &B("Misc.CrossReticle"));
+                        ImGui::SliderFloat(Localization::T("RETICLE_SIZE"), &F("Misc.ReticleSize"), 2.0f, 30.0f, "%.1f");
+                        ImGui::SliderFloat(Localization::T("RETICLE_OFFSET_X"), &Vec2("Misc.ReticlePosition").x, -200.0f, 200.0f, "%.0f");
+                        ImGui::SliderFloat(Localization::T("RETICLE_OFFSET_Y"), &Vec2("Misc.ReticlePosition").y, -200.0f, 200.0f, "%.0f");
+                        ImGui::ColorEdit4(Localization::T("RETICLE_COLOR"), (float*)&Color("Misc.ReticleColor"), ImGuiColorEditFlags_NoInputs);
+                    }
                     ImGui::TreePop();
                 }
 
@@ -387,12 +404,22 @@ void GUI::RenderMenu()
                 using namespace ConfigManager;
                 if (ImGui::TreeNode(Localization::T("ESP_SETTINGS")))
                 {
+                    ImGui::Checkbox(Localization::T("SHOW_TEAM"), &B("ESP.ShowTeam"));
                     ImGui::Checkbox(Localization::T("SHOW_BOX"), &B("ESP.ShowBox"));
-                    ImGui::Checkbox(Localization::T("SHADED_FILL"), &B("ESP.ShadedFill"));
                     ImGui::Checkbox(Localization::T("SHOW_DISTANCE"), &B("ESP.ShowEnemyDistance"));
                     ImGui::Checkbox(Localization::T("SHOW_BONES"), &B("ESP.Bones"));
                     ImGui::Checkbox(Localization::T("SHOW_NAME"), &B("ESP.ShowEnemyName"));
                     ImGui::Checkbox(Localization::T("SHOW_ENEMY_INDICATOR"), &B("ESP.ShowEnemyIndicator"));
+                    ImGui::Checkbox(Localization::T("SHOW_BULLET_TRACERS"), &B("ESP.BulletTracers"));
+                    if (B("ESP.BulletTracers"))
+                    {
+                        ImGui::Checkbox(Localization::T("TRACER_RAINBOW"), &B("ESP.TracerRainbow"));
+                        ImGui::SliderFloat(Localization::T("TRACER_DURATION"), &F("ESP.TracerDuration"), 0.1f, 8.0f, "%.1f s");
+                        if (!B("ESP.TracerRainbow"))
+                        {
+                            ImGui::ColorEdit4(Localization::T("TRACER_COLOR"), (float*)&Color("ESP.TracerColor"), ImGuiColorEditFlags_NoInputs);
+                        }
+                    }
                     ImGui::Checkbox(Localization::T("SHOW_LOOT_NAME"), &B("ESP.ShowLootName"));
                     if (B("ESP.ShowLootName"))
                     {
@@ -401,6 +428,10 @@ void GUI::RenderMenu()
                     }
                     
                     ImGui::ColorEdit4(Localization::T("ENEMY_COLOR"), (float*)&Color("ESP.EnemyColor"), ImGuiColorEditFlags_NoInputs);
+                    if (B("ESP.ShowTeam"))
+                    {
+                        ImGui::ColorEdit4(Localization::T("TEAM_COLOR"), (float*)&Color("ESP.TeamColor"), ImGuiColorEditFlags_NoInputs);
+                    }
                     
                     ImGui::TreePop();
                 }
@@ -409,6 +440,8 @@ void GUI::RenderMenu()
                 if (ImGui::TreeNode(Localization::T("DEBUG")))
                 {
                     ImGui::Checkbox(Localization::T("ENABLE_EVENT_DEBUG_LOGS"), &B("Misc.Debug"));
+                    ImGui::Checkbox(Localization::T("ENABLE_PING_DUMP"), &B("Misc.PingDump"));
+                    ImGui::Checkbox(Localization::T("ENABLE_PP_TRACE"), &B("Misc.PostProcessTrace"));
 
                     bool bRecording = Logger::IsRecording();
                     if (ImGui::Checkbox(Localization::T("ENABLE_EVENT_RECORDING"), &bRecording))

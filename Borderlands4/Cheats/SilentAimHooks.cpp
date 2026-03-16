@@ -108,6 +108,29 @@ namespace SilentAimHooks
 			return ConfigManager::B("Aimbot.Magic");
 		}
 
+		bool IsTracerCaptureEnabled()
+		{
+			return ConfigManager::B("Player.ESP") && ConfigManager::B("ESP.BulletTracers");
+		}
+
+		void CaptureBulletTracer(const SDK::FVector& start, const SDK::FVector& end)
+		{
+			if (!IsTracerCaptureEnabled())
+			{
+				return;
+			}
+
+			CheatsData::BulletTracer tracer{};
+			tracer.CreationTime = std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
+			tracer.Seed = 0;
+			tracer.bClosed = true;
+			tracer.Points.push_back(start);
+			tracer.Points.push_back(end);
+
+			std::lock_guard<std::mutex> lock(CheatsData::TracerMutex);
+			CheatsData::BulletTracers.push_back(std::move(tracer));
+		}
+
 		void ArmSilentRedirect()
 		{
 			if (!ConfigManager::B("Aimbot.Enabled") ||
@@ -439,6 +462,27 @@ namespace SilentAimHooks
 #endif
 			}
 
+			SDK::FVector tracerStart = startOk ? start : SDK::FVector{};
+			SDK::FVector tracerEnd = endOk ? end : SDK::FVector{};
+			bool tracerReady = localSource && startOk && endOk;
+			if (tracerReady && endParam)
+			{
+				SDK::FVector updatedEnd{};
+				if (NativeInterop::ReadVec3Param(endParam, updatedEnd))
+				{
+					tracerEnd = updatedEnd;
+				}
+
+				if (startParam)
+				{
+					SDK::FVector updatedStart{};
+					if (NativeInterop::ReadVec3Param(startParam, updatedStart))
+					{
+						tracerStart = updatedStart;
+					}
+				}
+			}
+
 			void* result = oFireDirectionTrace
 				? oFireDirectionTrace(
 					weapon,
@@ -450,6 +494,11 @@ namespace SilentAimHooks
 						traceScale,
 						allowThroughActors)
 				: nullptr;
+
+			if (tracerReady)
+			{
+				CaptureBulletTracer(tracerStart, tracerEnd);
+			}
 			if (!hadActiveRedirect)
 			{
 				FinishThreadSilentRedirect();
@@ -780,13 +829,19 @@ namespace SilentAimHooks
 
 	void Tick()
 	{
-		if (!ConfigManager::B("Aimbot.Enabled") || !ConfigManager::B("Aimbot.Silent"))
+		const bool wantsSilentHooks =
+			ConfigManager::B("Aimbot.Enabled") && ConfigManager::B("Aimbot.Silent");
+		const bool wantsTracerHooks = IsTracerCaptureEnabled();
+		if (!wantsSilentHooks && !wantsTracerHooks)
 		{
 			return;
 		}
 
-		EnsureWeaponBehaviorFireProjectileHook();
-		if (ConfigManager::B("Aimbot.NativeProjectileHook"))
+		if (wantsSilentHooks)
+		{
+			EnsureWeaponBehaviorFireProjectileHook();
+		}
+		if (ConfigManager::B("Aimbot.NativeProjectileHook") || wantsTracerHooks)
 		{
 			EnsureNativeProjectileHook();
 		}

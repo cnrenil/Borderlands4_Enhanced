@@ -7,35 +7,40 @@ int32 ViewportY = 0.0f;
 auto RenderColor = IM_COL32(255, 255, 255, 255);
 
 struct ESPActorCache {
-	FVector2D TopScreen;
-	FVector2D BottomScreen;
-	FVector2D LeftTopScreen;
-	FVector2D RightBottomScreen;
+	ACharacter* TargetActor;
 	ImU32 Color;
 	float HealthPct;
 	FString Name;
 	float Distance;
-	bool bValidScreen;
-	std::vector<std::pair<ImVec2, ImVec2>> SkeletonLines;
+};
+
+struct ESPActorRenderCache {
+	const ESPActorCache* Actor;
+	FVector2D TopScreen;
+	FVector2D BottomScreen;
+	FVector2D LeftTopScreen;
+	FVector2D RightBottomScreen;
+	float Width;
+	float Height;
+	float Distance;
 };
 
 struct ESPLootCache {
-	FVector2D ScreenPos;
+	AActor* TargetActor;
 	ImU32 Color;
 	FString Name;
 	float Distance;
-	bool bValidScreen;
 };
 
 struct ESPTracerCache {
-	ImVec2 Start;
-	ImVec2 End;
+	FVector StartWorld;
+	FVector EndWorld;
 	ImU32 ColorSegment;
 	ImU32 ColorGlow;
 	ImU32 ColorCore;
-	bool bVisible;
+	bool bHasSegment;
 	bool bImpact;
-	ImVec2 ImpactPos;
+	FVector ImpactWorld;
 	ImU32 ColorImpactOuter;
 	ImU32 ColorImpactInner;
 };
@@ -51,7 +56,7 @@ namespace
 		std::vector<ESPActorCache> CachedActors;
 		std::vector<ESPLootCache> CachedLoot;
 		std::vector<ESPTracerCache> CachedTracers;
-		std::vector<USkeletalMeshComponent*> HighlightedMeshes;
+		uint64_t LastActorRefreshMs = 0;
 		uint64_t LastLootRefreshMs = 0;
 	};
 
@@ -61,11 +66,44 @@ namespace
 		return state;
 	}
 
+	constexpr uint64_t kActorRefreshIntervalMs = 50;
 	constexpr uint64_t kLootRefreshIntervalMs = 250;
-	constexpr int32 kEnemyHighlightStencil = 252;
 }
 
 struct BonePair { FName Parent; FName Child; };
+
+static const std::vector<BonePair>& GetSkeletonBonePairs()
+{
+	static const std::vector<BonePair> BonePairs = []()
+	{
+		auto N = [](const wchar_t* name) -> FName
+		{
+			return UKismetStringLibrary::Conv_StringToName(name);
+		};
+
+		return std::vector<BonePair>{
+			{N(L"Hips"), N(L"Spine1")},
+			{N(L"Spine1"), N(L"Spine2")},
+			{N(L"Spine2"), N(L"Spine3")},
+			{N(L"Spine3"), N(L"Neck")},
+			{N(L"Neck"), N(L"Head")},
+			{N(L"Neck"), N(L"L_Upperarm")},
+			{N(L"L_Upperarm"), N(L"L_Forearm")},
+			{N(L"L_Forearm"), N(L"L_Hand")},
+			{N(L"Neck"), N(L"R_Upperarm")},
+			{N(L"R_Upperarm"), N(L"R_Forearm")},
+			{N(L"R_Forearm"), N(L"R_Hand")},
+			{N(L"Hips"), N(L"L_Thigh")},
+			{N(L"L_Thigh"), N(L"L_Shin")},
+			{N(L"L_Shin"), N(L"L_Foot")},
+			{N(L"Hips"), N(L"R_Thigh")},
+			{N(L"R_Thigh"), N(L"R_Shin")},
+			{N(L"R_Shin"), N(L"R_Foot")}
+		};
+	}();
+
+	return BonePairs;
+}
 
 static bool ProjectForOverlay(const FVector& worldPos, FVector2D& outScreen)
 {
@@ -179,61 +217,14 @@ static void DrawEnemyIndicator(UCanvas* canvas, const ImVec2& screenCenter, floa
 	GUI::Draw::TriangleFilled(p1, p2, p3, color, canvas);
 }
 
-static bool IsValidHighlightMesh(USkeletalMeshComponent* Mesh)
+static float GetTracerScale()
 {
-	return Mesh && !IsBadReadPtr(Mesh, sizeof(void*)) && Mesh->VTable;
-}
+	const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+	if (displaySize.y <= 1.0f)
+		return 1.0f;
 
-static void SetMeshHighlightState(USkeletalMeshComponent* Mesh, bool bEnabled)
-{
-	if (!IsValidHighlightMesh(Mesh))
-		return;
-
-	__try
-	{
-		Mesh->SetRenderCustomDepth(bEnabled);
-		if (bEnabled)
-		{
-			Mesh->SetCustomDepthStencilWriteMask(ERendererStencilMask::ERSM_Default);
-			Mesh->SetCustomDepthStencilValue(kEnemyHighlightStencil);
-		}
-		else
-		{
-			Mesh->SetCustomDepthStencilValue(0);
-		}
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-	}
-}
-
-static void ClearHighlightedMeshes(ESPState& State)
-{
-	for (USkeletalMeshComponent* Mesh : State.HighlightedMeshes)
-	{
-		SetMeshHighlightState(Mesh, false);
-	}
-	State.HighlightedMeshes.clear();
-}
-
-static void SyncHighlightedMeshes(ESPState& State, const std::vector<USkeletalMeshComponent*>& NextMeshes)
-{
-	std::unordered_set<USkeletalMeshComponent*> nextSet(NextMeshes.begin(), NextMeshes.end());
-	std::unordered_set<USkeletalMeshComponent*> currentSet(State.HighlightedMeshes.begin(), State.HighlightedMeshes.end());
-
-	for (USkeletalMeshComponent* Mesh : State.HighlightedMeshes)
-	{
-		if (nextSet.find(Mesh) == nextSet.end())
-			SetMeshHighlightState(Mesh, false);
-	}
-
-	for (USkeletalMeshComponent* Mesh : NextMeshes)
-	{
-		if (currentSet.find(Mesh) == currentSet.end())
-			SetMeshHighlightState(Mesh, true);
-	}
-
-	State.HighlightedMeshes = NextMeshes;
+	const float normalized = displaySize.y / 1080.0f;
+	return std::clamp(normalized, 0.75f, 1.15f);
 }
 
 void Cheats::UpdateESP()
@@ -244,10 +235,10 @@ void Cheats::UpdateESP()
 	{
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
-		ClearHighlightedMeshes(state);
 		state.CachedActors.clear();
 		state.CachedLoot.clear();
 		state.CachedTracers.clear();
+		state.LastActorRefreshMs = 0;
 		state.LastLootRefreshMs = 0;
 		return;
 	}
@@ -256,118 +247,57 @@ void Cheats::UpdateESP()
 	{
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
-		ClearHighlightedMeshes(state);
 		state.CachedActors.clear();
 		state.CachedLoot.clear();
 		state.CachedTracers.clear();
+		state.LastActorRefreshMs = 0;
 		state.LastLootRefreshMs = 0;
 		return;
 	}
 
 	std::vector<ESPActorCache> NewCache;
-	std::vector<USkeletalMeshComponent*> NewHighlightedMeshes;
-	std::unordered_set<USkeletalMeshComponent*> HighlightedMeshSet;
-	const bool bMeshHighlightEnabled = ConfigManager::B("ESP.ShadedFill");
-
-	for (ACharacter* TargetActor : GVars.UnitCache)
+	const uint64_t nowMs = GetTickCount64();
+	bool shouldRefreshActors = false;
 	{
-		if (!TargetActor || !Utils::IsValidActor(TargetActor)) continue;
+		auto& state = GetESPState();
+		std::lock_guard<std::mutex> lock(state.Mutex);
+		shouldRefreshActors = state.LastActorRefreshMs == 0 || (nowMs - state.LastActorRefreshMs) >= kActorRefreshIntervalMs;
+		if (!shouldRefreshActors)
+		{
+			NewCache = state.CachedActors;
+		}
+	}
 
+	if (shouldRefreshActors)
+	{
+		NewCache.reserve(GVars.UnitCache.size());
+
+		for (ACharacter* TargetActor : GVars.UnitCache)
+		{
+			if (!TargetActor || !Utils::IsValidActor(TargetActor)) continue;
 			if (TargetActor == SelfActor) continue;
 
-		// Check attitude and skip if friendly and setting is off
-		ETeamAttitude Attitude = Utils::GetAttitude(TargetActor);
-		if (Attitude == ETeamAttitude::Friendly && !ConfigManager::B("ESP.ShowTeam")) continue;
+			ETeamAttitude Attitude = Utils::GetAttitude(TargetActor);
+			if (Attitude == ETeamAttitude::Friendly && !ConfigManager::B("ESP.ShowTeam")) continue;
 
-		// Check health - skip dead
-		float HealthPct = Utils::GetHealthPercent(TargetActor);
-		if (HealthPct <= 0.0f) continue;
+			float HealthPct = Utils::GetHealthPercent(TargetActor);
+			if (HealthPct <= 0.0f) continue;
 
-		// Determine color
-		ImU32 Color = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.EnemyColor"));
-		if (Attitude == ETeamAttitude::Friendly) Color = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.TeamColor"));
-		else if (Attitude == ETeamAttitude::Neutral) Color = IM_COL32(255, 255, 0, 255); 
+			ImU32 Color = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.EnemyColor"));
+			if (Attitude == ETeamAttitude::Friendly) Color = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.TeamColor"));
+			else if (Attitude == ETeamAttitude::Neutral) Color = IM_COL32(255, 255, 0, 255);
 
-			const FVector ActorLocation = TargetActor->K2_GetActorLocation();
-			
-			// Distance check
 			const float Distance = Utils::GetDistanceMeters(SelfActor, TargetActor);
 			if (Distance < 0.0f || Distance > 1000.0f) continue;
 
-		if (bMeshHighlightEnabled && TargetActor->Mesh && HighlightedMeshSet.insert(TargetActor->Mesh).second)
-		{
-			NewHighlightedMeshes.push_back(TargetActor->Mesh);
-		}
-
-		FVector2D TopScreen, BottomScreen, LeftTopScreen, RightBottomScreen;
-		const bool bVisible = ProjectActorScreenBounds(TargetActor, TopScreen, BottomScreen, LeftTopScreen, RightBottomScreen);
-
-		if (bVisible)
-		{
-			ESPActorCache Cache;
-			Cache.bValidScreen = true;
-			Cache.TopScreen = TopScreen;
-			Cache.BottomScreen = BottomScreen;
-			Cache.LeftTopScreen = LeftTopScreen;
-			Cache.RightBottomScreen = RightBottomScreen;
+			ESPActorCache Cache{};
+			Cache.TargetActor = TargetActor;
 			Cache.Color = Color;
 			Cache.HealthPct = HealthPct;
 			Cache.Distance = Distance;
 			if (ConfigManager::B("ESP.ShowEnemyName"))
 			{
 				Cache.Name = UKismetSystemLibrary::GetDisplayName(TargetActor);
-			}
-
-			// Don't draw skeletons for far away targets to save FPS (Skeletal LOD)
-			if (ConfigManager::B("ESP.Bones") && TargetActor->Mesh && Distance < 70.0f) // 70m limit
-			{
-				auto GetCachedBone = [&](const std::string& name) -> FName {
-					return UKismetStringLibrary::Conv_StringToName(UtfN::StringToWString(name).c_str());
-				};
-
-				std::vector<BonePair> BonesToDraw = {
-					{GetCachedBone("Hips"), GetCachedBone("Spine1")},
-					{GetCachedBone("Spine1"), GetCachedBone("Spine2")},
-					{GetCachedBone("Spine2"), GetCachedBone("Spine3")},
-					{GetCachedBone("Spine3"), GetCachedBone("Neck")},
-					{GetCachedBone("Neck"), GetCachedBone("Head")},
-					// Left Arm
-					{GetCachedBone("Neck"), GetCachedBone("L_Upperarm")},
-					{GetCachedBone("L_Upperarm"), GetCachedBone("L_Forearm")},
-					{GetCachedBone("L_Forearm"), GetCachedBone("L_Hand")},
-					// Right Arm
-					{GetCachedBone("Neck"), GetCachedBone("R_Upperarm")},
-					{GetCachedBone("R_Upperarm"), GetCachedBone("R_Forearm")},
-					{GetCachedBone("R_Forearm"), GetCachedBone("R_Hand")},
-					// Left Leg
-					{GetCachedBone("Hips"), GetCachedBone("L_Thigh")},
-					{GetCachedBone("L_Thigh"), GetCachedBone("L_Shin")},
-					{GetCachedBone("L_Shin"), GetCachedBone("L_Foot")},
-					// Right Leg
-					{GetCachedBone("Hips"), GetCachedBone("R_Thigh")},
-					{GetCachedBone("R_Thigh"), GetCachedBone("R_Shin")},
-					{GetCachedBone("R_Shin"), GetCachedBone("R_Foot")}
-				};
-
-				for (const auto& bp : BonesToDraw)
-				{
-					int32 Idx1 = TargetActor->Mesh->GetBoneIndex(bp.Parent);
-					int32 Idx2 = TargetActor->Mesh->GetBoneIndex(bp.Child);
-					
-					if (Idx1 == -1 || Idx2 == -1) continue;
-
-					FTransform T1 = TargetActor->Mesh->GetBoneTransform(bp.Parent, ERelativeTransformSpace::RTS_World);
-					FTransform T2 = TargetActor->Mesh->GetBoneTransform(bp.Child, ERelativeTransformSpace::RTS_World);
-					
-					FVector P1 = T1.Translation;
-					FVector P2 = T2.Translation;
-
-					FVector2D S1, S2;
-					if (ProjectForOverlay(P1, S1) &&
-						ProjectForOverlay(P2, S2)) {
-						Cache.SkeletonLines.push_back({ImVec2((float)S1.X, (float)S1.Y), ImVec2((float)S2.X, (float)S2.Y)});
-					}
-				}
 			}
 
 			NewCache.push_back(Cache);
@@ -402,16 +332,11 @@ void Cheats::UpdateESP()
 					if (!Actor || !Utils::IsValidActor(Actor)) return true;
 					if (!Actor->IsA(SDK::AInventoryPickup::StaticClass())) return true;
 
-					const FVector actorLoc = Actor->K2_GetActorLocation();
 					const float distance = Utils::GetDistanceMeters(SelfActor, Actor);
 					if (distance < 0.0f || distance > maxDistance) return true;
 
-					FVector2D screen;
-					if (!ProjectForOverlay(actorLoc, screen)) return true;
-
 					ESPLootCache Cache{};
-					Cache.bValidScreen = true;
-					Cache.ScreenPos = screen;
+					Cache.TargetActor = Actor;
 					Cache.Color = lootColor;
 					Cache.Distance = distance;
 					Cache.Name = UKismetSystemLibrary::GetDisplayName(Actor);
@@ -441,21 +366,19 @@ void Cheats::UpdateESP()
 	{
 		std::lock_guard<std::mutex> lock(CheatsData::TracerMutex);
 		float CurrentTime = std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
-		
-		const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
-		FVector CamLoc = CameraPOV.Location;
-		FVector CamFwd = Utils::FRotatorToVector(CameraPOV.Rotation);
+		NewTracers.reserve(CheatsData::BulletTracers.size());
 
 		for (auto it = CheatsData::BulletTracers.begin(); it != CheatsData::BulletTracers.end(); )
 		{
-			if (CurrentTime - it->CreationTime > ConfigManager::F("ESP.TracerDuration"))
+			const float tracerDuration = ConfigManager::F("ESP.TracerDuration");
+			if (CurrentTime - it->CreationTime > tracerDuration)
 			{
 				it = CheatsData::BulletTracers.erase(it);
 				continue;
 			}
 			
 			float Age = CurrentTime - it->CreationTime;
-			float FadeRatio = 1.0f - (Age / ConfigManager::F("ESP.TracerDuration"));
+			float FadeRatio = 1.0f - (Age / tracerDuration);
 			if (FadeRatio < 0.0f) FadeRatio = 0.0f;
 			
 			ImVec4 BaseColor;
@@ -471,80 +394,45 @@ void Cheats::UpdateESP()
 				BaseColor = ImVec4(ConfigManager::Color("ESP.TracerColor").x, ConfigManager::Color("ESP.TracerColor").y, ConfigManager::Color("ESP.TracerColor").z, FadeRatio);
 			}
 
-			size_t PointsCount = it->Points.size();
-
-			for (size_t i = 0; i < PointsCount; i++)
+			const size_t PointsCount = it->Points.size();
+			if (PointsCount >= 2)
 			{
-				FVector P1 = it->Points[i];
-				FVector2D p1Screen;
-				bool bP1Visible = ProjectForOverlay(P1, p1Screen);
-
-				if (i + 1 < PointsCount)
+				for (size_t i = 0; i + 1 < PointsCount; ++i)
 				{
-					FVector P2 = it->Points[i+1];
-					FVector2D p2Screen;
-					bool bP2Visible = ProjectForOverlay(P2, p2Screen);
-					
-					FVector P1_Final = P1;
-					FVector P2_Final = P2;
-					bool bCanDraw = false;
+					ESPTracerCache TC{};
+					TC.bHasSegment = true;
+					TC.StartWorld = it->Points[i];
+					TC.EndWorld = it->Points[i + 1];
+					TC.ColorSegment = ImGui::ColorConvertFloat4ToU32(ImVec4(BaseColor.x, BaseColor.y, BaseColor.z, BaseColor.w * 0.2f));
+					TC.ColorGlow = ImGui::ColorConvertFloat4ToU32(ImVec4(BaseColor.x, BaseColor.y, BaseColor.z, BaseColor.w * 0.5f));
+					TC.ColorCore = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, BaseColor.w));
 
-					if (bP1Visible && bP2Visible)
+					if (i > 0 && (it->bClosed || i < PointsCount - 1))
 					{
-						bCanDraw = true;
+						TC.bImpact = true;
+						TC.ImpactWorld = it->Points[i];
+						TC.ColorImpactOuter = ImGui::ColorConvertFloat4ToU32(ImVec4(BaseColor.x, BaseColor.y, BaseColor.z, BaseColor.w * 0.3f));
+						TC.ColorImpactInner = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, BaseColor.w));
 					}
-					else if (bP1Visible || bP2Visible) 
+					else
 					{
-						auto GetDist = [&](const FVector& P) { return ((P.X - CamLoc.X) * CamFwd.X + (P.Y - CamLoc.Y) * CamFwd.Y + (P.Z - CamLoc.Z) * CamFwd.Z); };
-						float d1 = GetDist(P1);
-						float d2 = GetDist(P2);
-						float epsilon = 1.0f;
-
-						if ((d1 < epsilon && d2 >= epsilon) || (d2 < epsilon && d1 >= epsilon))
-						{
-							float t = (epsilon - d1) / (d2 - d1);
-							FVector ClippedPoint = P1 + (P2 - P1) * t;
-							if (d1 < epsilon) P1_Final = ClippedPoint;
-							else P2_Final = ClippedPoint;
-							ProjectForOverlay(P1_Final, p1Screen);
-							ProjectForOverlay(P2_Final, p2Screen);
-							bCanDraw = true;
-						}
+						TC.bImpact = false;
 					}
 
-					if (bCanDraw)
-					{
-						ESPTracerCache TC;
-						TC.bVisible = true;
-						TC.Start = ImVec2((float)p1Screen.X, (float)p1Screen.Y);
-						TC.End = ImVec2((float)p2Screen.X, (float)p2Screen.Y);
-						TC.ColorSegment = ImGui::ColorConvertFloat4ToU32(ImVec4(BaseColor.x, BaseColor.y, BaseColor.z, BaseColor.w * 0.2f));
-						TC.ColorGlow = ImGui::ColorConvertFloat4ToU32(ImVec4(BaseColor.x, BaseColor.y, BaseColor.z, BaseColor.w * 0.5f));
-						TC.ColorCore = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, BaseColor.w));
-						
-						if (i > 0 && bP1Visible && (it->bClosed || i < PointsCount - 1))
-						{
-							TC.bImpact = true;
-							TC.ImpactPos = ImVec2((float)p1Screen.X, (float)p1Screen.Y);
-							TC.ColorImpactOuter = ImGui::ColorConvertFloat4ToU32(ImVec4(BaseColor.x, BaseColor.y, BaseColor.z, BaseColor.w * 0.3f));
-							TC.ColorImpactInner = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, BaseColor.w));
-						} else {
-							TC.bImpact = false;
-						}
-						NewTracers.push_back(TC);
-					}
-				}
-				else if (i > 0 && bP1Visible && it->bClosed)
-				{
-					ESPTracerCache TC;
-					TC.bVisible = false;
-					TC.bImpact = true;
-					TC.ImpactPos = ImVec2((float)p1Screen.X, (float)p1Screen.Y);
-					TC.ColorImpactOuter = ImGui::ColorConvertFloat4ToU32(ImVec4(BaseColor.x, BaseColor.y, BaseColor.z, BaseColor.w * 0.3f));
-					TC.ColorImpactInner = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, BaseColor.w));
 					NewTracers.push_back(TC);
 				}
 			}
+			else if (PointsCount == 1 && it->bClosed)
+			{
+				ESPTracerCache TC{};
+				TC.bHasSegment = false;
+				TC.bImpact = true;
+				TC.ImpactWorld = it->Points[0];
+				TC.ColorImpactOuter = ImGui::ColorConvertFloat4ToU32(ImVec4(BaseColor.x, BaseColor.y, BaseColor.z, BaseColor.w * 0.3f));
+				TC.ColorImpactInner = ImGui::ColorConvertFloat4ToU32(ImVec4(1.0f, 1.0f, 1.0f, BaseColor.w));
+				NewTracers.push_back(TC);
+			}
+
 			++it;
 		}
 	}
@@ -552,10 +440,8 @@ void Cheats::UpdateESP()
 	{
 		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
-		if (bMeshHighlightEnabled)
-			SyncHighlightedMeshes(state, NewHighlightedMeshes);
-		else
-			ClearHighlightedMeshes(state);
+		if (shouldRefreshActors)
+			state.LastActorRefreshMs = nowMs;
 		state.CachedActors = std::move(NewCache);
 		state.CachedLoot = std::move(NewLoot);
 		state.CachedTracers = std::move(NewTracers);
@@ -592,25 +478,66 @@ void Cheats::RenderESP()
 		LocalTracers = state.CachedTracers;
 	}
 
+	std::vector<ESPActorRenderCache> RenderActors;
+	RenderActors.reserve(LocalActors.size());
+
 	for (const auto& Actor : LocalActors)
 	{
-		const float Height = (std::max)(0.0f, (float)Actor.RightBottomScreen.Y - (float)Actor.LeftTopScreen.Y);
-		const float Width = (std::max)(0.0f, (float)Actor.RightBottomScreen.X - (float)Actor.LeftTopScreen.X);
+		if (!Actor.TargetActor || !Utils::IsValidActor(Actor.TargetActor))
+			continue;
+
+		FVector2D TopScreen, BottomScreen, LeftTopScreen, RightBottomScreen;
+		if (!ProjectActorScreenBounds(Actor.TargetActor, TopScreen, BottomScreen, LeftTopScreen, RightBottomScreen))
+			continue;
+
+		const float Width = (std::max)(0.0f, (float)RightBottomScreen.X - (float)LeftTopScreen.X);
+		const float Height = (std::max)(0.0f, (float)RightBottomScreen.Y - (float)LeftTopScreen.Y);
 		if (Height <= 0.0f || Width <= 0.0f) continue;
 
+		ESPActorRenderCache renderCache{};
+		renderCache.Actor = &Actor;
+		renderCache.TopScreen = TopScreen;
+		renderCache.BottomScreen = BottomScreen;
+		renderCache.LeftTopScreen = LeftTopScreen;
+		renderCache.RightBottomScreen = RightBottomScreen;
+		renderCache.Width = Width;
+		renderCache.Height = Height;
+		renderCache.Distance = Actor.Distance;
+		RenderActors.push_back(renderCache);
+	}
+
+	for (const auto& RenderActor : RenderActors)
+	{
+		const auto& Actor = *RenderActor.Actor;
+		const float currentDistance = RenderActor.Distance;
+		const float Width = RenderActor.Width;
+		const float Height = RenderActor.Height;
+
 		// Skeleton
-		if (ConfigManager::B("ESP.Bones") && Actor.SkeletonLines.size() > 0)
+		if (ConfigManager::B("ESP.Bones") && Actor.TargetActor->Mesh && currentDistance >= 0.0f && currentDistance < 70.0f)
 		{
-			for (const auto& Line : Actor.SkeletonLines)
+			for (const auto& bp : GetSkeletonBonePairs())
 			{
-				GUI::Draw::Line(Line.first, Line.second, Actor.Color, 2.0f, Canvas);
+				const int32 idx1 = Actor.TargetActor->Mesh->GetBoneIndex(bp.Parent);
+				const int32 idx2 = Actor.TargetActor->Mesh->GetBoneIndex(bp.Child);
+				if (idx1 == -1 || idx2 == -1)
+					continue;
+
+				const FVector p1 = Actor.TargetActor->Mesh->GetBoneTransform(bp.Parent, ERelativeTransformSpace::RTS_World).Translation;
+				const FVector p2 = Actor.TargetActor->Mesh->GetBoneTransform(bp.Child, ERelativeTransformSpace::RTS_World).Translation;
+
+				FVector2D s1, s2;
+				if (ProjectForOverlay(p1, s1) && ProjectForOverlay(p2, s2))
+				{
+					GUI::Draw::Line(ImVec2((float)s1.X, (float)s1.Y), ImVec2((float)s2.X, (float)s2.Y), Actor.Color, 2.0f, Canvas);
+				}
 			}
 		}
 
 		// Box
 		if (ConfigManager::B("ESP.ShowBox"))
 		{
-			const FVector2D boxPos((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y);
+			const FVector2D boxPos((float)RenderActor.LeftTopScreen.X, (float)RenderActor.LeftTopScreen.Y);
 			const FVector2D boxSize(Width, Height);
 			GUI::Draw::Rect(
 				ImVec2(boxPos.X, boxPos.Y),
@@ -623,8 +550,8 @@ void Cheats::RenderESP()
 		// Health Bar
 		float BarWidth = 4.0f;
 		float BarHeight = Height;
-		float BarX = (float)Actor.LeftTopScreen.X - 6.0f;
-		float BarY = (float)Actor.LeftTopScreen.Y;
+		float BarX = (float)RenderActor.LeftTopScreen.X - 6.0f;
+		float BarY = (float)RenderActor.LeftTopScreen.Y;
 
 		// Background
 		GUI::Draw::RectFilled(ImVec2(BarX, BarY), ImVec2(BarX + BarWidth, BarY + BarHeight), IM_COL32(0, 0, 0, 150), Canvas);
@@ -641,18 +568,19 @@ void Cheats::RenderESP()
 		if (ConfigManager::B("ESP.ShowEnemyDistance"))
 		{
 			char DistanceText[32];
-			snprintf(DistanceText, sizeof(DistanceText), "%.0f m", Actor.Distance);
-			GUI::Draw::Text(DistanceText, ImVec2((float)Actor.LeftTopScreen.X, (float)Actor.RightBottomScreen.Y + 2), IM_COL32(255, 255, 255, 255), FVector2D(1.0f, 1.0f), false, false, true, Canvas);
+			snprintf(DistanceText, sizeof(DistanceText), "%.0f m", currentDistance >= 0.0f ? currentDistance : Actor.Distance);
+			GUI::Draw::Text(DistanceText, ImVec2((float)RenderActor.LeftTopScreen.X, (float)RenderActor.RightBottomScreen.Y + 2), IM_COL32(255, 255, 255, 255), FVector2D(1.0f, 1.0f), false, false, true, Canvas);
 		}
 
 		if (ConfigManager::B("ESP.ShowEnemyName"))
 		{
 			const float minScale = 0.6f;
 			const float maxScale = 1.0f;
-			const float t = std::clamp(Actor.Distance / 150.0f, 0.0f, 1.0f);
+			const float nameDistance = currentDistance >= 0.0f ? currentDistance : Actor.Distance;
+			const float t = std::clamp(nameDistance / 150.0f, 0.0f, 1.0f);
 			const float nameScale = maxScale - (maxScale - minScale) * t;
 			const FVector2D scale(nameScale, nameScale);
-			GUI::Draw::Text(Actor.Name, ImVec2((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y - 15), Actor.Color, scale, false, false, true, Canvas);
+			GUI::Draw::Text(Actor.Name, ImVec2((float)RenderActor.LeftTopScreen.X, (float)RenderActor.LeftTopScreen.Y - 15), Actor.Color, scale, false, false, true, Canvas);
 		}
 	}
 
@@ -665,43 +593,70 @@ void Cheats::RenderESP()
 		const float maxFOVNormalized = ConfigManager::F("Aimbot.MaxFOV") / 90.0f;
 		const float indicatorRadius = (std::max)(16.0f, maxFOVNormalized * ((float)viewportSize.Y * 0.5f));
 
-		for (const auto& Actor : LocalActors)
+		for (const auto& RenderActor : RenderActors)
 		{
 			const ImVec2 actorCenter(
-				((float)Actor.LeftTopScreen.X + (float)Actor.RightBottomScreen.X) * 0.5f,
-				((float)Actor.LeftTopScreen.Y + (float)Actor.RightBottomScreen.Y) * 0.5f
+				((float)RenderActor.LeftTopScreen.X + (float)RenderActor.RightBottomScreen.X) * 0.5f,
+				((float)RenderActor.LeftTopScreen.Y + (float)RenderActor.RightBottomScreen.Y) * 0.5f
 			);
-			DrawEnemyIndicator(Canvas, screenCenter, indicatorRadius, actorCenter, Actor.Color);
+			DrawEnemyIndicator(Canvas, screenCenter, indicatorRadius, actorCenter, RenderActor.Actor->Color);
 		}
 	}
 
 	for (const auto& Loot : LocalLoot)
 	{
+		if (!Loot.TargetActor || !Utils::IsValidActor(Loot.TargetActor))
+			continue;
+
+		FVector2D screenPos;
+		if (!ProjectForOverlay(Loot.TargetActor->K2_GetActorLocation(), screenPos))
+			continue;
+
+		const float currentDistance = Loot.Distance;
 		const float minScale = 0.55f;
 		const float maxScale = 0.95f;
 		float maxDistance = ConfigManager::F("ESP.LootMaxDistance");
 		if (maxDistance < 1.0f) maxDistance = 1.0f;
-		const float t = std::clamp(Loot.Distance / maxDistance, 0.0f, 1.0f);
+		const float scaleDistance = currentDistance >= 0.0f ? currentDistance : Loot.Distance;
+		const float t = std::clamp(scaleDistance / maxDistance, 0.0f, 1.0f);
 		const float nameScale = maxScale - (maxScale - minScale) * t;
 		const FVector2D scale(nameScale, nameScale);
-		const FVector2D drawPos(Loot.ScreenPos.X, Loot.ScreenPos.Y);
+		const FVector2D drawPos(screenPos.X, screenPos.Y);
 
 		GUI::Draw::Text(Loot.Name, ImVec2(drawPos.X, drawPos.Y), Loot.Color, scale, false, false, true, Canvas);
 	}
 
 	if (ConfigManager::B("ESP.BulletTracers"))
 	{
+		const float tracerScale = GetTracerScale();
+		const float segmentThickness = 2.2f * tracerScale;
+		const float glowThickness = 1.2f * tracerScale;
+		const float coreThickness = 0.8f * tracerScale;
+		const float impactOuterRadius = 4.2f * tracerScale;
+		const float impactInnerRadius = 2.4f * tracerScale;
+
 		for (const auto& Tracer : LocalTracers)
 		{
-			if (Tracer.bVisible) {
-				GUI::Draw::Line(Tracer.Start, Tracer.End, Tracer.ColorSegment, 6.0f, Canvas);
-				GUI::Draw::Line(Tracer.Start, Tracer.End, Tracer.ColorGlow, 3.0f, Canvas);
-				GUI::Draw::Line(Tracer.Start, Tracer.End, Tracer.ColorCore, 1.0f, Canvas);
+			if (Tracer.bHasSegment) {
+				FVector2D startScreen, endScreen;
+				if (ProjectForOverlay(Tracer.StartWorld, startScreen) && ProjectForOverlay(Tracer.EndWorld, endScreen))
+				{
+					const ImVec2 start((float)startScreen.X, (float)startScreen.Y);
+					const ImVec2 end((float)endScreen.X, (float)endScreen.Y);
+					GUI::Draw::Line(start, end, Tracer.ColorSegment, segmentThickness, Canvas);
+					GUI::Draw::Line(start, end, Tracer.ColorGlow, glowThickness, Canvas);
+					GUI::Draw::Line(start, end, Tracer.ColorCore, coreThickness, Canvas);
+				}
 			}
 
 			if (Tracer.bImpact) {
-				GUI::Draw::CircleFilled(Tracer.ImpactPos, 6.5f, Tracer.ColorImpactOuter, Canvas);
-				GUI::Draw::CircleFilled(Tracer.ImpactPos, 4.0f, Tracer.ColorImpactInner, Canvas);
+				FVector2D impactScreen;
+				if (ProjectForOverlay(Tracer.ImpactWorld, impactScreen))
+				{
+					const ImVec2 impact((float)impactScreen.X, (float)impactScreen.Y);
+					GUI::Draw::CircleFilled(impact, impactOuterRadius, Tracer.ColorImpactOuter, Canvas);
+					GUI::Draw::CircleFilled(impact, impactInnerRadius, Tracer.ColorImpactInner, Canvas);
+				}
 			}
 		}
 	}

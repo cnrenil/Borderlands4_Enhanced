@@ -13,17 +13,22 @@ struct Engine
 
 struct Hooks
 {
+	using PostRenderFn = void(*)(UGameViewportClient*, UCanvas*);
+
 	struct State
 	{
 		void** pcVTable = nullptr;
 		void** psVTable = nullptr;
 		void** cmVTable = nullptr;
-		void** hudVTable = nullptr;
+		void** viewportVTable = nullptr;
+		PostRenderFn originalPostRender = nullptr;
 	};
 
 	static State& GetState();
 
 	static bool HookProcessEvent();
+	static bool HookPostRender();
+	static bool IsPostRenderHooked();
 	static void UnhookAll();
 };
 

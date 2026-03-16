@@ -655,6 +655,64 @@ namespace
                std::isfinite(static_cast<float>(point.Z));
     }
 
+    float GetAimBoneNameBias(const std::string& boneNameLower)
+    {
+        if (boneNameLower.empty())
+            return 0.0f;
+
+        static const std::array<const char*, 14> kPreferredPatterns = {
+            "head",
+            "neck",
+            "chest",
+            "spine",
+            "body",
+            "torso",
+            "core",
+            "center",
+            "offset",
+            "vent",
+            "grabber",
+            "shield",
+            "upperarm",
+            "forearm"
+        };
+
+        static const std::array<const char*, 16> kPenaltyPatterns = {
+            "root",
+            "base",
+            "pelvis",
+            "hips",
+            "hand",
+            "turret",
+            "bullet",
+            "ammo",
+            "attachment",
+            "pivot",
+            "rotate",
+            "orb",
+            "fin",
+            "mineorb",
+            "constructor_fin_ammo",
+            "aimbullet"
+        };
+
+        float bias = 0.0f;
+
+        for (const char* pattern : kPreferredPatterns)
+        {
+            if (boneNameLower.find(pattern) != std::string::npos)
+                bias -= 0.22f;
+        }
+
+        for (const char* pattern : kPenaltyPatterns)
+        {
+            if (boneNameLower.find(pattern) != std::string::npos)
+                bias += 0.4f;
+        }
+
+        return bias;
+    }
+
     bool BuildReliableMeshBounds(ACharacter* TargetChar, FVector& OutOrigin, FVector& OutExtent, std::vector<std::pair<std::string, FVector>>* OutSampledBones)
     {
         if (OutSampledBones)
@@ -727,6 +785,71 @@ namespace
             *OutSampledBones = std::move(sampledBones);
         return true;
     }
+
+    bool TryGetMiddleBonePoint(
+        const std::vector<std::pair<std::string, FVector>>& sampledBones,
+        const FVector& origin,
+        const FVector& extent,
+        FVector& outPoint)
+    {
+        if (sampledBones.empty())
+            return false;
+
+        auto computePlanarDistanceSq = [&](const FVector& point) -> float
+        {
+            const float dx = static_cast<float>(point.X - origin.X);
+            const float dy = static_cast<float>(point.Y - origin.Y);
+            return dx * dx + dy * dy;
+        };
+
+        auto selectBestCandidate = [&](bool requireInteriorFit) -> bool
+        {
+            float bestScore = FLT_MAX;
+            bool found = false;
+
+            const float safeExtentX = (std::max)(static_cast<float>(extent.X), 1.0f);
+            const float safeExtentY = (std::max)(static_cast<float>(extent.Y), 1.0f);
+            const float safeExtentZ = (std::max)(static_cast<float>(extent.Z), 1.0f);
+            const float maxDx = (std::max)(50.0f, safeExtentX * 1.15f);
+            const float maxDy = (std::max)(50.0f, safeExtentY * 1.15f);
+            const float maxDz = (std::max)(50.0f, safeExtentZ * 1.15f);
+
+            for (const auto& [boneName, point] : sampledBones)
+            {
+                if (boneName.empty() || !IsFiniteVector(point))
+                    continue;
+
+                if (requireInteriorFit)
+                {
+                    if (fabsf(static_cast<float>(point.X - origin.X)) > maxDx ||
+                        fabsf(static_cast<float>(point.Y - origin.Y)) > maxDy ||
+                        fabsf(static_cast<float>(point.Z - origin.Z)) > maxDz)
+                    {
+                        continue;
+                    }
+                }
+
+                const float normalizedHeightOffset = fabsf(static_cast<float>(point.Z - origin.Z)) / safeExtentZ;
+                const float normalizedPlanarOffset =
+                    sqrtf(computePlanarDistanceSq(point)) / ((std::max)(safeExtentX, safeExtentY));
+                const float score =
+                    normalizedHeightOffset +
+                    normalizedPlanarOffset * 0.35f +
+                    GetAimBoneNameBias(boneName);
+
+                if (score < bestScore)
+                {
+                    bestScore = score;
+                    outPoint = point;
+                    found = true;
+                }
+            }
+
+            return found;
+        };
+
+        return selectBestCandidate(true) || selectBestCandidate(false);
+    }
 }
 
 bool Utils::GetReliableMeshBounds(ACharacter* TargetChar, FVector& OutOrigin, FVector& OutExtent)
@@ -795,6 +918,54 @@ FVector Utils::GetBestAimPoint(ACharacter* TargetChar, const std::string& Prefer
     if (!PreferredBone.empty() && tryBone(PreferredBone.c_str(), aimPoint, true))
         return aimPoint;
 
+    static const std::array<const char*, 10> kHeadBones = {
+        "Head",
+        "head",
+        "Head1",
+        "head1",
+        "Neck",
+        "neck",
+        "Helmet",
+        "helmet",
+        "Skull",
+        "skull"
+    };
+
+    for (const char* boneName : kHeadBones)
+    {
+        if (tryBone(boneName, aimPoint, true))
+            return aimPoint;
+    }
+
+    static const std::array<const char*, 20> kCoreFallbackBones = {
+        "Offset",
+        "Body",
+        "Core",
+        "Center",
+        "CenterMass",
+        "Chest",
+        "UpperChest",
+        "Spine3",
+        "Spine2",
+        "Spine1",
+        "Spine",
+        "Neck",
+        "MineGrabber",
+        "Vent_Start",
+        "Vent_Mid",
+        "Vent_End",
+        "L_Shield_Upper",
+        "R_Shield_Upper",
+        "Upperarm",
+        "Forearm"
+    };
+
+    for (const char* boneName : kCoreFallbackBones)
+    {
+        if (tryBone(boneName, aimPoint, true))
+            return aimPoint;
+    }
+
     static const std::array<const char*, 12> kCenterMassBones = {
         "Spine3",
         "Spine2",
@@ -819,11 +990,26 @@ FVector Utils::GetBestAimPoint(ACharacter* TargetChar, const std::string& Prefer
     if (!PreferredBone.empty() && tryBone(PreferredBone.c_str(), aimPoint, false))
         return aimPoint;
 
+    for (const char* boneName : kHeadBones)
+    {
+        if (tryBone(boneName, aimPoint, false))
+            return aimPoint;
+    }
+
+    for (const char* boneName : kCoreFallbackBones)
+    {
+        if (tryBone(boneName, aimPoint, false))
+            return aimPoint;
+    }
+
     for (const char* boneName : kCenterMassBones)
     {
         if (tryBone(boneName, aimPoint, false))
             return aimPoint;
     }
+
+    if (TryGetMiddleBonePoint(sampledBones, origin, extent, aimPoint))
+        return aimPoint;
 
     if (hasReliableMeshBounds && extent.Z > 1.0f)
     {

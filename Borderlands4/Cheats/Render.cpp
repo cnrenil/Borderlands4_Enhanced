@@ -37,10 +37,6 @@ namespace
     struct RenderState
     {
         uint32_t LastUpdateFrame = 0xFFFFFFFF;
-        uint32_t LastCanvasTickPresentFrame = 0xFFFFFFFF;
-        uint64_t LastCanvasTickTimeMs = 0;
-        uint64_t LastHudSignalTimeMs = 0;
-        bool LoggedCanvasTickActive = false;
     };
 
     RenderState& GetRenderState()
@@ -71,36 +67,30 @@ namespace
         }
     }
 
-    void RunGameThreadRenderTick(UCanvas* Canvas, bool bAllowDraw)
+    void RunGameThreadRenderTick(bool bAllowDraw)
     {
         const int currentFrame = g_PresentCount.load();
         auto& renderState = GetRenderState();
-        if (renderState.LastCanvasTickPresentFrame == static_cast<uint32_t>(currentFrame))
+        if (renderState.LastUpdateFrame == static_cast<uint32_t>(currentFrame))
             return;
 
-        Utils::SetCurrentCanvas(Canvas);
-        renderState.LastCanvasTickPresentFrame = static_cast<uint32_t>(currentFrame);
-        renderState.LastCanvasTickTimeMs = GetTickCount64();
-
-        if (Canvas && !renderState.LoggedCanvasTickActive)
-        {
-            renderState.LoggedCanvasTickActive = true;
-            LOG_INFO("CanvasTick", "GameThreadCanvasTick active. Canvas=%p", Canvas);
-        }
+        Utils::SetCurrentCanvas(nullptr);
+        renderState.LastUpdateFrame = static_cast<uint32_t>(currentFrame);
 
         if (!TryAutoSetVariablesForRender())
         {
-            Logger::LogThrottled(Logger::Level::Warning, "CanvasTick", 1000, "GameThread canvas tick: AutoSetVariables exception, skipping frame");
+            Logger::LogThrottled(Logger::Level::Warning, "Render", 1000, "Present render tick: AutoSetVariables exception, skipping frame");
             Utils::SetCurrentCanvas(nullptr);
             return;
         }
 
         // Camera and gameplay-facing updates should run on the game thread.
         Cheats::UpdateCamera();
+        SilentAimHooks::Tick();
 
         if (Utils::bIsInGame)
         {
-            Logger::LogThrottled(Logger::Level::Debug, "CanvasTick", 10000, "Cheats::GameThreadCanvasTick: HUD/game-thread logic active");
+            Logger::LogThrottled(Logger::Level::Debug, "Render", 10000, "Present render tick: gameplay logic active");
             if (ConfigManager::B("Player.ESP")) Cheats::UpdateESP();
             if (ConfigManager::B("Aimbot.Enabled"))
             {
@@ -139,23 +129,23 @@ namespace
     }
 }
 
-void Cheats::GameThreadCanvasTick(UCanvas* Canvas)
-{
-    auto& renderState = GetRenderState();
-    renderState.LastHudSignalTimeMs = GetTickCount64();
-    RunGameThreadRenderTick(Canvas, Canvas != nullptr);
-}
-
 void Cheats::DrawReticle()
 {
-    if (!IsOTSAdsActive())
+    if (!ConfigManager::B("Misc.Reticle") || !IsOTSAdsActive())
         return;
 
-    const ImVec2 center = GetCustomReticleScreenPos();
-    const ImU32 outer = IM_COL32(0, 0, 0, 180);
-    const ImU32 inner = IM_COL32(255, 255, 255, 255);
-    const float gap = 3.0f;
-    const float len = 8.0f;
+    const ImVec2 offset = ConfigManager::Vec2("Misc.ReticlePosition");
+    const ImVec2 baseCenter = GetCustomReticleScreenPos();
+    const ImVec2 center(baseCenter.x + offset.x, baseCenter.y + offset.y);
+    const ImVec4 reticleColor = ConfigManager::Color("Misc.ReticleColor");
+    const ImU32 inner = ImGui::ColorConvertFloat4ToU32(reticleColor);
+    const ImU32 outer = IM_COL32(0, 0, 0, static_cast<int>(reticleColor.w * 180.0f));
+    const float size = std::clamp(ConfigManager::F("Misc.ReticleSize"), 2.0f, 30.0f);
+    const float gap = size * 0.45f;
+    const float len = size * 1.2f;
+    const float dotOuterRadius = (std::max)(1.5f, size * 0.32f);
+    const float dotInnerRadius = (std::max)(1.0f, size * 0.16f);
+    const bool drawCrosshair = ConfigManager::B("Misc.CrossReticle");
 
     if (GUI::Draw::ResolveBackend() == GUI::Draw::Backend::UCanvas)
     {
@@ -169,8 +159,12 @@ void Cheats::DrawReticle()
         LOG_WARN("DrawPath", "DrawReticle using ImGui fallback path (Canvas unavailable).");
     }
 
-    GUI::Draw::Circle(center, 2.0f, outer, 12, 2.0f);
-    GUI::Draw::Circle(center, 1.0f, inner, 12, 1.5f);
+    GUI::Draw::Circle(center, dotOuterRadius, outer, 16, 2.0f);
+    GUI::Draw::Circle(center, dotInnerRadius, inner, 16, 1.5f);
+
+    if (!drawCrosshair)
+        return;
+
     GUI::Draw::Line(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), outer, 2.5f);
     GUI::Draw::Line(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), outer, 2.5f);
     GUI::Draw::Line(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), outer, 2.5f);
@@ -183,25 +177,8 @@ void Cheats::DrawReticle()
 
 void Cheats::Render()
 {
-    const int currentFrame = g_PresentCount.load();
-    auto& renderState = GetRenderState();
-
-    // Fallback path if the HUD canvas tick stalls for long enough.
-    if (renderState.LastUpdateFrame != currentFrame)
-    {
-        renderState.LastUpdateFrame = static_cast<uint32_t>(currentFrame);
-        HotkeyManager::Update();
-
-        const uint64_t nowMs = GetTickCount64();
-        const uint64_t lastHudActivityMs = renderState.LastHudSignalTimeMs != 0
-            ? renderState.LastHudSignalTimeMs
-            : renderState.LastCanvasTickTimeMs;
-        if (lastHudActivityMs == 0 || (nowMs - lastHudActivityMs) > 500)
-        {
-            Logger::LogThrottled(Logger::Level::Warning, "Render", 3000, "HUD canvas tick timeout, using Present fallback for logic-only update");
-            RunGameThreadRenderTick(nullptr, false);
-        }
-    }
+    HotkeyManager::Update();
+    RunGameThreadRenderTick(true);
 
     // Main Menu remains on ImGui.
     GUI::RenderMenu();
