@@ -577,7 +577,7 @@ namespace SilentAimHooks
 					{
 						installedFlag.store(true);
 						Logger::LogThrottled(
-							Logger::Level::Info,
+							Logger::Level::Debug,
 							"SilentAim",
 							kInfoLogIntervalMs,
 							"%s hook installed via absolute detour fallback. addr=0x%llX len=%zu",
@@ -683,7 +683,7 @@ namespace SilentAimHooks
 			}
 
 			Logger::LogThrottled(
-				Logger::Level::Info,
+				Logger::Level::Debug,
 				"SilentAim",
 				kInfoLogIntervalMs,
 				"WeaponBehavior_FireProjectile vtable patched. slot=%zu target=%p",
@@ -807,7 +807,7 @@ namespace SilentAimHooks
 
 			g_WeaponBehaviorFireHookInstalled.store(true);
 			Logger::LogThrottled(
-				Logger::Level::Info,
+				Logger::Level::Debug,
 				"SilentAim",
 				kInfoLogIntervalMs,
 				"WeaponBehavior_FireProjectile hook installed. target=0x%llX slot=%zu",
