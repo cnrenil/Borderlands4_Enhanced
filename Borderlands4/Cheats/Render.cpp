@@ -4,6 +4,9 @@ extern std::atomic<int> g_PresentCount;
 
 namespace
 {
+    std::atomic<bool> g_LoggedReticleCanvas{ false };
+    std::atomic<bool> g_LoggedReticleImGui{ false };
+
     bool IsOTSAdsActive()
     {
         if (!ConfigManager::B("Player.ThirdPerson") && !ConfigManager::B("Player.OverShoulder"))
@@ -154,33 +157,28 @@ void Cheats::DrawReticle()
     const float gap = 3.0f;
     const float len = 8.0f;
 
-    if (UCanvas* Canvas = Utils::GetCurrentCanvas())
+    if (GUI::Draw::ResolveBackend() == GUI::Draw::Backend::UCanvas)
     {
-        const FVector2D centerVec(center.x, center.y);
-        Utils::DrawCanvasCircle(Canvas, centerVec, 2.0f, 12, 2.0f, Utils::U32ToLinearColor(outer));
-        Utils::DrawCanvasCircle(Canvas, centerVec, 1.0f, 12, 1.5f, Utils::U32ToLinearColor(inner));
-        Utils::DrawCanvasLine(Canvas, FVector2D(center.x - gap - len, center.y), FVector2D(center.x - gap, center.y), 2.5f, Utils::U32ToLinearColor(outer));
-        Utils::DrawCanvasLine(Canvas, FVector2D(center.x + gap, center.y), FVector2D(center.x + gap + len, center.y), 2.5f, Utils::U32ToLinearColor(outer));
-        Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y - gap - len), FVector2D(center.x, center.y - gap), 2.5f, Utils::U32ToLinearColor(outer));
-        Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y + gap), FVector2D(center.x, center.y + gap + len), 2.5f, Utils::U32ToLinearColor(outer));
-        Utils::DrawCanvasLine(Canvas, FVector2D(center.x - gap - len, center.y), FVector2D(center.x - gap, center.y), 1.2f, Utils::U32ToLinearColor(inner));
-        Utils::DrawCanvasLine(Canvas, FVector2D(center.x + gap, center.y), FVector2D(center.x + gap + len, center.y), 1.2f, Utils::U32ToLinearColor(inner));
-        Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y - gap - len), FVector2D(center.x, center.y - gap), 1.2f, Utils::U32ToLinearColor(inner));
-        Utils::DrawCanvasLine(Canvas, FVector2D(center.x, center.y + gap), FVector2D(center.x, center.y + gap + len), 1.2f, Utils::U32ToLinearColor(inner));
-        return;
+        if (!g_LoggedReticleCanvas.exchange(true))
+        {
+            LOG_INFO("DrawPath", "DrawReticle using UCanvas path.");
+        }
+    }
+    else if (!g_LoggedReticleImGui.exchange(true))
+    {
+        LOG_WARN("DrawPath", "DrawReticle using ImGui fallback path (Canvas unavailable).");
     }
 
-    auto* draw = ImGui::GetBackgroundDrawList();
-    draw->AddCircle(center, 2.0f, outer, 12, 2.0f);
-    draw->AddCircle(center, 1.0f, inner, 12, 1.5f);
-    draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), outer, 2.5f);
-    draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), outer, 2.5f);
-    draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), outer, 2.5f);
-    draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), outer, 2.5f);
-    draw->AddLine(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), inner, 1.2f);
-    draw->AddLine(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), inner, 1.2f);
-    draw->AddLine(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), inner, 1.2f);
-    draw->AddLine(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), inner, 1.2f);
+    GUI::Draw::Circle(center, 2.0f, outer, 12, 2.0f);
+    GUI::Draw::Circle(center, 1.0f, inner, 12, 1.5f);
+    GUI::Draw::Line(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), outer, 2.5f);
+    GUI::Draw::Line(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), outer, 2.5f);
+    GUI::Draw::Line(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), outer, 2.5f);
+    GUI::Draw::Line(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), outer, 2.5f);
+    GUI::Draw::Line(ImVec2(center.x - gap - len, center.y), ImVec2(center.x - gap, center.y), inner, 1.2f);
+    GUI::Draw::Line(ImVec2(center.x + gap, center.y), ImVec2(center.x + gap + len, center.y), inner, 1.2f);
+    GUI::Draw::Line(ImVec2(center.x, center.y - gap - len), ImVec2(center.x, center.y - gap), inner, 1.2f);
+    GUI::Draw::Line(ImVec2(center.x, center.y + gap), ImVec2(center.x, center.y + gap + len), inner, 1.2f);
 }
 
 void Cheats::Render()

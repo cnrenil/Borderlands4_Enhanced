@@ -166,6 +166,9 @@
     <ClCompile Include="GUI\Menu.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Draw.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
     <ClCompile Include="GUI\Overlay.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
@@ -211,6 +214,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="GUI\Themes.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Draw.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\Overlay.h">

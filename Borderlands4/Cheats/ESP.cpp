@@ -42,6 +42,9 @@ struct ESPTracerCache {
 
 namespace
 {
+	std::atomic<bool> g_LoggedRenderEspCanvas{ false };
+	std::atomic<bool> g_LoggedRenderEspImGui{ false };
+
 	struct ESPState
 	{
 		std::mutex Mutex;
@@ -173,17 +176,7 @@ static void DrawEnemyIndicator(UCanvas* canvas, const ImVec2& screenCenter, floa
 	const ImVec2 p2(baseCenter.x + perp.x * 7.0f, baseCenter.y + perp.y * 7.0f);
 	const ImVec2 p3(baseCenter.x - perp.x * 7.0f, baseCenter.y - perp.y * 7.0f);
 
-	if (canvas)
-	{
-		const FLinearColor lineColor = Utils::U32ToLinearColor(color);
-		Utils::DrawCanvasLine(canvas, FVector2D(p1.x, p1.y), FVector2D(p2.x, p2.y), 2.0f, lineColor);
-		Utils::DrawCanvasLine(canvas, FVector2D(p2.x, p2.y), FVector2D(p3.x, p3.y), 2.0f, lineColor);
-		Utils::DrawCanvasLine(canvas, FVector2D(p3.x, p3.y), FVector2D(p1.x, p1.y), 2.0f, lineColor);
-	}
-	else
-	{
-		ImGui::GetBackgroundDrawList()->AddTriangleFilled(p1, p2, p3, color);
-	}
+	GUI::Draw::TriangleFilled(p1, p2, p3, color, canvas);
 }
 
 static bool IsValidHighlightMesh(USkeletalMeshComponent* Mesh)
@@ -573,6 +566,20 @@ void Cheats::RenderESP()
 {
 	if (!ConfigManager::B("Player.ESP")) return;
 	UCanvas* Canvas = Utils::GetCurrentCanvas();
+	if (Canvas)
+	{
+		if (!g_LoggedRenderEspCanvas.exchange(true))
+		{
+			LOG_INFO("DrawPath", "RenderESP using UCanvas path.");
+		}
+	}
+	else
+	{
+		if (!g_LoggedRenderEspImGui.exchange(true))
+		{
+			LOG_WARN("DrawPath", "RenderESP using ImGui fallback path (Canvas unavailable).");
+		}
+	}
 
 	std::vector<ESPActorCache> LocalActors;
 	std::vector<ESPLootCache> LocalLoot;
@@ -596,10 +603,7 @@ void Cheats::RenderESP()
 		{
 			for (const auto& Line : Actor.SkeletonLines)
 			{
-				if (Canvas)
-					Utils::DrawCanvasLine(Canvas, FVector2D(Line.first.x, Line.first.y), FVector2D(Line.second.x, Line.second.y), 2.0f, Utils::U32ToLinearColor(Actor.Color));
-				else
-					ImGui::GetBackgroundDrawList()->AddLine(Line.first, Line.second, Actor.Color, 2.0f);
+				GUI::Draw::Line(Line.first, Line.second, Actor.Color, 2.0f, Canvas);
 			}
 		}
 
@@ -608,18 +612,12 @@ void Cheats::RenderESP()
 		{
 			const FVector2D boxPos((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y);
 			const FVector2D boxSize(Width, Height);
-			if (Canvas)
-			{
-				Utils::DrawCanvasBox(Canvas, boxPos, boxSize, 1.0f, Utils::U32ToLinearColor(Actor.Color));
-			}
-			else
-			{
-				ImGui::GetBackgroundDrawList()->AddRect(
-					ImVec2(boxPos.X, boxPos.Y),
-					ImVec2(boxPos.X + boxSize.X, boxPos.Y + boxSize.Y),
-					Actor.Color, 0.0f, 0, 1.0f
-				);
-			}
+			GUI::Draw::Rect(
+				ImVec2(boxPos.X, boxPos.Y),
+				ImVec2(boxPos.X + boxSize.X, boxPos.Y + boxSize.Y),
+				Actor.Color,
+				1.0f,
+				Canvas);
 		}
 
 		// Health Bar
@@ -629,14 +627,7 @@ void Cheats::RenderESP()
 		float BarY = (float)Actor.LeftTopScreen.Y;
 
 		// Background
-		if (Canvas)
-			Utils::DrawCanvasFilledRect(Canvas, FVector2D(BarX, BarY), FVector2D(BarWidth, BarHeight), FLinearColor(0.0f, 0.0f, 0.0f, 0.6f));
-		else
-			ImGui::GetBackgroundDrawList()->AddRectFilled(
-				ImVec2(BarX, BarY),
-				ImVec2(BarX + BarWidth, BarY + BarHeight),
-				IM_COL32(0, 0, 0, 150)
-			);
+		GUI::Draw::RectFilled(ImVec2(BarX, BarY), ImVec2(BarX + BarWidth, BarY + BarHeight), IM_COL32(0, 0, 0, 150), Canvas);
 
 		// Health Fill
 		ImU32 HealthColor = IM_COL32(0, 255, 0, 255);
@@ -644,28 +635,14 @@ void Cheats::RenderESP()
 		else if (Actor.HealthPct < 0.7f) HealthColor = IM_COL32(255, 255, 0, 255);
 
 		float FillHeight = BarHeight * Actor.HealthPct;
-		if (Canvas)
-			Utils::DrawCanvasFilledRect(Canvas, FVector2D(BarX, BarY + BarHeight - FillHeight), FVector2D(BarWidth, FillHeight), Utils::U32ToLinearColor(HealthColor));
-		else
-			ImGui::GetBackgroundDrawList()->AddRectFilled(
-				ImVec2(BarX, BarY + BarHeight - FillHeight),
-				ImVec2(BarX + BarWidth, BarY + BarHeight),
-				HealthColor
-			);
+		GUI::Draw::RectFilled(ImVec2(BarX, BarY + BarHeight - FillHeight), ImVec2(BarX + BarWidth, BarY + BarHeight), HealthColor, Canvas);
 
 		// Distance and Name
 		if (ConfigManager::B("ESP.ShowEnemyDistance"))
 		{
 			char DistanceText[32];
 			snprintf(DistanceText, sizeof(DistanceText), "%.0f m", Actor.Distance);
-			if (Canvas)
-				Utils::DrawCanvasText(Canvas, DistanceText, FVector2D((float)Actor.LeftTopScreen.X, (float)Actor.RightBottomScreen.Y + 2), FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-			else
-				ImGui::GetBackgroundDrawList()->AddText(
-					ImVec2((float)Actor.LeftTopScreen.X, (float)Actor.RightBottomScreen.Y + 2),
-					IM_COL32(255, 255, 255, 255),
-					DistanceText
-				);
+			GUI::Draw::Text(DistanceText, ImVec2((float)Actor.LeftTopScreen.X, (float)Actor.RightBottomScreen.Y + 2), IM_COL32(255, 255, 255, 255), FVector2D(1.0f, 1.0f), false, false, true, Canvas);
 		}
 
 		if (ConfigManager::B("ESP.ShowEnemyName"))
@@ -675,14 +652,7 @@ void Cheats::RenderESP()
 			const float t = std::clamp(Actor.Distance / 150.0f, 0.0f, 1.0f);
 			const float nameScale = maxScale - (maxScale - minScale) * t;
 			const FVector2D scale(nameScale, nameScale);
-			if (Canvas)
-				Utils::DrawCanvasText(Canvas, Actor.Name, FVector2D((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y - 15), Utils::U32ToLinearColor(Actor.Color), scale);
-			else
-				ImGui::GetBackgroundDrawList()->AddText(
-					ImVec2((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y - 15),
-					Actor.Color,
-					Actor.Name.ToString().c_str()
-				);
+			GUI::Draw::Text(Actor.Name, ImVec2((float)Actor.LeftTopScreen.X, (float)Actor.LeftTopScreen.Y - 15), Actor.Color, scale, false, false, true, Canvas);
 		}
 	}
 
@@ -716,14 +686,7 @@ void Cheats::RenderESP()
 		const FVector2D scale(nameScale, nameScale);
 		const FVector2D drawPos(Loot.ScreenPos.X, Loot.ScreenPos.Y);
 
-		if (Canvas)
-			Utils::DrawCanvasText(Canvas, Loot.Name, drawPos, Utils::U32ToLinearColor(Loot.Color), scale);
-		else
-			ImGui::GetBackgroundDrawList()->AddText(
-				ImVec2(drawPos.X, drawPos.Y),
-				Loot.Color,
-				Loot.Name.ToString().c_str()
-			);
+		GUI::Draw::Text(Loot.Name, ImVec2(drawPos.X, drawPos.Y), Loot.Color, scale, false, false, true, Canvas);
 	}
 
 	if (ConfigManager::B("ESP.BulletTracers"))
@@ -731,31 +694,14 @@ void Cheats::RenderESP()
 		for (const auto& Tracer : LocalTracers)
 		{
 			if (Tracer.bVisible) {
-				if (Canvas)
-				{
-					Utils::DrawCanvasLine(Canvas, FVector2D(Tracer.Start.x, Tracer.Start.y), FVector2D(Tracer.End.x, Tracer.End.y), 6.0f, Utils::U32ToLinearColor(Tracer.ColorSegment));
-					Utils::DrawCanvasLine(Canvas, FVector2D(Tracer.Start.x, Tracer.Start.y), FVector2D(Tracer.End.x, Tracer.End.y), 3.0f, Utils::U32ToLinearColor(Tracer.ColorGlow));
-					Utils::DrawCanvasLine(Canvas, FVector2D(Tracer.Start.x, Tracer.Start.y), FVector2D(Tracer.End.x, Tracer.End.y), 1.0f, Utils::U32ToLinearColor(Tracer.ColorCore));
-				}
-				else
-				{
-					ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorSegment, 6.0f);
-					ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorGlow, 3.0f);
-					ImGui::GetBackgroundDrawList()->AddLine(Tracer.Start, Tracer.End, Tracer.ColorCore, 1.0f);
-				}
+				GUI::Draw::Line(Tracer.Start, Tracer.End, Tracer.ColorSegment, 6.0f, Canvas);
+				GUI::Draw::Line(Tracer.Start, Tracer.End, Tracer.ColorGlow, 3.0f, Canvas);
+				GUI::Draw::Line(Tracer.Start, Tracer.End, Tracer.ColorCore, 1.0f, Canvas);
 			}
 
 			if (Tracer.bImpact) {
-				if (Canvas)
-				{
-					Utils::DrawCanvasCircle(Canvas, FVector2D(Tracer.ImpactPos.x, Tracer.ImpactPos.y), 6.5f, 16, 2.0f, Utils::U32ToLinearColor(Tracer.ColorImpactOuter));
-					Utils::DrawCanvasCircle(Canvas, FVector2D(Tracer.ImpactPos.x, Tracer.ImpactPos.y), 4.0f, 16, 2.0f, Utils::U32ToLinearColor(Tracer.ColorImpactInner));
-				}
-				else
-				{
-					ImGui::GetBackgroundDrawList()->AddCircleFilled(Tracer.ImpactPos, 6.5f, Tracer.ColorImpactOuter);
-					ImGui::GetBackgroundDrawList()->AddCircleFilled(Tracer.ImpactPos, 4.0f, Tracer.ColorImpactInner);
-				}
+				GUI::Draw::CircleFilled(Tracer.ImpactPos, 6.5f, Tracer.ColorImpactOuter, Canvas);
+				GUI::Draw::CircleFilled(Tracer.ImpactPos, 4.0f, Tracer.ColorImpactInner, Canvas);
 			}
 		}
 	}

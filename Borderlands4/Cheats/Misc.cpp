@@ -10,11 +10,11 @@ void Cheats::RenderEnabledOptions()
 	{
 		FVector2D pos(10.0f, 30.0f);
 		const FVector2D step(0.0f, 16.0f);
-		const FLinearColor textColor = Utils::ImVec4ToLinearColor(Color);
+		const ImU32 textColor = ImGui::ColorConvertFloat4ToU32(Color);
 		auto DrawEntry = [&](bool enabled, const char* key)
 		{
 			if (!enabled) return;
-			Utils::DrawCanvasText(Canvas, Localization::T(key), pos, textColor);
+			GUI::Draw::Text(Localization::T(key), ImVec2(pos.X, pos.Y), textColor, FVector2D(1.0f, 1.0f), false, false, true, Canvas);
 			pos.Y += step.Y;
 		};
 

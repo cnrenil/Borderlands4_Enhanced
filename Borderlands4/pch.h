@@ -77,6 +77,7 @@ using namespace SDK;
 #include "Engine.h"
 #include "Cheats.h"
 #include "GUI/Menu.h"
+#include "GUI/Draw.h"
 #include "GUI/Overlay.h"
 #include "GUI/Themes.h"
 #include "Hooks/D3D12Hook.h"

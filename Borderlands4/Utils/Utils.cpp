@@ -4,27 +4,10 @@
 namespace
 {
     thread_local UCanvas* g_CurrentCanvas = nullptr;
-
-    UFont* ResolveHudFont()
-    {
-        static UFont* CachedFont = nullptr;
-        if (CachedFont) return CachedFont;
-
-        if (UEngine* Engine = UEngine::GetEngine())
-        {
-            if (Engine->SmallFont) {
-                CachedFont = Engine->SmallFont;
-                return CachedFont;
-            }
-            if (Engine->TinyFont) {
-                CachedFont = Engine->TinyFont;
-                return CachedFont;
-            }
-        }
-
-        CachedFont = UObject::FindObject<UFont>("Font Engine.Default__Font");
-        return CachedFont;
-    }
+    std::atomic<bool> g_LoggedDrawFovCanvas{ false };
+    std::atomic<bool> g_LoggedDrawFovImGui{ false };
+    std::atomic<bool> g_LoggedSnapLineCanvas{ false };
+    std::atomic<bool> g_LoggedSnapLineImGui{ false };
 
     // Guard against stale UObject pointers during map transition/game shutdown.
     bool IsReadableUObject(const void* Ptr)
@@ -159,97 +142,6 @@ FLinearColor Utils::U32ToLinearColor(ImU32 Color)
         ((Color >> IM_COL32_G_SHIFT) & 0xFF) * inv255,
         ((Color >> IM_COL32_B_SHIFT) & 0xFF) * inv255,
         ((Color >> IM_COL32_A_SHIFT) & 0xFF) * inv255);
-}
-
-void Utils::DrawCanvasLine(UCanvas* Canvas, const FVector2D& A, const FVector2D& B, float Thickness, const FLinearColor& Color)
-{
-    if (!Canvas) return;
-    Canvas->K2_DrawLine(A, B, Thickness, Color);
-}
-
-void Utils::DrawCanvasBox(UCanvas* Canvas, const FVector2D& Position, const FVector2D& Size, float Thickness, const FLinearColor& Color)
-{
-    if (!Canvas) return;
-    Canvas->K2_DrawBox(Position, Size, Thickness, Color);
-}
-
-void Utils::DrawCanvasFilledRect(UCanvas* Canvas, const FVector2D& Position, const FVector2D& Size, const FLinearColor& Color)
-{
-    if (!Canvas || Size.X <= 0.0 || Size.Y <= 0.0) return;
-
-    UTexture2D* FillTexture = Canvas->DefaultTexture ? Canvas->DefaultTexture : nullptr;
-    if (!FillTexture)
-    {
-        UEngine* Engine = UEngine::GetEngine();
-        FillTexture = Engine ? Engine->DefaultTexture : nullptr;
-    }
-    if (!FillTexture) return;
-
-    Canvas->K2_DrawTexture(
-        FillTexture,
-        Position,
-        Size,
-        FVector2D(0.0, 0.0),
-        FVector2D(1.0, 1.0),
-        Color,
-        EBlendMode::BLEND_Translucent,
-        0.0f,
-        FVector2D(0.0, 0.0));
-}
-
-void Utils::DrawCanvasCircle(UCanvas* Canvas, const FVector2D& Center, float Radius, int32 Sides, float Thickness, const FLinearColor& Color)
-{
-    if (!Canvas || Radius <= 0.0f || Sides < 3) return;
-
-    const float step = (2.0f * static_cast<float>(std::numbers::pi)) / static_cast<float>(Sides);
-    FVector2D prev(Center.X + Radius, Center.Y);
-    for (int32 i = 1; i <= Sides; ++i)
-    {
-        const float angle = step * static_cast<float>(i);
-        const FVector2D next(
-            Center.X + std::cos(angle) * Radius,
-            Center.Y + std::sin(angle) * Radius);
-        DrawCanvasLine(Canvas, prev, next, Thickness, Color);
-        prev = next;
-    }
-}
-
-void Utils::DrawCanvasText(UCanvas* Canvas, const FString& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale, bool bCenterX, bool bCenterY, bool bOutlined)
-{
-    if (!Canvas || !Text) return;
-
-    UFont* Font = ResolveHudFont();
-    if (!Font)
-    {
-        UEngine* Engine = UEngine::GetEngine();
-        if (Engine)
-        {
-            if (Engine->SmallFont) Font = Engine->SmallFont;
-            else if (Engine->TinyFont) Font = Engine->TinyFont;
-        }
-    }
-    Canvas->K2_DrawText(
-        Font,
-        Text,
-        Position,
-        Scale,
-        Color,
-        0.0f,
-        FLinearColor(0.0f, 0.0f, 0.0f, Color.A),
-        FVector2D(1.0f, 1.0f),
-        bCenterX,
-        bCenterY,
-        bOutlined,
-        FLinearColor(0.0f, 0.0f, 0.0f, Color.A));
-}
-
-void Utils::DrawCanvasText(UCanvas* Canvas, const std::string& Text, const FVector2D& Position, const FLinearColor& Color, const FVector2D& Scale, bool bCenterX, bool bCenterY, bool bOutlined)
-{
-    if (!Canvas || Text.empty()) return;
-    std::wstring WideText = UtfN::StringToWString(Text);
-    const int32 textLen = static_cast<int32>(WideText.length() + 1);
-    const FString RenderText(const_cast<wchar_t*>(WideText.c_str()), textLen, textLen);
-    DrawCanvasText(Canvas, RenderText, Position, Color, Scale, bCenterX, bCenterY, bOutlined);
 }
 
 ALightProjectileManager* Utils::GetLightProjManager()
@@ -559,13 +451,19 @@ void Utils::DrawFOV(float MaxFOV, float Thickness = 1.0f)
     float MaxFOVNormalized = MaxFOV / 90.0f;
     float RadiusPixels = MaxFOVNormalized * ((float)ViewportSize.Y * 0.5f);
 
-    if (UCanvas* Canvas = GetCurrentCanvas())
+    if (GUI::Draw::ResolveBackend() == GUI::Draw::Backend::UCanvas)
     {
-        DrawCanvasCircle(Canvas, Center, RadiusPixels, 64, Thickness, FLinearColor(1.0f, 0.0f, 0.0f, 1.0f));
-        return;
+        if (!g_LoggedDrawFovCanvas.exchange(true))
+        {
+            LOG_INFO("DrawPath", "DrawFOV using UCanvas path.");
+        }
+    }
+    else if (!g_LoggedDrawFovImGui.exchange(true))
+    {
+        LOG_WARN("DrawPath", "DrawFOV using ImGui fallback path (Canvas unavailable).");
     }
 
-    ImGui::GetBackgroundDrawList()->AddCircle(ImVec2(Center.X, Center.Y), RadiusPixels, IM_COL32(255, 0, 0, 255), 64, Thickness);
+    GUI::Draw::Circle(ImVec2(Center.X, Center.Y), RadiusPixels, IM_COL32(255, 0, 0, 255), 64, Thickness);
 }
 
 void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
@@ -578,36 +476,27 @@ void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
     ImVec2 Center = GetAimScreenCenter();
     ImVec2 Target((float)ScreenPos.X, (float)ScreenPos.Y);
 
-    if (UCanvas* Canvas = GetCurrentCanvas())
+    if (GUI::Draw::ResolveBackend() == GUI::Draw::Backend::UCanvas)
     {
-        const FVector2D centerVec(Center.x, Center.y);
-        const FVector2D targetVec(Target.x, Target.y);
-        DrawCanvasLine(Canvas, centerVec, targetVec, Thickness, FLinearColor(1.0f, 1.0f, 1.0f, 0.7f));
-
-        const float angle = atan2f(Target.y - Center.y, Target.x - Center.x);
-        const float arrowSize = 10.0f;
-        const FVector2D p1(
-            Target.x - arrowSize * cosf(angle - 0.5f),
-            Target.y - arrowSize * sinf(angle - 0.5f));
-        const FVector2D p2(
-            Target.x - arrowSize * cosf(angle + 0.5f),
-            Target.y - arrowSize * sinf(angle + 0.5f));
-        DrawCanvasLine(Canvas, targetVec, p1, Thickness, FLinearColor(1.0f, 1.0f, 1.0f, 0.85f));
-        DrawCanvasLine(Canvas, targetVec, p2, Thickness, FLinearColor(1.0f, 1.0f, 1.0f, 0.85f));
-        DrawCanvasCircle(Canvas, targetVec, 2.5f, 12, 1.5f, FLinearColor(0.0f, 1.0f, 0.0f, 1.0f));
-        return;
+        if (!g_LoggedSnapLineCanvas.exchange(true))
+        {
+            LOG_INFO("DrawPath", "DrawSnapLine using UCanvas path.");
+        }
     }
-    
-    ImGui::GetBackgroundDrawList()->AddLine(Center, Target, IM_COL32(255, 255, 255, 180), Thickness);
-    
-    // Draw an arrow head
-    float Angle = atan2f(Target.y - Center.y, Target.x - Center.x);
-    float ArrowSize = 10.0f;
-    ImVec2 P1(Target.x - ArrowSize * cosf(Angle - 0.5f), Target.y - ArrowSize * sinf(Angle - 0.5f));
-    ImVec2 P2(Target.x - ArrowSize * cosf(Angle + 0.5f), Target.y - ArrowSize * sinf(Angle + 0.5f));
-    
-    ImGui::GetBackgroundDrawList()->AddTriangleFilled(Target, P1, P2, IM_COL32(255, 255, 255, 220));
-    ImGui::GetBackgroundDrawList()->AddCircleFilled(Target, 2.5f, IM_COL32(0, 255, 0, 255));
+    else if (!g_LoggedSnapLineImGui.exchange(true))
+    {
+        LOG_WARN("DrawPath", "DrawSnapLine using ImGui fallback path (Canvas unavailable).");
+    }
+
+    GUI::Draw::Line(Center, Target, IM_COL32(255, 255, 255, 180), Thickness);
+
+    const float angle = atan2f(Target.y - Center.y, Target.x - Center.x);
+    const float arrowSize = 10.0f;
+    const ImVec2 p1(Target.x - arrowSize * cosf(angle - 0.5f), Target.y - arrowSize * sinf(angle - 0.5f));
+    const ImVec2 p2(Target.x - arrowSize * cosf(angle + 0.5f), Target.y - arrowSize * sinf(angle + 0.5f));
+
+    GUI::Draw::TriangleFilled(Target, p1, p2, IM_COL32(255, 255, 255, 220));
+    GUI::Draw::CircleFilled(Target, 2.5f, IM_COL32(0, 255, 0, 255));
 
 }
 

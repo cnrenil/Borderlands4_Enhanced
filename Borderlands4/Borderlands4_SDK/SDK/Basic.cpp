@@ -10,6 +10,7 @@
 
 #include <Windows.h>
 #include "Basic.hpp"
+#include "../../Utils/Memory.h"
 
 #include "CoreUObject_classes.hpp"
 #include "CoreUObject_structs.hpp"
@@ -17,9 +18,107 @@
 
 namespace SDK
 {
+namespace
+{
+	bool IsCommittedAddress(uintptr_t address, size_t size = sizeof(void*))
+	{
+		if (!address)
+			return false;
+
+		MEMORY_BASIC_INFORMATION mbi{};
+		if (VirtualQuery(reinterpret_cast<LPCVOID>(address), &mbi, sizeof(mbi)) == 0)
+			return false;
+		if (mbi.State != MEM_COMMIT || (mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) != 0)
+			return false;
+
+		const uintptr_t regionStart = reinterpret_cast<uintptr_t>(mbi.BaseAddress);
+		const uintptr_t regionEnd = regionStart + mbi.RegionSize;
+		return address >= regionStart && (address + size) <= regionEnd;
+	}
+
+	uintptr_t ResolveRipRelativeAddress(uintptr_t instructionAddress, size_t displacementOffset, size_t instructionLength)
+	{
+		if (!instructionAddress)
+			return 0;
+
+		__try
+		{
+			const int32 displacement = *reinterpret_cast<int32*>(instructionAddress + displacementOffset);
+			return instructionAddress + instructionLength + static_cast<intptr_t>(displacement);
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			return 0;
+		}
+	}
+
+	uintptr_t ResolveDirectOrPatternAddress(uintptr_t directAddress, const char* pattern, bool bResolveRipRelative)
+	{
+		if (IsCommittedAddress(directAddress))
+			return directAddress;
+
+		const uintptr_t patternAddress = Memory::FindPattern(pattern);
+		if (!patternAddress)
+			return 0;
+
+		if (!bResolveRipRelative)
+			return patternAddress;
+
+		return ResolveRipRelativeAddress(patternAddress, 3, 7);
+	}
+}
+
 uintptr_t InSDKUtils::GetImageBase()
 {
 	return reinterpret_cast<uintptr_t>(GetModuleHandle(0));
+}
+
+uintptr_t InSDKUtils::ResolveGObjectsAddress()
+{
+	return ResolveDirectOrPatternAddress(
+		GetImageBase() + Offsets::GObjects,
+		"4C 8B 05 ?? ?? ?? ?? C1 E8 10 48 8D 14 52 C1 E2 03 49 03 14 C0 8B 42 08 0F BA E0 19",
+		true);
+}
+
+uintptr_t InSDKUtils::ResolveAppendStringAddress()
+{
+	return ResolveDirectOrPatternAddress(
+		GetImageBase() + Offsets::AppendString,
+		"41 56 56 57 55 53 48 81 EC 30 08 00 00 48 89 D6 48 89 CF 48 8B 05 ?? ?? ?? ?? 48 31 E0 48 89 84 24 28 08 00 00 8B 19 80 3D ?? ?? ?? ?? ?? 75 13 48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? C6 05 ?? ?? ?? ?? ?? 89 D8 C1 E8 10 48 8D 0D ?? ?? ?? ?? 48 8B 44 C1 10 0F B7 CB 48 8D 0C 48",
+		false);
+}
+
+uintptr_t InSDKUtils::ResolveGNamesAddress()
+{
+	return ResolveDirectOrPatternAddress(
+		GetImageBase() + Offsets::GNames,
+		"48 8D 0D ?? ?? ?? ?? E8 ?? ?? ?? ?? C6 05 ?? ?? ?? ?? ?? 8B 05 ?? ?? ?? ?? 48 39 C3 0F 85 8D 00 00 00",
+		true);
+}
+
+uintptr_t InSDKUtils::ResolveGWorldAddress()
+{
+	return ResolveDirectOrPatternAddress(
+		GetImageBase() + Offsets::GWorld,
+		"48 39 35 ?? ?? ?? ?? 75 0B 48 C7 05 ?? ?? ?? ?? ?? ?? ?? ?? 48 8B 8E 58 04 00 00",
+		true);
+}
+
+uintptr_t InSDKUtils::ResolveProcessEventAddress()
+{
+	return ResolveDirectOrPatternAddress(
+		GetImageBase() + Offsets::ProcessEvent,
+		"49 89 E7 EB 2C",
+		false);
+}
+
+uintptr_t InSDKUtils::ResolveInputKeyAddress()
+{
+	return ResolveDirectOrPatternAddress(
+		GetImageBase() + Offsets::InputKey,
+		"41 56 56 57 53 48 81 EC D8 01 00 00 48 89 D6 48 89 CF",
+		false);
 }
 
 class UClass* BasicFilesImpleUtils::FindClassByName(const std::string& Name, bool bByFullName)

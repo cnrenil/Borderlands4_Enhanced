@@ -35,15 +35,22 @@ namespace Offsets
 {
 	constexpr int32 GObjects          = 0x0C703988;
 	constexpr int32 AppendString      = 0x0017D7FC;
-	constexpr int32 GNames            = 0x00000000;
+	constexpr int32 GNames            = 0x0C61DCC0;
 	constexpr int32 GWorld            = 0x0C8AF840;
 	constexpr int32 ProcessEvent      = 0x000D49CE;
+	constexpr int32 InputKey          = 0x03B2116;
 	constexpr int32 ProcessEventIdx   = 0x00000049;
 }
 
 namespace InSDKUtils
 {
 	uintptr_t GetImageBase();
+	uintptr_t ResolveGObjectsAddress();
+	uintptr_t ResolveAppendStringAddress();
+	uintptr_t ResolveGNamesAddress();
+	uintptr_t ResolveGWorldAddress();
+	uintptr_t ResolveProcessEventAddress();
+	uintptr_t ResolveInputKeyAddress();
 
 	template<typename FuncType>
 	inline FuncType GetVirtualFunction(const void* ObjectInstance, int32 Index)
@@ -272,7 +279,7 @@ public:
 private:
 	inline void InitGObjects()
 	{
-		GObjectsAddress = reinterpret_cast<void*>(InSDKUtils::GetImageBase() + Offsets::GObjects);
+		GObjectsAddress = reinterpret_cast<void*>(InSDKUtils::ResolveGObjectsAddress());
 	}
 
 public:
@@ -345,7 +352,7 @@ public:
 
 	static void InitInternal()
 	{
-		AppendString = reinterpret_cast<void*>(InSDKUtils::GetImageBase() + Offsets::AppendString);
+		AppendString = reinterpret_cast<void*>(InSDKUtils::ResolveAppendStringAddress());
 	}
 
 	bool IsNone() const
@@ -1273,4 +1280,3 @@ template<typename UnderlayingClassType, int32 Size, int32 Align = 0x8>
 using TActorBasedCycleFixup = CyclicDependencyFixupImpl::TCyclicClassFixup<UnderlayingClassType, Size, Align, class AActor>;
 
 }
-
