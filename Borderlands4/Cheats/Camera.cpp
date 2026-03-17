@@ -11,10 +11,16 @@ namespace
 
 	EShadowCameraMode g_ShadowCameraMode = EShadowCameraMode::None;
 	SDK::USpringArmComponent* g_ShadowSpringArm = nullptr;
+	SDK::AOakPlayerController* g_ShadowOwnerController = nullptr;
+	SDK::APlayerCameraManager* g_ShadowOwnerCameraManager = nullptr;
+	SDK::AActor* g_ShadowFallbackViewTarget = nullptr;
 	float g_SmoothedShadowFOV = -1.0f;
 	float g_SmoothedOTSADSBlend = 0.0f;
 	bool g_FreecamRotationInitialized = false;
 	SDK::FRotator g_FreecamRotation{};
+	bool g_RequestedOTSMode = false;
+	bool g_RequestedThirdPersonMode = false;
+	bool g_RequestedFirstPersonMode = false;
 
 	constexpr float kOTSViewPivotZ = 65.0f;
 	constexpr float kOTSMaxArmLength = 900.0f;
@@ -35,6 +41,27 @@ namespace
 
 	bool IsValidShadowCamera(SDK::ACameraActor* CameraActor);
 	float GetShadowCameraBaseFOV();
+
+	bool ShouldReleaseShadowCameraForWorldLifecycle()
+	{
+		SDK::ACameraActor* shadowCamera = nullptr;
+		SDK::APlayerController* playerController = nullptr;
+		SDK::ACharacter* character = nullptr;
+		SDK::UWorld* world = nullptr;
+		{
+			std::scoped_lock GVarsLock(gGVarsMutex);
+			shadowCamera = GVars.CameraActor;
+			playerController = GVars.PlayerController;
+			character = GVars.Character;
+			world = GVars.World;
+		}
+
+		if (shadowCamera && (!playerController || !world || !character))
+		{
+			return true;
+		}
+		return false;
+	}
 
 	bool IsFiniteVector(const SDK::FVector& value)
 	{
@@ -96,12 +123,22 @@ namespace
 		g_ShadowCameraMode = EShadowCameraMode::None;
 	}
 
+	void ResetShadowCameraBindings()
+	{
+		g_ShadowOwnerController = nullptr;
+		g_ShadowOwnerCameraManager = nullptr;
+		g_ShadowFallbackViewTarget = nullptr;
+	}
+
 	void ResetShadowCameraState()
 	{
 		ResetShadowSpringArm();
 		g_SmoothedShadowFOV = -1.0f;
 		g_SmoothedOTSADSBlend = 0.0f;
 		g_FreecamRotationInitialized = false;
+		g_RequestedOTSMode = false;
+		g_RequestedThirdPersonMode = false;
+		g_RequestedFirstPersonMode = false;
 	}
 
 	void ReleaseShadowCamera(bool bDestroyActor, bool bRestoreViewTarget)
@@ -109,6 +146,8 @@ namespace
 		SDK::ACameraActor* cam = nullptr;
 		SDK::AOakPlayerController* oakPc = nullptr;
 		SDK::AOakCharacter* oakChar = nullptr;
+		SDK::AActor* fallbackViewTarget = nullptr;
+		SDK::APlayerCameraManager* cachedCameraManager = nullptr;
 		{
 			std::scoped_lock GVarsLock(gGVarsMutex);
 			cam = GVars.CameraActor;
@@ -117,19 +156,78 @@ namespace
 				oakPc = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
 			if (GVars.Character && GVars.Character->IsA(SDK::AOakCharacter::StaticClass()))
 				oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+			if (oakChar && Utils::IsValidActor(oakChar))
+				fallbackViewTarget = oakChar;
+			else if (GVars.Pawn && Utils::IsValidActor(GVars.Pawn))
+				fallbackViewTarget = GVars.Pawn;
+			else if (GVars.PlayerController && GVars.PlayerController->Pawn && Utils::IsValidActor(GVars.PlayerController->Pawn))
+				fallbackViewTarget = GVars.PlayerController->Pawn;
 		}
+
+		if (!oakPc && g_ShadowOwnerController && Utils::IsValidActor(g_ShadowOwnerController))
+			oakPc = g_ShadowOwnerController;
+		if (!fallbackViewTarget && g_ShadowFallbackViewTarget && Utils::IsValidActor(g_ShadowFallbackViewTarget))
+			fallbackViewTarget = g_ShadowFallbackViewTarget;
+		if (g_ShadowOwnerCameraManager && Utils::IsValidActor(g_ShadowOwnerCameraManager))
+			cachedCameraManager = g_ShadowOwnerCameraManager;
 
 		ResetShadowCameraState();
 
 		if (!IsValidShadowCamera(cam))
-			return;
-
-		if (bRestoreViewTarget && oakPc && oakPc->PlayerCameraManager && oakChar && Utils::IsValidActor(oakChar))
 		{
-			if (oakPc->PlayerCameraManager->ViewTarget.target == cam)
+			ResetShadowCameraBindings();
+			return;
+		}
+
+		SDK::APlayerCameraManager* cameraManager = cachedCameraManager;
+		if (oakPc && oakPc->PlayerCameraManager && Utils::IsValidActor(oakPc->PlayerCameraManager))
+			cameraManager = oakPc->PlayerCameraManager;
+
+		if (bRestoreViewTarget && cameraManager)
+		{
+			if (cameraManager->ViewTarget.target == cam)
 			{
-				oakPc->SetViewTargetWithBlend(oakChar, 0.0f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
+				if (fallbackViewTarget && oakPc && Utils::IsValidActor(oakPc))
+				{
+					oakPc->SetViewTargetWithBlend(fallbackViewTarget, 0.0f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
+				}
+				else
+				{
+					cameraManager->ViewTarget.target = fallbackViewTarget;
+				}
 			}
+
+			if (cameraManager->PendingViewTarget.target == cam)
+			{
+				cameraManager->PendingViewTarget.target = fallbackViewTarget;
+			}
+
+			if (cameraManager->AnimCameraActor == cam)
+			{
+				cameraManager->AnimCameraActor = nullptr;
+			}
+		}
+
+		if (oakPc)
+		{
+			if (oakPc->NetConnection && oakPc->NetConnection->ViewTarget == cam)
+			{
+				oakPc->NetConnection->ViewTarget = fallbackViewTarget;
+			}
+
+			if (oakPc->PendingSwapConnection && oakPc->PendingSwapConnection->ViewTarget == cam)
+			{
+				oakPc->PendingSwapConnection->ViewTarget = fallbackViewTarget;
+			}
+		}
+
+		if (cam->owner == fallbackViewTarget)
+		{
+			cam->SetOwner(nullptr);
+		}
+		else if (cam->owner)
+		{
+			cam->SetOwner(nullptr);
 		}
 
 		if (cam->GetAttachParentActor())
@@ -141,6 +239,8 @@ namespace
 		{
 			cam->K2_DestroyActor();
 		}
+
+		ResetShadowCameraBindings();
 	}
 
 	SDK::FRotator UpdateFreecamRotation(const SDK::FRotator& fallbackRotation)
@@ -479,6 +579,17 @@ namespace
 			std::scoped_lock GVarsLock(gGVarsMutex);
 			CachedCamera = GVars.CameraActor;
 		}
+		if (OakPC && Utils::IsValidActor(OakPC))
+		{
+			g_ShadowOwnerController = OakPC;
+			if (OakPC->PlayerCameraManager && Utils::IsValidActor(OakPC->PlayerCameraManager))
+				g_ShadowOwnerCameraManager = OakPC->PlayerCameraManager;
+			if (OakPC->Pawn && Utils::IsValidActor(OakPC->Pawn))
+				g_ShadowFallbackViewTarget = OakPC->Pawn;
+		}
+		if (OakChar && Utils::IsValidActor(OakChar))
+			g_ShadowFallbackViewTarget = OakChar;
+
 		if (IsValidShadowCamera(CachedCamera))
 			return CachedCamera;
 
@@ -518,19 +629,19 @@ namespace
 	{
 		if (!GVars.PlayerController || !GVars.Character || !GVars.World)
 		{
-			ReleaseShadowCamera(true, false);
+			ReleaseShadowCamera(true, true);
 			return;
 		}
 		SDK::AOakPlayerController* OakPC = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
 		SDK::AOakCharacter* OakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
 		if (!OakPC || !OakChar || !OakPC->PlayerCameraManager)
 		{
-			ReleaseShadowCamera(true, false);
+			ReleaseShadowCamera(true, true);
 			return;
 		}
 		if (!Utils::IsValidActor(OakPC) || !Utils::IsValidActor(OakChar))
 		{
-			ReleaseShadowCamera(true, false);
+			ReleaseShadowCamera(true, true);
 			return;
 		}
 
@@ -583,7 +694,7 @@ namespace
 
 					if (OakPC->PlayerCameraManager->ViewTarget.target != Cam)
 					{
-						OakPC->SetViewTargetWithBlend(Cam, 0.1f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
+						OakPC->SetViewTargetWithBlend(Cam, 0.0f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
 					}
 				}
 				else
@@ -591,7 +702,12 @@ namespace
 					if (!SpringArm) return;
 
 					const std::string ModeStr = SDK::APlayerCameraModeManager::GetActorCameraMode(OakChar).ToString();
-					if (ModeStr.find("ThirdPerson") == std::string::npos && (CurrentTime - LastTransitionTime > 0.5f))
+					const bool bIsThirdPersonMode = ModeStr.find("ThirdPerson") != std::string::npos;
+					if (bIsThirdPersonMode)
+					{
+						g_RequestedOTSMode = false;
+					}
+					else if (!g_RequestedOTSMode && (CurrentTime - LastTransitionTime > 0.5f))
 					{
 						OakPC->CameraTransition(
 							SDK::UKismetStringLibrary::Conv_StringToName(L"ThirdPerson"),
@@ -600,7 +716,10 @@ namespace
 							false,
 							false);
 						LastTransitionTime = CurrentTime;
+						g_RequestedOTSMode = true;
 					}
+					g_RequestedThirdPersonMode = false;
+					g_RequestedFirstPersonMode = false;
 
 					const SDK::FRotator ControlRot = OakPC->GetControlRotation();
 					const float otsADSBlend = GetCurrentOTSADSBlend(bIsZooming);
@@ -617,7 +736,7 @@ namespace
 
 					if (OakPC->PlayerCameraManager->ViewTarget.target != Cam)
 					{
-						OakPC->SetViewTargetWithBlend(Cam, 0.1f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
+						OakPC->SetViewTargetWithBlend(Cam, 0.0f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
 					}
 				}
 			}
@@ -625,6 +744,7 @@ namespace
 		else
 		{
 			ReleaseShadowCamera(true, true);
+			g_RequestedOTSMode = false;
 
 			bool bShouldBeInThirdPerson = ConfigManager::B("Player.ThirdPerson");
 			if (ConfigManager::B("Player.ThirdPerson") && bIsZooming && ConfigManager::B("Misc.ThirdPersonADSFirstPerson"))
@@ -637,10 +757,14 @@ namespace
 				OakPC->SetViewTargetWithBlend(OakChar, 0.15f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
 			}
 
-			const std::string ModeStr = SDK::APlayerCameraModeManager::GetActorCameraMode(OakChar).ToString();
-			if (bShouldBeInThirdPerson)
-			{
-				if (ModeStr.find("ThirdPerson") == std::string::npos && (CurrentTime - LastTransitionTime > 0.5f))
+				const std::string ModeStr = SDK::APlayerCameraModeManager::GetActorCameraMode(OakChar).ToString();
+				if (bShouldBeInThirdPerson)
+				{
+					if (ModeStr.find("ThirdPerson") != std::string::npos)
+					{
+						g_RequestedThirdPersonMode = false;
+					}
+				else if (!g_RequestedThirdPersonMode && (CurrentTime - LastTransitionTime > 0.5f))
 				{
 					OakPC->CameraTransition(
 						SDK::UKismetStringLibrary::Conv_StringToName(L"ThirdPerson"),
@@ -649,11 +773,17 @@ namespace
 						false,
 						false);
 					LastTransitionTime = CurrentTime;
+					g_RequestedThirdPersonMode = true;
 				}
+				g_RequestedFirstPersonMode = false;
 			}
 			else
 			{
-				if (ModeStr.find("ThirdPerson") != std::string::npos && (CurrentTime - LastTransitionTime > 0.5f))
+				if (ModeStr.find("ThirdPerson") == std::string::npos)
+				{
+					g_RequestedFirstPersonMode = false;
+				}
+				else if (!g_RequestedFirstPersonMode && (CurrentTime - LastTransitionTime > 0.5f))
 				{
 					OakPC->CameraTransition(
 						SDK::UKismetStringLibrary::Conv_StringToName(L"FirstPerson"),
@@ -662,7 +792,9 @@ namespace
 						false,
 						false);
 					LastTransitionTime = CurrentTime;
+					g_RequestedFirstPersonMode = true;
 				}
+				g_RequestedThirdPersonMode = false;
 			}
 		}
 	}
@@ -722,9 +854,15 @@ void Cheats::ChangeGameRenderSettings()
 
 void Cheats::UpdateCamera()
 {
+	if (ShouldReleaseShadowCameraForWorldLifecycle())
+	{
+		Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "Releasing shadow camera on engine world transition state");
+		ReleaseShadowCamera(true, true);
+	}
+
 	if (Utils::bIsLoading || !Utils::bIsInGame)
 	{
-		ReleaseShadowCamera(true, false);
+		ReleaseShadowCamera(true, true);
 		return;
 	}
 
@@ -758,7 +896,7 @@ void Cheats::UpdateCamera()
 
 void Cheats::ShutdownCamera()
 {
-	ReleaseShadowCamera(true, false);
+	ReleaseShadowCamera(true, true);
 }
 
 bool Cheats::HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params)

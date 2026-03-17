@@ -20,6 +20,11 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		case WM_EXITSIZEMOVE:
 			Resizing.store(false);
 			break;
+		case WM_CLOSE:
+		case WM_DESTROY:
+		case WM_QUIT:
+			ExitProcess(0);
+			break;
 	}
 
     // ALWAYS pass to ImGui first so it can track key states for Aimbot/Hotkeys
@@ -193,6 +198,7 @@ static void AutoSetVariablesLocked()
 {
 	SDK::UWorld* currentWorld = Utils::GetWorldSafe();
 	bool shouldReleaseShadowCamera = false;
+	bool shouldReleaseShadowCameraForMissingGameplayRefs = false;
 	{
 		std::scoped_lock GVarsLock(gGVarsMutex);
 		shouldReleaseShadowCamera = GVars.CameraActor != nullptr && GVars.World != nullptr && GVars.World != currentWorld;
@@ -203,8 +209,19 @@ static void AutoSetVariablesLocked()
 		Cheats::ShutdownCamera();
 	}
 
-	std::scoped_lock GVarsLock(gGVarsMutex);
-	GVars.AutoSetVariables();
+	{
+		std::scoped_lock GVarsLock(gGVarsMutex);
+		GVars.AutoSetVariables();
+		shouldReleaseShadowCameraForMissingGameplayRefs =
+			GVars.CameraActor != nullptr &&
+			(!GVars.World || !GVars.PlayerController || !GVars.Character);
+	}
+
+	if (shouldReleaseShadowCameraForMissingGameplayRefs)
+	{
+		Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "MainThread AutoSetVariables detected missing gameplay refs, releasing shadow camera");
+		Cheats::ShutdownCamera();
+	}
 }
 
 static bool TryAutoSetVariablesMainThread()

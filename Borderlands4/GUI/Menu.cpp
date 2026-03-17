@@ -433,6 +433,12 @@ void GUI::RenderMenu()
                         ImGui::SliderFloat(Localization::T("LOOT_MAX_DISTANCE"), &F("ESP.LootMaxDistance"), 10.0f, 1000.0f, "%.0f");
                         ImGui::ColorEdit4(Localization::T("LOOT_COLOR"), (float*)&Color("ESP.LootColor"), ImGuiColorEditFlags_NoInputs);
                     }
+                    ImGui::Checkbox(Localization::T("SHOW_INTERACTIVES"), &B("ESP.ShowInteractives"));
+                    if (B("ESP.ShowInteractives"))
+                    {
+                        ImGui::SliderFloat(Localization::T("INTERACTIVE_MAX_DISTANCE"), &F("ESP.InteractiveMaxDistance"), 10.0f, 1000.0f, "%.0f");
+                        ImGui::ColorEdit4(Localization::T("INTERACTIVE_COLOR"), (float*)&Color("ESP.InteractiveColor"), ImGuiColorEditFlags_NoInputs);
+                    }
                     
                     ImGui::ColorEdit4(Localization::T("ENEMY_COLOR"), (float*)&Color("ESP.EnemyColor"), ImGuiColorEditFlags_NoInputs);
                     if (B("ESP.ShowTeam"))

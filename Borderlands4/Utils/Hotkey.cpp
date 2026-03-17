@@ -125,7 +125,7 @@ namespace HotkeyManager
                         if (bIsMenuKey || bIsUnhookKey || !ImGui::GetIO().WantCaptureKeyboard)
                         {
                             if (!hk.bIsHold) {
-                                LOG_INFO("Hotkey", "Triggered: %s (Key: %s)", hk.Label.c_str(), ImGui::GetKeyName(currentKey));
+                                LOG_DEBUG("Hotkey", "Triggered: %s (Key: %s)", hk.Label.c_str(), ImGui::GetKeyName(currentKey));
                             }
                             hk.Callback();
                         }

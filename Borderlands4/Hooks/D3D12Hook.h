@@ -12,7 +12,6 @@ namespace d3d12hook {
     extern ExecuteCommandListsFn oExecuteCommandListsD3D12;
     extern ResizeBuffersFn oResizeBuffersD3D12;
 
-    bool init();
     void release();
     
     long __stdcall hookPresentD3D12(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags);

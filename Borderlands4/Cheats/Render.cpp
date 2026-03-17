@@ -50,6 +50,7 @@ namespace
     {
         SDK::UWorld* currentWorld = Utils::GetWorldSafe();
         bool shouldReleaseShadowCamera = false;
+        bool shouldReleaseShadowCameraForMissingGameplayRefs = false;
         {
             std::scoped_lock GVarsLock(gGVarsMutex);
             shouldReleaseShadowCamera = GVars.CameraActor != nullptr && GVars.World != nullptr && GVars.World != currentWorld;
@@ -60,8 +61,19 @@ namespace
             Cheats::ShutdownCamera();
         }
 
-        std::scoped_lock GVarsLock(gGVarsMutex);
-        GVars.AutoSetVariables();
+        {
+            std::scoped_lock GVarsLock(gGVarsMutex);
+            GVars.AutoSetVariables();
+            shouldReleaseShadowCameraForMissingGameplayRefs =
+                GVars.CameraActor != nullptr &&
+                (!GVars.World || !GVars.PlayerController || !GVars.Character);
+        }
+
+        if (shouldReleaseShadowCameraForMissingGameplayRefs)
+        {
+            Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "AutoSetVariables detected missing gameplay refs, releasing shadow camera");
+            Cheats::ShutdownCamera();
+        }
     }
 
     bool TryAutoSetVariablesForRender()

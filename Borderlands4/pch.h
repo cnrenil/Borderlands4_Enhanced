@@ -61,6 +61,7 @@
 #include "Borderlands4_SDK/SDK/OakGame_classes.hpp"
 #include "Borderlands4_SDK/SDK/OakGame_parameters.hpp"
 #include "Borderlands4_SDK/SDK/GbxGame_classes.hpp"
+#include <Borderlands4_SDK/SDK/GbxGame_parameters.hpp>
 #include "Borderlands4_SDK/SDK/GbxAI_classes.hpp"
 #include "Borderlands4_SDK/SDK/AIModule_classes.hpp"
 #include "Borderlands4_SDK/SDK/TemplateSequence_classes.hpp"

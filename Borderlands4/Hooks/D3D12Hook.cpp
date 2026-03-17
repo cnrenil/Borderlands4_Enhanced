@@ -49,6 +49,48 @@ namespace d3d12hook {
     static constexpr DWORD        POST_RESIZE_COOLDOWN_MS = 500;
     static DWORD                  gLastResizeTime = 0;
 
+    [[noreturn]] static void ForceExitOnGameShutdown(const char* reason) {
+        if (reason) {
+            LOG_INFO("DX12Hook", "Shutdown detected in D3D12 hook path: %s. Exiting process.\n", reason);
+        }
+        gShutdown = true;
+        ExitProcess(0);
+    }
+
+    static long CallOriginalPresentSEH(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags)
+    {
+        __try {
+            return oPresentD3D12(pSwapChain, SyncInterval, Flags);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) {
+            ForceExitOnGameShutdown("Present/original call fault");
+        }
+    }
+
+    static long CallOriginalPresent1SEH(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags, const DXGI_PRESENT_PARAMETERS* pParams)
+    {
+        __try {
+            return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) {
+            ForceExitOnGameShutdown("Present1/original call fault");
+        }
+    }
+
+    static void CallOriginalExecuteCommandListsSEH(ID3D12CommandQueue* queue, UINT NumCommandLists, ID3D12CommandList* const* ppCommandLists)
+    {
+        __try {
+            oExecuteCommandListsD3D12(queue, NumCommandLists, ppCommandLists);
+        }
+        __except (EXCEPTION_EXECUTE_HANDLER) {
+            ForceExitOnGameShutdown("ExecuteCommandLists/original call fault");
+        }
+    }
+
+    static bool IsGameWindowGone() {
+        return g_hWnd && !IsWindow(g_hWnd);
+    }
+
     static bool IsInPostResizeCooldown() {
         if (gLastResizeTime == 0) return false;
         return (GetTickCount() - gLastResizeTime) < POST_RESIZE_COOLDOWN_MS;
@@ -287,6 +329,7 @@ namespace d3d12hook {
     }
 
     long __stdcall hookPresentD3D12(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags) {
+        if (IsGameWindowGone()) ForceExitOnGameShutdown("Present/window invalid");
         if (gShutdown) return oPresentD3D12(pSwapChain, SyncInterval, Flags);
 
         if (IsInPostResizeCooldown()) {
@@ -343,10 +386,11 @@ namespace d3d12hook {
                 Logger::LogThrottled(Logger::Level::Debug, "D3D12", 5000, "hookPresentD3D12: Waiting for ImGui Init (Grace Period)...");
         }
 
-        return oPresentD3D12(pSwapChain, SyncInterval, Flags);
+        return CallOriginalPresentSEH(pSwapChain, SyncInterval, Flags);
     }
 
     long __stdcall hookPresent1D3D12(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags, const DXGI_PRESENT_PARAMETERS* pParams) {
+        if (IsGameWindowGone()) ForceExitOnGameShutdown("Present1/window invalid");
         if (gShutdown) return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
 
         if (IsInPostResizeCooldown()) {
@@ -398,10 +442,11 @@ namespace d3d12hook {
             g_PresentCount.fetch_add(1);
         }
 
-        return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
+        return CallOriginalPresent1SEH(pSwapChain, SyncInterval, Flags, pParams);
     }
 
     void __stdcall hookExecuteCommandListsD3D12(ID3D12CommandQueue* _this, UINT NumCommandLists, ID3D12CommandList* const* ppCommandLists) {
+        if (IsGameWindowGone()) ForceExitOnGameShutdown("ExecuteCommandLists/window invalid");
         if (gShutdown) return oExecuteCommandListsD3D12(_this, NumCommandLists, ppCommandLists);
         if (IsInPostResizeCooldown()) {
             gAfterFirstPresent = false;
@@ -418,7 +463,7 @@ namespace d3d12hook {
         }
         gAfterFirstPresent = false;
         if (oExecuteCommandListsD3D12)
-            oExecuteCommandListsD3D12(_this, NumCommandLists, ppCommandLists);
+            CallOriginalExecuteCommandListsSEH(_this, NumCommandLists, ppCommandLists);
     }
 
     HRESULT __stdcall hookResizeBuffersD3D12(IDXGISwapChain3* pSwapChain, UINT BufferCount, UINT Width, UINT Height, DXGI_FORMAT NewFormat, UINT SwapChainFlags) {

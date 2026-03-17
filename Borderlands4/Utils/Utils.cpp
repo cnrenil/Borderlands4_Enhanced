@@ -48,6 +48,7 @@ namespace
 
         return fallbackCenter;
     }
+
 }
 
 std::recursive_mutex gGVarsMutex;

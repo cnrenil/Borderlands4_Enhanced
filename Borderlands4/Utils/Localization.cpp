@@ -228,6 +228,9 @@ namespace Localization
         Register("SHOW_LOOT_NAME", "Show Loot Name", (const char*)u8"显示掉落物名称");
         Register("LOOT_COLOR", "Loot Color", (const char*)u8"掉落物颜色");
         Register("LOOT_MAX_DISTANCE", "Loot Max Distance (m)", (const char*)u8"掉落物最大距离(米)");
+        Register("SHOW_INTERACTIVES", "Show Interactives / Chests", (const char*)u8"显示可交互物和箱子");
+        Register("INTERACTIVE_COLOR", "Interactive Color", (const char*)u8"可交互物颜色");
+        Register("INTERACTIVE_MAX_DISTANCE", "Interactive Max Distance (m)", (const char*)u8"可交互物最大距离(米)");
         Register("ENEMY_COLOR", "Enemy Color", (const char*)u8"敌人颜色");
         Register("TEAM_COLOR", "Team Color", (const char*)u8"队友颜色");
         Register("DEBUG", "Debug", (const char*)u8"调试");
