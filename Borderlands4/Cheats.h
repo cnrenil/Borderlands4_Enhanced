@@ -115,6 +115,7 @@ struct Cheats
 	static void UpdateWeapon();
 	static void UpdateCamera();
 	static void UpdateDebug();
+	static void ShutdownCamera();
 
 	// Cross-thread Rendering Helpers
 	static inline FVector AimbotTargetPos;

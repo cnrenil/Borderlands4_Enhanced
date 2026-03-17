@@ -321,6 +321,36 @@ namespace
             n.find("dash") != std::string::npos;
     }
 
+    bool IsLikelyVehicleBoostResourceName(const SDK::FName& ResourceName)
+    {
+        std::string n = ResourceName.ToString();
+        std::transform(n.begin(), n.end(), n.begin(), [](unsigned char c) {
+            if (c >= 'A' && c <= 'Z') return (char)(c + ('a' - 'A'));
+            return (char)c;
+        });
+
+        return n.find("boost") != std::string::npos ||
+            n.find("fuel") != std::string::npos ||
+            n.find("nitro") != std::string::npos ||
+            n.find("turbo") != std::string::npos;
+    }
+
+    bool IsLocalVehicleBoostContext(const SDK::UObject* OwnerContext)
+    {
+        if (!OwnerContext)
+            return false;
+
+        SDK::AOakVehicle* localVehicle = GetControlledVehicle();
+        if (!localVehicle || !Utils::IsValidActor(localVehicle))
+            return false;
+
+        if (OwnerContext == localVehicle)
+            return true;
+
+        SDK::UOakWheeledVehicleMovementComponent* vehicleMove = localVehicle->OakVehicleMovement;
+        return vehicleMove && OwnerContext == vehicleMove;
+    }
+
     bool IsLocalMovementComponent(const SDK::UObject* Object)
     {
         if (!Object || !GVars.Character || !Utils::IsValidActor(GVars.Character))
@@ -347,15 +377,7 @@ namespace
         SDK::UOakWheeledVehicleMovementComponent* vehicleMove = vehicle->OakVehicleMovement;
         if (!vehicleMove) return;
 
-        // Keep boost state out of "depleted/cooldown" so boost can be reused immediately.
         vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
-        vehicleMove->OnBoostFilled();
-        SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
-
-        // Ask server-side vehicle logic to recompute boost state if gameplay code marked it invalid.
-        if (!SDK::UOakVehicleBlueprintLibrary::CanBoost(vehicle))
-            vehicle->ServerRecomputeBoostCost();
-
     }
 
     SDK::AInventoryGadget* GetLocalInventoryGadget()
@@ -643,11 +665,6 @@ bool Cheats::HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Fu
         {
             vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
             vehicleMove->OnBoostFilled();
-            if (vehicle && Utils::IsValidActor(vehicle))
-            {
-                SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
-                vehicle->ServerRecomputeBoostCost();
-            }
             return true;
         }
 
@@ -655,10 +672,31 @@ bool Cheats::HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Fu
         {
             vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
             vehicleMove->OnBoostFilled();
-            if (vehicle && Utils::IsValidActor(vehicle))
-                SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
             return true;
         }
+    }
+
+    if (ConfigManager::B("Player.InfVehicleBoost"))
+    {
+        if (FuncName == "DrainResourcePool" && Params)
+        {
+            struct DrainResourcePoolParams
+            {
+                SDK::UObject* OwnerContext;
+                SDK::FName ResourceName;
+                float Percentage;
+                float MinPercentage;
+            };
+
+            auto* p = (DrainResourcePoolParams*)Params;
+            if (p &&
+                IsLocalVehicleBoostContext(p->OwnerContext) &&
+                IsLikelyVehicleBoostResourceName(p->ResourceName))
+            {
+                return true;
+            }
+        }
+
     }
 
     if (!ConfigManager::B("Misc.MapTeleport")) return false;

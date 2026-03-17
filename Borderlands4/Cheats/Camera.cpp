@@ -96,6 +96,53 @@ namespace
 		g_ShadowCameraMode = EShadowCameraMode::None;
 	}
 
+	void ResetShadowCameraState()
+	{
+		ResetShadowSpringArm();
+		g_SmoothedShadowFOV = -1.0f;
+		g_SmoothedOTSADSBlend = 0.0f;
+		g_FreecamRotationInitialized = false;
+	}
+
+	void ReleaseShadowCamera(bool bDestroyActor, bool bRestoreViewTarget)
+	{
+		SDK::ACameraActor* cam = nullptr;
+		SDK::AOakPlayerController* oakPc = nullptr;
+		SDK::AOakCharacter* oakChar = nullptr;
+		{
+			std::scoped_lock GVarsLock(gGVarsMutex);
+			cam = GVars.CameraActor;
+			GVars.CameraActor = nullptr;
+			if (GVars.PlayerController && GVars.PlayerController->IsA(SDK::AOakPlayerController::StaticClass()))
+				oakPc = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
+			if (GVars.Character && GVars.Character->IsA(SDK::AOakCharacter::StaticClass()))
+				oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+		}
+
+		ResetShadowCameraState();
+
+		if (!IsValidShadowCamera(cam))
+			return;
+
+		if (bRestoreViewTarget && oakPc && oakPc->PlayerCameraManager && oakChar && Utils::IsValidActor(oakChar))
+		{
+			if (oakPc->PlayerCameraManager->ViewTarget.target == cam)
+			{
+				oakPc->SetViewTargetWithBlend(oakChar, 0.0f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
+			}
+		}
+
+		if (cam->GetAttachParentActor())
+		{
+			cam->K2_DetachFromActor(SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld);
+		}
+
+		if (bDestroyActor)
+		{
+			cam->K2_DestroyActor();
+		}
+	}
+
 	SDK::FRotator UpdateFreecamRotation(const SDK::FRotator& fallbackRotation)
 	{
 		if (!g_FreecamRotationInitialized)
@@ -469,11 +516,23 @@ namespace
 
 	void UpdateCameraModes()
 	{
-		if (!GVars.PlayerController || !GVars.Character || !GVars.World) return;
+		if (!GVars.PlayerController || !GVars.Character || !GVars.World)
+		{
+			ReleaseShadowCamera(true, false);
+			return;
+		}
 		SDK::AOakPlayerController* OakPC = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
 		SDK::AOakCharacter* OakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
-		if (!OakPC || !OakChar || !OakPC->PlayerCameraManager) return;
-		if (!Utils::IsValidActor(OakPC) || !Utils::IsValidActor(OakChar)) return;
+		if (!OakPC || !OakChar || !OakPC->PlayerCameraManager)
+		{
+			ReleaseShadowCamera(true, false);
+			return;
+		}
+		if (!Utils::IsValidActor(OakPC) || !Utils::IsValidActor(OakChar))
+		{
+			ReleaseShadowCamera(true, false);
+			return;
+		}
 
 		static float LastTransitionTime = 0.0f;
 		const float CurrentTime = (float)ImGui::GetTime();
@@ -565,10 +624,7 @@ namespace
 		}
 		else
 		{
-			g_ShadowCameraMode = EShadowCameraMode::None;
-			g_SmoothedShadowFOV = -1.0f;
-			g_SmoothedOTSADSBlend = 0.0f;
-			g_FreecamRotationInitialized = false;
+			ReleaseShadowCamera(true, true);
 
 			bool bShouldBeInThirdPerson = ConfigManager::B("Player.ThirdPerson");
 			if (ConfigManager::B("Player.ThirdPerson") && bIsZooming && ConfigManager::B("Misc.ThirdPersonADSFirstPerson"))
@@ -666,6 +722,12 @@ void Cheats::ChangeGameRenderSettings()
 
 void Cheats::UpdateCamera()
 {
+	if (Utils::bIsLoading || !Utils::bIsInGame)
+	{
+		ReleaseShadowCamera(true, false);
+		return;
+	}
+
 	Cheats::ChangeFOV();
 	UpdateCameraModes();
 
@@ -692,6 +754,11 @@ void Cheats::UpdateCamera()
 	ApplyViewModelFOV();
 
 	Cheats::ChangeGameRenderSettings();
+}
+
+void Cheats::ShutdownCamera()
+{
+	ReleaseShadowCamera(true, false);
 }
 
 bool Cheats::HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params)

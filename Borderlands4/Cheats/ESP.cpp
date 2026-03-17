@@ -588,9 +588,7 @@ void Cheats::RenderESP()
 	if (ConfigManager::B("ESP.ShowEnemyIndicator"))
 	{
 		const FVector2D viewportSize = Utils::ImVec2ToFVector2D(GVars.ScreenSize);
-		const ImVec2 screenCenter = IsOTSAdsActive()
-			? GetCustomReticleScreenPos()
-			: ImVec2(GVars.ScreenSize.x * 0.5f, GVars.ScreenSize.y * 0.5f);
+		const ImVec2 screenCenter = GetCustomReticleScreenPos();
 		const float maxFOVNormalized = ConfigManager::F("Aimbot.MaxFOV") / 90.0f;
 		const float indicatorRadius = (std::max)(16.0f, maxFOVNormalized * ((float)viewportSize.Y * 0.5f));
 

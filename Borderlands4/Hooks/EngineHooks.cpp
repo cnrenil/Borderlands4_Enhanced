@@ -58,6 +58,8 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 void Cleanup(HMODULE hModule)
 {
 	Cleaning.store(true);
+	d3d12hook::release();
+	Cheats::ShutdownCamera();
 	
 	// Restore WndProc
 	if (g_hWnd && oWndProc) {
@@ -189,6 +191,18 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 
 static void AutoSetVariablesLocked()
 {
+	SDK::UWorld* currentWorld = Utils::GetWorldSafe();
+	bool shouldReleaseShadowCamera = false;
+	{
+		std::scoped_lock GVarsLock(gGVarsMutex);
+		shouldReleaseShadowCamera = GVars.CameraActor != nullptr && GVars.World != nullptr && GVars.World != currentWorld;
+	}
+
+	if (shouldReleaseShadowCamera)
+	{
+		Cheats::ShutdownCamera();
+	}
+
 	std::scoped_lock GVarsLock(gGVarsMutex);
 	GVars.AutoSetVariables();
 }

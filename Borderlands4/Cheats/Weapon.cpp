@@ -220,7 +220,8 @@ void Cheats::WeaponModifiers()
 				ApplyNoAmmoConsume(FB, bNoAmmoConsume);
 
 				if (ConfigManager::B("Weapon.RapidFire")) {
-					FB->firerate.Value = 999.0f * ConfigManager::F("Weapon.FireRate");
+					const float baseFireRate = FB->firerate.BaseValue > 0.0f ? FB->firerate.BaseValue : FB->firerate.Value;
+					FB->firerate.Value = baseFireRate * ConfigManager::F("Weapon.FireRate");
 				}
 				else {
 					FB->firerate.Value = FB->firerate.BaseValue;
