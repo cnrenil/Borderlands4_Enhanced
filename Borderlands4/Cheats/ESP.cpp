@@ -109,7 +109,7 @@ static bool ProjectForOverlay(const FVector& worldPos, FVector2D& outScreen)
 {
 	if (!GVars.PlayerController) return false;
 	// Use player-viewport-relative coordinates so OTS/shadow-camera view rect matches UCanvas and ImGui overlay placement.
-	return GVars.PlayerController->ProjectWorldLocationToScreen(worldPos, &outScreen, true);
+	return Utils::ProjectWorldLocationToScreen(worldPos, outScreen, true);
 }
 
 static bool ProjectActorScreenBounds(AActor* actor, FVector2D& outTopScreen, FVector2D& outBottomScreen, FVector2D& outLeftTopScreen, FVector2D& outRightBottomScreen)
@@ -188,7 +188,8 @@ static ImVec2 GetCustomReticleScreenPos()
 
 	const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
 	const FVector camLoc = CameraPOV.Location;
-	const FVector camFwd = Utils::FRotatorToVector(CameraPOV.Rotation);
+	const FRotator camRot = CameraPOV.Rotation;
+	const FVector camFwd = Utils::FRotatorToVector(camRot);
 	const FVector aimPoint = camLoc + (camFwd * 50000.0f);
 
 	FVector2D screen{};

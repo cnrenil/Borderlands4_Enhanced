@@ -73,7 +73,6 @@ namespace HotkeyManager
         // One-shot toggles with callbacks
         Register("Misc.MenuKey", "MENU_KEY", ImGuiKey_Insert, []() {
             GUI::ShowMenu = !GUI::ShowMenu;
-            ImGui::GetIO().MouseDrawCursor = GUI::ShowMenu;
         });
         Register("Misc.UnhookKey", "UNHOOK_KEY", ImGuiKey_End, []() {
             Cleaning.store(true);

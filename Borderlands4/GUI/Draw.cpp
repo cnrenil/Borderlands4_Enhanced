@@ -6,6 +6,34 @@ namespace GUI::Draw
     {
         std::atomic<Backend> g_PreferredBackend{ Backend::Auto };
 
+        ImVec2 GetViewportOffsetForImGui()
+        {
+            if (!GVars.PlayerController || !GVars.PlayerController->PlayerCameraManager)
+                return ImVec2(0.0f, 0.0f);
+
+            const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
+            const FMinimalViewInfo& cameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
+            const FVector camLoc = cameraPOV.Location;
+            const FVector camFwd = Utils::FRotatorToVector(cameraPOV.Rotation);
+            const FVector aimPoint = camLoc + (camFwd * 50000.0f);
+
+            FVector2D projectedCenter{};
+            if (Utils::ProjectWorldLocationToScreen(aimPoint, projectedCenter, true))
+            {
+                return ImVec2(
+                    (displaySize.x * 0.5f) - static_cast<float>(projectedCenter.X),
+                    (displaySize.y * 0.5f) - static_cast<float>(projectedCenter.Y));
+            }
+
+            return ImVec2(0.0f, 0.0f);
+        }
+
+        ImVec2 ToImGuiDrawPos(const ImVec2& pos)
+        {
+            const ImVec2 offset = GetViewportOffsetForImGui();
+            return ImVec2(pos.x + offset.x, pos.y + offset.y);
+        }
+
         UFont* ResolveHudFont()
         {
             static UFont* cachedFont = nullptr;
@@ -145,13 +173,8 @@ namespace GUI::Draw
 
     Backend ResolveBackend(UCanvas* canvas)
     {
-        const UCanvas* resolvedCanvas = ResolveCanvas(canvas);
-        const Backend preferred = GetPreferredBackend();
-        if (preferred == Backend::ImGui)
-            return Backend::ImGui;
-        if (preferred == Backend::UCanvas)
-            return resolvedCanvas ? Backend::UCanvas : Backend::ImGui;
-        return resolvedCanvas ? Backend::UCanvas : Backend::ImGui;
+        (void)canvas;
+        return Backend::ImGui;
     }
 
     void Line(const ImVec2& a, const ImVec2& b, ImU32 color, float thickness, UCanvas* canvas)
@@ -161,7 +184,7 @@ namespace GUI::Draw
             DrawCanvasLineImpl(ResolveCanvas(canvas), FVector2D(a.x, a.y), FVector2D(b.x, b.y), thickness, Utils::U32ToLinearColor(color));
             return;
         }
-        GetDrawList()->AddLine(a, b, color, thickness);
+        GetDrawList()->AddLine(ToImGuiDrawPos(a), ToImGuiDrawPos(b), color, thickness);
     }
 
     void Rect(const ImVec2& min, const ImVec2& max, ImU32 color, float thickness, UCanvas* canvas)
@@ -171,7 +194,7 @@ namespace GUI::Draw
             DrawCanvasBoxImpl(ResolveCanvas(canvas), FVector2D(min.x, min.y), FVector2D(max.x - min.x, max.y - min.y), thickness, Utils::U32ToLinearColor(color));
             return;
         }
-        GetDrawList()->AddRect(min, max, color, 0.0f, 0, thickness);
+        GetDrawList()->AddRect(ToImGuiDrawPos(min), ToImGuiDrawPos(max), color, 0.0f, 0, thickness);
     }
 
     void RectFilled(const ImVec2& min, const ImVec2& max, ImU32 color, UCanvas* canvas)
@@ -181,7 +204,7 @@ namespace GUI::Draw
             DrawCanvasFilledRectImpl(ResolveCanvas(canvas), FVector2D(min.x, min.y), FVector2D(max.x - min.x, max.y - min.y), Utils::U32ToLinearColor(color));
             return;
         }
-        GetDrawList()->AddRectFilled(min, max, color);
+        GetDrawList()->AddRectFilled(ToImGuiDrawPos(min), ToImGuiDrawPos(max), color);
     }
 
     void Circle(const ImVec2& center, float radius, ImU32 color, int sides, float thickness, UCanvas* canvas)
@@ -191,7 +214,7 @@ namespace GUI::Draw
             DrawCanvasCircleImpl(ResolveCanvas(canvas), FVector2D(center.x, center.y), radius, sides, thickness, Utils::U32ToLinearColor(color));
             return;
         }
-        GetDrawList()->AddCircle(center, radius, color, sides, thickness);
+        GetDrawList()->AddCircle(ToImGuiDrawPos(center), radius, color, sides, thickness);
     }
 
     void CircleFilled(const ImVec2& center, float radius, ImU32 color, UCanvas* canvas)
@@ -201,7 +224,7 @@ namespace GUI::Draw
             DrawCanvasCircleImpl(ResolveCanvas(canvas), FVector2D(center.x, center.y), radius, 16, radius, Utils::U32ToLinearColor(color));
             return;
         }
-        GetDrawList()->AddCircleFilled(center, radius, color);
+        GetDrawList()->AddCircleFilled(ToImGuiDrawPos(center), radius, color);
     }
 
     void TriangleOutline(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 color, float thickness, UCanvas* canvas)
@@ -218,7 +241,7 @@ namespace GUI::Draw
             TriangleOutline(p1, p2, p3, color, 2.0f, canvas);
             return;
         }
-        GetDrawList()->AddTriangleFilled(p1, p2, p3, color);
+        GetDrawList()->AddTriangleFilled(ToImGuiDrawPos(p1), ToImGuiDrawPos(p2), ToImGuiDrawPos(p3), color);
     }
 
     void Text(const std::string& text, const ImVec2& pos, ImU32 color, const FVector2D& scale, bool centerX, bool centerY, bool outlined, UCanvas* canvas)
@@ -231,7 +254,7 @@ namespace GUI::Draw
             DrawCanvasTextImpl(ResolveCanvas(canvas), text, FVector2D(pos.x, pos.y), Utils::U32ToLinearColor(color), scale, centerX, centerY, outlined);
             return;
         }
-        GetDrawList()->AddText(pos, color, text.c_str());
+        GetDrawList()->AddText(ToImGuiDrawPos(pos), color, text.c_str());
     }
 
     void Text(const FString& text, const ImVec2& pos, ImU32 color, const FVector2D& scale, bool centerX, bool centerY, bool outlined, UCanvas* canvas)
@@ -244,6 +267,6 @@ namespace GUI::Draw
             DrawCanvasTextImpl(ResolveCanvas(canvas), text, FVector2D(pos.x, pos.y), Utils::U32ToLinearColor(color), scale, centerX, centerY, outlined);
             return;
         }
-        GetDrawList()->AddText(pos, color, text.ToString().c_str());
+        GetDrawList()->AddText(ToImGuiDrawPos(pos), color, text.ToString().c_str());
     }
 }

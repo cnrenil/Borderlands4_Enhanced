@@ -37,10 +37,11 @@ namespace
         {
             const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
             const FVector camLoc = CameraPOV.Location;
-            const FVector camFwd = Utils::FRotatorToVector(CameraPOV.Rotation);
+            const FRotator camRot = CameraPOV.Rotation;
+            const FVector camFwd = Utils::FRotatorToVector(camRot);
             const FVector aimPoint = camLoc + (camFwd * 50000.0f);
             FVector2D aimScreen{};
-            if (GVars.PlayerController->ProjectWorldLocationToScreen(aimPoint, &aimScreen, true)) {
+            if (Utils::ProjectWorldLocationToScreen(aimPoint, aimScreen, true)) {
                 return ImVec2((float)aimScreen.X, (float)aimScreen.Y);
             }
         }
@@ -127,6 +128,31 @@ void Utils::SetCurrentCanvas(UCanvas* Canvas)
 UCanvas* Utils::GetCurrentCanvas()
 {
     return g_CurrentCanvas;
+}
+
+bool Utils::ProjectWorldLocationToScreen(const FVector& WorldLocation, FVector2D& OutScreenLocation, bool bPlayerViewportRelative)
+{
+    return Utils::ProjectWorldLocationToScreen(GVars.PlayerController, WorldLocation, OutScreenLocation, bPlayerViewportRelative);
+}
+
+bool Utils::ProjectWorldLocationToScreen(APlayerController* PlayerController, const FVector& WorldLocation, FVector2D& OutScreenLocation, bool bPlayerViewportRelative)
+{
+    OutScreenLocation = FVector2D(0.0f, 0.0f);
+    if (!PlayerController)
+        return false;
+
+    __try
+    {
+        if (IsBadReadPtr(PlayerController, sizeof(void*)) || !PlayerController->VTable)
+            return false;
+
+        return PlayerController->ProjectWorldLocationToScreen(WorldLocation, &OutScreenLocation, bPlayerViewportRelative);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        OutScreenLocation = FVector2D(0.0f, 0.0f);
+        return false;
+    }
 }
 
 FLinearColor Utils::ImVec4ToLinearColor(const ImVec4& Color)
@@ -396,7 +422,7 @@ TargetSelectionResult Utils::AcquireTarget(APlayerController* ViewPoint, float M
 
         // Project to screen first
         FVector2D ScreenLocation;
-        if (!ViewPoint->ProjectWorldLocationToScreen(ActorLoc, &ScreenLocation, true))
+        if (!Utils::ProjectWorldLocationToScreen(ViewPoint, ActorLoc, ScreenLocation, true))
             continue;
 
         FVector2D Delta = ScreenLocation - ViewportCenter;
@@ -421,7 +447,7 @@ TargetSelectionResult Utils::AcquireTarget(APlayerController* ViewPoint, float M
         }
 
         // Recalculate precise FOV with bone location
-        if (ViewPoint->ProjectWorldLocationToScreen(BoneLocation, &ScreenLocation, true))
+        if (Utils::ProjectWorldLocationToScreen(ViewPoint, BoneLocation, ScreenLocation, true))
         {
             Delta = ScreenLocation - ViewportCenter;
             DeltaLength = sqrtf((float)Delta.X * (float)Delta.X + (float)Delta.Y * (float)Delta.Y);
@@ -470,7 +496,7 @@ void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
 {
     FVector2D ScreenPos;
 
-    if (!GVars.PlayerController->ProjectWorldLocationToScreen(TargetPos, &ScreenPos, true))
+    if (!Utils::ProjectWorldLocationToScreen(TargetPos, ScreenPos, true))
         return;
 
     ImVec2 Center = GetAimScreenCenter();

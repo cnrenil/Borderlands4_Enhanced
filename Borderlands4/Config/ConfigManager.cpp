@@ -119,9 +119,13 @@ namespace ConfigManager
         Register("Misc.ThirdPersonADSFirstPerson", true);
         Register("Misc.OTS_X", -150.0f);
         Register("Misc.OTS_Y", 60.0f);
-        Register("Misc.OTS_Z", 20.0f);
-        Register("Misc.OTSADSFOVBoost", false);
-        Register("Misc.OTSADSFOVScale", 1.2f);
+        Register("Misc.OTS_Z", 50.0f);
+        Register("Misc.OTSADSOverride", false);
+        Register("Misc.OTSADS_X", -90.0f);
+        Register("Misc.OTSADS_Y", 40.0f);
+        Register("Misc.OTSADS_Z", 40.0f);
+        Register("Misc.OTSADSFOV", 90.0f);
+        Register("Misc.OTSADSBlendTime", 0.18f);
         Register("Misc.FreecamBlockInput", true);
         Register("Misc.Language", 0);
         Register("Misc.Theme", 0);
@@ -227,6 +231,7 @@ namespace ConfigManager
             }
         }
 
+        I("Aimbot.TargetMode") = ClampInt(I("Aimbot.TargetMode"), 0, 1);
         I("Misc.Language") = ClampInt(I("Misc.Language"), 0, 1);
         I("Misc.Theme") = GUI::ThemeManager::ClampThemeIndex(I("Misc.Theme"));
         Localization::CurrentLanguage = static_cast<Language>(I("Misc.Language"));

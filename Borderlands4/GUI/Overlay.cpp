@@ -53,6 +53,8 @@ namespace GUI::Overlay
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+        io.MouseDrawCursor = false;
 
         LoadFonts(io);
         GUI::ThemeManager::ApplyByIndex(ConfigManager::I("Misc.Theme"));
@@ -92,6 +94,7 @@ namespace GUI::Overlay
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
+        ImGui::GetIO().MouseDrawCursor = GUI::ShowMenu;
     }
 
     void BuildFrame()

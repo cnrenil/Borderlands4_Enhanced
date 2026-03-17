@@ -85,6 +85,17 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
                 return;
             }
 
+            if (ConfigManager::B("Player.Freecam") && ConfigManager::B("Misc.FreecamBlockInput"))
+            {
+                if (IsInputEvent(fnName))
+                {
+                    bInsideHook = false;
+                    DispatchDebugOrOriginal(false);
+                    g_ProcessEventCount.fetch_sub(1);
+                    return;
+                }
+            }
+
             // Modular Handlers
             if (Cheats::HandleMovementEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
             if (Cheats::HandleAimbotEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }

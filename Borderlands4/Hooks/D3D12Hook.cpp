@@ -232,6 +232,8 @@ namespace d3d12hook {
         GUI::Overlay::BuildFrame();
         ImDrawData* drawData = GUI::Overlay::GetDrawData();
         if (!drawData) return;
+        if (drawData->CmdListsCount <= 0 || drawData->TotalVtxCount <= 0)
+            return;
 
         UINT frameIdx = pSwapChain->GetCurrentBackBufferIndex();
         if (frameIdx >= gBufferCount) return; // Safety check

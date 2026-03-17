@@ -72,6 +72,7 @@ void GUI::RenderMenu()
 			{
 				static const char* HostLangs[] = { "English", "简体中文" };
 				int& CurrentLangIdx = ConfigManager::I("Misc.Language");
+                CurrentLangIdx = (std::clamp)(CurrentLangIdx, 0, IM_ARRAYSIZE(HostLangs) - 1);
 				if (ImGui::Combo(Localization::T("LANGUAGE"), &CurrentLangIdx, HostLangs, IM_ARRAYSIZE(HostLangs)))
 				{
 					Localization::CurrentLanguage = (Language)CurrentLangIdx;
@@ -167,10 +168,14 @@ void GUI::RenderMenu()
                     ImGui::SliderFloat(Localization::T("OTS_OFFSET_X"), &F("Misc.OTS_X"), -500.0f, 500.0f);
                     ImGui::SliderFloat(Localization::T("OTS_OFFSET_Y"), &F("Misc.OTS_Y"), -200.0f, 200.0f);
                     ImGui::SliderFloat(Localization::T("OTS_OFFSET_Z"), &F("Misc.OTS_Z"), -200.0f, 200.0f);
-                    ImGui::Checkbox(Localization::T("OTS_ADS_FOV_BOOST"), &B("Misc.OTSADSFOVBoost"));
-                    if (B("Misc.OTSADSFOVBoost"))
+                    ImGui::Checkbox(Localization::T("OTS_ADS_CAMERA_OVERRIDE"), &B("Misc.OTSADSOverride"));
+                    if (B("Misc.OTSADSOverride"))
                     {
-                        ImGui::SliderFloat(Localization::T("OTS_ADS_FOV_SCALE"), &F("Misc.OTSADSFOVScale"), 0.2f, 3.0f, "%.2f");
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_X"), &F("Misc.OTSADS_X"), -500.0f, 500.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_Y"), &F("Misc.OTSADS_Y"), -200.0f, 200.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_Z"), &F("Misc.OTSADS_Z"), -200.0f, 200.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_FOV"), &F("Misc.OTSADSFOV"), 20.0f, 180.0f, "%.1f");
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_BLEND_TIME"), &F("Misc.OTSADSBlendTime"), 0.01f, 1.00f, "%.2fs");
                     }
                     ImGui::Unindent();
                 }
@@ -287,16 +292,18 @@ void GUI::RenderMenu()
                     ImGui::SliderFloat(Localization::T("AIMBOT_FOV"), &F("Aimbot.MaxFOV"), 1.0f, 180.0f);
                     ImGui::SliderFloat(Localization::T("MIN_DISTANCE"), &F("Aimbot.MinDistance"), 0.0f, 100.0f, "%.1f");
                     ImGui::SliderFloat(Localization::T("MAX_DISTANCE"), &F("Aimbot.MaxDistance"), 1.0f, 500.0f);
-                    if (ImGui::BeginCombo(Localization::T("TARGET_MODE"), GetTargetModeLabel(I("Aimbot.TargetMode"))))
+                    int& targetMode = I("Aimbot.TargetMode");
+                    targetMode = (std::clamp)(targetMode, 0, 1);
+                    if (ImGui::BeginCombo(Localization::T("TARGET_MODE"), GetTargetModeLabel(targetMode)))
                     {
-                        const bool isScreenSelected = (I("Aimbot.TargetMode") == 0);
+                        const bool isScreenSelected = (targetMode == 0);
                         if (ImGui::Selectable(Localization::T("TARGET_MODE_SCREEN"), isScreenSelected))
-                            I("Aimbot.TargetMode") = 0;
+                            targetMode = 0;
                         if (isScreenSelected) ImGui::SetItemDefaultFocus();
 
-                        const bool isDistanceSelected = (I("Aimbot.TargetMode") == 1);
+                        const bool isDistanceSelected = (targetMode == 1);
                         if (ImGui::Selectable(Localization::T("TARGET_MODE_DISTANCE"), isDistanceSelected))
-                            I("Aimbot.TargetMode") = 1;
+                            targetMode = 1;
                         if (isDistanceSelected) ImGui::SetItemDefaultFocus();
                         ImGui::EndCombo();
                     }

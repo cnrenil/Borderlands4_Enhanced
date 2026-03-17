@@ -24,11 +24,12 @@ namespace
 
         const FMinimalViewInfo& cameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
         const FVector camLoc = cameraPOV.Location;
-        const FVector camFwd = Utils::FRotatorToVector(cameraPOV.Rotation);
+        const FRotator camRot = cameraPOV.Rotation;
+        const FVector camFwd = Utils::FRotatorToVector(camRot);
         const FVector aimPoint = camLoc + (camFwd * 50000.0f);
 
         FVector2D screen{};
-        if (GVars.PlayerController->ProjectWorldLocationToScreen(aimPoint, &screen, true))
+        if (Utils::ProjectWorldLocationToScreen(aimPoint, screen, true))
             return ImVec2(static_cast<float>(screen.X), static_cast<float>(screen.Y));
 
         return ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f);

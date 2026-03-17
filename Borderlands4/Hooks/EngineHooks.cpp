@@ -27,17 +27,27 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 
 	if (GUI::ShowMenu) {
-		// Block mouse/keyboard messages from reaching the game when menu is open
+		// Fully block user input from reaching the game when menu is open.
 		switch (uMsg) {
+			case WM_INPUT:
 			case WM_MOUSEMOVE:
+			case WM_MOUSELEAVE:
+			case WM_NCMOUSEMOVE:
+			case WM_NCMOUSELEAVE:
 			case WM_LBUTTONDOWN: case WM_LBUTTONUP: case WM_LBUTTONDBLCLK:
 			case WM_RBUTTONDOWN: case WM_RBUTTONUP: case WM_RBUTTONDBLCLK:
 			case WM_MBUTTONDOWN: case WM_MBUTTONUP: case WM_MBUTTONDBLCLK:
 			case WM_MOUSEWHEEL: case WM_MOUSEHWHEEL:
 			case WM_XBUTTONDOWN: case WM_XBUTTONUP: case WM_XBUTTONDBLCLK:
+			case WM_CAPTURECHANGED:
+			case WM_SETFOCUS:
+			case WM_KILLFOCUS:
 			case WM_KEYDOWN: case WM_SYSKEYDOWN:
 			case WM_KEYUP: case WM_SYSKEYUP:
+			case WM_SYSCHAR:
 			case WM_CHAR:
+			case WM_DEADCHAR:
+			case WM_SYSDEADCHAR:
 				return 0;
 		}
 	}

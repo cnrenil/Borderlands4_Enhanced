@@ -128,8 +128,12 @@ namespace Localization
         Register("OTS_OFFSET_X", "OTS Offset X (Forward)", (const char*)u8"越肩偏移 X");
         Register("OTS_OFFSET_Y", "OTS Offset Y (Right)", (const char*)u8"越肩偏移 Y");
         Register("OTS_OFFSET_Z", "OTS Offset Z (Up)", (const char*)u8"越肩偏移 Z");
-        Register("OTS_ADS_FOV_BOOST", "OTS ADS FOV Change", (const char*)u8"越肩开镜 FOV 更改");
-        Register("OTS_ADS_FOV_SCALE", "OTS ADS FOV Multiplier", (const char*)u8"越肩开镜 FOV 倍率");
+        Register("OTS_ADS_CAMERA_OVERRIDE", "OTS ADS Camera Override", (const char*)u8"越肩开镜相机属性修改");
+        Register("OTS_ADS_OFFSET_X", "OTS ADS Offset X (Forward)", (const char*)u8"越肩开镜偏移 X");
+        Register("OTS_ADS_OFFSET_Y", "OTS ADS Offset Y (Right)", (const char*)u8"越肩开镜偏移 Y");
+        Register("OTS_ADS_OFFSET_Z", "OTS ADS Offset Z (Up)", (const char*)u8"越肩开镜偏移 Z");
+        Register("OTS_ADS_FOV", "OTS ADS FOV", (const char*)u8"越肩开镜 FOV");
+        Register("OTS_ADS_BLEND_TIME", "OTS ADS Blend Time", (const char*)u8"越肩开镜过渡时长");
         Register("ADS_FIRST_PERSON", "ADS switch to First Person", (const char*)u8"右键开镜切换到第一人称");
         Register("FREE_CAM", "Free Camera", (const char*)u8"自由视角");
         Register("FREECAM_BLOCK_INPUT", "Block User Input", (const char*)u8"屏蔽用户输入");

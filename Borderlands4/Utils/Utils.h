@@ -77,6 +77,8 @@ struct Utils
 	static void DrawSnapLine(FVector TargetPos, float Thickness);
 	static void SetCurrentCanvas(class UCanvas* Canvas);
 	static class UCanvas* GetCurrentCanvas();
+	static bool ProjectWorldLocationToScreen(const FVector& WorldLocation, FVector2D& OutScreenLocation, bool bPlayerViewportRelative = true);
+	static bool ProjectWorldLocationToScreen(class APlayerController* PlayerController, const FVector& WorldLocation, FVector2D& OutScreenLocation, bool bPlayerViewportRelative = true);
 	static FLinearColor ImVec4ToLinearColor(const ImVec4& Color);
 	static FLinearColor U32ToLinearColor(ImU32 Color);
 	static FVector FRotatorToVector(const FRotator& Rot);
