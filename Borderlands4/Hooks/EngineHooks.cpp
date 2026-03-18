@@ -1,216 +1,13 @@
 #include "pch.h"
 
 extern HWND g_hWnd;
+extern HWND g_hConsoleWnd;
 extern WNDPROC oWndProc;
 extern std::atomic<bool> Resizing;
 extern std::atomic<bool> Cleaning;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern void hkProcessEvent(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
-
-namespace
-{
-	using NativeCameraUpdateFn = char(__fastcall*)(__int64, __int64*, float);
-
-	constexpr SignatureRegistry::Signature kNativeCameraUpdateSignature{
-		"NativeCameraUpdate",
-		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? "
-		"66 44 0F 29 BC 24 ? ? ? ? 66 44 0F 29 B4 24 ? ? ? ? "
-		"66 44 0F 29 AC 24 ? ? ? ? 66 44 0F 29 A4 24 ? ? ? ? "
-		"66 44 0F 29 9C 24 ? ? ? ? 66 44 0F 29 94 24 ? ? ? ? "
-		"66 44 0F 29 8C 24 ? ? ? ? 66 44 0F 29 84 24 ? ? ? ? "
-		"66 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 66 0F 28 F2"
-	};
-	NativeCameraUpdateFn oNativeCameraUpdate = nullptr;
-	bool g_NativeCameraUpdateHookInstalled = false;
-	uintptr_t g_LastNativeCameraWorld = 0;
-	ULONGLONG g_NativeCameraReadySinceMs = 0;
-	ULONGLONG g_LastNativeCameraHookAttemptMs = 0;
-	constexpr ULONGLONG kNativeCameraHookWarmupMs = 3000;
-	constexpr ULONGLONG kNativeCameraHookRetryIntervalMs = 5000;
-	constexpr size_t kNativeCameraUpdateHookLen = 19;
-
-	std::string DescribeNativeBehaviorList(uintptr_t modePtr)
-	{
-		if (!modePtr)
-			return "Mode=null";
-
-		uintptr_t behaviorsPtr = 0;
-		int32_t behaviorCount = 0;
-		if (!NativeInterop::ReadPointerNoexcept(modePtr + 48, behaviorsPtr) ||
-			!NativeInterop::ReadInt32Noexcept(modePtr + 56, behaviorCount) ||
-			behaviorCount <= 0 ||
-			!behaviorsPtr)
-		{
-			return "Behaviors=0";
-		}
-
-		std::ostringstream oss;
-		oss << "Behaviors=" << behaviorCount << " [";
-		const int32_t limit = (std::min)(behaviorCount, 10);
-		for (int32_t i = 0; i < limit; ++i)
-		{
-			uintptr_t behaviorObj = 0;
-			if (!NativeInterop::ReadPointerNoexcept(behaviorsPtr + (static_cast<uintptr_t>(i) * 16), behaviorObj) || !behaviorObj)
-			{
-				if (i != 0) oss << ", ";
-				oss << "null";
-				continue;
-			}
-
-			if (i != 0) oss << ", ";
-			oss << "0x" << std::hex << behaviorObj << std::dec;
-		}
-		if (behaviorCount > limit)
-			oss << ", ...";
-		oss << "]";
-		return oss.str();
-	}
-
-	void LogNativeCameraState(const char* phase, __int64 a1)
-	{
-		if (!Cheats::ShouldTraceNativeCamera())
-			return;
-
-		uintptr_t modePtr = 0;
-		NativeInterop::ReadPointerNoexcept(static_cast<uintptr_t>(a1) + 14920, modePtr);
-
-		double locX = 0.0, locY = 0.0, locZ = 0.0;
-		double rotPitch = 0.0, rotYaw = 0.0, rotRoll = 0.0;
-		float fov = 0.0f;
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14640, locX);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14648, locY);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14656, locZ);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14664, rotPitch);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14672, rotYaw);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14680, rotRoll);
-		NativeInterop::ReadFloatNoexcept(static_cast<uintptr_t>(a1) + 14688, fov);
-
-		const std::string category = (std::strcmp(phase, "PreUpdate") == 0) ? "CamNativePre" : "CamNativePost";
-		Logger::LogThrottled(
-			Logger::Level::Debug,
-			category,
-			5000,
-			"%s Ctx=%p Mode=%p Loc=(%.2f, %.2f, %.2f) Rot=(%.2f, %.2f, %.2f) FOV=%.2f %s",
-			phase,
-			reinterpret_cast<void*>(a1),
-			reinterpret_cast<void*>(modePtr),
-			locX, locY, locZ,
-			rotPitch, rotYaw, rotRoll,
-			fov,
-			DescribeNativeBehaviorList(modePtr).c_str());
-	}
-
-	char __fastcall hkNativeCameraUpdate(__int64 a1, __int64* a2, float a3)
-	{
-		const bool bShouldLog = Cheats::ShouldTraceNativeCamera();
-		if (bShouldLog)
-		{
-			LogNativeCameraState("PreUpdate", a1);
-		}
-
-		const char result = oNativeCameraUpdate ? oNativeCameraUpdate(a1, a2, a3) : 0;
-		Cheats::ApplyNativeCameraPostUpdate(static_cast<uintptr_t>(a1), a3);
-		if (bShouldLog)
-		{
-			LogNativeCameraState("PostUpdate", a1);
-		}
-		return result;
-	}
-
-	bool InstallNativeCameraUpdateHook()
-	{
-		if (g_NativeCameraUpdateHookInstalled)
-			return true;
-
-		const uintptr_t targetAddress = SignatureRegistry::Resolve(kNativeCameraUpdateSignature);
-		if (!targetAddress)
-		{
-			LOG_WARN("CamNative", "Native camera update signature not found.");
-			return false;
-		}
-
-		void* target = reinterpret_cast<void*>(targetAddress);
-		MH_STATUS createStatus = MH_CreateHook(target, &hkNativeCameraUpdate, reinterpret_cast<LPVOID*>(&oNativeCameraUpdate));
-		if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
-		{
-			if (createStatus == MH_ERROR_MEMORY_ALLOC)
-			{
-				if (Memory::HookFunctionAbsolute(
-					target,
-					reinterpret_cast<void*>(&hkNativeCameraUpdate),
-					reinterpret_cast<void**>(&oNativeCameraUpdate),
-					kNativeCameraUpdateHookLen))
-				{
-					g_NativeCameraUpdateHookInstalled = true;
-					LOG_DEBUG(
-						"CamNative",
-						"SUCCESS: Native camera update hook installed via absolute detour fallback at 0x%llX",
-						static_cast<unsigned long long>(targetAddress));
-					return true;
-				}
-			}
-
-			LOG_WARN("CamNative", "MH_CreateHook failed for native camera update: %d", static_cast<int>(createStatus));
-			return false;
-		}
-
-		MH_STATUS enableStatus = MH_EnableHook(target);
-		if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
-		{
-			LOG_WARN("CamNative", "MH_EnableHook failed for native camera update: %d", static_cast<int>(enableStatus));
-			return false;
-		}
-
-		g_NativeCameraUpdateHookInstalled = true;
-		LOG_DEBUG("CamNative", "SUCCESS: Native camera update hook installed at 0x%llX", static_cast<unsigned long long>(targetAddress));
-		return true;
-	}
-
-	bool ShouldAttemptNativeCameraUpdateHook()
-	{
-		if (g_NativeCameraUpdateHookInstalled ||
-			!Utils::bIsInGame ||
-			Utils::bIsLoading ||
-			!GVars.World ||
-			!GVars.Character ||
-			!GVars.PlayerController ||
-			!GVars.PlayerController->PlayerCameraManager)
-		{
-			g_LastNativeCameraWorld = 0;
-			g_NativeCameraReadySinceMs = 0;
-			return false;
-		}
-
-		const uintptr_t currentWorld = reinterpret_cast<uintptr_t>(GVars.World);
-		const ULONGLONG nowMs = GetTickCount64();
-		if (g_LastNativeCameraWorld != currentWorld)
-		{
-			g_LastNativeCameraWorld = currentWorld;
-			g_NativeCameraReadySinceMs = nowMs;
-			g_LastNativeCameraHookAttemptMs = 0;
-			return false;
-		}
-
-		if (g_NativeCameraReadySinceMs == 0)
-		{
-			g_NativeCameraReadySinceMs = nowMs;
-			return false;
-		}
-
-		if ((nowMs - g_NativeCameraReadySinceMs) < kNativeCameraHookWarmupMs)
-			return false;
-
-		if (g_LastNativeCameraHookAttemptMs != 0 &&
-			(nowMs - g_LastNativeCameraHookAttemptMs) < kNativeCameraHookRetryIntervalMs)
-		{
-			return false;
-		}
-
-		g_LastNativeCameraHookAttemptMs = nowMs;
-		return true;
-	}
-}
 
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	if (Cleaning.load())
@@ -278,11 +75,12 @@ void Cleanup(HMODULE hModule)
 	MH_Uninitialize();
 	
 	Logger::Shutdown();
-
+	if (g_hConsoleWnd && IsWindow(g_hConsoleWnd))
+	{
+		PostMessage(g_hConsoleWnd, WM_CLOSE, 0, 0);
+	}
 	FreeConsole();
-
-	HWND hConsole = GetConsoleWindow();
-	if (hConsole) PostMessage(hConsole, WM_CLOSE, 0, 0);
+	g_hConsoleWnd = nullptr;
 
 	FreeLibraryAndExitThread(hModule, 0);
 }
@@ -390,11 +188,6 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 
 	InternalUpdateHooksSEH(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 
-	if (ShouldAttemptNativeCameraUpdateHook())
-	{
-		InstallNativeCameraUpdateHook();
-	}
-
 	// Log success outside SEH to allow using std::string conversion in LOG_DEBUG
 	if (!prevPS && bIsPlayerStateHooked) LOG_DEBUG("Hook", "SUCCESS: PlayerState ProcessEvent Hooked!");
 	if (!prevCM && bIsCameraManagerHooked) LOG_DEBUG("Hook", "SUCCESS: CameraManager ProcessEvent Hooked!");
@@ -463,6 +256,7 @@ static bool TryAutoSetVariablesMainThread()
 DWORD MainThread(HMODULE hModule)
 {
 	AllocConsole();
+	g_hConsoleWnd = GetConsoleWindow();
 	SetConsoleOutputCP(CP_UTF8);
 	SetConsoleCP(CP_UTF8);
 

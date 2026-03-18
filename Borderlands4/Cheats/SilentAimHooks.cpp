@@ -18,15 +18,11 @@ namespace SilentAimHooks
 		thread_local SDK::FVector g_ThreadSilentRedirectTargetPos{};
 
 		static std::atomic<bool> g_NativeProjectileHookInstalled{ false };
-		static std::atomic<bool> g_NativeProjectileHookAttempted{ false };
 		static std::atomic<bool> g_NativeProjectileHookBlocked{ false };
-		static double g_LastNativeHookAttemptTime = 0.0;
 		static std::atomic<bool> g_FireProjectileLoopHookInstalled{ false };
 		static std::atomic<bool> g_FireDirectionTraceHookInstalled{ false };
 
 		static std::atomic<bool> g_WeaponBehaviorFireHookInstalled{ false };
-		static std::atomic<bool> g_WeaponBehaviorFireHookAttempted{ false };
-		static double g_LastWeaponBehaviorFireHookAttemptTime = 0.0;
 
 		using FireProjectileLoopFn = __int64(__fastcall*)(__int64 weapon, __int64* fireParams, int shotIndex, int shotCount, unsigned __int8 simulate);
 		using FireDirectionTraceFn = void* (__fastcall*)(void* weapon, void* outTrace, void* startParam, const void* endParam, unsigned __int8 useAltTrace, __int64 traceContext, float traceScale, unsigned __int8 allowThroughActors);
@@ -40,7 +36,8 @@ namespace SilentAimHooks
 		// - FireProjectileLoop:  sub_1414F12F8
 		// - FireDirectionTrace:  sub_1418AD7C2
 		// - WeaponBehavior slot 130 target: sub_1441789C2
-		static constexpr const char* kFireProjectileLoopAob =
+		static constexpr SignatureRegistry::Signature kFireProjectileLoopSignature{
+			"FireProjectileLoop",
 			"41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? "
 			"66 44 0F 29 BC 24 ? ? ? ? "
 			"66 44 0F 29 B4 24 ? ? ? ? "
@@ -52,8 +49,11 @@ namespace SilentAimHooks
 			"66 44 0F 29 84 24 ? ? ? ? "
 			"66 0F 29 BC 24 ? ? ? ? "
 			"66 0F 29 B4 24 ? ? ? ? "
-			"45 89 CF";
-		static constexpr const char* kFireDirectionTraceAob =
+			"45 89 CF",
+			SignatureRegistry::HookTiming::InGameReady
+		};
+		static constexpr SignatureRegistry::Signature kFireDirectionTraceSignature{
+			"FireDirectionTrace",
 			"41 56 56 57 53 48 81 EC E8 00 00 00 "
 			"4C 89 CF 4C 89 C3 48 89 D6 49 89 CE "
 			"4C 8B 8C 24 38 01 00 00 "
@@ -63,9 +63,14 @@ namespace SilentAimHooks
 			"4D 85 C9 75 07 4C 8B 0D ? ? ? ? "
 			"F3 0F 10 84 24 40 01 00 00 "
 			"8A 94 24 48 01 00 00 "
-			"44 8A 84 24 30 01 00 00";
+			"44 8A 84 24 30 01 00 00",
+			SignatureRegistry::HookTiming::InGameReady
+		};
 		static constexpr size_t kFireProjectileLoopHookLen = 19;
 		static constexpr size_t kFireDirectionTraceHookLen = 24;
+		static constexpr const char* kNativeProjectileHooksKey = "NativeProjectileHooks";
+		static constexpr const char* kWeaponBehaviorFireProjectileHookKey = "WeaponBehaviorFireProjectile";
+		static constexpr SignatureRegistry::HookTiming kSilentAimHookTiming = SignatureRegistry::HookTiming::InGameReady;
 		static constexpr size_t kWeaponBehaviorFireProjectileSlot = 130;
 		static constexpr size_t kFireParamsFlagsOffset = 28 * sizeof(__int64);
 		static constexpr size_t kFireParamsAimOriginOffset = 37 * sizeof(__int64);
@@ -78,14 +83,6 @@ namespace SilentAimHooks
 		static constexpr int kDebugLogIntervalMs = 1000;
 		static constexpr int kInfoLogIntervalMs = 3000;
 		static constexpr int kErrorLogIntervalMs = 3000;
-
-		static uintptr_t g_FireProjectileLoopAddr = 0;
-		static uintptr_t g_FireDirectionTraceAddr = 0;
-
-		double NowSeconds()
-		{
-			return static_cast<double>(GetTickCount64()) * 0.001;
-		}
 
 		bool IsAimbotActivationAllowed()
 		{
@@ -521,118 +518,13 @@ namespace SilentAimHooks
 			return oWeaponBehaviorFireProjectile ? oWeaponBehaviorFireProjectile(behaviorThis) : 0;
 		}
 
-		static uintptr_t ResolveExecTarget(const char* tag, const char* aob, uintptr_t& cache)
-		{
-			if (cache == static_cast<uintptr_t>(-1)) return 0;
-			if (cache) return cache;
-
-			const uintptr_t addr = Memory::FindPattern(aob);
-			if (!addr)
-			{
-				cache = static_cast<uintptr_t>(-1);
-				Logger::LogThrottled(
-					Logger::Level::Error,
-					"SilentAim",
-					kErrorLogIntervalMs,
-					"%s pattern not found.",
-					tag ? tag : "Unknown");
-				return 0;
-			}
-
-			cache = addr;
-			Logger::LogThrottled(
-				Logger::Level::Info,
-				"SilentAim",
-				kInfoLogIntervalMs,
-				"%s resolved at 0x%llX",
-				tag ? tag : "Unknown",
-				static_cast<unsigned long long>(addr));
-			return addr;
-		}
-
 		static bool InstallNativeHook(
-			const char* tag,
-			uintptr_t target,
+			const SignatureRegistry::Signature& signature,
 			void* detour,
 			void** originalOut,
-			size_t fallbackLen,
-			std::atomic<bool>& installedFlag)
+			size_t fallbackLen)
 		{
-			if (installedFlag.load()) return true;
-			if (!target || !detour || !originalOut) return false;
-
-			MH_STATUS createStatus = MH_CreateHook(
-				reinterpret_cast<LPVOID>(target),
-				detour,
-				reinterpret_cast<LPVOID*>(originalOut));
-			if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
-			{
-				if (createStatus == MH_ERROR_MEMORY_ALLOC)
-				{
-					if (Memory::HookFunctionAbsolute(
-						reinterpret_cast<void*>(target),
-						detour,
-						originalOut,
-						fallbackLen))
-					{
-						installedFlag.store(true);
-						Logger::LogThrottled(
-							Logger::Level::Debug,
-							"SilentAim",
-							kInfoLogIntervalMs,
-							"%s hook installed via absolute detour fallback. addr=0x%llX len=%zu",
-							tag ? tag : "NativeHook",
-							static_cast<unsigned long long>(target),
-							fallbackLen);
-						return true;
-					}
-
-					Logger::LogThrottled(
-						Logger::Level::Error,
-						"SilentAim",
-						kErrorLogIntervalMs,
-						"%s hook blocked after MEMORY_ALLOC and fallback failed. addr=0x%llX",
-						tag ? tag : "NativeHook",
-						static_cast<unsigned long long>(target));
-					return false;
-				}
-
-				Logger::LogThrottled(
-					Logger::Level::Error,
-					"SilentAim",
-					kErrorLogIntervalMs,
-					"%s hook create failed. status=%d(%s) addr=0x%llX",
-					tag ? tag : "NativeHook",
-					static_cast<int>(createStatus),
-					MH_StatusToString(createStatus),
-					static_cast<unsigned long long>(target));
-				return false;
-			}
-
-			MH_STATUS enableStatus = MH_EnableHook(reinterpret_cast<LPVOID>(target));
-			if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
-			{
-				Logger::LogThrottled(
-					Logger::Level::Error,
-					"SilentAim",
-					kErrorLogIntervalMs,
-					"%s hook enable failed. status=%d(%s) addr=0x%llX",
-					tag ? tag : "NativeHook",
-					static_cast<int>(enableStatus),
-					MH_StatusToString(enableStatus),
-					static_cast<unsigned long long>(target));
-				return false;
-			}
-
-			installedFlag.store(true);
-			Logger::LogThrottled(
-				Logger::Level::Info,
-				"SilentAim",
-				kInfoLogIntervalMs,
-				"%s hook installed. addr=0x%llX",
-				tag ? tag : "NativeHook",
-				static_cast<unsigned long long>(target));
-			return true;
+			return SignatureRegistry::EnsureHook(signature, detour, originalOut, fallbackLen, "SilentAim");
 		}
 
 		static bool GetWeaponBehaviorFireProjectileTarget(void** targetOut)
@@ -697,54 +589,34 @@ namespace SilentAimHooks
 			std::lock_guard<std::mutex> guard(g_HookInstallMutex);
 			if (g_FireProjectileLoopHookInstalled.load() && g_FireDirectionTraceHookInstalled.load()) return true;
 			if (g_NativeProjectileHookBlocked.load()) return false;
-
-			const double now = NowSeconds();
-			if (g_NativeProjectileHookAttempted.load() && (now - g_LastNativeHookAttemptTime) < 2.0)
+			if (!SignatureRegistry::ShouldAttempt(kNativeProjectileHooksKey, kSilentAimHookTiming))
 			{
 				return false;
 			}
-			g_NativeProjectileHookAttempted.store(true);
-			g_LastNativeHookAttemptTime = now;
-
-			const uintptr_t fireProjectileLoopTarget =
-				ResolveExecTarget("FireProjectileLoop", kFireProjectileLoopAob, g_FireProjectileLoopAddr);
-			const uintptr_t fireDirectionTraceTarget =
-				ResolveExecTarget("FireDirectionTrace", kFireDirectionTraceAob, g_FireDirectionTraceAddr);
 
 			bool installedAny = false;
-			if (fireProjectileLoopTarget)
-			{
-				installedAny |= InstallNativeHook(
-					"FireProjectileLoop",
-					fireProjectileLoopTarget,
-					reinterpret_cast<void*>(&hkFireProjectileLoop),
-					reinterpret_cast<void**>(&oFireProjectileLoop),
-					kFireProjectileLoopHookLen,
-					g_FireProjectileLoopHookInstalled);
-			}
+			installedAny |= InstallNativeHook(
+				kFireProjectileLoopSignature,
+				reinterpret_cast<void*>(&hkFireProjectileLoop),
+				reinterpret_cast<void**>(&oFireProjectileLoop),
+				kFireProjectileLoopHookLen);
+			g_FireProjectileLoopHookInstalled.store(oFireProjectileLoop != nullptr);
 
-			if (fireDirectionTraceTarget)
-			{
-				installedAny |= InstallNativeHook(
-					"FireDirectionTrace",
-					fireDirectionTraceTarget,
-					reinterpret_cast<void*>(&hkFireDirectionTrace),
-					reinterpret_cast<void**>(&oFireDirectionTrace),
-					kFireDirectionTraceHookLen,
-					g_FireDirectionTraceHookInstalled);
-			}
+			installedAny |= InstallNativeHook(
+				kFireDirectionTraceSignature,
+				reinterpret_cast<void*>(&hkFireDirectionTrace),
+				reinterpret_cast<void**>(&oFireDirectionTrace),
+				kFireDirectionTraceHookLen);
+			g_FireDirectionTraceHookInstalled.store(oFireDirectionTrace != nullptr);
 
-			g_NativeProjectileHookInstalled.store(
-				g_FireProjectileLoopHookInstalled.load() || g_FireDirectionTraceHookInstalled.load());
+			g_NativeProjectileHookInstalled.store(g_FireProjectileLoopHookInstalled.load() || g_FireDirectionTraceHookInstalled.load());
 			if (!g_NativeProjectileHookInstalled.load() && !installedAny)
 			{
 				Logger::LogThrottled(
 					Logger::Level::Error,
 					"SilentAim",
 					kErrorLogIntervalMs,
-					"Native fire hooks not installed. loop=0x%llX trace=0x%llX",
-					static_cast<unsigned long long>(fireProjectileLoopTarget),
-					static_cast<unsigned long long>(fireDirectionTraceTarget));
+					"Native fire hooks not installed.");
 			}
 			return g_NativeProjectileHookInstalled.load();
 		}
@@ -753,14 +625,10 @@ namespace SilentAimHooks
 		{
 			std::lock_guard<std::mutex> guard(g_HookInstallMutex);
 			if (g_WeaponBehaviorFireHookInstalled.load()) return true;
-
-			const double now = NowSeconds();
-			if (g_WeaponBehaviorFireHookAttempted.load() && (now - g_LastWeaponBehaviorFireHookAttemptTime) < 1.0)
+			if (!SignatureRegistry::ShouldAttempt(kWeaponBehaviorFireProjectileHookKey, kSilentAimHookTiming))
 			{
 				return false;
 			}
-			g_WeaponBehaviorFireHookAttempted.store(true);
-			g_LastWeaponBehaviorFireHookAttemptTime = now;
 
 			void* target = nullptr;
 			if (!GetWeaponBehaviorFireProjectileTarget(&target)) return false;

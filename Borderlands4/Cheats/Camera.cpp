@@ -79,6 +79,138 @@ namespace
 	constexpr uintptr_t kViewTargetLocOffset = 14640;
 	constexpr uintptr_t kViewTargetRotOffset = 14664;
 	constexpr uintptr_t kViewTargetFovOffset = 14688;
+	using NativeCameraUpdateFn = char(__fastcall*)(__int64, __int64*, float);
+	constexpr SignatureRegistry::Signature kNativeCameraUpdateSignature{
+		"NativeCameraUpdate",
+		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? "
+		"66 44 0F 29 BC 24 ? ? ? ? 66 44 0F 29 B4 24 ? ? ? ? "
+		"66 44 0F 29 AC 24 ? ? ? ? 66 44 0F 29 A4 24 ? ? ? ? "
+		"66 44 0F 29 9C 24 ? ? ? ? 66 44 0F 29 94 24 ? ? ? ? "
+		"66 44 0F 29 8C 24 ? ? ? ? 66 44 0F 29 84 24 ? ? ? ? "
+		"66 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 66 0F 28 F2",
+		SignatureRegistry::HookTiming::InGameReady
+	};
+	constexpr size_t kNativeCameraUpdateHookLen = 19;
+	NativeCameraUpdateFn oNativeCameraUpdate = nullptr;
+
+	void DescribeNativeBehaviorList(uintptr_t modePtr, char* buffer, size_t bufferSize)
+	{
+		if (!buffer || bufferSize == 0)
+			return;
+
+		if (!modePtr)
+		{
+			_snprintf_s(buffer, bufferSize, _TRUNCATE, "Mode=null");
+			return;
+		}
+
+		uintptr_t behaviorsPtr = 0;
+		int32_t behaviorCount = 0;
+		if (!NativeInterop::ReadPointerNoexcept(modePtr + 48, behaviorsPtr) ||
+			!NativeInterop::ReadInt32Noexcept(modePtr + 56, behaviorCount) ||
+			behaviorCount <= 0 ||
+			!behaviorsPtr)
+		{
+			_snprintf_s(buffer, bufferSize, _TRUNCATE, "Behaviors=0");
+			return;
+		}
+
+		size_t offset = 0;
+		int written = _snprintf_s(buffer, bufferSize, _TRUNCATE, "Behaviors=%d [", behaviorCount);
+		if (written < 0)
+			return;
+
+		offset = static_cast<size_t>(written);
+		const int32_t limit = (std::min)(behaviorCount, 10);
+		for (int32_t i = 0; i < limit; ++i)
+		{
+			uintptr_t behaviorObj = 0;
+			const char* separator = (i != 0) ? ", " : "";
+			if (!NativeInterop::ReadPointerNoexcept(behaviorsPtr + (static_cast<uintptr_t>(i) * 16), behaviorObj) || !behaviorObj)
+			{
+				written = _snprintf_s(buffer + offset, (bufferSize > offset) ? (bufferSize - offset) : 0, _TRUNCATE, "%snull", separator);
+				if (written < 0)
+					return;
+				offset += static_cast<size_t>(written);
+				continue;
+			}
+
+			written = _snprintf_s(
+				buffer + offset,
+				(bufferSize > offset) ? (bufferSize - offset) : 0,
+				_TRUNCATE,
+				"%s0x%llX",
+				separator,
+				static_cast<unsigned long long>(behaviorObj));
+			if (written < 0)
+				return;
+			offset += static_cast<size_t>(written);
+		}
+
+		if (behaviorCount > limit)
+		{
+			written = _snprintf_s(buffer + offset, (bufferSize > offset) ? (bufferSize - offset) : 0, _TRUNCATE, ", ...");
+			if (written < 0)
+				return;
+			offset += static_cast<size_t>(written);
+		}
+
+		_snprintf_s(buffer + offset, (bufferSize > offset) ? (bufferSize - offset) : 0, _TRUNCATE, "]");
+	}
+
+	void LogNativeCameraState(const char* phase, __int64 cameraContext)
+	{
+		if (!Cheats::ShouldTraceNativeCamera())
+			return;
+
+		uintptr_t modePtr = 0;
+		NativeInterop::ReadPointerNoexcept(static_cast<uintptr_t>(cameraContext) + 14920, modePtr);
+
+		double locX = 0.0, locY = 0.0, locZ = 0.0;
+		double rotPitch = 0.0, rotYaw = 0.0, rotRoll = 0.0;
+		float fov = 0.0f;
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetLocOffset, locX);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetLocOffset + 8, locY);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetLocOffset + 16, locZ);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetRotOffset, rotPitch);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetRotOffset + 8, rotYaw);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetRotOffset + 16, rotRoll);
+		NativeInterop::ReadFloatNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetFovOffset, fov);
+
+		char behaviorDesc[512]{};
+		DescribeNativeBehaviorList(modePtr, behaviorDesc, sizeof(behaviorDesc));
+		const char* category = (std::strcmp(phase, "PreUpdate") == 0) ? "CamNativePre" : "CamNativePost";
+		Logger::LogThrottled(
+			Logger::Level::Debug,
+			category,
+			5000,
+			"%s Ctx=%p Mode=%p Loc=(%.2f, %.2f, %.2f) Rot=(%.2f, %.2f, %.2f) FOV=%.2f %s",
+			phase,
+			reinterpret_cast<void*>(cameraContext),
+			reinterpret_cast<void*>(modePtr),
+			locX, locY, locZ,
+			rotPitch, rotYaw, rotRoll,
+			fov,
+			behaviorDesc);
+	}
+
+	char __fastcall hkNativeCameraUpdate(__int64 a1, __int64* a2, float a3)
+	{
+		const bool bShouldLog = Cheats::ShouldTraceNativeCamera();
+		if (bShouldLog)
+		{
+			LogNativeCameraState("PreUpdate", a1);
+		}
+
+		const char result = oNativeCameraUpdate ? oNativeCameraUpdate(a1, a2, a3) : 0;
+		Cheats::ApplyNativeCameraPostUpdate(static_cast<uintptr_t>(a1), a3);
+		if (bShouldLog)
+		{
+			LogNativeCameraState("PostUpdate", a1);
+		}
+
+		return result;
+	}
 
 	bool ReadNativeCameraPose(uintptr_t base, uintptr_t locOffset, uintptr_t rotOffset, uintptr_t fovOffset, FNativeCameraPose& outPose)
 	{
@@ -1058,6 +1190,13 @@ void Cheats::ChangeGameRenderSettings()
 
 void Cheats::UpdateCamera()
 {
+	SignatureRegistry::EnsureHook(
+		kNativeCameraUpdateSignature,
+		reinterpret_cast<void*>(&hkNativeCameraUpdate),
+		reinterpret_cast<void**>(&oNativeCameraUpdate),
+		kNativeCameraUpdateHookLen,
+		"CamNative");
+
 	if (g_BlockShadowCameraUntilGameplayReady)
 	{
 		if (!IsGameplayReadyForShadowCamera())

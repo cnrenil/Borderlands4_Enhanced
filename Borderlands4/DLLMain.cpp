@@ -17,6 +17,7 @@ std::atomic<bool> Resizing{ false };
 
 WNDPROC oWndProc = nullptr;
 HWND g_hWnd = nullptr;
+HWND g_hConsoleWnd = nullptr;
 
 // DLL entry point
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
@@ -27,6 +28,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved) {
 		break;
 	case DLL_PROCESS_DETACH:
 		Cleaning.store(true);
+		if (g_hConsoleWnd && IsWindow(g_hConsoleWnd))
+		{
+			PostMessage(g_hConsoleWnd, WM_CLOSE, 0, 0);
+		}
+		FreeConsole();
 		break;
 	}
 	
