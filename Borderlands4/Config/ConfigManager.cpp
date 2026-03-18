@@ -134,7 +134,6 @@ namespace ConfigManager
         Register("Misc.Theme", 0);
         Register("Misc.Debug", false);
         Register("Misc.PingDump", false);
-        Register("Misc.PostProcessTrace", false);
         Register("Misc.RenderOptions", false);
     }
 

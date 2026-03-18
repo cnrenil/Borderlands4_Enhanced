@@ -116,6 +116,8 @@ struct Cheats
 	static void UpdateCamera();
 	static void UpdateDebug();
 	static void ShutdownCamera();
+	static bool ShouldTraceNativeCamera();
+	static void ApplyNativeCameraPostUpdate(uintptr_t cameraContext, float deltaSeconds);
 
 	// Cross-thread Rendering Helpers
 	static inline FVector AimbotTargetPos;

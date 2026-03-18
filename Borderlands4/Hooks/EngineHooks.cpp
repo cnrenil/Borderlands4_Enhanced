@@ -9,6 +9,132 @@ extern std::atomic<bool> Cleaning;
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 extern void hkProcessEvent(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 
+namespace
+{
+	using NativeCameraUpdateFn = char(__fastcall*)(__int64, __int64*, float);
+
+	constexpr uintptr_t kNativeCameraUpdateRva = 0x3C7C2BE;
+	NativeCameraUpdateFn oNativeCameraUpdate = nullptr;
+	bool g_NativeCameraUpdateHookInstalled = false;
+
+	std::string DescribeNativeBehaviorList(uintptr_t modePtr)
+	{
+		if (!modePtr)
+			return "Mode=null";
+
+		uintptr_t behaviorsPtr = 0;
+		int32_t behaviorCount = 0;
+		if (!NativeInterop::ReadPointerNoexcept(modePtr + 48, behaviorsPtr) ||
+			!NativeInterop::ReadInt32Noexcept(modePtr + 56, behaviorCount) ||
+			behaviorCount <= 0 ||
+			!behaviorsPtr)
+		{
+			return "Behaviors=0";
+		}
+
+		std::ostringstream oss;
+		oss << "Behaviors=" << behaviorCount << " [";
+		const int32_t limit = (std::min)(behaviorCount, 10);
+		for (int32_t i = 0; i < limit; ++i)
+		{
+			uintptr_t behaviorObj = 0;
+			if (!NativeInterop::ReadPointerNoexcept(behaviorsPtr + (static_cast<uintptr_t>(i) * 16), behaviorObj) || !behaviorObj)
+			{
+				if (i != 0) oss << ", ";
+				oss << "null";
+				continue;
+			}
+
+			if (i != 0) oss << ", ";
+			oss << "0x" << std::hex << behaviorObj << std::dec;
+		}
+		if (behaviorCount > limit)
+			oss << ", ...";
+		oss << "]";
+		return oss.str();
+	}
+
+	void LogNativeCameraState(const char* phase, __int64 a1)
+	{
+		if (!Cheats::ShouldTraceNativeCamera())
+			return;
+
+		uintptr_t modePtr = 0;
+		NativeInterop::ReadPointerNoexcept(static_cast<uintptr_t>(a1) + 14920, modePtr);
+
+		double locX = 0.0, locY = 0.0, locZ = 0.0;
+		double rotPitch = 0.0, rotYaw = 0.0, rotRoll = 0.0;
+		float fov = 0.0f;
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14640, locX);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14648, locY);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14656, locZ);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14664, rotPitch);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14672, rotYaw);
+		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(a1) + 14680, rotRoll);
+		NativeInterop::ReadFloatNoexcept(static_cast<uintptr_t>(a1) + 14688, fov);
+
+		const std::string category = (std::strcmp(phase, "PreUpdate") == 0) ? "CamNativePre" : "CamNativePost";
+		Logger::LogThrottled(
+			Logger::Level::Debug,
+			category,
+			1000,
+			"%s Ctx=%p Mode=%p Loc=(%.2f, %.2f, %.2f) Rot=(%.2f, %.2f, %.2f) FOV=%.2f %s",
+			phase,
+			reinterpret_cast<void*>(a1),
+			reinterpret_cast<void*>(modePtr),
+			locX, locY, locZ,
+			rotPitch, rotYaw, rotRoll,
+			fov,
+			DescribeNativeBehaviorList(modePtr).c_str());
+	}
+
+	char __fastcall hkNativeCameraUpdate(__int64 a1, __int64* a2, float a3)
+	{
+		const bool bShouldLog = Cheats::ShouldTraceNativeCamera();
+		if (bShouldLog)
+		{
+			LogNativeCameraState("PreUpdate", a1);
+		}
+
+		const char result = oNativeCameraUpdate ? oNativeCameraUpdate(a1, a2, a3) : 0;
+		Cheats::ApplyNativeCameraPostUpdate(static_cast<uintptr_t>(a1), a3);
+		if (bShouldLog)
+		{
+			LogNativeCameraState("PostUpdate", a1);
+		}
+		return result;
+	}
+
+	bool InstallNativeCameraUpdateHook()
+	{
+		if (g_NativeCameraUpdateHookInstalled)
+			return true;
+
+		const uintptr_t imageBase = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
+		if (!imageBase)
+			return false;
+
+		void* target = reinterpret_cast<void*>(imageBase + kNativeCameraUpdateRva);
+		MH_STATUS createStatus = MH_CreateHook(target, &hkNativeCameraUpdate, reinterpret_cast<LPVOID*>(&oNativeCameraUpdate));
+		if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
+		{
+			LOG_WARN("CamNative", "MH_CreateHook failed for native camera update: %d", static_cast<int>(createStatus));
+			return false;
+		}
+
+		MH_STATUS enableStatus = MH_EnableHook(target);
+		if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
+		{
+			LOG_WARN("CamNative", "MH_EnableHook failed for native camera update: %d", static_cast<int>(enableStatus));
+			return false;
+		}
+
+		g_NativeCameraUpdateHookInstalled = true;
+		LOG_DEBUG("CamNative", "SUCCESS: Native camera update hook installed at RVA 0x%llX", static_cast<unsigned long long>(kNativeCameraUpdateRva));
+		return true;
+	}
+}
+
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	if (Cleaning.load())
 		return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
@@ -187,6 +313,11 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 
 	InternalUpdateHooksSEH(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 
+	if (Utils::bIsInGame && GVars.World && GVars.Character && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
+	{
+		InstallNativeCameraUpdateHook();
+	}
+
 	// Log success outside SEH to allow using std::string conversion in LOG_DEBUG
 	if (!prevPS && bIsPlayerStateHooked) LOG_DEBUG("Hook", "SUCCESS: PlayerState ProcessEvent Hooked!");
 	if (!prevCM && bIsCameraManagerHooked) LOG_DEBUG("Hook", "SUCCESS: CameraManager ProcessEvent Hooked!");
@@ -198,10 +329,11 @@ static void AutoSetVariablesLocked()
 {
 	SDK::UWorld* currentWorld = Utils::GetWorldSafe();
 	bool shouldReleaseShadowCamera = false;
-	bool shouldReleaseShadowCameraForMissingGameplayRefs = false;
+	bool hadShadowCamera = false;
 	{
 		std::scoped_lock GVarsLock(gGVarsMutex);
-		shouldReleaseShadowCamera = GVars.CameraActor != nullptr && GVars.World != nullptr && GVars.World != currentWorld;
+		hadShadowCamera = GVars.CameraActor != nullptr;
+		shouldReleaseShadowCamera = hadShadowCamera && GVars.World != nullptr && GVars.World != currentWorld;
 	}
 
 	if (shouldReleaseShadowCamera)
@@ -209,18 +341,29 @@ static void AutoSetVariablesLocked()
 		Cheats::ShutdownCamera();
 	}
 
+	if (!shouldReleaseShadowCamera && hadShadowCamera)
+	{
+		SDK::APlayerController* currentPlayerController = nullptr;
+		SDK::ACharacter* currentCharacter = nullptr;
+		if (currentWorld)
+		{
+			currentPlayerController = Utils::GetPlayerController();
+			if (currentPlayerController && !IsBadReadPtr(currentPlayerController, sizeof(void*)) && currentPlayerController->VTable)
+			{
+				currentCharacter = currentPlayerController->Character;
+			}
+		}
+
+		if (!currentWorld || !currentPlayerController || !currentCharacter)
+		{
+			Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "MainThread detected world/gameplay teardown before GVars refresh, releasing shadow camera");
+			Cheats::ShutdownCamera();
+		}
+	}
+
 	{
 		std::scoped_lock GVarsLock(gGVarsMutex);
 		GVars.AutoSetVariables();
-		shouldReleaseShadowCameraForMissingGameplayRefs =
-			GVars.CameraActor != nullptr &&
-			(!GVars.World || !GVars.PlayerController || !GVars.Character);
-	}
-
-	if (shouldReleaseShadowCameraForMissingGameplayRefs)
-	{
-		Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "MainThread AutoSetVariables detected missing gameplay refs, releasing shadow camera");
-		Cheats::ShutdownCamera();
 	}
 }
 

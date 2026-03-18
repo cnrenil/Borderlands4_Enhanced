@@ -13,6 +13,94 @@ namespace
 
 namespace NativeInterop
 {
+	bool ReadPointerNoexcept(uintptr_t address, uintptr_t& outValue)
+	{
+		if (!address) return false;
+		__try
+		{
+			outValue = *reinterpret_cast<uintptr_t*>(address);
+			return true;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			outValue = 0;
+			return false;
+		}
+	}
+
+	bool ReadInt32Noexcept(uintptr_t address, int32_t& outValue)
+	{
+		if (!address) return false;
+		__try
+		{
+			outValue = *reinterpret_cast<int32_t*>(address);
+			return true;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			outValue = 0;
+			return false;
+		}
+	}
+
+	bool ReadFloatNoexcept(uintptr_t address, float& outValue)
+	{
+		if (!address) return false;
+		__try
+		{
+			outValue = *reinterpret_cast<float*>(address);
+			return true;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			outValue = 0.0f;
+			return false;
+		}
+	}
+
+	bool ReadDoubleNoexcept(uintptr_t address, double& outValue)
+	{
+		if (!address) return false;
+		__try
+		{
+			outValue = *reinterpret_cast<double*>(address);
+			return true;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			outValue = 0.0;
+			return false;
+		}
+	}
+
+	bool WriteFloatNoexcept(uintptr_t address, float value)
+	{
+		if (!address) return false;
+		__try
+		{
+			*reinterpret_cast<float*>(address) = value;
+			return true;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			return false;
+		}
+	}
+
+	bool WriteDoubleNoexcept(uintptr_t address, double value)
+	{
+		if (!address) return false;
+		__try
+		{
+			*reinterpret_cast<double*>(address) = value;
+			return true;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			return false;
+		}
+	}
+
 	bool ReadVec3Param(const void* param, SDK::FVector& out)
 	{
 		if (!param) return false;

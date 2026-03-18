@@ -50,10 +50,11 @@ namespace
     {
         SDK::UWorld* currentWorld = Utils::GetWorldSafe();
         bool shouldReleaseShadowCamera = false;
-        bool shouldReleaseShadowCameraForMissingGameplayRefs = false;
+        bool hadShadowCamera = false;
         {
             std::scoped_lock GVarsLock(gGVarsMutex);
-            shouldReleaseShadowCamera = GVars.CameraActor != nullptr && GVars.World != nullptr && GVars.World != currentWorld;
+            hadShadowCamera = GVars.CameraActor != nullptr;
+            shouldReleaseShadowCamera = hadShadowCamera && GVars.World != nullptr && GVars.World != currentWorld;
         }
 
         if (shouldReleaseShadowCamera)
@@ -61,18 +62,29 @@ namespace
             Cheats::ShutdownCamera();
         }
 
+        if (!shouldReleaseShadowCamera && hadShadowCamera)
+        {
+            SDK::APlayerController* currentPlayerController = nullptr;
+            SDK::ACharacter* currentCharacter = nullptr;
+            if (currentWorld)
+            {
+                currentPlayerController = Utils::GetPlayerController();
+                if (currentPlayerController && !IsBadReadPtr(currentPlayerController, sizeof(void*)) && currentPlayerController->VTable)
+                {
+                    currentCharacter = currentPlayerController->Character;
+                }
+            }
+
+            if (!currentWorld || !currentPlayerController || !currentCharacter)
+            {
+                Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "Render detected world/gameplay teardown before GVars refresh, releasing shadow camera");
+                Cheats::ShutdownCamera();
+            }
+        }
+
         {
             std::scoped_lock GVarsLock(gGVarsMutex);
             GVars.AutoSetVariables();
-            shouldReleaseShadowCameraForMissingGameplayRefs =
-                GVars.CameraActor != nullptr &&
-                (!GVars.World || !GVars.PlayerController || !GVars.Character);
-        }
-
-        if (shouldReleaseShadowCameraForMissingGameplayRefs)
-        {
-            Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "AutoSetVariables detected missing gameplay refs, releasing shadow camera");
-            Cheats::ShutdownCamera();
         }
     }
 

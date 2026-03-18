@@ -44,6 +44,8 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
 	bInsideHook = true;
     try {
+        if (Cheats::HandleCameraEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
+
         if (Utils::bIsInGame) {
             std::string fnName = Function->GetName();
             auto IsInputEvent = [](const std::string& name) -> bool
@@ -100,7 +102,6 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
             if (Cheats::HandleMovementEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
             if (Cheats::HandleAimbotEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
             if (Cheats::HandleWeaponEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
-            if (Cheats::HandleCameraEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
         }
 
     }

@@ -236,7 +236,6 @@ namespace Localization
         Register("DEBUG", "Debug", (const char*)u8"调试");
         Register("ENABLE_EVENT_DEBUG_LOGS", "Enable Event Debug Logs", (const char*)u8"启用事件调试日志");
         Register("ENABLE_PING_DUMP", "Enable Ping Dump", (const char*)u8"启用 PingDump");
-        Register("ENABLE_PP_TRACE", "Enable PostProcess Trace", (const char*)u8"启用后处理追踪");
         Register("ENABLE_EVENT_RECORDING", "Enable Event Recording (Save to File)", (const char*)u8"启用事件记录");
         Register("SAVE_SETTINGS", "Save Settings", (const char*)u8"保存设置");
         Register("LOAD_SETTINGS", "Load Settings", (const char*)u8"加载设置");

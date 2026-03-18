@@ -5,8 +5,7 @@ namespace
 	enum class EShadowCameraMode : uint8
 	{
 		None,
-		Freecam,
-		OTS
+		Freecam
 	};
 
 	EShadowCameraMode g_ShadowCameraMode = EShadowCameraMode::None;
@@ -18,17 +17,24 @@ namespace
 	float g_SmoothedOTSADSBlend = 0.0f;
 	bool g_FreecamRotationInitialized = false;
 	SDK::FRotator g_FreecamRotation{};
-	bool g_RequestedOTSMode = false;
 	bool g_RequestedThirdPersonMode = false;
 	bool g_RequestedFirstPersonMode = false;
+	bool g_BlockShadowCameraUntilGameplayReady = false;
+	float g_NativeOTSBlendAlpha = 0.0f;
 
-	constexpr float kOTSViewPivotZ = 65.0f;
-	constexpr float kOTSMaxArmLength = 900.0f;
-	constexpr float kOTSCollisionRadius = 12.0f;
+	struct FPendingShadowCameraRelease
+	{
+		SDK::ACameraActor* Camera = nullptr;
+		SDK::AOakPlayerController* Controller = nullptr;
+		SDK::AActor* FallbackViewTarget = nullptr;
+		SDK::APlayerCameraManager* CameraManager = nullptr;
+		bool bDestroyActor = true;
+		bool bRestoreViewTarget = true;
+	};
+
+	FPendingShadowCameraRelease g_PendingShadowCameraRelease{};
+
 	constexpr double kOTSMaxWorldCoord = 2000000.0;
-	constexpr float kOTSCameraLagSpeed = 16.0f;
-	constexpr float kOTSCameraLagSpeedADS = 20.0f;
-	constexpr float kOTSCameraLagMaxTimeStep = 1.0f / 60.0f;
 	constexpr float kFreecamMouseSensitivity = 0.12f;
 
 	struct FOTSState
@@ -39,8 +45,128 @@ namespace
 		float FOV;
 	};
 
+	struct FNativeOTSState
+	{
+		bool bShouldApply = false;
+		float OffsetX = 0.0f;
+		float OffsetY = 0.0f;
+		float OffsetZ = 0.0f;
+		float TargetFOV = 90.0f;
+		double ProjectionX = 0.0;
+		double ProjectionY = 0.0;
+	};
+
+	struct FNativeCameraPose
+	{
+		SDK::FVector Location{};
+		SDK::FRotator Rotation{};
+		float FOV = 90.0f;
+	};
+
 	bool IsValidShadowCamera(SDK::ACameraActor* CameraActor);
+	bool CanAccessShadowCameraObject(SDK::ACameraActor* CameraActor);
 	float GetShadowCameraBaseFOV();
+	FOTSState GetBlendedOTSState(float blendAlpha);
+	void QueueShadowCameraRelease(bool bDestroyActor, bool bRestoreViewTarget);
+	void FlushPendingShadowCameraRelease();
+
+	constexpr uintptr_t kCurrentCacheLocOffset = 1088;
+	constexpr uintptr_t kCurrentCacheRotOffset = 1112;
+	constexpr uintptr_t kCurrentCacheFovOffset = 1136;
+	constexpr uintptr_t kLastFrameCacheLocOffset = 12032;
+	constexpr uintptr_t kLastFrameCacheRotOffset = 12056;
+	constexpr uintptr_t kLastFrameCacheFovOffset = 12080;
+	constexpr uintptr_t kViewTargetLocOffset = 14640;
+	constexpr uintptr_t kViewTargetRotOffset = 14664;
+	constexpr uintptr_t kViewTargetFovOffset = 14688;
+
+	bool ReadNativeCameraPose(uintptr_t base, uintptr_t locOffset, uintptr_t rotOffset, uintptr_t fovOffset, FNativeCameraPose& outPose)
+	{
+		double locX = 0.0;
+		double locY = 0.0;
+		double locZ = 0.0;
+		double rotPitch = 0.0;
+		double rotYaw = 0.0;
+		double rotRoll = 0.0;
+		float fov = 0.0f;
+		if (!NativeInterop::ReadDoubleNoexcept(base + locOffset, locX) ||
+			!NativeInterop::ReadDoubleNoexcept(base + locOffset + 8, locY) ||
+			!NativeInterop::ReadDoubleNoexcept(base + locOffset + 16, locZ) ||
+			!NativeInterop::ReadDoubleNoexcept(base + rotOffset, rotPitch) ||
+			!NativeInterop::ReadDoubleNoexcept(base + rotOffset + 8, rotYaw) ||
+			!NativeInterop::ReadDoubleNoexcept(base + rotOffset + 16, rotRoll) ||
+			!NativeInterop::ReadFloatNoexcept(base + fovOffset, fov))
+		{
+			return false;
+		}
+
+		outPose.Location = { locX, locY, locZ };
+		outPose.Rotation = { rotPitch, rotYaw, rotRoll };
+		outPose.FOV = fov;
+		return true;
+	}
+
+	bool WriteNativeCameraPose(uintptr_t base, uintptr_t locOffset, uintptr_t rotOffset, uintptr_t fovOffset, const FNativeCameraPose& pose)
+	{
+		return NativeInterop::WriteDoubleNoexcept(base + locOffset, pose.Location.X) &&
+			NativeInterop::WriteDoubleNoexcept(base + locOffset + 8, pose.Location.Y) &&
+			NativeInterop::WriteDoubleNoexcept(base + locOffset + 16, pose.Location.Z) &&
+			NativeInterop::WriteDoubleNoexcept(base + rotOffset, pose.Rotation.Pitch) &&
+			NativeInterop::WriteDoubleNoexcept(base + rotOffset + 8, pose.Rotation.Yaw) &&
+			NativeInterop::WriteDoubleNoexcept(base + rotOffset + 16, pose.Rotation.Roll) &&
+			NativeInterop::WriteFloatNoexcept(base + fovOffset, pose.FOV);
+	}
+
+	SDK::FVector MakeNativeCameraOffset(const FNativeOTSState& desiredState, const SDK::FRotator& rotation)
+	{
+		const SDK::FVector forward = Utils::FRotatorToVector(rotation);
+		const SDK::FVector right = Utils::FRotatorToVector({ 0.0, rotation.Yaw + 90.0, 0.0 });
+		const SDK::FVector up = { 0.0, 0.0, 1.0 };
+
+		return {
+			(forward.X * desiredState.OffsetX) + (right.X * desiredState.OffsetY) + (up.X * desiredState.OffsetZ),
+			(forward.Y * desiredState.OffsetX) + (right.Y * desiredState.OffsetY) + (up.Y * desiredState.OffsetZ),
+			(forward.Z * desiredState.OffsetX) + (right.Z * desiredState.OffsetY) + (up.Z * desiredState.OffsetZ)
+		};
+	}
+
+	void ApplyNativeCameraOffsetToPose(FNativeCameraPose& pose, const FNativeOTSState& desiredState)
+	{
+		const SDK::FVector offset = MakeNativeCameraOffset(desiredState, pose.Rotation);
+		pose.Location.X += offset.X;
+		pose.Location.Y += offset.Y;
+		pose.Location.Z += offset.Z;
+		pose.FOV = std::clamp(desiredState.TargetFOV, 20.0f, 180.0f);
+	}
+
+	void MirrorNativeCameraPoseToSdk(const FNativeCameraPose& currentPose)
+	{
+		if (!GVars.PlayerController || !GVars.PlayerController->PlayerCameraManager)
+			return;
+
+		auto* cameraManager = GVars.PlayerController->PlayerCameraManager;
+		cameraManager->ViewTarget.POV.Location = currentPose.Location;
+		cameraManager->ViewTarget.POV.Rotation = currentPose.Rotation;
+		cameraManager->ViewTarget.POV.fov = currentPose.FOV;
+		cameraManager->CameraCachePrivate.POV.Location = currentPose.Location;
+		cameraManager->CameraCachePrivate.POV.Rotation = currentPose.Rotation;
+		cameraManager->CameraCachePrivate.POV.fov = currentPose.FOV;
+
+		if (cameraManager->PendingViewTarget.target == cameraManager->ViewTarget.target)
+		{
+			cameraManager->PendingViewTarget.POV.Location = currentPose.Location;
+			cameraManager->PendingViewTarget.POV.Rotation = currentPose.Rotation;
+			cameraManager->PendingViewTarget.POV.fov = currentPose.FOV;
+		}
+
+		if (GVars.POV)
+		{
+			GVars.POV->Location = currentPose.Location;
+			GVars.POV->Rotation = currentPose.Rotation;
+			GVars.POV->fov = currentPose.FOV;
+		}
+	}
+
 
 	bool ShouldReleaseShadowCameraForWorldLifecycle()
 	{
@@ -136,12 +262,78 @@ namespace
 		g_SmoothedShadowFOV = -1.0f;
 		g_SmoothedOTSADSBlend = 0.0f;
 		g_FreecamRotationInitialized = false;
-		g_RequestedOTSMode = false;
 		g_RequestedThirdPersonMode = false;
 		g_RequestedFirstPersonMode = false;
 	}
 
-	void ReleaseShadowCamera(bool bDestroyActor, bool bRestoreViewTarget)
+	bool IsGameplayReadyForShadowCamera()
+	{
+		return Utils::bIsInGame &&
+			GVars.World != nullptr &&
+			GVars.PlayerController != nullptr &&
+			GVars.Character != nullptr;
+	}
+
+	bool ShouldForceTravelShadowCameraShutdown(const SDK::UObject* Object, SDK::UFunction* Function)
+	{
+		if (!Object || !Function)
+			return false;
+
+		const std::string functionName = Function->GetName();
+		if (functionName == "ClientTravel" ||
+			functionName == "ClientTravelInternal" ||
+			functionName == "LocalTravel" ||
+			functionName == "ClientReturnToMainMenuWithTextReason" ||
+			functionName == "ReturnToMainMenuHost" ||
+			functionName == "OpenLevel" ||
+			functionName == "OpenLevelBySoftObjectPtr" ||
+			functionName == "OnLeaveGameChoiceMade")
+		{
+			return true;
+		}
+
+		if (functionName.find("Travel") != std::string::npos ||
+			functionName.find("MainMenu") != std::string::npos ||
+			functionName.find("LeaveGame") != std::string::npos ||
+			functionName.find("Disconnect") != std::string::npos)
+		{
+			const std::string className = Object->Class ? Object->Class->GetName() : "";
+			return className.find("PlayerController") != std::string::npos ||
+				className.find("GameMode") != std::string::npos ||
+				className.find("GameInstance") != std::string::npos ||
+				className.find("UIScript") != std::string::npos ||
+				className.find("TravelNotification") != std::string::npos ||
+				className.find("DispatchEvents") != std::string::npos;
+		}
+
+		return false;
+	}
+
+	static void DestroyShadowCameraSafely(SDK::ACameraActor* cam, bool bDestroyActor)
+	{
+		__try
+		{
+			if (cam->owner)
+			{
+				cam->SetOwner(nullptr);
+			}
+
+			if (cam->GetAttachParentActor())
+			{
+				cam->K2_DetachFromActor(SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld);
+			}
+
+			if (bDestroyActor && !cam->bActorIsBeingDestroyed)
+			{
+				cam->GbxDestroyActor(true);
+			}
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+		}
+	}
+
+	void QueueShadowCameraRelease(bool bDestroyActor, bool bRestoreViewTarget)
 	{
 		SDK::ACameraActor* cam = nullptr;
 		SDK::AOakPlayerController* oakPc = nullptr;
@@ -173,9 +365,29 @@ namespace
 
 		ResetShadowCameraState();
 
-		if (!IsValidShadowCamera(cam))
+		g_PendingShadowCameraRelease.Camera = cam;
+		g_PendingShadowCameraRelease.Controller = oakPc;
+		g_PendingShadowCameraRelease.FallbackViewTarget = fallbackViewTarget;
+		g_PendingShadowCameraRelease.CameraManager = cachedCameraManager;
+		g_PendingShadowCameraRelease.bDestroyActor = bDestroyActor;
+		g_PendingShadowCameraRelease.bRestoreViewTarget = bRestoreViewTarget;
+
+		ResetShadowCameraBindings();
+	}
+
+	void FlushPendingShadowCameraRelease()
+	{
+		SDK::ACameraActor* cam = g_PendingShadowCameraRelease.Camera;
+		SDK::AOakPlayerController* oakPc = g_PendingShadowCameraRelease.Controller;
+		SDK::AActor* fallbackViewTarget = g_PendingShadowCameraRelease.FallbackViewTarget;
+		SDK::APlayerCameraManager* cachedCameraManager = g_PendingShadowCameraRelease.CameraManager;
+		const bool bDestroyActor = g_PendingShadowCameraRelease.bDestroyActor;
+		const bool bRestoreViewTarget = g_PendingShadowCameraRelease.bRestoreViewTarget;
+
+		g_PendingShadowCameraRelease = {};
+
+		if (!CanAccessShadowCameraObject(cam))
 		{
-			ResetShadowCameraBindings();
 			return;
 		}
 
@@ -221,26 +433,7 @@ namespace
 			}
 		}
 
-		if (cam->owner == fallbackViewTarget)
-		{
-			cam->SetOwner(nullptr);
-		}
-		else if (cam->owner)
-		{
-			cam->SetOwner(nullptr);
-		}
-
-		if (cam->GetAttachParentActor())
-		{
-			cam->K2_DetachFromActor(SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld);
-		}
-
-		if (bDestroyActor)
-		{
-			cam->K2_DestroyActor();
-		}
-
-		ResetShadowCameraBindings();
+		DestroyShadowCameraSafely(cam, bDestroyActor);
 	}
 
 	SDK::FRotator UpdateFreecamRotation(const SDK::FRotator& fallbackRotation)
@@ -337,39 +530,6 @@ namespace
 		return g_ShadowSpringArm;
 	}
 
-	void ConfigureSpringArmForOTS(
-		SDK::USpringArmComponent* SpringArm,
-		const SDK::FRotator& ControlRot,
-		float OffsetX,
-		float OffsetY,
-		float OffsetZ,
-		bool bIsZooming)
-	{
-		if (!IsValidSpringArm(SpringArm))
-			return;
-
-		const float clampedArmLength = std::clamp(-OffsetX, 0.0f, kOTSMaxArmLength);
-
-		SpringArm->TargetArmLength = clampedArmLength;
-		SpringArm->TargetOffset = { 0.0, 0.0, kOTSViewPivotZ + OffsetZ };
-		SpringArm->SocketOffset = { OffsetX + clampedArmLength, OffsetY, 0.0 };
-		SpringArm->ProbeSize = kOTSCollisionRadius;
-		SpringArm->ProbeChannel = SDK::ECollisionChannel::ECC_Camera;
-		SpringArm->bDoCollisionTest = true;
-		SpringArm->bUsePawnControlRotation = false;
-		SpringArm->bInheritPitch = false;
-		SpringArm->bInheritYaw = false;
-		SpringArm->bInheritRoll = false;
-		SpringArm->bEnableCameraLag = true;
-		SpringArm->bEnableCameraRotationLag = false;
-		SpringArm->bUseCameraLagSubstepping = true;
-		SpringArm->CameraLagSpeed = bIsZooming ? kOTSCameraLagSpeedADS : kOTSCameraLagSpeed;
-		SpringArm->CameraLagMaxTimeStep = kOTSCameraLagMaxTimeStep;
-		SpringArm->CameraLagMaxDistance = 0.0f;
-		SpringArm->K2_SetRelativeLocation({ 0.0, 0.0, 0.0 }, false, nullptr, false);
-		SpringArm->K2_SetRelativeRotation(ControlRot, false, nullptr, false);
-	}
-
 	void CollapseSpringArmForFreecam(SDK::ACameraActor* Cam, SDK::USpringArmComponent* SpringArm)
 	{
 		if (!IsValidShadowCamera(Cam) || !IsValidSpringArm(SpringArm))
@@ -391,59 +551,49 @@ namespace
 			Cam->K2_SetActorLocationAndRotation(currentCamLoc, currentCamRot, false, nullptr, false);
 	}
 
-	void SyncShadowCameraAttachmentForOTS(SDK::ACameraActor* Cam, SDK::AOakCharacter* OakChar)
-	{
-		if (!IsValidShadowCamera(Cam) || !OakChar)
-			return;
-
-		if (Cam->owner != OakChar)
-		{
-			Cam->SetOwner(OakChar);
-		}
-
-		if (Cam->GetAttachParentActor() != OakChar)
-		{
-			Cam->K2_AttachToActor(
-				OakChar,
-				SDK::FName(),
-				SDK::EAttachmentRule::KeepRelative,
-				SDK::EAttachmentRule::KeepRelative,
-				SDK::EAttachmentRule::KeepRelative,
-				false);
-		}
-
-		Cam->K2_SetActorRelativeLocation({ 0.0, 0.0, 0.0 }, false, nullptr, false);
-		Cam->K2_SetActorRelativeRotation({ 0.0, 0.0, 0.0 }, false, nullptr, false);
-	}
-
 	bool IsZoomingNow()
 	{
 		if (!GVars.Character || !GVars.Character->IsA(SDK::AOakCharacter::StaticClass())) return false;
 		const SDK::AOakCharacter* oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
-		return ((uint8)oakChar->ZoomState.State != 0);
+		const SDK::EZoomState zoomState = oakChar->ZoomState.State;
+		return zoomState == SDK::EZoomState::ZoomingIn || zoomState == SDK::EZoomState::Zoomed;
+	}
+
+	bool IsNativeOTSGameplayReady()
+	{
+		if (!ConfigManager::B("Player.OverShoulder") ||
+			ConfigManager::B("Player.Freecam") ||
+			!Utils::bIsInGame ||
+			!GVars.World ||
+			!GVars.PlayerController ||
+			!GVars.PlayerController->PlayerCameraManager ||
+			!GVars.Character ||
+			!GVars.Character->IsA(SDK::AOakCharacter::StaticClass()))
+		{
+			return false;
+		}
+
+		if (GVars.PlayerController->PlayerCameraManager->ViewTarget.target != GVars.Character)
+		{
+			return false;
+		}
+
+		const auto* oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+		const std::string modeStr = SDK::APlayerCameraModeManager::GetActorCameraMode(const_cast<SDK::AOakCharacter*>(oakChar)).ToString();
+		if (modeStr.find("FirstPerson") != std::string::npos && !IsZoomingNow())
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	float GetShadowCameraBaseFOV()
 	{
 		if (ConfigManager::B("Misc.EnableFOV"))
 		{
-			return ConfigManager::F("Misc.FOV");
+			return std::clamp(ConfigManager::F("Misc.FOV"), 20.0f, 180.0f);
 		}
-
-		if (GVars.PlayerController && GVars.PlayerController->IsA(SDK::AOakPlayerController::StaticClass()))
-		{
-			const SDK::AOakPlayerController* oakPc = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
-			if (oakPc->PlayerCameraManager)
-			{
-				return oakPc->PlayerCameraManager->DefaultFOV;
-			}
-		}
-
-		if (GVars.POV)
-		{
-			return GVars.POV->fov;
-		}
-
 		return 90.0f;
 	}
 
@@ -454,6 +604,44 @@ namespace
 
 		g_SmoothedOTSADSBlend = UpdateSmoothedBlend(g_SmoothedOTSADSBlend, bIsZooming);
 		return g_SmoothedOTSADSBlend;
+	}
+
+	float UpdateNativeOTSBlendAlpha(float deltaSeconds)
+	{
+		(void)deltaSeconds;
+		const bool bShouldZoom = IsZoomingNow() && ConfigManager::B("Misc.OTSADSOverride");
+		const float duration = std::clamp(ConfigManager::F("Misc.OTSADSBlendTime"), 0.01f, 2.0f);
+		const float targetBlend = bShouldZoom ? 1.0f : 0.0f;
+		const float alpha = std::clamp(GetFrameDeltaSeconds() / duration, 0.0f, 1.0f);
+		g_NativeOTSBlendAlpha += (targetBlend - g_NativeOTSBlendAlpha) * alpha;
+		return g_NativeOTSBlendAlpha;
+	}
+
+	FNativeOTSState BuildDesiredNativeOTSState(float deltaSeconds)
+	{
+		FNativeOTSState state{};
+		if (!IsNativeOTSGameplayReady())
+		{
+			g_NativeOTSBlendAlpha = 0.0f;
+			return state;
+		}
+
+		const float blendAlpha = UpdateNativeOTSBlendAlpha(deltaSeconds);
+		const FOTSState blendedState = GetBlendedOTSState(blendAlpha);
+		const float baseFOV = GetShadowCameraBaseFOV();
+
+		state.bShouldApply = true;
+		state.OffsetX = blendedState.OffsetX;
+		state.OffsetY = blendedState.OffsetY;
+		state.OffsetZ = blendedState.OffsetZ;
+		state.TargetFOV = ConfigManager::B("Misc.OTSADSOverride")
+			? blendedState.FOV
+			: baseFOV;
+		// Apply an off-center projection so the character is framed off-center
+		// instead of feeling like a normal centered third-person camera with a small translation.
+		state.ProjectionX = 0.0;
+		state.ProjectionY = 0.0;
+		return state;
 	}
 
 	FOTSState GetBlendedOTSState(float blendAlpha)
@@ -501,6 +689,21 @@ namespace
 		return std::clamp(fov, 20.0f, 180.0f);
 	}
 
+	float GetNativeOTSResetFOV()
+	{
+		if (ConfigManager::B("Player.OverShoulder"))
+		{
+			return std::clamp(GetBlendedOTSState(0.0f).FOV, 20.0f, 180.0f);
+		}
+
+		if (ConfigManager::B("Misc.EnableFOV"))
+		{
+			return GetAppliedFOV(false);
+		}
+
+		return std::clamp(GetShadowCameraBaseFOV(), 20.0f, 180.0f);
+	}
+
 	float UpdateSmoothedShadowFOV(float targetFOV)
 	{
 		if (g_SmoothedShadowFOV < 0.0f || !ConfigManager::B("Player.OverShoulder"))
@@ -514,7 +717,7 @@ namespace
 		return g_SmoothedShadowFOV;
 	}
 
-	void ApplyPlayerFOV(float targetFOV)
+	void ApplyRuntimeCameraFOV(float targetFOV)
 	{
 		if (!GVars.PlayerController) return;
 		GVars.PlayerController->fov(targetFOV);
@@ -525,8 +728,28 @@ namespace
 		SDK::AOakPlayerController* oakPc = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
 		if (!oakPc || !oakPc->PlayerCameraManager) return;
 
-		oakPc->PlayerCameraManager->DefaultFOV = targetFOV;
+		oakPc->PlayerCameraManager->ViewTarget.POV.fov = targetFOV;
+		oakPc->PlayerCameraManager->PendingViewTarget.POV.fov = targetFOV;
+		oakPc->PlayerCameraManager->CameraCachePrivate.POV.fov = targetFOV;
+		oakPc->PlayerCameraManager->LastFrameCameraCachePrivate.POV.fov = targetFOV;
+		if (GVars.POV)
+		{
+			GVars.POV->fov = targetFOV;
+		}
+	}
 
+	void ApplyConfiguredBaseFOV(float targetFOV)
+	{
+		if (!GVars.PlayerController) return;
+		ApplyRuntimeCameraFOV(targetFOV);
+
+		if (!GVars.PlayerController->IsA(SDK::AOakPlayerController::StaticClass()))
+			return;
+
+		SDK::AOakPlayerController* oakPc = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
+		if (!oakPc || !oakPc->PlayerCameraManager) return;
+
+		oakPc->PlayerCameraManager->DefaultFOV = targetFOV;
 		if (oakPc->PlayerCameraManager->IsA(SDK::APlayerCameraModeManager::StaticClass()))
 		{
 			SDK::APlayerCameraModeManager* modeMgr = static_cast<SDK::APlayerCameraModeManager*>(oakPc->PlayerCameraManager);
@@ -565,6 +788,22 @@ namespace
 			if (!CameraActor->CameraComponent) return false;
 			if (IsBadReadPtr(CameraActor->CameraComponent, sizeof(void*))) return false;
 			return true;
+		}
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			return false;
+		}
+	}
+
+	bool CanAccessShadowCameraObject(SDK::ACameraActor* CameraActor)
+	{
+		if (!CameraActor) return false;
+
+		__try
+		{
+			if (IsBadReadPtr(CameraActor, sizeof(void*)) || !CameraActor->VTable) return false;
+			if (!CameraActor->Class || IsBadReadPtr(CameraActor->Class, sizeof(void*))) return false;
+			return CameraActor->IsA(SDK::ACameraActor::StaticClass());
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
@@ -629,127 +868,91 @@ namespace
 	{
 		if (!GVars.PlayerController || !GVars.Character || !GVars.World)
 		{
-			ReleaseShadowCamera(true, true);
+			QueueShadowCameraRelease(true, true);
 			return;
 		}
 		SDK::AOakPlayerController* OakPC = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
 		SDK::AOakCharacter* OakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
 		if (!OakPC || !OakChar || !OakPC->PlayerCameraManager)
 		{
-			ReleaseShadowCamera(true, true);
+			QueueShadowCameraRelease(true, true);
 			return;
 		}
 		if (!Utils::IsValidActor(OakPC) || !Utils::IsValidActor(OakChar))
 		{
-			ReleaseShadowCamera(true, true);
+			QueueShadowCameraRelease(true, true);
 			return;
 		}
 
 		static float LastTransitionTime = 0.0f;
 		const float CurrentTime = (float)ImGui::GetTime();
 		const bool bIsZooming = ((uint8)OakChar->ZoomState.State != 0);
-		const bool bUseShadowCam = ConfigManager::B("Player.Freecam") || ConfigManager::B("Player.OverShoulder");
+		const bool bUseFreecam = ConfigManager::B("Player.Freecam");
+		const bool bUseOverShoulder = ConfigManager::B("Player.OverShoulder");
 
-		if (bUseShadowCam)
+		if (bUseFreecam)
 		{
 			SDK::ACameraActor* Cam = EnsureShadowCamera(OakPC, OakChar);
 			if (Cam)
 			{
 				SDK::USpringArmComponent* SpringArm = EnsureShadowSpringArm(Cam);
-				if (ConfigManager::B("Player.Freecam"))
+				if (SpringArm && g_ShadowCameraMode != EShadowCameraMode::Freecam)
 				{
-					g_SmoothedOTSADSBlend = 0.0f;
-					if (SpringArm && g_ShadowCameraMode != EShadowCameraMode::Freecam)
-					{
-						CollapseSpringArmForFreecam(Cam, SpringArm);
-					}
-					g_ShadowCameraMode = EShadowCameraMode::Freecam;
-
-					if (Cam->GetAttachParentActor())
-					{
-						Cam->K2_DetachFromActor(SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld);
-					}
-
-					float FlySpeed = 20.0f;
-					if (GetAsyncKeyState(VK_CONTROL) & 0x8000) FlySpeed *= 3.0f;
-
-					SDK::FVector CamLoc = Cam->K2_GetActorLocation();
-					SDK::FRotator CamRot = UpdateFreecamRotation(Cam->K2_GetActorRotation());
-					Cam->K2_SetActorRotation(CamRot, false);
-
-					SDK::FVector Forward = Utils::FRotatorToVector(CamRot);
-					SDK::FVector Right = Utils::FRotatorToVector({ 0, CamRot.Yaw + 90.0, 0 });
-
-					if (GetAsyncKeyState('W') & 0x8000) { CamLoc.X += Forward.X * FlySpeed; CamLoc.Y += Forward.Y * FlySpeed; CamLoc.Z += Forward.Z * FlySpeed; }
-					if (GetAsyncKeyState('S') & 0x8000) { CamLoc.X -= Forward.X * FlySpeed; CamLoc.Y -= Forward.Y * FlySpeed; CamLoc.Z -= Forward.Z * FlySpeed; }
-					if (GetAsyncKeyState('D') & 0x8000) { CamLoc.X += Right.X * FlySpeed; CamLoc.Y += Right.Y * FlySpeed; CamLoc.Z += Right.Z * FlySpeed; }
-					if (GetAsyncKeyState('A') & 0x8000) { CamLoc.X -= Right.X * FlySpeed; CamLoc.Y -= Right.Y * FlySpeed; CamLoc.Z -= Right.Z * FlySpeed; }
-					if (GetAsyncKeyState(VK_SPACE) & 0x8000) CamLoc.Z += FlySpeed;
-					if (GetAsyncKeyState(VK_SHIFT) & 0x8000) CamLoc.Z -= FlySpeed;
-
-					if (IsReasonableWorldLocation(CamLoc))
-					{
-						Cam->K2_SetActorLocation(CamLoc, false, nullptr, false);
-					}
-
-					if (OakPC->PlayerCameraManager->ViewTarget.target != Cam)
-					{
-						OakPC->SetViewTargetWithBlend(Cam, 0.0f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
-					}
+					CollapseSpringArmForFreecam(Cam, SpringArm);
 				}
-				else
+				g_SmoothedOTSADSBlend = 0.0f;
+				g_ShadowCameraMode = EShadowCameraMode::Freecam;
+
+				if (Cam->GetAttachParentActor())
 				{
-					if (!SpringArm) return;
+					Cam->K2_DetachFromActor(SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld, SDK::EDetachmentRule::KeepWorld);
+				}
 
-					const std::string ModeStr = SDK::APlayerCameraModeManager::GetActorCameraMode(OakChar).ToString();
-					const bool bIsThirdPersonMode = ModeStr.find("ThirdPerson") != std::string::npos;
-					if (bIsThirdPersonMode)
-					{
-						g_RequestedOTSMode = false;
-					}
-					else if (!g_RequestedOTSMode && (CurrentTime - LastTransitionTime > 0.5f))
-					{
-						OakPC->CameraTransition(
-							SDK::UKismetStringLibrary::Conv_StringToName(L"ThirdPerson"),
-							SDK::UKismetStringLibrary::Conv_StringToName(L"Default"),
-							0.0f,
-							false,
-							false);
-						LastTransitionTime = CurrentTime;
-						g_RequestedOTSMode = true;
-					}
-					g_RequestedThirdPersonMode = false;
-					g_RequestedFirstPersonMode = false;
+				float FlySpeed = 20.0f;
+				if (GetAsyncKeyState(VK_CONTROL) & 0x8000) FlySpeed *= 3.0f;
 
-					const SDK::FRotator ControlRot = OakPC->GetControlRotation();
-					const float otsADSBlend = GetCurrentOTSADSBlend(bIsZooming);
-					const FOTSState otsState = GetBlendedOTSState(otsADSBlend);
-					SyncShadowCameraAttachmentForOTS(Cam, OakChar);
-					ConfigureSpringArmForOTS(
-						SpringArm,
-						ControlRot,
-						otsState.OffsetX,
-						otsState.OffsetY,
-						otsState.OffsetZ,
-						bIsZooming);
-					g_ShadowCameraMode = EShadowCameraMode::OTS;
+				SDK::FVector CamLoc = Cam->K2_GetActorLocation();
+				SDK::FRotator CamRot = UpdateFreecamRotation(Cam->K2_GetActorRotation());
+				Cam->K2_SetActorRotation(CamRot, false);
 
-					if (OakPC->PlayerCameraManager->ViewTarget.target != Cam)
-					{
-						OakPC->SetViewTargetWithBlend(Cam, 0.0f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
-					}
+				SDK::FVector Forward = Utils::FRotatorToVector(CamRot);
+				SDK::FVector Right = Utils::FRotatorToVector({ 0, CamRot.Yaw + 90.0, 0 });
+
+				if (GetAsyncKeyState('W') & 0x8000) { CamLoc.X += Forward.X * FlySpeed; CamLoc.Y += Forward.Y * FlySpeed; CamLoc.Z += Forward.Z * FlySpeed; }
+				if (GetAsyncKeyState('S') & 0x8000) { CamLoc.X -= Forward.X * FlySpeed; CamLoc.Y -= Forward.Y * FlySpeed; CamLoc.Z -= Forward.Z * FlySpeed; }
+				if (GetAsyncKeyState('D') & 0x8000) { CamLoc.X += Right.X * FlySpeed; CamLoc.Y += Right.Y * FlySpeed; CamLoc.Z += Right.Z * FlySpeed; }
+				if (GetAsyncKeyState('A') & 0x8000) { CamLoc.X -= Right.X * FlySpeed; CamLoc.Y -= Right.Y * FlySpeed; CamLoc.Z -= Right.Z * FlySpeed; }
+				if (GetAsyncKeyState(VK_SPACE) & 0x8000) CamLoc.Z += FlySpeed;
+				if (GetAsyncKeyState(VK_SHIFT) & 0x8000) CamLoc.Z -= FlySpeed;
+
+				if (IsReasonableWorldLocation(CamLoc))
+				{
+					Cam->K2_SetActorLocation(CamLoc, false, nullptr, false);
+				}
+
+				if (OakPC->PlayerCameraManager->ViewTarget.target != Cam)
+				{
+					OakPC->SetViewTargetWithBlend(Cam, 0.0f, SDK::EViewTargetBlendFunction::VTBlend_Linear, 0.0f, false);
 				}
 			}
 		}
 		else
 		{
-			ReleaseShadowCamera(true, true);
-			g_RequestedOTSMode = false;
+			QueueShadowCameraRelease(true, true);
 
-			bool bShouldBeInThirdPerson = ConfigManager::B("Player.ThirdPerson");
-			if (ConfigManager::B("Player.ThirdPerson") && bIsZooming && ConfigManager::B("Misc.ThirdPersonADSFirstPerson"))
+			bool bShouldBeInThirdPerson = ConfigManager::B("Player.ThirdPerson") || bUseOverShoulder;
+			if (ConfigManager::B("Player.ThirdPerson") && !bUseOverShoulder && bIsZooming && ConfigManager::B("Misc.ThirdPersonADSFirstPerson"))
 			{
 				bShouldBeInThirdPerson = false;
+			}
+
+			if (bUseOverShoulder)
+			{
+				GetCurrentOTSADSBlend(bIsZooming);
+			}
+			else
+			{
+				g_SmoothedOTSADSBlend = 0.0f;
 			}
 
 			if (OakPC->PlayerCameraManager->ViewTarget.target != OakChar)
@@ -823,6 +1026,7 @@ void Cheats::ToggleFreecam()
 void Cheats::ChangeFOV()
 {
 	if (!GVars.PlayerController) return;
+	if (ConfigManager::B("Player.OverShoulder")) return;
 
 	static float LastFOV = -1.0f;
 	if (ConfigManager::B("Misc.EnableFOV"))
@@ -831,7 +1035,7 @@ void Cheats::ChangeFOV()
 		// ADS often overrides FOV every frame, so force-apply while zooming.
 		if (LastFOV != targetFOV || IsZoomingNow())
 		{
-			ApplyPlayerFOV(targetFOV);
+			ApplyConfiguredBaseFOV(targetFOV);
 			LastFOV = targetFOV;
 		}
 	}
@@ -854,15 +1058,27 @@ void Cheats::ChangeGameRenderSettings()
 
 void Cheats::UpdateCamera()
 {
+	if (g_BlockShadowCameraUntilGameplayReady)
+	{
+		if (!IsGameplayReadyForShadowCamera())
+		{
+			QueueShadowCameraRelease(true, true);
+			return;
+		}
+
+		Logger::LogThrottled(Logger::Level::Debug, "Camera", 2000, "Gameplay became ready again, allowing shadow camera recreation");
+		g_BlockShadowCameraUntilGameplayReady = false;
+	}
+
 	if (ShouldReleaseShadowCameraForWorldLifecycle())
 	{
 		Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "Releasing shadow camera on engine world transition state");
-		ReleaseShadowCamera(true, true);
+		QueueShadowCameraRelease(true, true);
 	}
 
 	if (Utils::bIsLoading || !Utils::bIsInGame)
 	{
-		ReleaseShadowCamera(true, true);
+		QueueShadowCameraRelease(true, true);
 		return;
 	}
 
@@ -884,10 +1100,10 @@ void Cheats::UpdateCamera()
 		g_SmoothedShadowFOV = -1.0f;
 	}
 
-	if (ConfigManager::B("Misc.EnableFOV"))
+	if (ConfigManager::B("Misc.EnableFOV") && !ConfigManager::B("Player.OverShoulder"))
 	{
 		const float appliedFOV = GetAppliedFOV(false);
-		ApplyPlayerFOV(appliedFOV);
+		ApplyConfiguredBaseFOV(appliedFOV);
 	}
 	ApplyViewModelFOV();
 
@@ -896,13 +1112,81 @@ void Cheats::UpdateCamera()
 
 void Cheats::ShutdownCamera()
 {
-	ReleaseShadowCamera(true, true);
+	QueueShadowCameraRelease(true, true);
+}
+
+bool Cheats::ShouldTraceNativeCamera()
+{
+#if BL4_DEBUG_BUILD
+	return ConfigManager::B("Misc.Debug") && IsNativeOTSGameplayReady();
+#else
+	return false;
+#endif
+}
+
+void Cheats::ApplyNativeCameraPostUpdate(uintptr_t cameraContext, float deltaSeconds)
+{
+	FNativeCameraPose currentViewTargetPose{};
+	if (!ReadNativeCameraPose(cameraContext, kViewTargetLocOffset, kViewTargetRotOffset, kViewTargetFovOffset, currentViewTargetPose))
+	{
+		return;
+	}
+
+	const FNativeOTSState desiredState = BuildDesiredNativeOTSState(deltaSeconds);
+	if (desiredState.bShouldApply)
+	{
+		FNativeCameraPose adjustedViewTargetPose = currentViewTargetPose;
+		ApplyNativeCameraOffsetToPose(adjustedViewTargetPose, desiredState);
+		WriteNativeCameraPose(cameraContext, kViewTargetLocOffset, kViewTargetRotOffset, kViewTargetFovOffset, adjustedViewTargetPose);
+
+		FNativeCameraPose currentCachePose{};
+		if (ReadNativeCameraPose(cameraContext, kCurrentCacheLocOffset, kCurrentCacheRotOffset, kCurrentCacheFovOffset, currentCachePose))
+		{
+			ApplyNativeCameraOffsetToPose(currentCachePose, desiredState);
+			WriteNativeCameraPose(cameraContext, kCurrentCacheLocOffset, kCurrentCacheRotOffset, kCurrentCacheFovOffset, currentCachePose);
+		}
+		else
+		{
+			currentCachePose = adjustedViewTargetPose;
+		}
+
+		MirrorNativeCameraPoseToSdk(currentCachePose);
+		ApplyRuntimeCameraFOV(adjustedViewTargetPose.FOV);
+		return;
+	}
+
+	if (ConfigManager::B("Misc.EnableFOV") && IsZoomingNow())
+	{
+		const float targetFOV = GetAppliedFOV(false);
+		NativeInterop::WriteFloatNoexcept(cameraContext + kViewTargetFovOffset, targetFOV);
+		NativeInterop::WriteFloatNoexcept(cameraContext + kCurrentCacheFovOffset, targetFOV);
+		ApplyRuntimeCameraFOV(targetFOV);
+		return;
+	}
+
+	const float targetFOV = GetNativeOTSResetFOV();
+	NativeInterop::WriteFloatNoexcept(cameraContext + kViewTargetFovOffset, targetFOV);
+	NativeInterop::WriteFloatNoexcept(cameraContext + kCurrentCacheFovOffset, targetFOV);
+	ApplyRuntimeCameraFOV(targetFOV);
 }
 
 bool Cheats::HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params)
 {
-	(void)Object;
-	(void)Function;
 	(void)Params;
+	FlushPendingShadowCameraRelease();
+	if (ShouldForceTravelShadowCameraShutdown(Object, Function))
+	{
+		if (!g_BlockShadowCameraUntilGameplayReady)
+		{
+			const std::string functionName = Function ? Function->GetName() : "Unknown";
+			const std::string className = (Object && Object->Class) ? Object->Class->GetName() : "Unknown";
+			Logger::LogThrottled(Logger::Level::Debug, "Camera", 250, "ProcessEvent detected travel/menu transition (%s::%s), blocking shadow camera", className.c_str(), functionName.c_str());
+		}
+
+		g_BlockShadowCameraUntilGameplayReady = true;
+		QueueShadowCameraRelease(true, true);
+		FlushPendingShadowCameraRelease();
+	}
+
 	return false;
 }

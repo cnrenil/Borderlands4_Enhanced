@@ -454,7 +454,6 @@ void GUI::RenderMenu()
                 {
                     ImGui::Checkbox(Localization::T("ENABLE_EVENT_DEBUG_LOGS"), &B("Misc.Debug"));
                     ImGui::Checkbox(Localization::T("ENABLE_PING_DUMP"), &B("Misc.PingDump"));
-                    ImGui::Checkbox(Localization::T("ENABLE_PP_TRACE"), &B("Misc.PostProcessTrace"));
 
                     bool bRecording = Logger::IsRecording();
                     if (ImGui::Checkbox(Localization::T("ENABLE_EVENT_RECORDING"), &bRecording))

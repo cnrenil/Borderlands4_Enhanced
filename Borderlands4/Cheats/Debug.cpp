@@ -31,8 +31,6 @@ namespace
     static double s_LastLookupTime = 0.0;
     static uintptr_t s_ActiveNumAddr = 0; // ALightProjectileManager + 0x3B0
     static int32_t s_LastObservedActiveNum = INT_MIN;
-    static double s_LastPostProcessTraceTime = 0.0;
-    static std::unordered_map<std::string, uint64_t> s_RenderTraceSeen;
 
     void DumpPingTargetObject(SDK::AActor* TargetedActor)
     {
@@ -135,113 +133,6 @@ namespace
         return nullptr;
     }
 
-    bool ContainsInsensitive(const std::string& text, const char* needle)
-    {
-        if (!needle || !needle[0]) return false;
-        auto it = std::search(
-            text.begin(), text.end(),
-            needle, needle + std::strlen(needle),
-            [](char lhs, char rhs)
-            {
-                return std::tolower(static_cast<unsigned char>(lhs)) == std::tolower(static_cast<unsigned char>(rhs));
-            });
-        return it != text.end();
-    }
-
-    bool ShouldTraceRenderFunction(const SDK::UObject* Object, SDK::UFunction* Function)
-    {
-        if (!Object || !Function) return false;
-
-        const std::string funcName = Function->GetName();
-        const std::string className = Object->Class ? Object->Class->GetName() : "None";
-        const std::string fullName = Object->GetFullName();
-
-        static constexpr const char* kKeywords[] = {
-            "PostProcess",
-            "Blend",
-            "Material",
-            "CustomDepth",
-            "Stencil",
-            "RenderCustomDepth",
-            "CreateDynamicMaterialInstance",
-            "SetMaterial",
-            "WeightedBlendable",
-            "BlueprintModifyPostProcess"
-        };
-
-        for (const char* keyword : kKeywords)
-        {
-            if (ContainsInsensitive(funcName, keyword) || ContainsInsensitive(className, keyword) || ContainsInsensitive(fullName, keyword))
-                return true;
-        }
-
-        return false;
-    }
-
-    void TraceRenderFunctionCall(const SDK::UObject* Object, SDK::UFunction* Function)
-    {
-        if (!Object || !Function) return;
-
-        const std::string funcName = Function->GetName();
-        const std::string className = Object->Class ? Object->Class->GetName() : "None";
-        const std::string objectName = Object->GetName();
-        const std::string key = className + "::" + funcName;
-        const uint64_t nowMs = GetTickCount64();
-        uint64_t& lastSeen = s_RenderTraceSeen[key];
-        if (lastSeen != 0 && (nowMs - lastSeen) < 1000)
-            return;
-
-        lastSeen = nowMs;
-        LOG_INFO("PPTrace", "PE %s::%s Obj=%s Ptr=%p", className.c_str(), funcName.c_str(), objectName.c_str(), Object);
-    }
-
-    void DumpPostProcessState()
-    {
-        if (!GVars.PlayerController || !GVars.PlayerController->IsA(SDK::AOakPlayerController::StaticClass()))
-            return;
-
-        SDK::AOakPlayerController* pc = static_cast<SDK::AOakPlayerController*>(GVars.PlayerController);
-        if (!pc->PlayerCameraManager)
-            return;
-
-        SDK::APlayerCameraModeManager* cameraMode = nullptr;
-        if (pc->PlayerCameraManager->IsA(SDK::APlayerCameraModeManager::StaticClass()))
-            cameraMode = static_cast<SDK::APlayerCameraModeManager*>(pc->PlayerCameraManager);
-
-        LOG_INFO(
-            "PPTrace",
-            "PCM=%p Class=%s CameraModeMgr=%p ModeState=%p",
-            pc->PlayerCameraManager,
-            pc->PlayerCameraManager->Class ? pc->PlayerCameraManager->Class->GetName().c_str() : "None",
-            cameraMode,
-            cameraMode ? cameraMode->CameraModeState : nullptr);
-
-        if (cameraMode && cameraMode->CameraModeState)
-        {
-            LOG_INFO("PPTrace", "CameraModeState.PostProcessBlends.Num=%d", cameraMode->CameraModeState->PostProcessBlends.Num());
-        }
-
-        for (int32 i = 0; i < 8; ++i)
-        {
-            SDK::FPostProcessSettings settings{};
-            float blendWeight = 0.0f;
-            if (!SDK::USequenceCameraShakeTestUtil::GetPostProcessBlendCache(pc, i, &settings, &blendWeight))
-                break;
-
-            const auto& outline = settings.GbxOutlinePostProcessSettings;
-            const auto& edge = settings.GbxEdgeDetectionPostProcessSettings;
-            LOG_INFO(
-                "PPTrace",
-                "Blend[%d] Weight=%.3f Outline=%d Stencil=%d Thick=%.2f Edge=%d Sobel=%.2f",
-                i,
-                blendWeight,
-                outline.OutlineTechEnable ? 1 : 0,
-                outline.OutlineStencilTestEnable ? 1 : 0,
-                outline.OutlineThickness,
-                edge.EdgeDetectionEnable ? 1 : 0,
-                edge.EdgeDetectionSobelPower);
-        }
-    }
 }
 
 void Cheats::HandleDebugEvents(
@@ -274,11 +165,6 @@ void Cheats::HandleDebugEvents(
                 DumpPingTargetObject(pingParams->TargetedActor);
             }
         }
-    }
-
-    if (ConfigManager::B("Misc.PostProcessTrace") && ShouldTraceRenderFunction(Object, Function))
-    {
-        TraceRenderFunctionCall(Object, Function);
     }
 
     if (bCallOriginal && OriginalProcessEvent)
@@ -362,14 +248,6 @@ void Cheats::UpdateDebug()
         }
     }
 
-    if (ConfigManager::B("Misc.PostProcessTrace"))
-    {
-        if ((now - s_LastPostProcessTraceTime) >= 1.0)
-        {
-            s_LastPostProcessTraceTime = now;
-            DumpPostProcessState();
-        }
-    }
 }
 
 #endif
