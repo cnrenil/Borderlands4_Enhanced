@@ -23,6 +23,11 @@ namespace
 	};
 	NativeCameraUpdateFn oNativeCameraUpdate = nullptr;
 	bool g_NativeCameraUpdateHookInstalled = false;
+	uintptr_t g_LastNativeCameraWorld = 0;
+	ULONGLONG g_NativeCameraReadySinceMs = 0;
+	ULONGLONG g_LastNativeCameraHookAttemptMs = 0;
+	constexpr ULONGLONG kNativeCameraHookWarmupMs = 3000;
+	constexpr ULONGLONG kNativeCameraHookRetryIntervalMs = 5000;
 
 	std::string DescribeNativeBehaviorList(uintptr_t modePtr)
 	{
@@ -141,6 +146,50 @@ namespace
 
 		g_NativeCameraUpdateHookInstalled = true;
 		LOG_DEBUG("CamNative", "SUCCESS: Native camera update hook installed at 0x%llX", static_cast<unsigned long long>(targetAddress));
+		return true;
+	}
+
+	bool ShouldAttemptNativeCameraUpdateHook()
+	{
+		if (g_NativeCameraUpdateHookInstalled ||
+			!Utils::bIsInGame ||
+			Utils::bIsLoading ||
+			!GVars.World ||
+			!GVars.Character ||
+			!GVars.PlayerController ||
+			!GVars.PlayerController->PlayerCameraManager)
+		{
+			g_LastNativeCameraWorld = 0;
+			g_NativeCameraReadySinceMs = 0;
+			return false;
+		}
+
+		const uintptr_t currentWorld = reinterpret_cast<uintptr_t>(GVars.World);
+		const ULONGLONG nowMs = GetTickCount64();
+		if (g_LastNativeCameraWorld != currentWorld)
+		{
+			g_LastNativeCameraWorld = currentWorld;
+			g_NativeCameraReadySinceMs = nowMs;
+			g_LastNativeCameraHookAttemptMs = 0;
+			return false;
+		}
+
+		if (g_NativeCameraReadySinceMs == 0)
+		{
+			g_NativeCameraReadySinceMs = nowMs;
+			return false;
+		}
+
+		if ((nowMs - g_NativeCameraReadySinceMs) < kNativeCameraHookWarmupMs)
+			return false;
+
+		if (g_LastNativeCameraHookAttemptMs != 0 &&
+			(nowMs - g_LastNativeCameraHookAttemptMs) < kNativeCameraHookRetryIntervalMs)
+		{
+			return false;
+		}
+
+		g_LastNativeCameraHookAttemptMs = nowMs;
 		return true;
 	}
 }
@@ -323,7 +372,7 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 
 	InternalUpdateHooksSEH(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 
-	if (Utils::bIsInGame && GVars.World && GVars.Character && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
+	if (ShouldAttemptNativeCameraUpdateHook())
 	{
 		InstallNativeCameraUpdateHook();
 	}
