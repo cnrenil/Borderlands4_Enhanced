@@ -193,7 +193,7 @@ void Cheats::DrawReticle()
     }
     else if (!g_LoggedReticleImGui.exchange(true))
     {
-        LOG_WARN("DrawPath", "DrawReticle using ImGui fallback path (Canvas unavailable).");
+        LOG_INFO("DrawPath", "DrawReticle using ImGui path.");
     }
 
     GUI::Draw::Circle(center, dotOuterRadius, outer, 16, 2.0f);

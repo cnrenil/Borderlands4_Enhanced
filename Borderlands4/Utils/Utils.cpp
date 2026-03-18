@@ -487,7 +487,7 @@ void Utils::DrawFOV(float MaxFOV, float Thickness = 1.0f)
     }
     else if (!g_LoggedDrawFovImGui.exchange(true))
     {
-        LOG_WARN("DrawPath", "DrawFOV using ImGui fallback path (Canvas unavailable).");
+        LOG_INFO("DrawPath", "DrawFOV using ImGui path.");
     }
 
     GUI::Draw::Circle(ImVec2(Center.X, Center.Y), RadiusPixels, IM_COL32(255, 0, 0, 255), 64, Thickness);
@@ -512,7 +512,7 @@ void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
     }
     else if (!g_LoggedSnapLineImGui.exchange(true))
     {
-        LOG_WARN("DrawPath", "DrawSnapLine using ImGui fallback path (Canvas unavailable).");
+        LOG_INFO("DrawPath", "DrawSnapLine using ImGui path.");
     }
 
     GUI::Draw::Line(Center, Target, IM_COL32(255, 255, 255, 180), Thickness);

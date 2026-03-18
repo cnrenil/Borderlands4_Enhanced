@@ -594,7 +594,7 @@ void Cheats::RenderESP()
 	{
 		if (!g_LoggedRenderEspImGui.exchange(true))
 		{
-			LOG_WARN("DrawPath", "RenderESP using ImGui fallback path (Canvas unavailable).");
+			LOG_INFO("DrawPath", "RenderESP using ImGui path.");
 		}
 	}
 

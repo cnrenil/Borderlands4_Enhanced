@@ -28,6 +28,7 @@ namespace
 	ULONGLONG g_LastNativeCameraHookAttemptMs = 0;
 	constexpr ULONGLONG kNativeCameraHookWarmupMs = 3000;
 	constexpr ULONGLONG kNativeCameraHookRetryIntervalMs = 5000;
+	constexpr size_t kNativeCameraUpdateHookLen = 19;
 
 	std::string DescribeNativeBehaviorList(uintptr_t modePtr)
 	{
@@ -133,6 +134,23 @@ namespace
 		MH_STATUS createStatus = MH_CreateHook(target, &hkNativeCameraUpdate, reinterpret_cast<LPVOID*>(&oNativeCameraUpdate));
 		if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
 		{
+			if (createStatus == MH_ERROR_MEMORY_ALLOC)
+			{
+				if (Memory::HookFunctionAbsolute(
+					target,
+					reinterpret_cast<void*>(&hkNativeCameraUpdate),
+					reinterpret_cast<void**>(&oNativeCameraUpdate),
+					kNativeCameraUpdateHookLen))
+				{
+					g_NativeCameraUpdateHookInstalled = true;
+					LOG_DEBUG(
+						"CamNative",
+						"SUCCESS: Native camera update hook installed via absolute detour fallback at 0x%llX",
+						static_cast<unsigned long long>(targetAddress));
+					return true;
+				}
+			}
+
 			LOG_WARN("CamNative", "MH_CreateHook failed for native camera update: %d", static_cast<int>(createStatus));
 			return false;
 		}
