@@ -125,11 +125,11 @@ namespace ConfigManager
         Register("Misc.OTS_Z", 50.0f);
         Register("Misc.OTSADSOverride", false);
         Register("Misc.OTSADS_X", -90.0f);
-        Register("Misc.OTSADS_Y", 40.0f);
-        Register("Misc.OTSADS_Z", 40.0f);
+        Register("Misc.OTSADS_Y", 60.0f);
+        Register("Misc.OTSADS_Z", 50.0f);
         Register("Misc.OTSADSFOV", 90.0f);
-        Register("Misc.OTSADSBlendTime", 0.18f);
-        Register("Misc.FreecamBlockInput", true);
+        Register("Misc.OTSADSBlendTime", 0.10f);
+        Register("Misc.FreecamBlockInput", false);
         Register("Misc.Language", 0);
         Register("Misc.Theme", 0);
         Register("Misc.Debug", false);

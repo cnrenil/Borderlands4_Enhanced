@@ -1,5 +1,4 @@
 #include "pch.h"
-#include "Utils/AntiDebug.h"
 
 extern HWND g_hWnd;
 extern WNDPROC oWndProc;
@@ -13,7 +12,15 @@ namespace
 {
 	using NativeCameraUpdateFn = char(__fastcall*)(__int64, __int64*, float);
 
-	constexpr uintptr_t kNativeCameraUpdateRva = 0x3C7C2BE;
+	constexpr SignatureRegistry::Signature kNativeCameraUpdateSignature{
+		"NativeCameraUpdate",
+		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? "
+		"66 44 0F 29 BC 24 ? ? ? ? 66 44 0F 29 B4 24 ? ? ? ? "
+		"66 44 0F 29 AC 24 ? ? ? ? 66 44 0F 29 A4 24 ? ? ? ? "
+		"66 44 0F 29 9C 24 ? ? ? ? 66 44 0F 29 94 24 ? ? ? ? "
+		"66 44 0F 29 8C 24 ? ? ? ? 66 44 0F 29 84 24 ? ? ? ? "
+		"66 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 66 0F 28 F2"
+	};
 	NativeCameraUpdateFn oNativeCameraUpdate = nullptr;
 	bool g_NativeCameraUpdateHookInstalled = false;
 
@@ -77,7 +84,7 @@ namespace
 		Logger::LogThrottled(
 			Logger::Level::Debug,
 			category,
-			1000,
+			5000,
 			"%s Ctx=%p Mode=%p Loc=(%.2f, %.2f, %.2f) Rot=(%.2f, %.2f, %.2f) FOV=%.2f %s",
 			phase,
 			reinterpret_cast<void*>(a1),
@@ -110,11 +117,14 @@ namespace
 		if (g_NativeCameraUpdateHookInstalled)
 			return true;
 
-		const uintptr_t imageBase = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-		if (!imageBase)
+		const uintptr_t targetAddress = SignatureRegistry::Resolve(kNativeCameraUpdateSignature);
+		if (!targetAddress)
+		{
+			LOG_WARN("CamNative", "Native camera update signature not found.");
 			return false;
+		}
 
-		void* target = reinterpret_cast<void*>(imageBase + kNativeCameraUpdateRva);
+		void* target = reinterpret_cast<void*>(targetAddress);
 		MH_STATUS createStatus = MH_CreateHook(target, &hkNativeCameraUpdate, reinterpret_cast<LPVOID*>(&oNativeCameraUpdate));
 		if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
 		{
@@ -130,7 +140,7 @@ namespace
 		}
 
 		g_NativeCameraUpdateHookInstalled = true;
-		LOG_DEBUG("CamNative", "SUCCESS: Native camera update hook installed at RVA 0x%llX", static_cast<unsigned long long>(kNativeCameraUpdateRva));
+		LOG_DEBUG("CamNative", "SUCCESS: Native camera update hook installed at 0x%llX", static_cast<unsigned long long>(targetAddress));
 		return true;
 	}
 }
