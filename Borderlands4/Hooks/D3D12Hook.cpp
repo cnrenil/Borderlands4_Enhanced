@@ -2,6 +2,7 @@
 
 extern WNDPROC oWndProc;
 extern HWND g_hWnd;
+extern HWND g_hTrackedWindow;
 extern LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 extern std::atomic<int> g_PresentCount;
 extern std::atomic<bool> Resizing;
@@ -186,6 +187,8 @@ namespace d3d12hook {
         pSwapChain->GetDesc(&desc);
         gBufferCount = desc.BufferCount;
         g_hWnd = desc.OutputWindow;
+        if (g_hWnd)
+            g_hTrackedWindow = g_hWnd;
         gSwapChainFormat = desc.BufferDesc.Format;
 
         // Hook WndProc for Input

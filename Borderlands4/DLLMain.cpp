@@ -17,6 +17,7 @@ std::atomic<bool> Resizing{ false };
 
 WNDPROC oWndProc = nullptr;
 HWND g_hWnd = nullptr;
+HWND g_hTrackedWindow = nullptr;
 HWND g_hConsoleWnd = nullptr;
 
 // DLL entry point

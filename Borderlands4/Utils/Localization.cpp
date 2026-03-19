@@ -77,9 +77,29 @@ namespace Localization
         Register("MENU_TITLE", "Main Menu", (const char*)u8"主菜单");
         Register("LANGUAGE", "Language", (const char*)u8"语言");
         Register("THEME", "Theme", (const char*)u8"主题");
+        Register("GENERAL_SETTINGS", "General Settings", (const char*)u8"通用设置");
+        Register("CONFIG_ACTIONS", "Config Actions", (const char*)u8"配置操作");
         Register("VERSION_D_D_D", "Version %d.%d.%d", (const char*)u8"版本 %d.%d.%d");
         Register("THANKS_FOR_USING_THIS_CHEAT_S", "Thanks for using this cheat, %s!", (const char*)u8"感谢使用此辅助, %s!");
         Register("USERNAME_NOT_FOUND_BUT_THANKS_FOR_USING_ANYWAY", "Username not found, but thanks for using anyway!", (const char*)u8"未找到用户名，但仍感谢使用！");
+        Register("SIGNATURE_HOOK_STATUS", "Signature Hook Status", (const char*)u8"特征 Hook 状态");
+        Register("ENGINE_HOOK_STATUS", "Engine Hook Status", (const char*)u8"引擎 Hook 状态");
+        Register("NO_SIGNATURE_HOOKS_REGISTERED", "No signature hooks registered yet.", (const char*)u8"当前还没有注册任何特征 Hook。");
+        Register("HOOK_STATUS_PENDING", "Pending", (const char*)u8"等待中");
+        Register("HOOK_STATUS_HOOKED", "Hooked", (const char*)u8"已挂接");
+        Register("HOOK_STATUS_FAILED", "Resolve Failed", (const char*)u8"定位失败");
+        Register("HOOK_STATUS_WAITING", "Waiting", (const char*)u8"等待时机");
+        Register("HOOK_STATUS_RESOLVED", "Resolved", (const char*)u8"已定位");
+        Register("HOOK_TIMING_IMMEDIATE", "Immediate", (const char*)u8"立即");
+        Register("HOOK_TIMING_INGAME_READY", "InGameReady", (const char*)u8"进图就绪");
+        Register("HOOK_READY", "Ready", (const char*)u8"已就绪");
+        Register("HOOK_NOT_READY", "Not Ready", (const char*)u8"未就绪");
+        Register("ENGINE_HOOK_PROCESS_EVENT", "ProcessEvent", (const char*)u8"ProcessEvent");
+        Register("ENGINE_HOOK_PLAYERSTATE", "PlayerState ProcessEvent", (const char*)u8"玩家状态 ProcessEvent");
+        Register("ENGINE_HOOK_CAMERAMANAGER", "CameraManager ProcessEvent", (const char*)u8"相机管理器 ProcessEvent");
+        Register("ENGINE_HOOK_PRESENT", "DX12 Present", (const char*)u8"DX12 Present");
+        Register("ENGINE_HOOK_COMMAND_QUEUE", "DX12 Command Queue", (const char*)u8"DX12 命令队列");
+        Register("ENGINE_HOOK_PRESENT_ACTIVE", "Frames flowing", (const char*)u8"帧流正常");
         
         // 2. Tabs
         Register("TAB_ABOUT", "About", (const char*)u8"关于");
@@ -87,7 +107,7 @@ namespace Localization
         Register("TAB_WEAPON", "Weapon", (const char*)u8"武器选项");
         Register("TAB_WORLD", "World", (const char*)u8"世界");
         Register("TAB_MISC", "Misc", (const char*)u8"杂项");
-        Register("TAB_CONFIG", "Config", (const char*)u8"配置");
+        Register("TAB_CONFIG", "Misc Settings", (const char*)u8"杂项设置");
         Register("TAB_HOTKEYS", "Hotkeys", (const char*)u8"热键设置");
         Register("CONFIG", "Config", (const char*)u8"配置");
         Register("WEAPON", "Weapon", (const char*)u8"武器选项");
@@ -108,6 +128,7 @@ namespace Localization
         Register("GODMODE", "GodMode", (const char*)u8"无敌模式");
         Register("DEMIGOD", "Demigod", (const char*)u8"半神模式");
         Register("NO_TARGET", "No Target", (const char*)u8"无视玩家");
+        Register("CORE_FEATURES", "Core Features", (const char*)u8"核心功能");
         
         // 5. Movement Settings
         Register("MOVEMENT", "Movement Settings", (const char*)u8"运动/位移设置");
@@ -137,6 +158,7 @@ namespace Localization
         Register("ADS_FIRST_PERSON", "ADS switch to First Person", (const char*)u8"右键开镜切换到第一人称");
         Register("FREE_CAM", "Free Camera", (const char*)u8"自由视角");
         Register("FREECAM_BLOCK_INPUT", "Block User Input", (const char*)u8"屏蔽用户输入");
+        Register("CAMERA_SETTINGS", "Camera Settings", (const char*)u8"镜头设置");
  
         // 7. Player Progression
         Register("PLAYER_PROGRESSION", "Player Progression:", (const char*)u8"玩家进度:");
@@ -155,6 +177,8 @@ namespace Localization
         Register("MAP_TELEPORT", "Map Waypoint Teleport", (const char*)u8"地图标点传送");
         Register("MAP_TELEPORT_WINDOW", "Map TP Window (s)", (const char*)u8"地图传送延迟窗口");
         Register("BLACK_MARKET_BYPASS", "Black Market Bypass", (const char*)u8"黑市查看冷却绕过");
+        Register("WORLD_SIMULATION", "World Simulation", (const char*)u8"世界模拟");
+        Register("TELEPORT_SETTINGS", "Teleport Settings", (const char*)u8"传送设置");
         
         // 9. Currency Settings
         Register("CURRENCY_SETTINGS", "Currency Settings:", (const char*)u8"货币修改:");
@@ -178,10 +202,15 @@ namespace Localization
         Register("TARGET_MODE", "Target Mode", (const char*)u8"索敌模式");
         Register("TARGET_MODE_SCREEN", "Closest To Crosshair", (const char*)u8"准星最近");
         Register("TARGET_MODE_DISTANCE", "Closest Distance", (const char*)u8"距离最近");
+        Register("VISUAL_ASSIST", "Visual Assist", (const char*)u8"视觉辅助");
         Register("USE_NATIVE_PROJECTILE_HOOK", "Use Native Projectile Hook", (const char*)u8"使用原生投射物 Hook");
         Register("CHOOSE_BONE_TOOLTIP", "Choose the bone to inject damage directly to. E.g Head = 100% Critical Hit", (const char*)u8"选择要直接注入伤害的部位。例如 头部 = 100% 暴击");
         
         // 11. Weapon Tab
+        Register("BALLISTICS", "Ballistics", (const char*)u8"弹道");
+        Register("FIRING", "Firing", (const char*)u8"射击");
+        Register("STABILITY", "Stability", (const char*)u8"稳定性");
+        Register("AMMO_HANDLING", "Ammo Handling", (const char*)u8"装填与弹药");
         Register("INSTANT_HIT", "Instant Hit & Projectile Speed", (const char*)u8"瞬间命中");
         Register("PROJECTILE_SPEED", "Projectile Speed Multiplier", (const char*)u8"子弹飞行速度倍率");
         Register("RAPID_FIRE", "Rapid Fire", (const char*)u8"连射");
@@ -207,6 +236,8 @@ namespace Localization
         Register("VIEWMODEL_FOV_VALUE", "ViewModel FOV Value", (const char*)u8"武器视角角度");
         Register("DISABLE_VOLUMETRIC_CLOUDS", "Disable Volumetric Clouds", (const char*)u8"禁用体积云");
         Register("SHOW_ACTIVE_FEATURES", "Show Active Features List", (const char*)u8"显示启用项列表");
+        Register("VIEW_SETTINGS", "View Settings", (const char*)u8"视图设置");
+        Register("RETICLE_SETTINGS", "Reticle Settings", (const char*)u8"准星设置");
         Register("ENABLE_RETICLE", "Enable Reticle", (const char*)u8"启用准星");
         Register("RETICLE_CROSSHAIR", "Draw Crosshair Arms", (const char*)u8"显示准星十字");
         Register("RETICLE_SIZE", "Reticle Size", (const char*)u8"准星大小");
@@ -231,6 +262,10 @@ namespace Localization
         Register("SHOW_INTERACTIVES", "Show Interactives / Chests", (const char*)u8"显示可交互物和箱子");
         Register("INTERACTIVE_COLOR", "Interactive Color", (const char*)u8"可交互物颜色");
         Register("INTERACTIVE_MAX_DISTANCE", "Interactive Max Distance (m)", (const char*)u8"可交互物最大距离(米)");
+        Register("ENEMY_ESP", "Enemy ESP", (const char*)u8"敌人透视");
+        Register("TRACER_SETTINGS", "Tracer Settings", (const char*)u8"弹道设置");
+        Register("LOOT_INTERACTIVES", "Loot & Interactives", (const char*)u8"掉落物与交互物");
+        Register("COLOR_SETTINGS", "Color Settings", (const char*)u8"颜色设置");
         Register("ENEMY_COLOR", "Enemy Color", (const char*)u8"敌人颜色");
         Register("TEAM_COLOR", "Team Color", (const char*)u8"队友颜色");
         Register("DEBUG", "Debug", (const char*)u8"调试");

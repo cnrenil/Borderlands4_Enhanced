@@ -36,6 +36,8 @@ struct ESPLootCache {
 	ImU32 Color;
 	FString Name;
 	float Distance;
+	bool bInteractive = false;
+	bool bInventoryPickup = false;
 	bool bHasScreenBounds = false;
 	bool bDrawBox = false;
 	FVector WorldAnchor;
@@ -81,6 +83,8 @@ namespace
 		std::vector<ESPTracerCache> CachedTracers;
 		uint64_t LastActorRefreshMs = 0;
 		uint64_t LastLootRefreshMs = 0;
+		uintptr_t LastWorld = 0;
+		uintptr_t LastLevel = 0;
 	};
 
 	ESPState& GetESPState()
@@ -91,6 +95,17 @@ namespace
 
 	constexpr uint64_t kActorRefreshIntervalMs = 100;
 	constexpr uint64_t kLootRefreshIntervalMs = 250;
+
+	void ResetESPState(ESPState& state)
+	{
+		state.CachedActors.clear();
+		state.CachedLoot.clear();
+		state.CachedTracers.clear();
+		state.LastActorRefreshMs = 0;
+		state.LastLootRefreshMs = 0;
+		state.LastWorld = 0;
+		state.LastLevel = 0;
+	}
 }
 
 struct BonePair { FName Parent; FName Child; };
@@ -230,6 +245,28 @@ static bool IsInteractiveEspTarget(AActor* actor)
 
 	const std::string className = ToLowerAsciiEsp(actor->Class ? actor->Class->GetName() : "");
 	const std::string fullName = ToLowerAsciiEsp(actor->GetFullName());
+	const char* interactiveHints[] = {
+		"lootable",
+		"interactive",
+		"usable",
+		"carryable",
+		"chest",
+		"vending",
+		"vendor",
+		"switch",
+		"button",
+		"lever",
+		"console",
+		"terminal",
+		"station"
+	};
+
+	for (const char* hint : interactiveHints)
+	{
+		if (className.find(hint) != std::string::npos || fullName.find(hint) != std::string::npos)
+			return true;
+	}
+
 	return className.find("lootable") != std::string::npos ||
 		className.find("interactive") != std::string::npos ||
 		fullName.find("lootableobject") != std::string::npos ||
@@ -321,28 +358,37 @@ static float GetTracerScale()
 void Cheats::UpdateESP()
 {
 	Logger::LogThrottled(Logger::Level::Debug, "ESP", 10000, "Cheats::UpdateESP() active");
-	AActor* SelfActor = Utils::GetSelfActor();
-	if (!ConfigManager::B("Player.ESP") || !IsAnyESPFeatureEnabled() || !Utils::bIsInGame || !GVars.PlayerController || !GVars.Level || !SelfActor || !GVars.World || !GVars.World->VTable)
+	SDK::UWorld* currentWorld = Utils::GetWorldSafe();
+	SDK::ULevel* currentLevel = currentWorld ? currentWorld->PersistentLevel : nullptr;
+	auto& state = GetESPState();
 	{
-		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
-		state.CachedActors.clear();
-		state.CachedLoot.clear();
-		state.CachedTracers.clear();
-		state.LastActorRefreshMs = 0;
-		state.LastLootRefreshMs = 0;
+		const uintptr_t worldPtr = reinterpret_cast<uintptr_t>(currentWorld);
+		const uintptr_t levelPtr = reinterpret_cast<uintptr_t>(currentLevel);
+		if (state.LastWorld != worldPtr || state.LastLevel != levelPtr)
+		{
+			ResetESPState(state);
+			state.LastWorld = worldPtr;
+			state.LastLevel = levelPtr;
+		}
+	}
+
+	AActor* SelfActor = Utils::GetSelfActor();
+	if (!ConfigManager::B("Player.ESP") || !IsAnyESPFeatureEnabled() || !Utils::bIsInGame || Utils::bIsLoading || !GVars.PlayerController || !GVars.Level || !SelfActor || !GVars.World || !GVars.World->VTable || GVars.World != currentWorld || GVars.Level != currentLevel)
+	{
+		std::lock_guard<std::mutex> lock(state.Mutex);
+		ResetESPState(state);
+		state.LastWorld = reinterpret_cast<uintptr_t>(currentWorld);
+		state.LastLevel = reinterpret_cast<uintptr_t>(currentLevel);
 		return;
 	}
 
 	if (!GVars.PlayerController->PlayerCameraManager || !GVars.PlayerController->PlayerCameraManager->VTable)
 	{
-		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
-		state.CachedActors.clear();
-		state.CachedLoot.clear();
-		state.CachedTracers.clear();
-		state.LastActorRefreshMs = 0;
-		state.LastLootRefreshMs = 0;
+		ResetESPState(state);
+		state.LastWorld = reinterpret_cast<uintptr_t>(currentWorld);
+		state.LastLevel = reinterpret_cast<uintptr_t>(currentLevel);
 		return;
 	}
 
@@ -350,7 +396,6 @@ void Cheats::UpdateESP()
 	const uint64_t nowMs = GetTickCount64();
 	bool shouldRefreshActors = false;
 	{
-		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
 		shouldRefreshActors = state.LastActorRefreshMs == 0 || (nowMs - state.LastActorRefreshMs) >= kActorRefreshIntervalMs;
 		if (!shouldRefreshActors)
@@ -410,7 +455,6 @@ void Cheats::UpdateESP()
 		const uint64_t nowMs = GetTickCount64();
 		bool shouldRefreshLoot = false;
 		{
-			auto& state = GetESPState();
 			std::lock_guard<std::mutex> lock(state.Mutex);
 			shouldRefreshLoot = state.LastLootRefreshMs == 0 || (nowMs - state.LastLootRefreshMs) >= kLootRefreshIntervalMs;
 			if (!shouldRefreshLoot)
@@ -438,7 +482,7 @@ void Cheats::UpdateESP()
 						if (distance < 0.0f || distance > maxDistance) return true;
 
 							const bool isInventoryPickup = Actor->IsA(SDK::AInventoryPickup::StaticClass());
-							const bool isInteractiveObject = IsInteractiveEspTarget(Actor);
+							const bool isInteractiveObject = !isInventoryPickup && IsInteractiveEspTarget(Actor);
 
 							if (isInventoryPickup)
 							{
@@ -458,37 +502,30 @@ void Cheats::UpdateESP()
 						ESPLootCache Cache{};
 						Cache.TargetActor = Actor;
 						Cache.Distance = distance;
-							Cache.Name = UKismetSystemLibrary::GetDisplayName(Actor);
-							Cache.Color = isInventoryPickup ? lootColor : interactiveColor;
-							Cache.bDrawBox = !isInventoryPickup;
-							if (Cache.bDrawBox)
-							{
-								Cache.bHasScreenBounds = ProjectActorBounds(Actor, Cache.LeftTopScreen, Cache.RightBottomScreen);
-								if (!GetActorBoundsAnchor(Actor, Cache.WorldAnchor))
-									Cache.WorldAnchor = Actor->K2_GetActorLocation();
-							}
-							else
-							{
-								Cache.WorldAnchor = Actor->K2_GetActorLocation();
-							}
-							NewLoot.push_back(std::move(Cache));
-							return true;
+						Cache.Name = UKismetSystemLibrary::GetDisplayName(Actor);
+						Cache.Color = isInventoryPickup ? lootColor : interactiveColor;
+						Cache.bInteractive = isInteractiveObject;
+						Cache.bInventoryPickup = isInventoryPickup;
+						Cache.bDrawBox = false;
+						Cache.bHasScreenBounds = ProjectActorBounds(Actor, Cache.LeftTopScreen, Cache.RightBottomScreen);
+						Cache.WorldAnchor = Actor->K2_GetActorLocation();
+						if (!isInventoryPickup && !GetActorBoundsAnchor(Actor, Cache.WorldAnchor))
+							Cache.WorldAnchor = Actor->K2_GetActorLocation();
+						NewLoot.push_back(std::move(Cache));
+						return true;
 						}))
 			{
 				Logger::LogThrottled(Logger::Level::Warning, "ESP", 2000, "Loot ESP skipped: Level->Actors unavailable");
-				auto& state = GetESPState();
 				std::lock_guard<std::mutex> lock(state.Mutex);
 				NewLoot = state.CachedLoot;
 			}
 
-			auto& state = GetESPState();
 			std::lock_guard<std::mutex> lock(state.Mutex);
 			state.LastLootRefreshMs = nowMs;
 		}
 	}
 	else
 	{
-		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
 		state.LastLootRefreshMs = 0;
 	}
@@ -569,10 +606,11 @@ void Cheats::UpdateESP()
 	}
 
 	{
-		auto& state = GetESPState();
 		std::lock_guard<std::mutex> lock(state.Mutex);
 		if (shouldRefreshActors)
 			state.LastActorRefreshMs = nowMs;
+		state.LastWorld = reinterpret_cast<uintptr_t>(currentWorld);
+		state.LastLevel = reinterpret_cast<uintptr_t>(currentLevel);
 		state.CachedActors = std::move(NewCache);
 		state.CachedLoot = std::move(NewLoot);
 		state.CachedTracers = std::move(NewTracers);
@@ -743,13 +781,27 @@ void Cheats::RenderESP()
 		}
 
 		FVector2D screenPos;
-		if (!ProjectForOverlay(Loot.WorldAnchor, screenPos))
-			continue;
+		const bool projected = Loot.bInventoryPickup
+			? Utils::ProjectWorldLocationToScreen(Loot.WorldAnchor, screenPos, true)
+			: ProjectForOverlay(Loot.WorldAnchor, screenPos);
+		if (!projected)
+		{
+			if (!Loot.bInventoryPickup && Loot.bHasScreenBounds)
+			{
+				screenPos = FVector2D(
+					((float)Loot.LeftTopScreen.X + (float)Loot.RightBottomScreen.X) * 0.5f,
+					(float)Loot.LeftTopScreen.Y - 2.0f);
+			}
+			else
+			{
+				continue;
+			}
+		}
 
 		const float currentDistance = Loot.Distance;
 		const float minScale = 0.55f;
 		const float maxScale = 0.95f;
-		float maxDistance = Loot.bDrawBox ? ConfigManager::F("ESP.InteractiveMaxDistance") : ConfigManager::F("ESP.LootMaxDistance");
+		float maxDistance = Loot.bInteractive ? ConfigManager::F("ESP.InteractiveMaxDistance") : ConfigManager::F("ESP.LootMaxDistance");
 		if (maxDistance < 1.0f) maxDistance = 1.0f;
 		const float scaleDistance = currentDistance >= 0.0f ? currentDistance : Loot.Distance;
 		const float t = std::clamp(scaleDistance / maxDistance, 0.0f, 1.0f);

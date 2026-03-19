@@ -23,6 +23,8 @@ namespace SilentAimHooks
 		static std::atomic<bool> g_FireDirectionTraceHookInstalled{ false };
 
 		static std::atomic<bool> g_WeaponBehaviorFireHookInstalled{ false };
+		static std::atomic<ULONGLONG> g_LastNativeProjectileAttemptMs{ 0 };
+		static std::atomic<ULONGLONG> g_LastWeaponBehaviorAttemptMs{ 0 };
 
 		using FireProjectileLoopFn = __int64(__fastcall*)(__int64 weapon, __int64* fireParams, int shotIndex, int shotCount, unsigned __int8 simulate);
 		using FireDirectionTraceFn = void* (__fastcall*)(void* weapon, void* outTrace, void* startParam, const void* endParam, unsigned __int8 useAltTrace, __int64 traceContext, float traceScale, unsigned __int8 allowThroughActors);
@@ -68,8 +70,6 @@ namespace SilentAimHooks
 		};
 		static constexpr size_t kFireProjectileLoopHookLen = 19;
 		static constexpr size_t kFireDirectionTraceHookLen = 24;
-		static constexpr const char* kNativeProjectileHooksKey = "NativeProjectileHooks";
-		static constexpr const char* kWeaponBehaviorFireProjectileHookKey = "WeaponBehaviorFireProjectile";
 		static constexpr SignatureRegistry::HookTiming kSilentAimHookTiming = SignatureRegistry::HookTiming::InGameReady;
 		static constexpr size_t kWeaponBehaviorFireProjectileSlot = 130;
 		static constexpr size_t kFireParamsFlagsOffset = 28 * sizeof(__int64);
@@ -83,6 +83,7 @@ namespace SilentAimHooks
 		static constexpr int kDebugLogIntervalMs = 1000;
 		static constexpr int kInfoLogIntervalMs = 3000;
 		static constexpr int kErrorLogIntervalMs = 3000;
+		static constexpr ULONGLONG kHookRetryIntervalMs = 5000;
 
 		bool IsAimbotActivationAllowed()
 		{
@@ -108,6 +109,20 @@ namespace SilentAimHooks
 		bool IsTracerCaptureEnabled()
 		{
 			return ConfigManager::B("Player.ESP") && ConfigManager::B("ESP.BulletTracers");
+		}
+
+		bool ShouldAttemptDelayedHook(std::atomic<ULONGLONG>& lastAttemptMs)
+		{
+			if (!SignatureRegistry::IsTimingReady(kSilentAimHookTiming))
+				return false;
+
+			const ULONGLONG nowMs = GetTickCount64();
+			const ULONGLONG previous = lastAttemptMs.load();
+			if (previous != 0 && (nowMs - previous) < kHookRetryIntervalMs)
+				return false;
+
+			lastAttemptMs.store(nowMs);
+			return true;
 		}
 
 		void CaptureBulletTracer(const SDK::FVector& start, const SDK::FVector& end)
@@ -524,7 +539,7 @@ namespace SilentAimHooks
 			void** originalOut,
 			size_t fallbackLen)
 		{
-			return SignatureRegistry::EnsureHook(signature, detour, originalOut, fallbackLen, "SilentAim");
+			return SignatureRegistry::EnsureHook(signature, detour, originalOut, fallbackLen, "SilentAim", true);
 		}
 
 		static bool GetWeaponBehaviorFireProjectileTarget(void** targetOut)
@@ -589,7 +604,7 @@ namespace SilentAimHooks
 			std::lock_guard<std::mutex> guard(g_HookInstallMutex);
 			if (g_FireProjectileLoopHookInstalled.load() && g_FireDirectionTraceHookInstalled.load()) return true;
 			if (g_NativeProjectileHookBlocked.load()) return false;
-			if (!SignatureRegistry::ShouldAttempt(kNativeProjectileHooksKey, kSilentAimHookTiming))
+			if (!ShouldAttemptDelayedHook(g_LastNativeProjectileAttemptMs))
 			{
 				return false;
 			}
@@ -625,7 +640,7 @@ namespace SilentAimHooks
 		{
 			std::lock_guard<std::mutex> guard(g_HookInstallMutex);
 			if (g_WeaponBehaviorFireHookInstalled.load()) return true;
-			if (!SignatureRegistry::ShouldAttempt(kWeaponBehaviorFireProjectileHookKey, kSilentAimHookTiming))
+			if (!ShouldAttemptDelayedHook(g_LastWeaponBehaviorAttemptMs))
 			{
 				return false;
 			}

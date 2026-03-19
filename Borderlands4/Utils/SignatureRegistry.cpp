@@ -14,16 +14,18 @@ namespace SignatureRegistry
             bool bResolveFailed = false;
             bool bHookInstalled = false;
             ULONGLONG LastAttemptMs = 0;
+            int ConsecutiveInstallFailures = 0;
         };
 
         std::unordered_map<std::string, SignatureEntry> g_Signatures;
 
         uintptr_t g_LastInGameWorld = 0;
         ULONGLONG g_InGameReadySinceMs = 0;
-        constexpr ULONGLONG kInGameReadyWarmupMs = 8000;
+        // Delay signature-backed gameplay hooks a little longer after map entry.
+        constexpr ULONGLONG kInGameReadyWarmupMs = 10000;
         constexpr ULONGLONG kInGameRetryIntervalMs = 5000;
 
-        bool IsTimingReady(HookTiming timing)
+        bool IsHookTimingReady(HookTiming timing)
         {
             if (timing == HookTiming::Immediate)
                 return true;
@@ -86,6 +88,7 @@ namespace SignatureRegistry
             entry.CachedAddress = 0;
             entry.bResolveFailed = false;
             entry.bHookInstalled = false;
+            entry.ConsecutiveInstallFailures = 0;
         }
         if (bPatternChanged || bTimingChanged)
         {
@@ -93,15 +96,24 @@ namespace SignatureRegistry
         }
     }
 
+    bool IsTimingReady(HookTiming timing)
+    {
+        return IsHookTimingReady(timing);
+    }
+
     bool ShouldAttempt(const char* name, HookTiming timing)
     {
         if (!name || name[0] == '\0')
             return false;
 
-        if (!IsTimingReady(timing))
+        if (!IsHookTimingReady(timing))
             return false;
 
-        auto& entry = g_Signatures[std::string(name)];
+        auto it = g_Signatures.find(std::string(name));
+        if (it == g_Signatures.end())
+            return false;
+
+        auto& entry = it->second;
         entry.Timing = timing;
 
         const ULONGLONG retryIntervalMs = GetRetryIntervalMs(timing);
@@ -158,12 +170,40 @@ namespace SignatureRegistry
         return Resolve(signature.Name);
     }
 
+    std::vector<SignatureSnapshot> GetSnapshots()
+    {
+        std::vector<SignatureSnapshot> snapshots;
+        snapshots.reserve(g_Signatures.size());
+
+        for (const auto& [name, entry] : g_Signatures)
+        {
+            snapshots.push_back(SignatureSnapshot{
+                name,
+                entry.Timing,
+                entry.CachedAddress,
+                entry.bResolveFailed,
+                entry.bHookInstalled,
+                IsHookTimingReady(entry.Timing)
+            });
+        }
+
+        std::sort(snapshots.begin(), snapshots.end(), [](const SignatureSnapshot& a, const SignatureSnapshot& b)
+        {
+            if (a.bHookInstalled != b.bHookInstalled)
+                return a.bHookInstalled > b.bHookInstalled;
+            return a.Name < b.Name;
+        });
+
+        return snapshots;
+    }
+
     bool EnsureHook(
         const Signature& signature,
         void* detour,
         void** originalOut,
         size_t fallbackLen,
-        const char* logCategory)
+        const char* logCategory,
+        bool bAllowAbsoluteFallback)
     {
         if (!signature.Name || !signature.Pattern || !detour || !originalOut)
             return false;
@@ -186,15 +226,22 @@ namespace SignatureRegistry
         MH_STATUS createStatus = MH_CreateHook(target, detour, reinterpret_cast<LPVOID*>(originalOut));
         if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
         {
-            if (createStatus == MH_ERROR_MEMORY_ALLOC)
+            entry.ConsecutiveInstallFailures++;
+            const bool bFallbackReady = bAllowAbsoluteFallback &&
+                fallbackLen != 0 &&
+                entry.ConsecutiveInstallFailures >= 3;
+            if (bFallbackReady)
             {
+                const int failureCount = entry.ConsecutiveInstallFailures;
                 if (Memory::HookFunctionAbsolute(target, detour, originalOut, fallbackLen))
                 {
                     entry.bHookInstalled = true;
+                    entry.ConsecutiveInstallFailures = 0;
                     LOG_DEBUG(
                         logCategory ? logCategory : "Signature",
-                        "SUCCESS: '%s' hook installed via absolute detour fallback at 0x%llX",
+                        "SUCCESS: '%s' hook installed via absolute detour fallback after %d MinHook failures at 0x%llX",
                         signature.Name,
+                        failureCount,
                         static_cast<unsigned long long>(targetAddress));
                     return true;
                 }
@@ -202,15 +249,17 @@ namespace SignatureRegistry
 
             LOG_WARN(
                 logCategory ? logCategory : "Signature",
-                "MH_CreateHook failed for '%s': %d",
+                "MH_CreateHook failed for '%s': %d (failure %d/3 before detour fallback)",
                 signature.Name,
-                static_cast<int>(createStatus));
+                static_cast<int>(createStatus),
+                entry.ConsecutiveInstallFailures);
             return false;
         }
 
         MH_STATUS enableStatus = MH_EnableHook(target);
         if (enableStatus != MH_OK && enableStatus != MH_ERROR_ENABLED)
         {
+            entry.ConsecutiveInstallFailures++;
             LOG_WARN(
                 logCategory ? logCategory : "Signature",
                 "MH_EnableHook failed for '%s': %d",
@@ -220,6 +269,7 @@ namespace SignatureRegistry
         }
 
         entry.bHookInstalled = true;
+        entry.ConsecutiveInstallFailures = 0;
         LOG_DEBUG(
             logCategory ? logCategory : "Signature",
             "SUCCESS: '%s' hook installed at 0x%llX",

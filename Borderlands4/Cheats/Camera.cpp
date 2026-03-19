@@ -65,6 +65,8 @@ namespace
 
 	bool IsValidShadowCamera(SDK::ACameraActor* CameraActor);
 	bool CanAccessShadowCameraObject(SDK::ACameraActor* CameraActor);
+	bool IsGameplayReadyForShadowCamera();
+	bool IsNativeCameraContextUsable(uintptr_t cameraContext);
 	float GetShadowCameraBaseFOV();
 	FOTSState GetBlendedOTSState(float blendAlpha);
 	void QueueShadowCameraRelease(bool bDestroyActor, bool bRestoreViewTarget);
@@ -163,19 +165,23 @@ namespace
 		if (!Cheats::ShouldTraceNativeCamera())
 			return;
 
+		const uintptr_t context = static_cast<uintptr_t>(cameraContext);
+		if (!IsNativeCameraContextUsable(context))
+			return;
+
 		uintptr_t modePtr = 0;
-		NativeInterop::ReadPointerNoexcept(static_cast<uintptr_t>(cameraContext) + 14920, modePtr);
+		NativeInterop::ReadPointerNoexcept(context + 14920, modePtr);
 
 		double locX = 0.0, locY = 0.0, locZ = 0.0;
 		double rotPitch = 0.0, rotYaw = 0.0, rotRoll = 0.0;
 		float fov = 0.0f;
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetLocOffset, locX);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetLocOffset + 8, locY);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetLocOffset + 16, locZ);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetRotOffset, rotPitch);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetRotOffset + 8, rotYaw);
-		NativeInterop::ReadDoubleNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetRotOffset + 16, rotRoll);
-		NativeInterop::ReadFloatNoexcept(static_cast<uintptr_t>(cameraContext) + kViewTargetFovOffset, fov);
+		NativeInterop::ReadDoubleNoexcept(context + kViewTargetLocOffset, locX);
+		NativeInterop::ReadDoubleNoexcept(context + kViewTargetLocOffset + 8, locY);
+		NativeInterop::ReadDoubleNoexcept(context + kViewTargetLocOffset + 16, locZ);
+		NativeInterop::ReadDoubleNoexcept(context + kViewTargetRotOffset, rotPitch);
+		NativeInterop::ReadDoubleNoexcept(context + kViewTargetRotOffset + 8, rotYaw);
+		NativeInterop::ReadDoubleNoexcept(context + kViewTargetRotOffset + 16, rotRoll);
+		NativeInterop::ReadFloatNoexcept(context + kViewTargetFovOffset, fov);
 
 		char behaviorDesc[512]{};
 		DescribeNativeBehaviorList(modePtr, behaviorDesc, sizeof(behaviorDesc));
@@ -194,16 +200,48 @@ namespace
 			behaviorDesc);
 	}
 
+	bool IsNativeCameraContextUsable(uintptr_t cameraContext)
+	{
+		if (cameraContext < 0x10000)
+			return false;
+
+		double locX = 0.0;
+		double locY = 0.0;
+		double locZ = 0.0;
+		float fov = 0.0f;
+		return NativeInterop::ReadDoubleNoexcept(cameraContext + kViewTargetLocOffset, locX) &&
+			NativeInterop::ReadDoubleNoexcept(cameraContext + kViewTargetLocOffset + 8, locY) &&
+			NativeInterop::ReadDoubleNoexcept(cameraContext + kViewTargetLocOffset + 16, locZ) &&
+			NativeInterop::ReadFloatNoexcept(cameraContext + kViewTargetFovOffset, fov) &&
+			std::isfinite(locX) &&
+			std::isfinite(locY) &&
+			std::isfinite(locZ) &&
+			std::isfinite(fov);
+	}
+
 	char __fastcall hkNativeCameraUpdate(__int64 a1, __int64* a2, float a3)
 	{
-		const bool bShouldLog = Cheats::ShouldTraceNativeCamera();
+		const uintptr_t cameraContext = static_cast<uintptr_t>(a1);
+		const bool bNativeCameraSafe =
+			!g_BlockShadowCameraUntilGameplayReady &&
+			!Utils::bIsLoading &&
+			Utils::bIsInGame &&
+			IsGameplayReadyForShadowCamera() &&
+			IsNativeCameraContextUsable(cameraContext);
+
+		if (!bNativeCameraSafe)
+		{
+			return oNativeCameraUpdate ? oNativeCameraUpdate(a1, a2, a3) : 0;
+		}
+
+		const bool bShouldLog = false;
 		if (bShouldLog)
 		{
 			LogNativeCameraState("PreUpdate", a1);
 		}
 
 		const char result = oNativeCameraUpdate ? oNativeCameraUpdate(a1, a2, a3) : 0;
-		Cheats::ApplyNativeCameraPostUpdate(static_cast<uintptr_t>(a1), a3);
+		Cheats::ApplyNativeCameraPostUpdate(cameraContext, a3);
 		if (bShouldLog)
 		{
 			LogNativeCameraState("PostUpdate", a1);
@@ -1195,7 +1233,8 @@ void Cheats::UpdateCamera()
 		reinterpret_cast<void*>(&hkNativeCameraUpdate),
 		reinterpret_cast<void**>(&oNativeCameraUpdate),
 		kNativeCameraUpdateHookLen,
-		"CamNative");
+		"CamNative",
+		true);
 
 	if (g_BlockShadowCameraUntilGameplayReady)
 	{
@@ -1257,7 +1296,11 @@ void Cheats::ShutdownCamera()
 bool Cheats::ShouldTraceNativeCamera()
 {
 #if BL4_DEBUG_BUILD
-	return ConfigManager::B("Misc.Debug") && IsNativeOTSGameplayReady();
+	return ConfigManager::B("Misc.Debug") &&
+		!g_BlockShadowCameraUntilGameplayReady &&
+		!Utils::bIsLoading &&
+		Utils::bIsInGame &&
+		IsNativeOTSGameplayReady();
 #else
 	return false;
 #endif
@@ -1265,6 +1308,16 @@ bool Cheats::ShouldTraceNativeCamera()
 
 void Cheats::ApplyNativeCameraPostUpdate(uintptr_t cameraContext, float deltaSeconds)
 {
+	if (!cameraContext ||
+		g_BlockShadowCameraUntilGameplayReady ||
+		Utils::bIsLoading ||
+		!Utils::bIsInGame ||
+		!IsGameplayReadyForShadowCamera() ||
+		!IsNativeCameraContextUsable(cameraContext))
+	{
+		return;
+	}
+
 	FNativeCameraPose currentViewTargetPose{};
 	if (!ReadNativeCameraPose(cameraContext, kViewTargetLocOffset, kViewTargetRotOffset, kViewTargetFovOffset, currentViewTargetPose))
 	{

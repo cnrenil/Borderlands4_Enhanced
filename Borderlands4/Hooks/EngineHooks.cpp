@@ -1,6 +1,7 @@
 #include "pch.h"
 
 extern HWND g_hWnd;
+extern HWND g_hTrackedWindow;
 extern HWND g_hConsoleWnd;
 extern WNDPROC oWndProc;
 extern std::atomic<bool> Resizing;
@@ -284,9 +285,34 @@ DWORD MainThread(HMODULE hModule)
 	bool bIsCameraManagerHooked = false;
 	bool bDx12Hooked = false;
 	DWORD lastDx12HookAttemptTick = 0;
+	bool hadGameWindow = false;
+	DWORD missingWindowSinceTick = 0;
 
 	while (!Cleaning.load())
 	{
+		if (g_hTrackedWindow && IsWindow(g_hTrackedWindow))
+		{
+			hadGameWindow = true;
+			missingWindowSinceTick = 0;
+		}
+		else if (hadGameWindow && !Resizing.load())
+		{
+			DWORD now = GetTickCount();
+			if (missingWindowSinceTick == 0)
+			{
+				missingWindowSinceTick = now;
+			}
+			else if ((now - missingWindowSinceTick) > 5000)
+			{
+				LOG_INFO("System", "Game window remained unavailable. Cleaning up overlay thread.");
+				break;
+			}
+		}
+		else
+		{
+			missingWindowSinceTick = 0;
+		}
+
 		// 1. Always keep variables updated until PostRender takes over
         // This prevents the 'PlayerController found but logic stopped' deadlock
 		if (!TryAutoSetVariablesMainThread())
