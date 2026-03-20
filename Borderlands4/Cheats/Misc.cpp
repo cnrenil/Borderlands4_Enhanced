@@ -2,6 +2,112 @@
 
 namespace
 {
+    std::vector<ImVec2> BuildRoundedRectPath(const ImVec2& min, const ImVec2& max, float rounding)
+    {
+        std::vector<ImVec2> points;
+        const float width = max.x - min.x;
+        const float height = max.y - min.y;
+        if (width <= 0.0f || height <= 0.0f)
+            return points;
+
+        const float radius = (std::max)(0.0f, (std::min)(rounding, ((std::min)(width, height) * 0.5f) - 1.0f));
+        if (radius <= 0.5f)
+        {
+            points.push_back(min);
+            points.push_back(ImVec2(max.x, min.y));
+            points.push_back(max);
+            points.push_back(ImVec2(min.x, max.y));
+            return points;
+        }
+
+        auto appendArc = [&](const ImVec2& center, float startAngle, float endAngle)
+        {
+            const int segments = 10;
+            for (int i = 0; i <= segments; ++i)
+            {
+                const float t = static_cast<float>(i) / static_cast<float>(segments);
+                const float angle = startAngle + ((endAngle - startAngle) * t);
+                points.emplace_back(
+                    center.x + (std::cos(angle) * radius),
+                    center.y + (std::sin(angle) * radius));
+            }
+        };
+
+        appendArc(ImVec2(max.x - radius, min.y + radius), -IM_PI * 0.5f, 0.0f);
+        appendArc(ImVec2(max.x - radius, max.y - radius), 0.0f, IM_PI * 0.5f);
+        appendArc(ImVec2(min.x + radius, max.y - radius), IM_PI * 0.5f, IM_PI);
+        appendArc(ImVec2(min.x + radius, min.y + radius), IM_PI, IM_PI * 1.5f);
+        return points;
+    }
+
+    float ComputePolylineLength(const std::vector<ImVec2>& points, bool closed)
+    {
+        if (points.size() < 2)
+            return 0.0f;
+
+        float length = 0.0f;
+        for (size_t i = 1; i < points.size(); ++i)
+        {
+            const float dx = points[i].x - points[i - 1].x;
+            const float dy = points[i].y - points[i - 1].y;
+            const float edgeLengthSqr = (dx * dx) + (dy * dy);
+            length += edgeLengthSqr > 0.0f ? std::sqrt(edgeLengthSqr) : 0.0f;
+        }
+        if (closed)
+        {
+            const float dx = points.front().x - points.back().x;
+            const float dy = points.front().y - points.back().y;
+            const float edgeLengthSqr = (dx * dx) + (dy * dy);
+            length += edgeLengthSqr > 0.0f ? std::sqrt(edgeLengthSqr) : 0.0f;
+        }
+        return length;
+    }
+
+    std::vector<ImVec2> ExtractPolylineSegment(const std::vector<ImVec2>& points, float startDistance, float segmentLength)
+    {
+        std::vector<ImVec2> out;
+        if (points.size() < 2 || segmentLength <= 0.0f)
+            return out;
+
+        const float totalLength = ComputePolylineLength(points, true);
+        if (totalLength <= 1.0f)
+            return out;
+
+        auto pointAtDistance = [&](float distance) -> ImVec2
+        {
+            float remaining = std::fmod(distance, totalLength);
+            if (remaining < 0.0f)
+                remaining += totalLength;
+
+            for (size_t i = 0; i < points.size(); ++i)
+            {
+                const ImVec2 a = points[i];
+                const ImVec2 b = points[(i + 1) % points.size()];
+                const float deltaX = b.x - a.x;
+                const float deltaY = b.y - a.y;
+                const float edgeLength = std::sqrt((deltaX * deltaX) + (deltaY * deltaY));
+                if (edgeLength <= 0.0001f)
+                    continue;
+                if (remaining <= edgeLength)
+                {
+                    const float t = remaining / edgeLength;
+                    return ImVec2(a.x + (deltaX * t), a.y + (deltaY * t));
+                }
+                remaining -= edgeLength;
+            }
+
+            return points.front();
+        };
+
+        const int subdivisions = (std::max)(12, static_cast<int>(segmentLength / 10.0f));
+        for (int i = 0; i <= subdivisions; ++i)
+        {
+            const float t = static_cast<float>(i) / static_cast<float>(subdivisions);
+            out.push_back(pointAtDistance(startDistance + (segmentLength * t)));
+        }
+        return out;
+    }
+
     void DrawOverlayHudChrome(const ImVec2& pos, const ImVec2& size, ImU32 accent)
     {
         ImDrawList* drawList = ImGui::GetWindowDrawList();
@@ -37,50 +143,23 @@ namespace
             IM_COL32(255, 255, 255, 14),
             1.0f);
 
-        const float perimeter = (size.x + size.y) * 2.0f - 24.0f;
+        const ImVec2 marqueeMin(pos.x + 12.0f, pos.y + 12.0f);
+        const ImVec2 marqueeMax(max.x - 12.0f, max.y - 12.0f);
+        const std::vector<ImVec2> marqueePath = BuildRoundedRectPath(marqueeMin, marqueeMax, rounding - 8.0f);
+        const float perimeter = ComputePolylineLength(marqueePath, true);
         if (perimeter <= 1.0f)
             return;
 
         const float segmentLength = (std::min)(perimeter * 0.22f, 120.0f);
         const float travel = std::fmod(static_cast<float>(ImGui::GetTime()) * 120.0f, perimeter);
-        auto pointAtDistance = [&](float distance) -> ImVec2
-        {
-            const float left = pos.x + 12.0f;
-            const float top = pos.y + 12.0f;
-            const float right = max.x - 12.0f;
-            const float bottom = max.y - 12.0f;
-            const float topLen = right - left;
-            const float rightLen = bottom - top;
-            const float bottomLen = topLen;
-            const float leftLen = rightLen;
-
-            if (distance < topLen) return ImVec2(left + distance, top);
-            distance -= topLen;
-            if (distance < rightLen) return ImVec2(right, top + distance);
-            distance -= rightLen;
-            if (distance < bottomLen) return ImVec2(right - distance, bottom);
-            distance -= bottomLen;
-            return ImVec2(left, bottom - (std::min)(distance, leftLen));
-        };
-
-        const ImVec2 start = pointAtDistance(travel);
-        const ImVec2 end = pointAtDistance(std::fmod(travel + segmentLength, perimeter));
+        const std::vector<ImVec2> marqueeSegment = ExtractPolylineSegment(marqueePath, travel, segmentLength);
         const ImU32 marqueeColor = IM_COL32(
             (accent >> IM_COL32_R_SHIFT) & 0xFF,
             (accent >> IM_COL32_G_SHIFT) & 0xFF,
             (accent >> IM_COL32_B_SHIFT) & 0xFF,
             188);
-
-        if ((start.x == end.x) || (start.y == end.y))
-        {
-            drawList->AddLine(start, end, marqueeColor, 2.0f);
-        }
-        else
-        {
-            const ImVec2 corner = pointAtDistance(std::fmod(travel + (segmentLength * 0.5f), perimeter));
-            drawList->AddLine(start, corner, marqueeColor, 2.0f);
-            drawList->AddLine(corner, end, marqueeColor, 2.0f);
-        }
+        if (marqueeSegment.size() >= 2)
+            drawList->AddPolyline(marqueeSegment.data(), static_cast<int>(marqueeSegment.size()), marqueeColor, 0, 2.0f);
     }
 }
 
@@ -89,6 +168,7 @@ void Cheats::RenderEnabledOptions()
 	if (!ConfigManager::B("Misc.RenderOptions")) return;
 
     std::vector<const char*> activeKeys;
+    std::vector<const char*> activeLabels;
     auto addEntry = [&](bool enabled, const char* key)
     {
         if (enabled)
@@ -106,9 +186,25 @@ void Cheats::RenderEnabledOptions()
     if (activeKeys.empty())
         return;
 
+    activeLabels.reserve(activeKeys.size());
+    float maxLabelWidth = 0.0f;
+    for (const char* key : activeKeys)
+    {
+        const char* label = Localization::T(key);
+        activeLabels.push_back(label);
+        maxLabelWidth = (std::max)(maxLabelWidth, ImGui::CalcTextSize(label).x);
+    }
+
     const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
-    const ImVec2 windowSize(240.0f, 52.0f + (float)activeKeys.size() * 22.0f);
-    ImGui::SetNextWindowPos(ImVec2(displaySize.x - windowSize.x - 24.0f, 30.0f), ImGuiCond_Always);
+    const float titleWidth = ImGui::CalcTextSize(Localization::T("ACTIVE_FEATURES")).x;
+    const float horizontalPadding = 14.0f;
+    const float maxAllowedWidth = (std::max)(210.0f, displaySize.x - 32.0f);
+    const float desiredWidth = (std::max)(titleWidth, maxLabelWidth) + (horizontalPadding * 2.0f) + 8.0f;
+    const float windowWidth = (std::clamp)(desiredWidth, 210.0f, maxAllowedWidth);
+    const float rowHeight = ImGui::GetTextLineHeightWithSpacing();
+    const ImVec2 windowSize(windowWidth, 56.0f + (static_cast<float>(activeLabels.size()) * rowHeight));
+    const float windowX = (std::max)(16.0f, displaySize.x - windowSize.x - 16.0f);
+    ImGui::SetNextWindowPos(ImVec2(windowX, 30.0f), ImGuiCond_Always);
     ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::Begin(
@@ -124,11 +220,12 @@ void Cheats::RenderEnabledOptions()
 
     ImGui::SetCursorPos(ImVec2(16.0f, 12.0f));
     ImGui::TextColored(ImVec4(0.86f, 0.92f, 0.95f, 0.94f), "%s", Localization::T("ACTIVE_FEATURES"));
-    ImGui::SetCursorPos(ImVec2(16.0f, 34.0f));
+    ImGui::SetCursorPos(ImVec2(16.0f, 38.0f));
 
-    for (const char* key : activeKeys)
+    for (const char* label : activeLabels)
     {
-        ImGui::BulletText("%s", Localization::T(key));
+        ImGui::SetCursorPosX(16.0f);
+        ImGui::TextUnformatted(label);
     }
 	ImGui::End();
 }

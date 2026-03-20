@@ -154,10 +154,6 @@ namespace
     {
         ImGui::StyleColorsDark(&style);
         ApplyBaseLayout(style);
-        style.WindowRounding = 8.0f;
-        style.ChildRounding = 6.0f;
-        style.FrameRounding = 6.0f;
-        style.TabRounding = 6.0f;
 
         ImVec4* colors = style.Colors;
         colors[ImGuiCol_Text] = ImVec4(0.92f, 0.93f, 0.95f, 1.00f);

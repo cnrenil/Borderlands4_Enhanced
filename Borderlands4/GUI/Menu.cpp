@@ -349,6 +349,13 @@ namespace
 
         const GUI::ThemeDefinition* currentTheme = GUI::ThemeManager::GetThemeByIndex(ConfigManager::I("Misc.Theme"));
         const bool useGlassPanelOverrides = currentTheme && currentTheme->Id == "ocean_glass";
+        const ImGuiStyle& style = ImGui::GetStyle();
+        const float panelFrameRounding = useGlassPanelOverrides
+            ? (16.0f * fontScale)
+            : style.FrameRounding;
+        const float panelChildRounding = useGlassPanelOverrides
+            ? (18.0f * fontScale)
+            : style.ChildRounding;
 
         if (useGlassPanelOverrides)
             ImGui::SetNextWindowBgAlpha(0.0f);
@@ -357,8 +364,8 @@ namespace
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(18.0f * fontScale, 16.0f * fontScale));
-        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 16.0f * fontScale);
-        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 18.0f * fontScale);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, panelFrameRounding);
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, panelChildRounding);
         int pushedColors = 0;
         if (useGlassPanelOverrides)
         {
