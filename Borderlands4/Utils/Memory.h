@@ -22,6 +22,10 @@ namespace Memory
     // stolenLen must cover whole instructions and be at least 12 bytes on x64.
     bool HookFunctionAbsolute(void* target, void* detour, void** originalOut, size_t stolenLen);
 
+    // Calculate a safe stolen-byte length that covers whole instructions and is at least minLen.
+    // Returns 0 on decode failure or if maxLen is exceeded.
+    size_t CalculateSafeHookLength(void* target, size_t minLen, size_t maxLen = 64);
+
     // Dump vtable slots around centerIndex for diagnostics.
     void DumpVTableWindow(
         void** vtable,

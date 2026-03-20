@@ -49,20 +49,17 @@ namespace
     void AutoSetVariablesLocked()
     {
         SDK::UWorld* currentWorld = Utils::GetWorldSafe();
-        bool shouldReleaseShadowCamera = false;
-        bool hadShadowCamera = false;
+        SDK::UWorld* trackedWorld = nullptr;
         {
             std::scoped_lock GVarsLock(gGVarsMutex);
-            hadShadowCamera = GVars.CameraActor != nullptr;
-            shouldReleaseShadowCamera = hadShadowCamera && GVars.World != nullptr && GVars.World != currentWorld;
+            trackedWorld = GVars.World;
         }
 
-        if (shouldReleaseShadowCamera)
+        if (trackedWorld && trackedWorld != currentWorld)
         {
             Cheats::ShutdownCamera();
         }
-
-        if (!shouldReleaseShadowCamera && hadShadowCamera)
+        else if (trackedWorld)
         {
             SDK::APlayerController* currentPlayerController = nullptr;
             SDK::ACharacter* currentCharacter = nullptr;
@@ -77,7 +74,6 @@ namespace
 
             if (!currentWorld || !currentPlayerController || !currentCharacter)
             {
-                Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "Render detected world/gameplay teardown before GVars refresh, releasing shadow camera");
                 Cheats::ShutdownCamera();
             }
         }

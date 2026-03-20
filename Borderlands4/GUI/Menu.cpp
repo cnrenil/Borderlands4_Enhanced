@@ -580,7 +580,6 @@ namespace
 
         SectionHeader(Localization::T("CAMERA_SETTINGS"));
         const bool bTPEnabled = B("Player.ThirdPerson");
-        const bool bOTSEnabled = B("Player.OverShoulder");
         const bool bFreecamEnabled = B("Player.Freecam");
 
         if (bFreecamEnabled)
@@ -590,36 +589,43 @@ namespace
             ImGui::SameLine();
             ImGui::Checkbox(Localization::T("FREECAM_BLOCK_INPUT"), &B("Misc.FreecamBlockInput"));
         }
-        else if (bOTSEnabled)
-        {
-            bool bOTS = B("Player.OverShoulder");
-            if (ImGui::Checkbox(Localization::T("OVER_SHOULDER"), &bOTS))
-            {
-                B("Player.OverShoulder") = bOTS;
-            }
-            ImGui::Indent();
-            ImGui::SliderFloat(Localization::T("OTS_OFFSET_X"), &F("Misc.OTS_X"), -500.0f, 500.0f);
-            ImGui::SliderFloat(Localization::T("OTS_OFFSET_Y"), &F("Misc.OTS_Y"), -200.0f, 200.0f);
-            ImGui::SliderFloat(Localization::T("OTS_OFFSET_Z"), &F("Misc.OTS_Z"), -200.0f, 200.0f);
-            ImGui::Checkbox(Localization::T("OTS_ADS_CAMERA_OVERRIDE"), &B("Misc.OTSADSOverride"));
-            if (B("Misc.OTSADSOverride"))
-            {
-                ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_X"), &F("Misc.OTSADS_X"), -500.0f, 500.0f);
-                ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_Y"), &F("Misc.OTSADS_Y"), -200.0f, 200.0f);
-                ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_Z"), &F("Misc.OTSADS_Z"), -200.0f, 200.0f);
-                ImGui::SliderFloat(Localization::T("OTS_ADS_FOV"), &F("Misc.OTSADSFOV"), 20.0f, 180.0f, "%.1f");
-                ImGui::SliderFloat(Localization::T("OTS_ADS_BLEND_TIME"), &F("Misc.OTSADSBlendTime"), 0.01f, 1.00f, "%.2fs");
-            }
-            ImGui::Unindent();
-        }
         else if (bTPEnabled)
         {
             bool bTP = B("Player.ThirdPerson");
             if (ImGui::Checkbox(Localization::T("THIRD_PERSON"), &bTP)) Cheats::ToggleThirdPerson();
             ImGui::SameLine();
             ImGui::Checkbox(Localization::T("THIRD_PERSON_CENTERED"), &B("Misc.ThirdPersonCentered"));
-            ImGui::SameLine();
-            ImGui::Checkbox(Localization::T("ADS_FIRST_PERSON"), &B("Misc.ThirdPersonADSFirstPerson"));
+
+            ImGui::Indent();
+            bool bOTS = B("Player.OverShoulder");
+            if (ImGui::Checkbox(Localization::T("OVER_SHOULDER"), &bOTS))
+            {
+                B("Player.OverShoulder") = bOTS;
+            }
+            if (B("Player.OverShoulder"))
+            {
+                ImGui::SliderFloat(Localization::T("OTS_OFFSET_X"), &F("Misc.OTS_X"), -500.0f, 500.0f);
+                ImGui::SliderFloat(Localization::T("OTS_OFFSET_Y"), &F("Misc.OTS_Y"), -200.0f, 200.0f);
+                ImGui::SliderFloat(Localization::T("OTS_OFFSET_Z"), &F("Misc.OTS_Z"), -200.0f, 200.0f);
+                ImGui::Checkbox(Localization::T("OTS_ADS_CAMERA_OVERRIDE"), &B("Misc.OTSADSOverride"));
+                if (B("Misc.OTSADSOverride"))
+                {
+                    ImGui::Checkbox(Localization::T("ADS_FIRST_PERSON"), &B("Misc.OTSADSFirstPerson"));
+                    if (!B("Misc.OTSADSFirstPerson"))
+                    {
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_X"), &F("Misc.OTSADS_X"), -500.0f, 500.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_Y"), &F("Misc.OTSADS_Y"), -200.0f, 200.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_OFFSET_Z"), &F("Misc.OTSADS_Z"), -200.0f, 200.0f);
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_FOV"), &F("Misc.OTSADSFOV"), 20.0f, 180.0f, "%.1f");
+                        ImGui::SliderFloat(Localization::T("OTS_ADS_BLEND_TIME"), &F("Misc.OTSADSBlendTime"), 0.01f, 1.00f, "%.2fs");
+                    }
+                }
+            }
+            else
+            {
+                ImGui::Checkbox(Localization::T("ADS_FIRST_PERSON"), &B("Misc.ThirdPersonADSFirstPerson"));
+            }
+            ImGui::Unindent();
         }
         else
         {
@@ -627,22 +633,6 @@ namespace
             if (ImGui::Checkbox(Localization::T("THIRD_PERSON"), &bTP))
             {
                 Cheats::ToggleThirdPerson();
-                if (B("Player.ThirdPerson"))
-                {
-                    B("Player.OverShoulder") = false;
-                    B("Player.Freecam") = false;
-                }
-            }
-
-            bool bOTS = B("Player.OverShoulder");
-            if (ImGui::Checkbox(Localization::T("OVER_SHOULDER"), &bOTS))
-            {
-                B("Player.OverShoulder") = bOTS;
-                if (bOTS)
-                {
-                    B("Player.ThirdPerson") = false;
-                    B("Player.Freecam") = false;
-                }
             }
 
             bool bFreecam = B("Player.Freecam");
@@ -883,8 +873,6 @@ namespace
             }
 
             if (ImGui::Button(Localization::T("DUMP_GOBJECTS"))) Cheats::DumpObjects();
-            if (ImGui::Button(Localization::T("KILL_SYMBIOTE"))) { AntiDebug::Bypass(); }
-            GUI::AddDefaultTooltip(Localization::T("KILL_SYMBIOTE_TOOLTIP"));
             ImGui::TreePop();
         }
 #endif

@@ -18,10 +18,12 @@
 #include <dxgi1_6.h>
 #include <tlhelp32.h>
 #include <winternl.h>
+#include <Psapi.h>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "Psapi.lib")
 
 // Standard Library
 #include <iostream>
@@ -66,6 +68,9 @@
 #include "Borderlands4_SDK/SDK/AIModule_classes.hpp"
 #include "Borderlands4_SDK/SDK/TemplateSequence_classes.hpp"
 #include "Borderlands4_SDK/SDK/Basic.hpp"
+extern "C" {
+#include "minhook/src/hde/hde64.h"
+}
 
 using namespace SDK;
 
@@ -76,6 +81,7 @@ using namespace SDK;
 #include "Utils/Hotkey.h"
 #include "Utils/Memory.h"
 #include "Utils/SignatureRegistry.h"
+#include "Utils/AntiDebug.h"
 #include "Utils/NativeInterop.h"
 #include "Utils/Utils.h"
 #include "Engine.h"

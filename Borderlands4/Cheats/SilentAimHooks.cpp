@@ -85,6 +85,18 @@ namespace SilentAimHooks
 		static constexpr int kErrorLogIntervalMs = 3000;
 		static constexpr ULONGLONG kHookRetryIntervalMs = 5000;
 
+		void RegisterSilentAimSignatures()
+		{
+			SignatureRegistry::Register(
+				kFireProjectileLoopSignature.Name,
+				kFireProjectileLoopSignature.Pattern,
+				kFireProjectileLoopSignature.Timing);
+			SignatureRegistry::Register(
+				kFireDirectionTraceSignature.Name,
+				kFireDirectionTraceSignature.Pattern,
+				kFireDirectionTraceSignature.Timing);
+		}
+
 		bool IsAimbotActivationAllowed()
 		{
 			if (!ConfigManager::B("Aimbot.RequireKeyHeld")) return true;
@@ -198,6 +210,23 @@ namespace SilentAimHooks
 			}
 
 			return TryActivateThreadSilentRedirect();
+		}
+
+		bool TryActivateFallbackSilentRedirect()
+		{
+			if (!ConfigManager::B("Aimbot.Enabled") ||
+				!ConfigManager::B("Aimbot.Silent") ||
+				!ConfigManager::B("Aimbot.NativeProjectileHook") ||
+				!IsAimbotActivationAllowed() ||
+				!g_CurrentAimbotTarget ||
+				!Utils::IsValidActor(g_CurrentAimbotTarget))
+			{
+				return false;
+			}
+
+			g_ThreadSilentRedirectTargetPos = g_LatestTargetPos;
+			g_ThreadSilentRedirectActive = true;
+			return true;
 		}
 
 		void FinishThreadSilentRedirect()
@@ -315,7 +344,8 @@ namespace SilentAimHooks
 			const bool flagsOk = ReadU64At(fireParams, kFireParamsFlagsOffset, flags);
 			const bool armed = IsSilentArmed();
 			const bool localSource = muzzleOriginOk && IsLikelyLocalFireSource(muzzleOrigin);
-			const bool likelyLocal = localSource && EnsureThreadSilentRedirectActive();
+			const bool likelyLocal = localSource &&
+				(EnsureThreadSilentRedirectActive() || (!armed && TryActivateFallbackSilentRedirect()));
 			void* caller = _ReturnAddress();
 
 #if BL4_DEBUG_BUILD
@@ -418,7 +448,8 @@ namespace SilentAimHooks
 			const bool armed = IsSilentArmed();
 			const bool hadActiveRedirect = g_ThreadSilentRedirectActive;
 			const bool localSource = startOk && IsLikelyLocalFireSource(start);
-			const bool likelyLocal = localSource && EnsureThreadSilentRedirectActive();
+			const bool likelyLocal = localSource &&
+				(EnsureThreadSilentRedirectActive() || (!armed && TryActivateFallbackSilentRedirect()));
 			void* caller = _ReturnAddress();
 
 #if BL4_DEBUG_BUILD
@@ -712,6 +743,8 @@ namespace SilentAimHooks
 
 	void Tick()
 	{
+		RegisterSilentAimSignatures();
+
 		const bool wantsSilentHooks =
 			ConfigManager::B("Aimbot.Enabled") && ConfigManager::B("Aimbot.Silent");
 		const bool wantsTracerHooks = IsTracerCaptureEnabled();

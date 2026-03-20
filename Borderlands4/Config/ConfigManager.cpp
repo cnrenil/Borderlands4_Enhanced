@@ -129,6 +129,7 @@ namespace ConfigManager
         Register("Misc.OTSADS_Z", 50.0f);
         Register("Misc.OTSADSFOV", 90.0f);
         Register("Misc.OTSADSBlendTime", 0.10f);
+        Register("Misc.OTSADSFirstPerson", false);
         Register("Misc.FreecamBlockInput", false);
         Register("Misc.Language", 0);
         Register("Misc.Theme", 0);

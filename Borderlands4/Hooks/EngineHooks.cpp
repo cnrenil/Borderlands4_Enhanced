@@ -199,20 +199,17 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 static void AutoSetVariablesLocked()
 {
 	SDK::UWorld* currentWorld = Utils::GetWorldSafe();
-	bool shouldReleaseShadowCamera = false;
-	bool hadShadowCamera = false;
+	SDK::UWorld* trackedWorld = nullptr;
 	{
 		std::scoped_lock GVarsLock(gGVarsMutex);
-		hadShadowCamera = GVars.CameraActor != nullptr;
-		shouldReleaseShadowCamera = hadShadowCamera && GVars.World != nullptr && GVars.World != currentWorld;
+		trackedWorld = GVars.World;
 	}
 
-	if (shouldReleaseShadowCamera)
+	if (trackedWorld && trackedWorld != currentWorld)
 	{
 		Cheats::ShutdownCamera();
 	}
-
-	if (!shouldReleaseShadowCamera && hadShadowCamera)
+	else if (trackedWorld)
 	{
 		SDK::APlayerController* currentPlayerController = nullptr;
 		SDK::ACharacter* currentCharacter = nullptr;
@@ -227,7 +224,6 @@ static void AutoSetVariablesLocked()
 
 		if (!currentWorld || !currentPlayerController || !currentCharacter)
 		{
-			Logger::LogThrottled(Logger::Level::Debug, "Camera", 1000, "MainThread detected world/gameplay teardown before GVars refresh, releasing shadow camera");
 			Cheats::ShutdownCamera();
 		}
 	}
@@ -263,6 +259,9 @@ DWORD MainThread(HMODULE hModule)
 
     Logger::Initialize();
 	LOG_INFO("System", "Cheat Injecting...");
+
+	LOG_INFO("System", "Executing Anti-Debug Bypass...");
+	AntiDebug::Bypass();
 
 	MH_STATUS Status = MH_Initialize();
 	if (Status != MH_OK)

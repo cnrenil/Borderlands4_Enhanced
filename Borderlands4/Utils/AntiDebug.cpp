@@ -1,121 +1,194 @@
 #include "pch.h"
-
-typedef NTSTATUS(NTAPI* pNtQueryInformationThread)(
-    HANDLE          ThreadHandle,
-    THREADINFOCLASS ThreadInformationClass,
-    PVOID           ThreadInformation,
-    ULONG           ThreadInformationLength,
-    PULONG          ReturnLength
-);
-
-#define ThreadQuerySetWin32StartAddress (THREADINFOCLASS)9
+// Thanks to https://github.com/bl-sdk/unrealsdk for the anti-debug approach reference.
 
 namespace AntiDebug
 {
-    static void InternalBypass()
+    namespace
     {
-        LOG_INFO("AntiDebug", "Starting advanced safe search for Symbiote thread...");
+        constexpr size_t kAssumedMinPageSize = 0x1000;
+        constexpr size_t kSymbioteHookLen = 16;
 
-        const char* patterns[] = {
-            "55 48 8B EC 48 83 E4 F0 48 81 EC 10 02 00 00 0F AE 04 24 48 81 EC 30 02 00 00",
-            "0F AE 04 24 48 81 EC ? ? 00 00 50 51 52 53 55 56 57 B9 F4 01 00 00",
-            "55 48 8B EC 48 83 E4 F0 48 81 EC 10 02 00 00"
-        };
+        bool PatchByte(void* address, uint8_t value)
+        {
+            if (!address)
+                return false;
 
-        std::vector<uintptr_t> found_addrs;
-        for (const char* p : patterns) {
-            uintptr_t addr = Memory::FindPattern(p);
-            
-            if (!addr) {
-                LOG_DEBUG("AntiDebug", "Pattern not in main module, trying Global scan...");
-                addr = Memory::FindPatternGlobal(p);
+            DWORD oldProtect = 0;
+            if (!VirtualProtect(address, 1, PAGE_EXECUTE_READWRITE, &oldProtect))
+            {
+                LOG_WARN("AntiDebug", "VirtualProtect failed at 0x%llX", reinterpret_cast<uintptr_t>(address));
+                return false;
             }
 
-            if (addr) {
-                found_addrs.push_back(addr);
-                LOG_INFO("AntiDebug", "Symbiote logic found at 0x%llX. Patching to 'ret'...", addr);
+            *reinterpret_cast<uint8_t*>(address) = value;
 
-                unsigned char ret_opcode = 0xC3; 
-                DWORD old_protect;
-                if (VirtualProtect((LPVOID)addr, 1, PAGE_EXECUTE_READWRITE, &old_protect)) {
-                    *(unsigned char*)addr = ret_opcode;
-                    VirtualProtect((LPVOID)addr, 1, old_protect, &old_protect);
-                    LOG_INFO("AntiDebug", "Successfully logic-patched address 0x%llX", addr);
-                } else {
-                    LOG_ERROR("AntiDebug", "Failed to VirtualProtect for patching at 0x%llX", addr);
+            DWORD restoredProtect = 0;
+            VirtualProtect(address, 1, oldProtect, &restoredProtect);
+            FlushInstructionCache(GetCurrentProcess(), address, 1);
+            return true;
+        }
+
+        void RemoveNoAccessPages(uintptr_t base, size_t size)
+        {
+            for (uintptr_t ptr = base; ptr < (base + size);)
+            {
+                MEMORY_BASIC_INFORMATION mem{};
+                if (VirtualQuery(reinterpret_cast<void*>(ptr), &mem, sizeof(mem)) == 0)
+                {
+                    LOG_WARN("AntiDebug", "Failed to query memory at 0x%llX", ptr);
+                    ptr += kAssumedMinPageSize;
+                    continue;
+                }
+
+                ptr = reinterpret_cast<uintptr_t>(mem.BaseAddress) + mem.RegionSize;
+
+                if (mem.State != MEM_COMMIT || mem.Protect != PAGE_NOACCESS)
+                    continue;
+
+                LOG_INFO("AntiDebug", "Unlocking PAGE_NOACCESS at 0x%llX", reinterpret_cast<uintptr_t>(mem.BaseAddress));
+
+                DWORD oldProtect = 0;
+                if (VirtualProtect(mem.BaseAddress, mem.RegionSize, PAGE_READONLY, &oldProtect) == 0)
+                {
+                    LOG_ERROR(
+                        "AntiDebug",
+                        "Failed to unlock page at 0x%llX: %lu",
+                        reinterpret_cast<uintptr_t>(mem.BaseAddress),
+                        GetLastError());
                 }
             }
         }
 
-        if (found_addrs.empty()) {
-            LOG_WARN("AntiDebug", "No Symbiote patterns found in memory. (Maybe hasn't decrypted yet?)");
-            return;
+        bool GetExeRange(uintptr_t& outBase, size_t& outSize)
+        {
+            HMODULE module = GetModuleHandle(nullptr);
+            if (!module)
+                return false;
+
+            auto* dosHeader = reinterpret_cast<PIMAGE_DOS_HEADER>(module);
+            auto* ntHeaders = reinterpret_cast<PIMAGE_NT_HEADERS>(
+                reinterpret_cast<uintptr_t>(module) + dosHeader->e_lfanew);
+
+            outBase = reinterpret_cast<uintptr_t>(module);
+            outSize = ntHeaders->OptionalHeader.SizeOfImage;
+            return true;
         }
 
-        HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
-        if (hSnapshot == INVALID_HANDLE_VALUE) return;
+        void RestoreAntiDebugFunctions()
+        {
+            HMODULE ntdll = GetModuleHandleA("ntdll.dll");
+            if (!ntdll)
+            {
+                LOG_WARN("AntiDebug", "Couldn't find ntdll.dll, couldn't restore anti-debug");
+                return;
+            }
 
-        THREADENTRY32 te;
-        te.dwSize = sizeof(THREADENTRY32);
+            auto* dbgBreakPoint = reinterpret_cast<uint8_t*>(GetProcAddress(ntdll, "DbgBreakPoint"));
+            if (dbgBreakPoint != nullptr)
+            {
+                PatchByte(dbgBreakPoint, 0xCC);
+            }
 
-        HMODULE hNtdll = GetModuleHandleA("ntdll.dll");
-        if (!hNtdll) {
-            CloseHandle(hSnapshot);
-            return;
+            auto* dbgUiRemoteBreakin = reinterpret_cast<uint8_t*>(GetProcAddress(ntdll, "DbgUiRemoteBreakin"));
+            if (dbgUiRemoteBreakin != nullptr)
+            {
+                PatchByte(dbgUiRemoteBreakin, 0x48);
+            }
         }
 
-        auto NtQueryInformationThread = (pNtQueryInformationThread)GetProcAddress(hNtdll, "NtQueryInformationThread");
-        if (!NtQueryInformationThread) {
-            CloseHandle(hSnapshot);
-            return;
+        [[noreturn]] void __stdcall SymbioteHook()
+        {
+            RestoreAntiDebugFunctions();
+            LOG_INFO("AntiDebug", "Killing symbiote thread");
+            TerminateThread(GetCurrentThread(), 0);
+            for (;;)
+            {
+            }
         }
 
-        DWORD PID = GetCurrentProcessId();
-        int killedCount = 0;
+        void InternalBypass()
+        {
+            uintptr_t exeBase = 0;
+            size_t exeSize = 0;
+            if (GetExeRange(exeBase, exeSize))
+            {
+                RemoveNoAccessPages(exeBase, exeSize);
+            }
 
-        if (Thread32First(hSnapshot, &te)) {
-            do {
-                if (te.th32OwnerProcessID == PID && te.th32ThreadID != GetCurrentThreadId()) {
-                    HANDLE hThread = OpenThread(THREAD_QUERY_INFORMATION | THREAD_TERMINATE, FALSE, te.th32ThreadID);
-                    if (hThread) {
-                        uintptr_t startAddr = 0;
-                        NTSTATUS status = NtQueryInformationThread(hThread, ThreadQuerySetWin32StartAddress, &startAddr, sizeof(startAddr), NULL);
+            const bool bDebugEnabled = ConfigManager::Exists("Misc.Debug") && ConfigManager::B("Misc.Debug");
+            if (!bDebugEnabled)
+            {
+                return;
+            }
 
-                        if (status == 0) {
-                            for (uintptr_t patternAddr : found_addrs) {
-                                if (startAddr >= (patternAddr - 0x40) && startAddr <= (patternAddr + 0x40)) {
-                                    LOG_INFO("AntiDebug", "Active Symbiote thread detected! ID: %d, Start: 0x%llX. Terminating...", 
-                                        te.th32ThreadID, startAddr);
-                                    
-                                    if (TerminateThread(hThread, 0)) {
-                                        killedCount++;
-                                    } else {
-                                        LOG_WARN("AntiDebug", "Could not kill thread %d (Access Denied?), but logic at 0x%llX was patched.", 
-                                            te.th32ThreadID, patternAddr);
-                                    }
-                                    break; 
-                                }
-                            }
-                        }
-                        CloseHandle(hThread);
-                    }
-                }
-            } while (Thread32Next(hSnapshot, &te));
+            RestoreAntiDebugFunctions();
+
+            static constexpr SignatureRegistry::Signature kSymbioteEntryPattern{
+                "AntiDebug.SymbioteEntryCall",
+                "E8 ? ? ? ? 55 48 8B EC 48 83 E4 F0",
+                SignatureRegistry::HookTiming::Immediate
+            };
+
+            uintptr_t callAddress = SignatureRegistry::Resolve(kSymbioteEntryPattern);
+            if (!callAddress)
+            {
+                callAddress = Memory::FindPattern(kSymbioteEntryPattern.Pattern);
+            }
+
+            if (!callAddress)
+            {
+                LOG_WARN("AntiDebug", "Failed to find symbiote entry call pattern");
+                return;
+            }
+
+            const uintptr_t symbioteEntryPoint = Memory::ResolveRelativeCallTarget(callAddress);
+            if (!symbioteEntryPoint)
+            {
+                LOG_WARN("AntiDebug", "Failed to resolve symbiote entry point from 0x%llX", callAddress);
+                return;
+            }
+
+            const size_t safeHookLen = Memory::CalculateSafeHookLength(
+                reinterpret_cast<void*>(symbioteEntryPoint),
+                kSymbioteHookLen);
+            if (safeHookLen == 0)
+            {
+                LOG_WARN("AntiDebug", "Failed to compute safe hook length for symbiote entry point at 0x%llX", symbioteEntryPoint);
+                return;
+            }
+
+            void* originalSymbiote = nullptr;
+            if (!Memory::HookFunctionAbsolute(
+                    reinterpret_cast<void*>(symbioteEntryPoint),
+                    reinterpret_cast<void*>(&SymbioteHook),
+                    &originalSymbiote,
+                    safeHookLen))
+            {
+                LOG_ERROR("AntiDebug", "Failed to hook symbiote entry point at 0x%llX", symbioteEntryPoint);
+                return;
+            }
+
+            RestoreAntiDebugFunctions();
+            LOG_INFO("AntiDebug", "Hooked symbiote entry point at 0x%llX", symbioteEntryPoint);
+
+            if (ConfigManager::Exists("Misc.Debug") &&
+                ConfigManager::B("Misc.Debug") &&
+                IsDebuggerPresent() == 0)
+            {
+                LOG_WARN("AntiDebug", "Debugger not attached yet; anti-debug bypass remains armed");
+            }
         }
-
-        CloseHandle(hSnapshot);
-        LOG_INFO("AntiDebug", "Bypass finished. Killed %d Symbiote threads.", killedCount);
     }
 
     void Bypass()
     {
-        __try 
+        __try
         {
             InternalBypass();
         }
-        __except (EXCEPTION_EXECUTE_HANDLER) 
+        __except (EXCEPTION_EXECUTE_HANDLER)
         {
-            Logger::RawLog(Logger::Level::Error, "AntiDebug", "Critical error during Anti-Debug bypass! (SEH Caught)");
+            Logger::RawLog(Logger::Level::Error, "AntiDebug", "Critical error during anti-debug bypass");
         }
     }
 }

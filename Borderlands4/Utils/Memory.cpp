@@ -1,7 +1,4 @@
 #include "pch.h"
-#include "Memory.h"
-#include <Psapi.h>
-#include <cstring>
 
 namespace Memory
 {
@@ -198,6 +195,39 @@ namespace Memory
             *originalOut = trampoline;
         }
         return true;
+    }
+
+    size_t CalculateSafeHookLength(void* target, size_t minLen, size_t maxLen)
+    {
+        if (!target || minLen == 0 || maxLen < minLen)
+        {
+            return 0;
+        }
+
+        size_t totalLen = 0;
+        uint8_t* code = reinterpret_cast<uint8_t*>(target);
+        while (totalLen < minLen)
+        {
+            if (totalLen >= maxLen)
+            {
+                return 0;
+            }
+
+            hde64s hs{};
+            const unsigned int instructionLen = hde64_disasm(code + totalLen, &hs);
+            if (instructionLen == 0 || (hs.flags & F_ERROR) != 0)
+            {
+                return 0;
+            }
+
+            totalLen += instructionLen;
+            if (totalLen > maxLen)
+            {
+                return 0;
+            }
+        }
+
+        return totalLen;
     }
 
     void DumpVTableWindow(void** vtable, size_t centerIndex, size_t radius, const char* tag, const char* logTag)

@@ -116,7 +116,6 @@ struct Variables
 	std::vector<ACharacter*> UnitCache;
 	int CacheTimer = 0;
 	ImVec2 ScreenSize;
-	ACameraActor* CameraActor = nullptr;
 
 	Variables() {
 		Reset();
@@ -133,7 +132,6 @@ struct Variables
 		this->UnitCache.clear();
 		this->CacheTimer = 0;
 		this->ScreenSize = ImVec2(0, 0);
-		this->CameraActor = nullptr;
 	}
 
 	void UpdateUnitCache() {

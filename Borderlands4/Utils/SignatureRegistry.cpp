@@ -6,6 +6,8 @@ namespace SignatureRegistry
 {
     namespace
     {
+        constexpr size_t kAbsoluteFallbackMaxDecodeLen = 64;
+
         struct SignatureEntry
         {
             std::string Pattern;
@@ -24,6 +26,59 @@ namespace SignatureRegistry
         // Delay signature-backed gameplay hooks a little longer after map entry.
         constexpr ULONGLONG kInGameReadyWarmupMs = 10000;
         constexpr ULONGLONG kInGameRetryIntervalMs = 5000;
+
+        bool TryInstallAbsoluteFallback(
+            SignatureEntry& entry,
+            const Signature& signature,
+            void* target,
+            void* detour,
+            void** originalOut,
+            size_t fallbackLen,
+            const char* logCategory,
+            uintptr_t targetAddress,
+            int failureCount)
+        {
+            if (fallbackLen == 0)
+                return false;
+
+            const size_t safeHookLen = Memory::CalculateSafeHookLength(
+                target,
+                fallbackLen,
+                kAbsoluteFallbackMaxDecodeLen);
+            if (safeHookLen == 0)
+            {
+                LOG_WARN(
+                    logCategory ? logCategory : "Signature",
+                    "Absolute detour fallback rejected for '%s': could not decode a safe hook length (min=%zu, max=%zu) at 0x%llX",
+                    signature.Name,
+                    fallbackLen,
+                    kAbsoluteFallbackMaxDecodeLen,
+                    static_cast<unsigned long long>(targetAddress));
+                return false;
+            }
+
+            if (Memory::HookFunctionAbsolute(target, detour, originalOut, safeHookLen))
+            {
+                entry.bHookInstalled = true;
+                entry.ConsecutiveInstallFailures = 0;
+                LOG_DEBUG(
+                    logCategory ? logCategory : "Signature",
+                    "SUCCESS: '%s' hook installed via absolute detour fallback after %d MinHook failures at 0x%llX (stolenLen=%zu)",
+                    signature.Name,
+                    failureCount,
+                    static_cast<unsigned long long>(targetAddress),
+                    safeHookLen);
+                return true;
+            }
+
+            LOG_WARN(
+                logCategory ? logCategory : "Signature",
+                "Absolute detour fallback failed for '%s' at 0x%llX (stolenLen=%zu)",
+                signature.Name,
+                static_cast<unsigned long long>(targetAddress),
+                safeHookLen);
+            return false;
+        }
 
         bool IsHookTimingReady(HookTiming timing)
         {
@@ -227,22 +282,30 @@ namespace SignatureRegistry
         if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
         {
             entry.ConsecutiveInstallFailures++;
-            const bool bFallbackReady = bAllowAbsoluteFallback &&
+            const int failureCount = entry.ConsecutiveInstallFailures;
+
+            const bool bShouldTryImmediateFallback =
+                bAllowAbsoluteFallback &&
                 fallbackLen != 0 &&
-                entry.ConsecutiveInstallFailures >= 3;
-            if (bFallbackReady)
+                createStatus == MH_ERROR_MEMORY_ALLOC;
+            const bool bShouldTryDelayedFallback =
+                bAllowAbsoluteFallback &&
+                fallbackLen != 0 &&
+                failureCount >= 3;
+
+            if (bShouldTryImmediateFallback || bShouldTryDelayedFallback)
             {
-                const int failureCount = entry.ConsecutiveInstallFailures;
-                if (Memory::HookFunctionAbsolute(target, detour, originalOut, fallbackLen))
+                if (TryInstallAbsoluteFallback(
+                        entry,
+                        signature,
+                        target,
+                        detour,
+                        originalOut,
+                        fallbackLen,
+                        logCategory,
+                        targetAddress,
+                        failureCount))
                 {
-                    entry.bHookInstalled = true;
-                    entry.ConsecutiveInstallFailures = 0;
-                    LOG_DEBUG(
-                        logCategory ? logCategory : "Signature",
-                        "SUCCESS: '%s' hook installed via absolute detour fallback after %d MinHook failures at 0x%llX",
-                        signature.Name,
-                        failureCount,
-                        static_cast<unsigned long long>(targetAddress));
                     return true;
                 }
             }
