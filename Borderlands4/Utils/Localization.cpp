@@ -281,8 +281,6 @@ namespace Localization
         
         // 14. Hotkeys
         Register("HOTKEY_TAB_HELP", "Click on a button to change the bound key. Press ESC to cancel.", (const char*)u8"点击按钮修改对应热键。按 ESC 取消。");
-        Register("HOTKEY_PRIORITY", "Important Hotkey", (const char*)u8"重要热键");
-        Register("HOTKEY_PRIORITY_HINT", "Keep this key easy to reach and avoid conflicts.", (const char*)u8"建议设置为易按且不冲突的按键。");
         Register("PRESS_ANY_KEY", "Press Any Key...", (const char*)u8"等待输入...");
         Register("UNKNOWN_KEY", "Unknown", (const char*)u8"未知按键");
         Register("RESET", "Reset", (const char*)u8"重置");

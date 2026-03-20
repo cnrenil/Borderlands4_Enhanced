@@ -38,6 +38,7 @@ namespace d3d12hook {
     static bool                   gSwapChainWasHdr = false;
     static DXGI_FORMAT            gLastLoggedFormat = DXGI_FORMAT_UNKNOWN;
     static bool                   gLastLoggedHdr = false;
+    static std::mutex             gOverlayMutex;
 
     // --- Stability: track resize state and early-injection grace period ---
     static DWORD                  gFirstPresentTime = 0;
@@ -90,6 +91,21 @@ namespace d3d12hook {
 
     static bool IsGameWindowGone() {
         return g_hWnd && !IsWindow(g_hWnd);
+    }
+
+    static bool IsWindowRenderable()
+    {
+        if (!g_hWnd || !IsWindow(g_hWnd))
+            return false;
+
+        if (IsIconic(g_hWnd))
+            return false;
+
+        RECT rect{};
+        if (!GetClientRect(g_hWnd, &rect))
+            return false;
+
+        return rect.right > rect.left && rect.bottom > rect.top;
     }
 
     static bool IsInPostResizeCooldown() {
@@ -259,6 +275,7 @@ namespace d3d12hook {
     void RenderImGui(IDXGISwapChain3* pSwapChain) {
         // Don't render while a resize is in progress
         if (Resizing.load()) return;
+        if (!IsWindowRenderable()) return;
         if (!gCommandQueue || !oExecuteCommandListsD3D12) return;
 
         static uint64_t last_rendered_frame = 0;
@@ -327,8 +344,9 @@ namespace d3d12hook {
         gCommandList->Close();
 
         ID3D12CommandList* ppCommandLists[] = { gCommandList };
-        oExecuteCommandListsD3D12(gCommandQueue, 1, ppCommandLists);
-        gCommandQueue->Signal(gOverlayFence, ++gOverlayFenceValue);
+        CallOriginalExecuteCommandListsSEH(gCommandQueue, 1, ppCommandLists);
+        if (gCommandQueue && gOverlayFence)
+            gCommandQueue->Signal(gOverlayFence, ++gOverlayFenceValue);
     }
 
     long __stdcall hookPresentD3D12(IDXGISwapChain3* pSwapChain, UINT SyncInterval, UINT Flags) {
@@ -372,21 +390,24 @@ namespace d3d12hook {
 
         // Don't initialize during the grace period — let the game finish
         // HDR / DLSS / swapchain setup first.
-        if (!gInitialized) {
-            DWORD elapsed = GetTickCount() - gFirstPresentTime;
-            if (elapsed < INIT_GRACE_PERIOD_MS) {
-                return oPresentD3D12(pSwapChain, SyncInterval, Flags);
-            }
-            InitImGuiAndResources(pSwapChain);
-        }
-
-        if (gInitialized && !Resizing.load()) {
-            RenderImGui(pSwapChain);
-            g_PresentCount.fetch_add(1);
-        }
-        else if (!gInitialized)
         {
-                Logger::LogThrottled(Logger::Level::Debug, "D3D12", 5000, "hookPresentD3D12: Waiting for ImGui Init (Grace Period)...");
+            std::scoped_lock overlayLock(gOverlayMutex);
+            if (!gInitialized) {
+                DWORD elapsed = GetTickCount() - gFirstPresentTime;
+                if (elapsed < INIT_GRACE_PERIOD_MS) {
+                    return oPresentD3D12(pSwapChain, SyncInterval, Flags);
+                }
+                InitImGuiAndResources(pSwapChain);
+            }
+
+            if (gInitialized && !Resizing.load()) {
+                RenderImGui(pSwapChain);
+                g_PresentCount.fetch_add(1);
+            }
+            else if (!gInitialized)
+            {
+                    Logger::LogThrottled(Logger::Level::Debug, "D3D12", 5000, "hookPresentD3D12: Waiting for ImGui Init (Grace Period)...");
+            }
         }
 
         return CallOriginalPresentSEH(pSwapChain, SyncInterval, Flags);
@@ -432,17 +453,20 @@ namespace d3d12hook {
         if (!gCommandQueue) return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
 
         // Don't initialize during the grace period
-        if (!gInitialized) {
-            DWORD elapsed = GetTickCount() - gFirstPresentTime;
-            if (elapsed < INIT_GRACE_PERIOD_MS) {
-                return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
+        {
+            std::scoped_lock overlayLock(gOverlayMutex);
+            if (!gInitialized) {
+                DWORD elapsed = GetTickCount() - gFirstPresentTime;
+                if (elapsed < INIT_GRACE_PERIOD_MS) {
+                    return oPresent1D3D12(pSwapChain, SyncInterval, Flags, pParams);
+                }
+                InitImGuiAndResources(pSwapChain);
             }
-            InitImGuiAndResources(pSwapChain);
-        }
 
-        if (gInitialized && !Resizing.load()) {
-            RenderImGui(pSwapChain);
-            g_PresentCount.fetch_add(1);
+            if (gInitialized && !Resizing.load()) {
+                RenderImGui(pSwapChain);
+                g_PresentCount.fetch_add(1);
+            }
         }
 
         return CallOriginalPresent1SEH(pSwapChain, SyncInterval, Flags, pParams);
@@ -476,23 +500,28 @@ namespace d3d12hook {
         // Signal that we're resizing — Present hook will skip rendering
         Resizing.store(true);
 
-        if (gInitialized) {
-            GUI::Overlay::Shutdown();
+        HRESULT hr = S_OK;
+        {
+            std::scoped_lock overlayLock(gOverlayMutex);
 
-            // Release all our GPU resources
-            ReleaseOverlayResources();
+            if (gInitialized) {
+                GUI::Overlay::Shutdown();
 
-            gInitialized = false;
+                // Release all our GPU resources
+                ReleaseOverlayResources();
+
+                gInitialized = false;
+            }
+
+            if (oWndProc && g_hWnd) {
+                SetWindowLongPtr(g_hWnd, GWLP_WNDPROC, (LONG_PTR)oWndProc);
+                oWndProc = nullptr;
+            }
+            g_hWnd = nullptr;
+
+            // Call the original ResizeBuffers while overlay resources stay quiesced.
+            hr = oResizeBuffersD3D12(pSwapChain, BufferCount, Width, Height, NewFormat, SwapChainFlags);
         }
-
-        if (oWndProc && g_hWnd) {
-            SetWindowLongPtr(g_hWnd, GWLP_WNDPROC, (LONG_PTR)oWndProc);
-            oWndProc = nullptr;
-        }
-        g_hWnd = nullptr;
-
-        // Call the original ResizeBuffers
-        HRESULT hr = oResizeBuffersD3D12(pSwapChain, BufferCount, Width, Height, NewFormat, SwapChainFlags);
 
         // Force recapture after swapchain reconfiguration to avoid stale queue usage.
         ResetStartupTracking("ResizeBuffers");
@@ -511,21 +540,25 @@ namespace d3d12hook {
         // Let ongoing frames finish or skip
         Sleep(100);
 
-        if (gInitialized) {
-            GUI::Overlay::Shutdown();
+        {
+            std::scoped_lock overlayLock(gOverlayMutex);
 
-            ReleaseOverlayResources();
-            gInitialized = false;
+            if (gInitialized) {
+                GUI::Overlay::Shutdown();
+
+                ReleaseOverlayResources();
+                gInitialized = false;
+            }
+
+            ReleaseCapturedQueue();
+            gTrackedSwapChain = nullptr;
+
+            if (oWndProc && g_hWnd) {
+                SetWindowLongPtr(g_hWnd, GWLP_WNDPROC, (LONG_PTR)oWndProc);
+                oWndProc = nullptr;
+            }
+            g_hWnd = nullptr;
         }
-
-        ReleaseCapturedQueue();
-        gTrackedSwapChain = nullptr;
-
-        if (oWndProc && g_hWnd) {
-            SetWindowLongPtr(g_hWnd, GWLP_WNDPROC, (LONG_PTR)oWndProc);
-            oWndProc = nullptr;
-        }
-        g_hWnd = nullptr;
 
         MH_DisableHook(MH_ALL_HOOKS);
         // We leave MH_Uninitialize to the main shutdown thread to avoid deadlocks

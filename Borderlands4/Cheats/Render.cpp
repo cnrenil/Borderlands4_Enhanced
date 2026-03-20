@@ -6,6 +6,7 @@ namespace
 {
     std::atomic<bool> g_LoggedReticleCanvas{ false };
     std::atomic<bool> g_LoggedReticleImGui{ false };
+    bool g_InitialMenuHintPersisted = false;
 
     bool IsOTSAdsActive()
     {
@@ -123,6 +124,13 @@ namespace
 
         if (Utils::bIsInGame)
         {
+            if (!g_InitialMenuHintPersisted && !ConfigManager::B("Misc.InitialMenuHintSeen"))
+            {
+                ConfigManager::B("Misc.InitialMenuHintSeen") = true;
+                ConfigManager::SaveSettings();
+                g_InitialMenuHintPersisted = true;
+            }
+
             Logger::LogThrottled(Logger::Level::Debug, "Render", 10000, "Present render tick: gameplay logic active");
             if (ConfigManager::B("Player.ESP")) Cheats::UpdateESP();
             if (ConfigManager::B("Aimbot.Enabled"))

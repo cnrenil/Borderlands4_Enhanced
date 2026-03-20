@@ -161,17 +161,7 @@ namespace HotkeyManager
         {
             ImGui::PushID(hk.Name.c_str());
             const bool bPriorityHotkey = IsPriorityHotkey(hk);
-
-            if (bPriorityHotkey)
-            {
-                ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.42f, 0.16f, 0.10f, 0.26f));
-                ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.00f, 0.70f, 0.38f, 0.80f));
-                ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 1.0f);
-                ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 12.0f);
-                ImGui::BeginChild("##priority_hotkey", ImVec2(0.0f, 82.0f), ImGuiChildFlags_Borders);
-                ImGui::TextColored(ImVec4(1.00f, 0.80f, 0.48f, 1.00f), "%s", Localization::T("HOTKEY_PRIORITY"));
-                ImGui::TextDisabled("%s", Localization::T("HOTKEY_PRIORITY_HINT"));
-            }
+            const bool bEmphasizePriorityHotkey = bPriorityHotkey && !ConfigManager::B("Misc.InitialMenuHintSeen");
             
             ImGui::Text("%s:", Localization::T(hk.Label));
             ImGui::SameLine(200);
@@ -180,17 +170,17 @@ namespace HotkeyManager
             ImGuiKey currentKey = GetSanitizedHotkeyValue(hk);
             FormatHotkeyLabel(buf, sizeof(buf), hk, currentKey);
 
-            if (bPriorityHotkey)
+            if (bEmphasizePriorityHotkey)
             {
-                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.56f, 0.24f, 0.13f, 0.94f));
-                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.73f, 0.31f, 0.16f, 0.98f));
-                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.89f, 0.41f, 0.18f, 1.00f));
-                ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.00f, 0.72f, 0.40f, 0.95f));
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.68f, 0.20f, 0.18f, 0.96f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.82f, 0.26f, 0.22f, 0.98f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.92f, 0.34f, 0.24f, 1.00f));
+                ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.98f, 0.54f, 0.42f, 0.95f));
             }
             if (ImGui::Button(buf, ImVec2(150, 0))) {
                 hk.bIsBinding = true;
             }
-            if (bPriorityHotkey)
+            if (bEmphasizePriorityHotkey)
             {
                 ImGui::PopStyleColor(4);
             }
@@ -220,13 +210,6 @@ namespace HotkeyManager
             ImGui::SameLine();
             if (ImGui::Button(Localization::T("RESET"))) {
                 ConfigManager::I(hk.Name) = (int)hk.DefaultKey;
-            }
-
-            if (bPriorityHotkey)
-            {
-                ImGui::EndChild();
-                ImGui::PopStyleVar(2);
-                ImGui::PopStyleColor(2);
             }
 
             ImGui::PopID();

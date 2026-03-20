@@ -136,6 +136,7 @@ namespace ConfigManager
         Register("Misc.Debug", false);
         Register("Misc.PingDump", false);
         Register("Misc.RenderOptions", false);
+        Register("Misc.InitialMenuHintSeen", false);
     }
 
     static std::string GetIniPath() {
