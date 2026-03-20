@@ -101,7 +101,14 @@ namespace HotkeyManager
         });
 
         Register("Misc.ThirdPersonKey", "TOGGLE_THIRDPERSON_KEY", ImGuiKey_F5, []() {
-            Cheats::ToggleThirdPerson();
+            ConfigManager::B("Player.ThirdPerson") = !ConfigManager::B("Player.ThirdPerson");
+            if (ConfigManager::B("Player.ThirdPerson"))
+            {
+                ConfigManager::B("Player.Freecam") = false;
+            }
+        });
+        Register("Misc.TeleportLootKey", "TELEPORT_LOOT_KEY", ImGuiKey_F6, []() {
+            Cheats::TeleportLoot();
         });
 
 #if BL4_DEBUG_BUILD

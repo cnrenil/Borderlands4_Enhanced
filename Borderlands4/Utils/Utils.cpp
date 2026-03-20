@@ -32,7 +32,7 @@ namespace
     ImVec2 GetAimScreenCenter()
     {
         ImVec2 fallbackCenter(GVars.ScreenSize.x * 0.5f, GVars.ScreenSize.y * 0.5f);
-        if (!ConfigManager::B("Player.OverShoulder")) return fallbackCenter;
+        if (!ConfigManager::B("Player.ThirdPerson") || !ConfigManager::B("Player.OverShoulder")) return fallbackCenter;
         if (GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
         {
             const FMinimalViewInfo& CameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;

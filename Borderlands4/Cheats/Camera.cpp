@@ -316,13 +316,13 @@ namespace
 			return false;
 		}
 
-		if (!ConfigManager::B("Player.ThirdPerson") && !ConfigManager::B("Player.OverShoulder"))
+		if (!ConfigManager::B("Player.ThirdPerson"))
 			return false;
 
 		if (g_RequestedFirstPersonMode)
 			return false;
 
-		const bool bUseOverShoulder = ConfigManager::B("Player.OverShoulder");
+		const bool bUseOverShoulder = ConfigManager::B("Player.ThirdPerson") && ConfigManager::B("Player.OverShoulder");
 		const bool bUseThirdPerson = ConfigManager::B("Player.ThirdPerson");
 		const bool bIsZooming = IsZoomingNow();
 		const bool bOTSAdsFirstPerson =
@@ -925,7 +925,7 @@ namespace
 		const float CurrentTime = (float)ImGui::GetTime();
 		const bool bIsZooming = ((uint8)OakChar->ZoomState.State != 0);
 		const bool bUseFreecam = ConfigManager::B("Player.Freecam");
-		const bool bUseOverShoulder = ConfigManager::B("Player.OverShoulder");
+		const bool bUseOverShoulder = ConfigManager::B("Player.ThirdPerson") && ConfigManager::B("Player.OverShoulder");
 		const bool bUseThirdPerson = ConfigManager::B("Player.ThirdPerson");
 
 		if (bUseFreecam)
@@ -1026,10 +1026,6 @@ void Cheats::ToggleThirdPerson()
 	{
 		ConfigManager::B("Player.Freecam") = false;
 	}
-	else
-	{
-		ConfigManager::B("Player.OverShoulder") = false;
-	}
 }
 
 void Cheats::ToggleFreecam()
@@ -1081,11 +1077,6 @@ void Cheats::UpdateCamera()
 	{
 		ConfigManager::B("Player.ThirdPerson") = false;
 		ConfigManager::B("Player.OverShoulder") = false;
-	}
-
-	if (ConfigManager::B("Player.OverShoulder") && !ConfigManager::B("Player.Freecam"))
-	{
-		ConfigManager::B("Player.ThirdPerson") = true;
 	}
 
 	RegisterNativeCameraHookSignature();

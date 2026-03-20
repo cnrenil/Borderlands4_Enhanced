@@ -291,6 +291,7 @@ namespace Localization
         Register("GODMODE_KEY", "God Mode Toggle Key", (const char*)u8"无敌模式切换热键");
         Register("INF_AMMO_KEY", "Infinite Ammo Toggle Key", (const char*)u8"无限弹药切换热键");
         Register("TOGGLE_THIRDPERSON_KEY", "Third Person Toggle Key", (const char*)u8"人称视角切换热键");
+        Register("TELEPORT_LOOT_KEY", "Teleport Loot Key", (const char*)u8"传送战利品热键");
         Register("DUMP_OBJECTS_KEY", "Dump Objects Key", (const char*)u8"导出对象 key");
  
         Register("HOST_ONLY_IF_YOU_ARE_NOT_THE_HOST_THIS_FEATURE_WILL_NOT_FUNCTION", "Host Only Feature: This will not function if you are not the host.", (const char*)u8"仅限主机：如果你不是主机，此功能将失效。");
