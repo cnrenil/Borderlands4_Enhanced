@@ -8,6 +8,20 @@ namespace HotkeyManager
 
     namespace
     {
+        bool IsPriorityHotkey(const Hotkey& hk)
+        {
+            return hk.Name == "Misc.MenuKey" || hk.Name == "Misc.UnhookKey";
+        }
+
+        int GetHotkeySortPriority(const Hotkey& hk)
+        {
+            if (hk.Name == "Misc.MenuKey")
+                return 0;
+            if (hk.Name == "Misc.UnhookKey")
+                return 1;
+            return 10;
+        }
+
         bool IsValidHotkeyValue(int keyValue)
         {
             return keyValue == ImGuiKey_None || (keyValue >= ImGuiKey_NamedKey_BEGIN && keyValue < ImGuiKey_NamedKey_END);
@@ -65,19 +79,18 @@ namespace HotkeyManager
     void Initialize()
     {
         Hotkeys.clear();
-        
-        // Aimbot & Trigger: These are 'Hold' hotkeys. Their callbacks run continuously.
-        Register("Aimbot.Key", "AIMBOT_KEY", ImGuiKey_MouseX2, []() { Cheats::AimbotHotkey(); }, true);
-        Register("Trigger.Key", "TRIGGER_KEY", ImGuiKey_MouseX2, []() { Cheats::TriggerHotkey(); }, true);
-        
-        // One-shot toggles with callbacks
+
+        // Important controls should stay first in both data order and UI.
         Register("Misc.MenuKey", "MENU_KEY", ImGuiKey_Insert, []() {
             GUI::ShowMenu = !GUI::ShowMenu;
         });
         Register("Misc.UnhookKey", "UNHOOK_KEY", ImGuiKey_End, []() {
             Cleaning.store(true);
         });
-// ... (rest of the one-shot toggles remain the same)
+
+        // Aimbot & Trigger: These are 'Hold' hotkeys. Their callbacks run continuously.
+        Register("Aimbot.Key", "AIMBOT_KEY", ImGuiKey_MouseX2, []() { Cheats::AimbotHotkey(); }, true);
+        Register("Trigger.Key", "TRIGGER_KEY", ImGuiKey_MouseX2, []() { Cheats::TriggerHotkey(); }, true);
 
         Register("Player.GodModeKey", "GODMODE_KEY", ImGuiKey_None, []() {
             Cheats::ToggleGodMode();
@@ -96,6 +109,10 @@ namespace HotkeyManager
             Cheats::DumpObjects();
         });
 #endif
+
+        std::stable_sort(Hotkeys.begin(), Hotkeys.end(), [](const Hotkey& lhs, const Hotkey& rhs) {
+            return GetHotkeySortPriority(lhs) < GetHotkeySortPriority(rhs);
+        });
 
     }
 
@@ -143,6 +160,18 @@ namespace HotkeyManager
         for (auto& hk : Hotkeys)
         {
             ImGui::PushID(hk.Name.c_str());
+            const bool bPriorityHotkey = IsPriorityHotkey(hk);
+
+            if (bPriorityHotkey)
+            {
+                ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.42f, 0.16f, 0.10f, 0.26f));
+                ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.00f, 0.70f, 0.38f, 0.80f));
+                ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 1.0f);
+                ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 12.0f);
+                ImGui::BeginChild("##priority_hotkey", ImVec2(0.0f, 82.0f), ImGuiChildFlags_Borders);
+                ImGui::TextColored(ImVec4(1.00f, 0.80f, 0.48f, 1.00f), "%s", Localization::T("HOTKEY_PRIORITY"));
+                ImGui::TextDisabled("%s", Localization::T("HOTKEY_PRIORITY_HINT"));
+            }
             
             ImGui::Text("%s:", Localization::T(hk.Label));
             ImGui::SameLine(200);
@@ -151,8 +180,19 @@ namespace HotkeyManager
             ImGuiKey currentKey = GetSanitizedHotkeyValue(hk);
             FormatHotkeyLabel(buf, sizeof(buf), hk, currentKey);
 
+            if (bPriorityHotkey)
+            {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.56f, 0.24f, 0.13f, 0.94f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.73f, 0.31f, 0.16f, 0.98f));
+                ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.89f, 0.41f, 0.18f, 1.00f));
+                ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(1.00f, 0.72f, 0.40f, 0.95f));
+            }
             if (ImGui::Button(buf, ImVec2(150, 0))) {
                 hk.bIsBinding = true;
+            }
+            if (bPriorityHotkey)
+            {
+                ImGui::PopStyleColor(4);
             }
 
             if (hk.bIsBinding) {
@@ -180,6 +220,13 @@ namespace HotkeyManager
             ImGui::SameLine();
             if (ImGui::Button(Localization::T("RESET"))) {
                 ConfigManager::I(hk.Name) = (int)hk.DefaultKey;
+            }
+
+            if (bPriorityHotkey)
+            {
+                ImGui::EndChild();
+                ImGui::PopStyleVar(2);
+                ImGui::PopStyleColor(2);
             }
 
             ImGui::PopID();

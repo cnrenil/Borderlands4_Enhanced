@@ -8,8 +8,22 @@ namespace GUI::Draw
 
         ImVec2 GetViewportOffsetForImGui()
         {
-            if (!GVars.PlayerController || !GVars.PlayerController->PlayerCameraManager)
+            static int cachedFrame = -1;
+            static ImVec2 cachedOffset(0.0f, 0.0f);
+
+            if (!ImGui::GetCurrentContext())
                 return ImVec2(0.0f, 0.0f);
+
+            const int frame = ImGui::GetFrameCount();
+            if (frame == cachedFrame)
+                return cachedOffset;
+
+            if (!GVars.PlayerController || !GVars.PlayerController->PlayerCameraManager)
+            {
+                cachedFrame = frame;
+                cachedOffset = ImVec2(0.0f, 0.0f);
+                return cachedOffset;
+            }
 
             const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
             const FMinimalViewInfo& cameraPOV = GVars.PlayerController->PlayerCameraManager->CameraCachePrivate.POV;
@@ -20,12 +34,16 @@ namespace GUI::Draw
             FVector2D projectedCenter{};
             if (Utils::ProjectWorldLocationToScreen(aimPoint, projectedCenter, true))
             {
-                return ImVec2(
+                cachedFrame = frame;
+                cachedOffset = ImVec2(
                     (displaySize.x * 0.5f) - static_cast<float>(projectedCenter.X),
                     (displaySize.y * 0.5f) - static_cast<float>(projectedCenter.Y));
+                return cachedOffset;
             }
 
-            return ImVec2(0.0f, 0.0f);
+            cachedFrame = frame;
+            cachedOffset = ImVec2(0.0f, 0.0f);
+            return cachedOffset;
         }
 
         ImVec2 ToImGuiDrawPos(const ImVec2& pos)

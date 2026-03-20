@@ -296,6 +296,49 @@ bool Utils::ForEachLevelActor(ULevel* Level, const std::function<bool(AActor*)>&
     }
 }
 
+bool Utils::ForEachLevelActorChunk(ULevel* Level, int32_t StartIndex, int32_t MaxActors, const std::function<bool(AActor*)>& Visitor, int32_t* OutNextIndex, int32_t* OutActorCount, bool* OutCompleted)
+{
+    if (OutNextIndex) *OutNextIndex = 0;
+    if (OutActorCount) *OutActorCount = 0;
+    if (OutCompleted) *OutCompleted = false;
+    if (!Level || !Visitor || MaxActors <= 0) return false;
+
+    int32_t actorCount = 0;
+    if (!TryReadLevelActorCount(Level, actorCount))
+        return false;
+
+    if (actorCount <= 0 || actorCount > 200000)
+        return false;
+
+    if (OutActorCount) *OutActorCount = actorCount;
+
+    const int32_t safeStart = (std::max)(0, StartIndex);
+    if (safeStart >= actorCount)
+    {
+        if (OutCompleted) *OutCompleted = true;
+        return true;
+    }
+
+    const int32_t endIndex = (std::min)(actorCount, safeStart + MaxActors);
+
+    __try
+    {
+        for (int32_t i = safeStart; i < endIndex; ++i)
+        {
+            if (!Visitor(Level->Actors[i]))
+                break;
+        }
+
+        if (OutCompleted) *OutCompleted = endIndex >= actorCount;
+        if (OutNextIndex) *OutNextIndex = endIndex >= actorCount ? 0 : endIndex;
+        return true;
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        return false;
+    }
+}
+
 float Utils::GetDistanceMeters(const FVector& A, const FVector& B)
 {
     const double distanceMeters = static_cast<double>(A.GetDistanceToInMeters(B));

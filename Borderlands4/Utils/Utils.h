@@ -71,6 +71,7 @@ struct Utils
 	static FRotator VectorToRotation(const FVector& Vec);
 	static TargetSelectionResult AcquireTarget(APlayerController* ViewPoint, float MaxFOV, float MinDistance, float MaxDistance, bool RequiresLOS, std::string TargetBone, bool TargetAll, int TargetMode);
 	static bool ForEachLevelActor(ULevel* Level, const std::function<bool(AActor*)>& Visitor, int32_t* OutActorCount = nullptr);
+	static bool ForEachLevelActorChunk(ULevel* Level, int32_t StartIndex, int32_t MaxActors, const std::function<bool(AActor*)>& Visitor, int32_t* OutNextIndex = nullptr, int32_t* OutActorCount = nullptr, bool* OutCompleted = nullptr);
 	static float GetDistanceMeters(const FVector& A, const FVector& B);
 	static float GetDistanceMeters(const AActor* Source, const AActor* Target);
 	static void DrawFOV(float MaxFOV, float Thickness);

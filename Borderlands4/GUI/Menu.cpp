@@ -347,7 +347,11 @@ namespace
         }
         layout.Alpha += (1.0f - layout.Alpha) * fadeAlpha;
 
-        ImGui::SetNextWindowBgAlpha(0.0f);
+        const GUI::ThemeDefinition* currentTheme = GUI::ThemeManager::GetThemeByIndex(ConfigManager::I("Misc.Theme"));
+        const bool useGlassPanelOverrides = currentTheme && currentTheme->Id == "ocean_glass";
+
+        if (useGlassPanelOverrides)
+            ImGui::SetNextWindowBgAlpha(0.0f);
         ImGui::SetNextWindowPos(layout.CurrentPos, ImGuiCond_Always);
         ImGui::SetNextWindowSize(layout.CurrentSize, ImGuiCond_Always);
 
@@ -355,16 +359,21 @@ namespace
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(18.0f * fontScale, 16.0f * fontScale));
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 16.0f * fontScale);
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 18.0f * fontScale);
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(1.00f, 1.00f, 1.00f, 0.035f));
-        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(1.00f, 1.00f, 1.00f, 0.025f));
-        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(1.00f, 1.00f, 1.00f, 0.045f));
-        ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(1.00f, 1.00f, 1.00f, 0.065f));
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.00f, 1.00f, 1.00f, 0.03f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.00f, 1.00f, 1.00f, 0.05f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1.00f, 1.00f, 1.00f, 0.07f));
-        ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(1.00f, 1.00f, 1.00f, 0.02f));
-        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(1.00f, 1.00f, 1.00f, 0.045f));
-        ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(1.00f, 1.00f, 1.00f, 0.065f));
+        int pushedColors = 0;
+        if (useGlassPanelOverrides)
+        {
+            ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(1.00f, 1.00f, 1.00f, 0.035f));
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(1.00f, 1.00f, 1.00f, 0.025f));
+            ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(1.00f, 1.00f, 1.00f, 0.045f));
+            ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(1.00f, 1.00f, 1.00f, 0.065f));
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.00f, 1.00f, 1.00f, 0.03f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.00f, 1.00f, 1.00f, 0.05f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(1.00f, 1.00f, 1.00f, 0.07f));
+            ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(1.00f, 1.00f, 1.00f, 0.02f));
+            ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(1.00f, 1.00f, 1.00f, 0.045f));
+            ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(1.00f, 1.00f, 1.00f, 0.065f));
+            pushedColors = 10;
+        }
 
         const bool opened = ImGui::Begin(
             title,
@@ -372,7 +381,8 @@ namespace
             ImGuiWindowFlags_NoCollapse |
             ImGuiWindowFlags_NoResize |
             ImGuiWindowFlags_NoSavedSettings);
-        ImGui::PopStyleColor(10);
+        if (pushedColors > 0)
+            ImGui::PopStyleColor(pushedColors);
         ImGui::PopStyleVar(4);
 
         if (allowFreeDragThisFrame)
@@ -521,7 +531,6 @@ namespace
         const Hooks::State& hookState = Hooks::GetState();
         const bool bProcessEventHooked = hookState.pcVTable != nullptr && oProcessEvent != nullptr;
         const bool bPlayerStateHooked = hookState.psVTable != nullptr;
-        const bool bCameraManagerHooked = hookState.cmVTable != nullptr;
         const bool bPresentHooked = d3d12hook::oPresentD3D12 != nullptr || d3d12hook::oPresent1D3D12 != nullptr;
         const bool bCommandQueueHooked = d3d12hook::oExecuteCommandListsD3D12 != nullptr;
         const bool bPresentActive = g_PresentCount.load() > 0;
@@ -532,9 +541,6 @@ namespace
         RenderHookStatusRow(
             Localization::T("ENGINE_HOOK_PLAYERSTATE"),
             bPlayerStateHooked ? "HOOK_STATUS_HOOKED" : "HOOK_STATUS_PENDING");
-        RenderHookStatusRow(
-            Localization::T("ENGINE_HOOK_CAMERAMANAGER"),
-            bCameraManagerHooked ? "HOOK_STATUS_HOOKED" : "HOOK_STATUS_PENDING");
         RenderHookStatusRow(
             Localization::T("ENGINE_HOOK_PRESENT"),
             bPresentHooked ? (bPresentActive ? "HOOK_STATUS_HOOKED" : "HOOK_STATUS_RESOLVED") : "HOOK_STATUS_PENDING",

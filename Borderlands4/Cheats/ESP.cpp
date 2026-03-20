@@ -12,11 +12,8 @@ struct ESPActorCache {
 	float HealthPct;
 	FString Name;
 	float Distance;
-	bool bHasScreenBounds = false;
-	FVector2D TopScreen;
-	FVector2D BottomScreen;
-	FVector2D LeftTopScreen;
-	FVector2D RightBottomScreen;
+	bool bHasBoundsWorld = false;
+	std::array<FVector, 8> BoundsCorners{};
 	std::vector<std::pair<FVector, FVector>> SkeletonSegments;
 };
 
@@ -80,11 +77,14 @@ namespace
 		std::mutex Mutex;
 		std::vector<ESPActorCache> CachedActors;
 		std::vector<ESPLootCache> CachedLoot;
+		std::vector<ESPLootCache> PendingLoot;
 		std::vector<ESPTracerCache> CachedTracers;
+		std::unordered_map<uintptr_t, uint8_t> LootKindCache;
 		uint64_t LastActorRefreshMs = 0;
 		uint64_t LastLootRefreshMs = 0;
 		uintptr_t LastWorld = 0;
 		uintptr_t LastLevel = 0;
+		int32_t LootScanCursor = 0;
 	};
 
 	ESPState& GetESPState()
@@ -100,12 +100,22 @@ namespace
 	{
 		state.CachedActors.clear();
 		state.CachedLoot.clear();
+		state.PendingLoot.clear();
 		state.CachedTracers.clear();
+		state.LootKindCache.clear();
 		state.LastActorRefreshMs = 0;
 		state.LastLootRefreshMs = 0;
 		state.LastWorld = 0;
 		state.LastLevel = 0;
+		state.LootScanCursor = 0;
 	}
+
+	enum class LootActorKind : uint8_t
+	{
+		None = 0,
+		InventoryPickup,
+		Interactive
+	};
 }
 
 struct BonePair { FName Parent; FName Child; };
@@ -184,7 +194,38 @@ static bool ProjectActorScreenBounds(const std::vector<FVector>& points, FVector
 	return true;
 }
 
-static bool ProjectActorBounds(AActor* actor, FVector2D& outLeftTopScreen, FVector2D& outRightBottomScreen)
+static bool ProjectActorScreenBounds(const std::array<FVector, 8>& points, FVector2D& outTopScreen, FVector2D& outBottomScreen, FVector2D& outLeftTopScreen, FVector2D& outRightBottomScreen)
+{
+	bool hasProjectedPoint = false;
+	float minX = FLT_MAX;
+	float minY = FLT_MAX;
+	float maxX = -FLT_MAX;
+	float maxY = -FLT_MAX;
+
+	for (const FVector& point : points)
+	{
+		FVector2D projected;
+		if (!ProjectForOverlay(point, projected))
+			continue;
+
+		hasProjectedPoint = true;
+		minX = (std::min)(minX, static_cast<float>(projected.X));
+		minY = (std::min)(minY, static_cast<float>(projected.Y));
+		maxX = (std::max)(maxX, static_cast<float>(projected.X));
+		maxY = (std::max)(maxY, static_cast<float>(projected.Y));
+	}
+
+	if (!hasProjectedPoint || minX >= maxX || minY >= maxY)
+		return false;
+
+	outLeftTopScreen = FVector2D(minX, minY);
+	outRightBottomScreen = FVector2D(maxX, maxY);
+	outTopScreen = FVector2D((minX + maxX) * 0.5f, minY);
+	outBottomScreen = FVector2D((minX + maxX) * 0.5f, maxY);
+	return true;
+}
+
+static bool BuildActorBoundsCorners(AActor* actor, std::array<FVector, 8>& outCorners)
 {
 	if (!actor)
 		return false;
@@ -195,7 +236,7 @@ static bool ProjectActorBounds(AActor* actor, FVector2D& outLeftTopScreen, FVect
 	if (extent.X <= 0.0f || extent.Y <= 0.0f || extent.Z <= 0.0f)
 		return false;
 
-	const std::vector<FVector> corners = {
+	outCorners = {
 		FVector(origin.X - extent.X, origin.Y - extent.Y, origin.Z - extent.Z),
 		FVector(origin.X - extent.X, origin.Y - extent.Y, origin.Z + extent.Z),
 		FVector(origin.X - extent.X, origin.Y + extent.Y, origin.Z - extent.Z),
@@ -205,10 +246,7 @@ static bool ProjectActorBounds(AActor* actor, FVector2D& outLeftTopScreen, FVect
 		FVector(origin.X + extent.X, origin.Y + extent.Y, origin.Z - extent.Z),
 		FVector(origin.X + extent.X, origin.Y + extent.Y, origin.Z + extent.Z),
 	};
-
-	FVector2D topScreen{};
-	FVector2D bottomScreen{};
-	return ProjectActorScreenBounds(corners, topScreen, bottomScreen, outLeftTopScreen, outRightBottomScreen);
+	return true;
 }
 
 static bool GetActorBoundsAnchor(AActor* actor, FVector& outAnchor)
@@ -236,15 +274,15 @@ static std::string ToLowerAsciiEsp(std::string value)
 	return value;
 }
 
-static bool IsInteractiveEspTarget(AActor* actor)
+static bool IsInteractiveEspTargetClass(UClass* actorClass)
 {
-	if (!actor)
+	if (!actorClass)
 		return false;
-	if (actor->IsA(SDK::ALootableObject::StaticClass()) || actor->IsA(SDK::AOakInteractiveObject::StaticClass()))
+	if (actorClass->IsSubclassOf(SDK::ALootableObject::StaticClass()) || actorClass->IsSubclassOf(SDK::AOakInteractiveObject::StaticClass()))
 		return true;
 
-	const std::string className = ToLowerAsciiEsp(actor->Class ? actor->Class->GetName() : "");
-	const std::string fullName = ToLowerAsciiEsp(actor->GetFullName());
+	const std::string className = ToLowerAsciiEsp(actorClass->GetName());
+	const std::string fullName = ToLowerAsciiEsp(actorClass->GetFullName());
 	const char* interactiveHints[] = {
 		"lootable",
 		"interactive",
@@ -271,6 +309,26 @@ static bool IsInteractiveEspTarget(AActor* actor)
 		className.find("interactive") != std::string::npos ||
 		fullName.find("lootableobject") != std::string::npos ||
 		fullName.find("oakinteractiveobject") != std::string::npos;
+}
+
+static LootActorKind ClassifyLootEspTarget(AActor* actor, ESPState& state)
+{
+	if (!actor || !actor->Class)
+		return LootActorKind::None;
+
+	const uintptr_t classKey = reinterpret_cast<uintptr_t>(actor->Class);
+	const auto cached = state.LootKindCache.find(classKey);
+	if (cached != state.LootKindCache.end())
+		return static_cast<LootActorKind>(cached->second);
+
+	LootActorKind kind = LootActorKind::None;
+	if (actor->IsA(SDK::AInventoryPickup::StaticClass()))
+		kind = LootActorKind::InventoryPickup;
+	else if (IsInteractiveEspTargetClass(actor->Class))
+		kind = LootActorKind::Interactive;
+
+	state.LootKindCache[classKey] = static_cast<uint8_t>(kind);
+	return kind;
 }
 
 static bool BuildFixedSkeletonRenderCache(
@@ -431,12 +489,7 @@ void Cheats::UpdateESP()
 			Cache.Color = Color;
 			Cache.HealthPct = HealthPct;
 			Cache.Distance = Distance;
-			Cache.bHasScreenBounds = ProjectActorBounds(TargetActor, Cache.LeftTopScreen, Cache.RightBottomScreen);
-			if (Cache.bHasScreenBounds)
-			{
-				Cache.TopScreen = FVector2D(((float)Cache.LeftTopScreen.X + (float)Cache.RightBottomScreen.X) * 0.5f, (float)Cache.LeftTopScreen.Y);
-				Cache.BottomScreen = FVector2D(((float)Cache.LeftTopScreen.X + (float)Cache.RightBottomScreen.X) * 0.5f, (float)Cache.RightBottomScreen.Y);
-			}
+			Cache.bHasBoundsWorld = BuildActorBoundsCorners(TargetActor, Cache.BoundsCorners);
 			if (ConfigManager::B("ESP.Bones") && Distance >= 0.0f && Distance < 70.0f)
 				BuildFixedSkeletonRenderCache(TargetActor, Cache.SkeletonSegments);
 			if (ConfigManager::B("ESP.ShowEnemyName"))
@@ -452,81 +505,123 @@ void Cheats::UpdateESP()
 	std::vector<ESPLootCache> NewLoot;
 	if ((ConfigManager::B("ESP.ShowLootName") || ConfigManager::B("ESP.ShowInteractives")) && GVars.Level)
 	{
-		const uint64_t nowMs = GetTickCount64();
+		const bool showLoot = ConfigManager::B("ESP.ShowLootName");
+		const bool showInteractives = ConfigManager::B("ESP.ShowInteractives");
+		float maxLootDistance = ConfigManager::F("ESP.LootMaxDistance");
+		if (maxLootDistance <= 0.0f) maxLootDistance = 250.0f;
+		float maxInteractiveDistance = ConfigManager::F("ESP.InteractiveMaxDistance");
+		if (maxInteractiveDistance <= 0.0f) maxInteractiveDistance = 150.0f;
+		const float maxDistance = (std::max)(maxLootDistance, maxInteractiveDistance);
+		const ImU32 lootColor = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.LootColor"));
+		const ImU32 interactiveColor = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.InteractiveColor"));
+		constexpr int32_t kLootScanBatchSize = 384;
+
+		int32_t scanStart = 0;
 		bool shouldRefreshLoot = false;
 		{
 			std::lock_guard<std::mutex> lock(state.Mutex);
-			shouldRefreshLoot = state.LastLootRefreshMs == 0 || (nowMs - state.LastLootRefreshMs) >= kLootRefreshIntervalMs;
+			shouldRefreshLoot = state.LastLootRefreshMs == 0 || (nowMs - state.LastLootRefreshMs) >= kLootRefreshIntervalMs || !state.PendingLoot.empty();
 			if (!shouldRefreshLoot)
 			{
 				NewLoot = state.CachedLoot;
+			}
+			else
+			{
+				scanStart = state.LootScanCursor;
+				if (scanStart == 0 && state.PendingLoot.empty())
+					state.PendingLoot.reserve(128);
 			}
 		}
 
 		if (shouldRefreshLoot)
 		{
-			float maxLootDistance = ConfigManager::F("ESP.LootMaxDistance");
-			if (maxLootDistance <= 0.0f) maxLootDistance = 250.0f;
-			float maxInteractiveDistance = ConfigManager::F("ESP.InteractiveMaxDistance");
-			if (maxInteractiveDistance <= 0.0f) maxInteractiveDistance = 150.0f;
-			const float maxDistance = (std::max)(maxLootDistance, maxInteractiveDistance);
-			const ImU32 lootColor = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.LootColor"));
-			const ImU32 interactiveColor = Utils::ConvertImVec4toU32(ConfigManager::Color("ESP.InteractiveColor"));
-			NewLoot.reserve(128);
+			int32_t nextCursor = 0;
+			bool completed = false;
+			std::vector<ESPLootCache> batchLoot;
+			batchLoot.reserve(64);
 
-			if (!Utils::ForEachLevelActor(GVars.Level, [&](AActor* Actor)
-					{
-						if (!Actor || !Utils::IsValidActor(Actor)) return true;
-
-						const float distance = Utils::GetDistanceMeters(SelfActor, Actor);
-						if (distance < 0.0f || distance > maxDistance) return true;
-
-							const bool isInventoryPickup = Actor->IsA(SDK::AInventoryPickup::StaticClass());
-							const bool isInteractiveObject = !isInventoryPickup && IsInteractiveEspTarget(Actor);
-
-							if (isInventoryPickup)
-							{
-								if (!ConfigManager::B("ESP.ShowLootName") || distance > maxLootDistance)
-									return true;
-							}
-							else if (isInteractiveObject)
-							{
-								if (!ConfigManager::B("ESP.ShowInteractives") || distance > maxInteractiveDistance)
-									return true;
-						}
-						else
-						{
-							return true;
-						}
-
-						ESPLootCache Cache{};
-						Cache.TargetActor = Actor;
-						Cache.Distance = distance;
-						Cache.Name = UKismetSystemLibrary::GetDisplayName(Actor);
-						Cache.Color = isInventoryPickup ? lootColor : interactiveColor;
-						Cache.bInteractive = isInteractiveObject;
-						Cache.bInventoryPickup = isInventoryPickup;
-						Cache.bDrawBox = false;
-						Cache.bHasScreenBounds = ProjectActorBounds(Actor, Cache.LeftTopScreen, Cache.RightBottomScreen);
-						Cache.WorldAnchor = Actor->K2_GetActorLocation();
-						if (!isInventoryPickup && !GetActorBoundsAnchor(Actor, Cache.WorldAnchor))
-							Cache.WorldAnchor = Actor->K2_GetActorLocation();
-						NewLoot.push_back(std::move(Cache));
+			if (!Utils::ForEachLevelActorChunk(
+				GVars.Level,
+				scanStart,
+				kLootScanBatchSize,
+				[&](AActor* Actor)
+				{
+					if (!Actor || !Utils::IsValidActor(Actor))
 						return true;
-						}))
+
+					const float distance = Utils::GetDistanceMeters(SelfActor, Actor);
+					if (distance < 0.0f || distance > maxDistance)
+						return true;
+
+					const LootActorKind lootKind = ClassifyLootEspTarget(Actor, state);
+					if (lootKind == LootActorKind::InventoryPickup)
+					{
+						if (!showLoot || distance > maxLootDistance)
+							return true;
+					}
+					else if (lootKind == LootActorKind::Interactive)
+					{
+						if (!showInteractives || distance > maxInteractiveDistance)
+							return true;
+					}
+					else
+					{
+						return true;
+					}
+
+					ESPLootCache Cache{};
+					Cache.TargetActor = Actor;
+					Cache.Distance = distance;
+					Cache.Name = UKismetSystemLibrary::GetDisplayName(Actor);
+					Cache.Color = lootKind == LootActorKind::InventoryPickup ? lootColor : interactiveColor;
+					Cache.bInteractive = lootKind == LootActorKind::Interactive;
+					Cache.bInventoryPickup = lootKind == LootActorKind::InventoryPickup;
+					Cache.bDrawBox = false;
+					Cache.bHasScreenBounds = false;
+					Cache.WorldAnchor = Actor->K2_GetActorLocation();
+					if (Cache.bInteractive)
+						GetActorBoundsAnchor(Actor, Cache.WorldAnchor);
+					batchLoot.push_back(std::move(Cache));
+					return true;
+				},
+				&nextCursor,
+				nullptr,
+				&completed))
 			{
 				Logger::LogThrottled(Logger::Level::Warning, "ESP", 2000, "Loot ESP skipped: Level->Actors unavailable");
 				std::lock_guard<std::mutex> lock(state.Mutex);
+				state.PendingLoot.clear();
+				state.LootScanCursor = 0;
 				NewLoot = state.CachedLoot;
 			}
+			else
+			{
+				std::lock_guard<std::mutex> lock(state.Mutex);
+				state.PendingLoot.insert(state.PendingLoot.end(),
+					std::make_move_iterator(batchLoot.begin()),
+					std::make_move_iterator(batchLoot.end()));
 
-			std::lock_guard<std::mutex> lock(state.Mutex);
-			state.LastLootRefreshMs = nowMs;
+				if (completed)
+				{
+					state.CachedLoot = std::move(state.PendingLoot);
+					state.PendingLoot.clear();
+					state.LootScanCursor = 0;
+					state.LastLootRefreshMs = nowMs;
+				}
+				else
+				{
+					state.LootScanCursor = nextCursor;
+				}
+
+				NewLoot = state.CachedLoot;
+			}
 		}
 	}
 	else
 	{
 		std::lock_guard<std::mutex> lock(state.Mutex);
+		state.PendingLoot.clear();
+		state.LootScanCursor = 0;
 		state.LastLootRefreshMs = 0;
 	}
 
@@ -654,19 +749,26 @@ void Cheats::RenderESP()
 	{
 		if (!Actor.TargetActor || !Utils::IsValidActor(Actor.TargetActor))
 			continue;
-		if (!Actor.bHasScreenBounds)
+		if (!Actor.bHasBoundsWorld)
 			continue;
 
-		const float Width = (std::max)(0.0f, (float)Actor.RightBottomScreen.X - (float)Actor.LeftTopScreen.X);
-		const float Height = (std::max)(0.0f, (float)Actor.RightBottomScreen.Y - (float)Actor.LeftTopScreen.Y);
+		FVector2D topScreen{};
+		FVector2D bottomScreen{};
+		FVector2D leftTopScreen{};
+		FVector2D rightBottomScreen{};
+		if (!ProjectActorScreenBounds(Actor.BoundsCorners, topScreen, bottomScreen, leftTopScreen, rightBottomScreen))
+			continue;
+
+		const float Width = (std::max)(0.0f, (float)rightBottomScreen.X - (float)leftTopScreen.X);
+		const float Height = (std::max)(0.0f, (float)rightBottomScreen.Y - (float)leftTopScreen.Y);
 		if (Height <= 0.0f || Width <= 0.0f) continue;
 
 		ESPActorRenderCache renderCache{};
 		renderCache.Actor = &Actor;
-		renderCache.TopScreen = Actor.TopScreen;
-		renderCache.BottomScreen = Actor.BottomScreen;
-		renderCache.LeftTopScreen = Actor.LeftTopScreen;
-		renderCache.RightBottomScreen = Actor.RightBottomScreen;
+		renderCache.TopScreen = topScreen;
+		renderCache.BottomScreen = bottomScreen;
+		renderCache.LeftTopScreen = leftTopScreen;
+		renderCache.RightBottomScreen = rightBottomScreen;
 		renderCache.Width = Width;
 		renderCache.Height = Height;
 		renderCache.Distance = Actor.Distance;

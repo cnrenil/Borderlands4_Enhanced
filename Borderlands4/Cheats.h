@@ -108,7 +108,6 @@ struct Cheats
 	static bool HandleAimbotEvents(const UObject* Object, UFunction* Function, void* Params);
 	static void HandleConstructedObject(const UObject* Object);
 	static bool HandleWeaponEvents(const UObject* Object, UFunction* Function, void* Params);
-	static bool HandleCameraEvents(const UObject* Object, UFunction* Function, void* Params);
 	
 	// Modular Update Handlers
 	static void UpdateMovement();

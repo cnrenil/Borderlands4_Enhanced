@@ -55,12 +55,15 @@ namespace
 	bool IsZoomingNow();
 	void ApplyRuntimeCameraFOV(float targetFOV);
 	void RegisterNativeCameraHookSignature();
+	void RegisterNativeCameraModeCommitHookSignature();
 	bool IsNativeFreecamGameplayReady();
 	void ResetNativeFreecamState();
 	void ResetNativeCameraState();
 	FNativeCameraPose UpdateNativeFreecamPose(const FNativeCameraPose& fallbackPose);
 	void ApplyNativeCameraPose(uintptr_t cameraContext, const FNativeCameraPose& pose);
 	void ApplyNativeCameraPostUpdateImpl(uintptr_t cameraContext, float deltaSeconds);
+	bool ShouldHoldThirdPersonCameraMode();
+	bool IsCurrentlyInThirdPersonCameraMode();
 
 	constexpr uintptr_t kCurrentCacheLocOffset = 1088;
 	constexpr uintptr_t kCurrentCacheRotOffset = 1112;
@@ -72,6 +75,7 @@ namespace
 	constexpr uintptr_t kViewTargetRotOffset = 14664;
 	constexpr uintptr_t kViewTargetFovOffset = 14688;
 	using NativeCameraUpdateFn = char(__fastcall*)(__int64, __int64*, float);
+	using NativeCameraModeCommitFn = __int64(__fastcall*)(__int64, __int64*, __int64*, __int64, int, char);
 	constexpr SignatureRegistry::Signature kNativeCameraUpdateSignature{
 		"NativeCameraUpdate",
 		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? "
@@ -83,7 +87,17 @@ namespace
 		SignatureRegistry::HookTiming::InGameReady
 	};
 	constexpr size_t kNativeCameraUpdateHookLen = 19;
+	constexpr SignatureRegistry::Signature kNativeCameraModeCommitSignature{
+		"NativeCameraModeCommit",
+		"41 57 41 56 41 54 56 57 55 53 48 83 EC 50 "
+		"0F 29 74 24 40 0F 28 F3 4C 89 C7 49 89 D6 48 89 CE "
+		"48 8B 05 ? ? ? ? 48 31 E0 48 89 44 24 38 "
+		"48 8B 01 FF 90 D0 08 00 00",
+		SignatureRegistry::HookTiming::InGameReady
+	};
+	constexpr size_t kNativeCameraModeCommitHookLen = 19;
 	NativeCameraUpdateFn oNativeCameraUpdate = nullptr;
+	NativeCameraModeCommitFn oNativeCameraModeCommit = nullptr;
 	FNativeFreecamState g_NativeFreecamState{};
 
 	bool IsValidWorldForNativeCamera()
@@ -124,6 +138,14 @@ namespace
 			kNativeCameraUpdateSignature.Name,
 			kNativeCameraUpdateSignature.Pattern,
 			kNativeCameraUpdateSignature.Timing);
+	}
+
+	void RegisterNativeCameraModeCommitHookSignature()
+	{
+		SignatureRegistry::Register(
+			kNativeCameraModeCommitSignature.Name,
+			kNativeCameraModeCommitSignature.Pattern,
+			kNativeCameraModeCommitSignature.Timing);
 	}
 
 	void DescribeNativeBehaviorList(uintptr_t modePtr, char* buffer, size_t bufferSize)
@@ -279,6 +301,71 @@ namespace
 		}
 
 		return result;
+	}
+
+	bool ShouldHoldThirdPersonCameraMode()
+	{
+		if (g_BlockNativeCameraUntilGameplayReady ||
+			Utils::bIsLoading ||
+			!Utils::bIsInGame ||
+			!IsGameplayReadyForNativeCamera() ||
+			!IsValidCharacterForNativeCamera() ||
+			!IsValidCameraManagerForNativeCamera() ||
+			ConfigManager::B("Player.Freecam"))
+		{
+			return false;
+		}
+
+		if (!ConfigManager::B("Player.ThirdPerson") && !ConfigManager::B("Player.OverShoulder"))
+			return false;
+
+		if (g_RequestedFirstPersonMode)
+			return false;
+
+		const bool bUseOverShoulder = ConfigManager::B("Player.OverShoulder");
+		const bool bUseThirdPerson = ConfigManager::B("Player.ThirdPerson");
+		const bool bIsZooming = IsZoomingNow();
+		const bool bOTSAdsFirstPerson =
+			bUseOverShoulder &&
+			bIsZooming &&
+			ConfigManager::B("Misc.OTSADSOverride") &&
+			ConfigManager::B("Misc.OTSADSFirstPerson");
+		const bool bThirdPersonAdsFirstPerson =
+			bUseThirdPerson &&
+			!bUseOverShoulder &&
+			bIsZooming &&
+			ConfigManager::B("Misc.ThirdPersonADSFirstPerson");
+		if (bOTSAdsFirstPerson || bThirdPersonAdsFirstPerson)
+			return false;
+
+		return GVars.PlayerController &&
+			GVars.PlayerController->PlayerCameraManager &&
+			GVars.PlayerController->PlayerCameraManager->ViewTarget.target == GVars.Character;
+	}
+
+	bool IsCurrentlyInThirdPersonCameraMode()
+	{
+		if (!ShouldHoldThirdPersonCameraMode())
+			return false;
+
+		const auto* oakChar = static_cast<SDK::AOakCharacter*>(GVars.Character);
+		const std::string modeStr = SDK::APlayerCameraModeManager::GetActorCameraMode(const_cast<SDK::AOakCharacter*>(oakChar)).ToString();
+		return modeStr.find("ThirdPerson") != std::string::npos;
+	}
+
+	__int64 __fastcall hkNativeCameraModeCommit(__int64 a1, __int64* a2, __int64* a3, __int64 a4, int a5, char a6)
+	{
+		if (IsCurrentlyInThirdPersonCameraMode())
+		{
+			Logger::LogThrottled(
+				Logger::Level::Debug,
+				"CamModeBlock",
+				1000,
+				"Blocked native camera mode commit while third-person lock is active");
+			return 0;
+		}
+
+		return oNativeCameraModeCommit ? oNativeCameraModeCommit(a1, a2, a3, a4, a5, a6) : 0;
 	}
 
 	bool ReadNativeCameraPose(uintptr_t base, uintptr_t locOffset, uintptr_t rotOffset, uintptr_t fovOffset, FNativeCameraPose& outPose)
@@ -497,41 +584,6 @@ namespace
 			IsGameplayReadyForNativeCamera() &&
 			GVars.PlayerController &&
 			GVars.PlayerController->PlayerCameraManager;
-	}
-
-	bool ShouldForceTravelCameraReset(const SDK::UObject* Object, SDK::UFunction* Function)
-	{
-		if (!Object || !Function)
-			return false;
-
-		const std::string functionName = Function->GetName();
-		if (functionName == "ClientTravel" ||
-			functionName == "ClientTravelInternal" ||
-			functionName == "LocalTravel" ||
-			functionName == "ClientReturnToMainMenuWithTextReason" ||
-			functionName == "ReturnToMainMenuHost" ||
-			functionName == "OpenLevel" ||
-			functionName == "OpenLevelBySoftObjectPtr" ||
-			functionName == "OnLeaveGameChoiceMade")
-		{
-			return true;
-		}
-
-		if (functionName.find("Travel") != std::string::npos ||
-			functionName.find("MainMenu") != std::string::npos ||
-			functionName.find("LeaveGame") != std::string::npos ||
-			functionName.find("Disconnect") != std::string::npos)
-		{
-			const std::string className = Object->Class ? Object->Class->GetName() : "";
-			return className.find("PlayerController") != std::string::npos ||
-				className.find("GameMode") != std::string::npos ||
-				className.find("GameInstance") != std::string::npos ||
-				className.find("UIScript") != std::string::npos ||
-				className.find("TravelNotification") != std::string::npos ||
-				className.find("DispatchEvents") != std::string::npos;
-		}
-
-		return false;
 	}
 
 	SDK::FRotator UpdateFreecamRotation(const SDK::FRotator& fallbackRotation)
@@ -869,6 +921,7 @@ namespace
 		}
 
 		static float LastTransitionTime = 0.0f;
+		static bool bLastDesiredThirdPerson = false;
 		const float CurrentTime = (float)ImGui::GetTime();
 		const bool bIsZooming = ((uint8)OakChar->ZoomState.State != 0);
 		const bool bUseFreecam = ConfigManager::B("Player.Freecam");
@@ -884,6 +937,7 @@ namespace
 			}
 			g_RequestedFirstPersonMode = false;
 			g_RequestedThirdPersonMode = false;
+			bLastDesiredThirdPerson = false;
 		}
 		else
 		{
@@ -919,13 +973,15 @@ namespace
 			}
 
 			const std::string ModeStr = SDK::APlayerCameraModeManager::GetActorCameraMode(OakChar).ToString();
+			const bool bIsCurrentlyThirdPerson = ModeStr.find("ThirdPerson") != std::string::npos;
+			const bool bDesiredStateChanged = bShouldBeInThirdPerson != bLastDesiredThirdPerson;
 			if (bShouldBeInThirdPerson)
 			{
-				if (ModeStr.find("ThirdPerson") != std::string::npos)
+				if (bIsCurrentlyThirdPerson)
 				{
 					g_RequestedThirdPersonMode = false;
 				}
-				else if (!g_RequestedThirdPersonMode && (CurrentTime - LastTransitionTime > 0.5f))
+				else if (bDesiredStateChanged && (CurrentTime - LastTransitionTime > 0.2f))
 				{
 					OakPC->CameraTransition(
 						SDK::UKismetStringLibrary::Conv_StringToName(L"ThirdPerson"),
@@ -940,11 +996,11 @@ namespace
 			}
 			else
 			{
-				if (ModeStr.find("ThirdPerson") == std::string::npos)
+				if (!bIsCurrentlyThirdPerson)
 				{
 					g_RequestedFirstPersonMode = false;
 				}
-				else if (!g_RequestedFirstPersonMode && (CurrentTime - LastTransitionTime > 0.5f))
+				else if (bDesiredStateChanged && (CurrentTime - LastTransitionTime > 0.2f))
 				{
 					OakPC->CameraTransition(
 						SDK::UKismetStringLibrary::Conv_StringToName(L"FirstPerson"),
@@ -957,6 +1013,8 @@ namespace
 				}
 				g_RequestedThirdPersonMode = false;
 			}
+
+			bLastDesiredThirdPerson = bShouldBeInThirdPerson;
 		}
 	}
 }
@@ -1031,12 +1089,20 @@ void Cheats::UpdateCamera()
 	}
 
 	RegisterNativeCameraHookSignature();
+	RegisterNativeCameraModeCommitHookSignature();
 
 	SignatureRegistry::EnsureHook(
 		kNativeCameraUpdateSignature,
 		reinterpret_cast<void*>(&hkNativeCameraUpdate),
 		reinterpret_cast<void**>(&oNativeCameraUpdate),
 		kNativeCameraUpdateHookLen,
+		"CamNative",
+		true);
+	SignatureRegistry::EnsureHook(
+		kNativeCameraModeCommitSignature,
+		reinterpret_cast<void*>(&hkNativeCameraModeCommit),
+		reinterpret_cast<void**>(&oNativeCameraModeCommit),
+		kNativeCameraModeCommitHookLen,
 		"CamNative",
 		true);
 
@@ -1104,40 +1170,4 @@ void Cheats::ApplyNativeCameraPostUpdate(uintptr_t cameraContext, float deltaSec
 		ResetNativeCameraState();
 		ResetNativeFreecamState();
 	}
-}
-
-bool Cheats::HandleCameraEvents(const SDK::UObject* Object, SDK::UFunction* Function, void* Params)
-{
-	(void)Params;
-	if (ShouldForceTravelCameraReset(Object, Function))
-	{
-		if (!g_BlockNativeCameraUntilGameplayReady)
-		{
-			const std::string functionName = Function ? Function->GetName() : "Unknown";
-			const std::string className = (Object && Object->Class) ? Object->Class->GetName() : "Unknown";
-			Logger::LogThrottled(Logger::Level::Debug, "Camera", 250, "ProcessEvent detected travel/menu transition (%s::%s), blocking native camera overrides", className.c_str(), functionName.c_str());
-		}
-
-		g_BlockNativeCameraUntilGameplayReady = true;
-		ResetNativeCameraState();
-		ResetNativeFreecamState();
-	}
-
-	if (Object == GVars.PlayerController ||
-		(GVars.PlayerController && Object == GVars.PlayerController->PlayerCameraManager))
-	{
-		const std::string functionName = Function ? Function->GetName() : "";
-		if (functionName == "ReceiveEndPlay" ||
-			functionName == "EndPlay" ||
-			functionName == "ReceiveDestroyed" ||
-			functionName == "Destroyed" ||
-			functionName == "BeginDestroy")
-		{
-			g_BlockNativeCameraUntilGameplayReady = true;
-			ResetNativeCameraState();
-			ResetNativeFreecamState();
-		}
-	}
-
-	return false;
 }

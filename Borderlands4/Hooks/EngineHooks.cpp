@@ -112,21 +112,7 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 			}
 		}
 
-		if (bIsCameraManagerHooked)
-		{
-			if (GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
-			{
-				void** currentCMVTable = *reinterpret_cast<void***>(GVars.PlayerController->PlayerCameraManager);
-				if (currentCMVTable && currentCMVTable != hookState.cmVTable)
-				{
-					bIsCameraManagerHooked = false;
-				}
-			}
-			else
-			{
-				bIsCameraManagerHooked = false;
-			}
-		}
+		bIsCameraManagerHooked = false;
 
 		if (bIsProcessEventHooked)
 		{
@@ -152,28 +138,6 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 					}
 				}
 			}
-
-			if (!bIsCameraManagerHooked && GVars.PlayerController && GVars.PlayerController->PlayerCameraManager)
-			{
-				void** cmVTable = *reinterpret_cast<void***>(GVars.PlayerController->PlayerCameraManager);
-				if (cmVTable && !IsBadReadPtr(cmVTable, sizeof(void*) * 80)) 
-				{
-					if (cmVTable[73] != &hkProcessEvent) {
-						DWORD old;
-						if (VirtualProtect(&cmVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old)) {
-							cmVTable[73] = (void*)hkProcessEvent;
-							VirtualProtect(&cmVTable[73], sizeof(void*), old, &old);
-							
-							hookState.cmVTable = cmVTable; 
-							bIsCameraManagerHooked = true;
-						}
-					}
-					else {
-						hookState.cmVTable = cmVTable;
-						bIsCameraManagerHooked = true;
-					}
-				}
-			}
 		}
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER) {
@@ -191,7 +155,6 @@ static void SafeUpdateHooks(bool& bIsProcessEventHooked, bool& bIsPlayerStateHoo
 
 	// Log success outside SEH to allow using std::string conversion in LOG_DEBUG
 	if (!prevPS && bIsPlayerStateHooked) LOG_DEBUG("Hook", "SUCCESS: PlayerState ProcessEvent Hooked!");
-	if (!prevCM && bIsCameraManagerHooked) LOG_DEBUG("Hook", "SUCCESS: CameraManager ProcessEvent Hooked!");
 
 	// Logger::LogThrottled(Logger::Level::Debug, "Hook", 10000, "SafeUpdateHooks: Hooks Status (PE: %d, PS: %d, CM: %d)", bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);
 }

@@ -19,7 +19,6 @@ struct Hooks
 	{
 		void** pcVTable = nullptr;
 		void** psVTable = nullptr;
-		void** cmVTable = nullptr;
 		void** viewportVTable = nullptr;
 		PostRenderFn originalPostRender = nullptr;
 	};

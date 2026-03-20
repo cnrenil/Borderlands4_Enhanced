@@ -44,8 +44,6 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
 	bInsideHook = true;
     try {
-        if (Cheats::HandleCameraEvents(Object, Function, Params)) { bSkipOriginal = true; goto Exit; }
-
         if (Utils::bIsInGame) {
             std::string fnName = Function->GetName();
             auto IsInputEvent = [](const std::string& name) -> bool
@@ -129,16 +127,6 @@ void Hooks::UnhookAll()
 			state.pcVTable[73] = (void*)oProcessEvent;
 			VirtualProtect(&state.pcVTable[73], sizeof(void*), old, &old);
 			LOG_INFO("Hook", "Restored PlayerController ProcessEvent.");
-		}
-	}
-
-	if (state.cmVTable && oProcessEvent)
-	{
-		if (VirtualProtect(&state.cmVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old))
-		{
-			state.cmVTable[73] = (void*)oProcessEvent;
-			VirtualProtect(&state.cmVTable[73], sizeof(void*), old, &old);
-			LOG_INFO("Hook", "Restored CameraManager ProcessEvent.");
 		}
 	}
 
