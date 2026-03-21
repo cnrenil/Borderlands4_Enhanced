@@ -8,6 +8,9 @@ namespace HotkeyManager
 
     namespace
     {
+        constexpr ULONGLONG kUnhookConfirmWindowMs = 1800;
+        ULONGLONG gPendingUnhookDeadlineMs = 0;
+
         bool IsPriorityHotkey(const Hotkey& hk)
         {
             return hk.Name == "Misc.MenuKey" || hk.Name == "Misc.UnhookKey";
@@ -128,6 +131,11 @@ namespace HotkeyManager
         // Don't process game-affecting hotkeys if loading, but allow menu toggle
 		bool IsLoading = Utils::bIsLoading;
 		bool IsInGame = Utils::bIsInGame;
+        const ULONGLONG nowMs = GetTickCount64();
+        if (gPendingUnhookDeadlineMs != 0 && nowMs > gPendingUnhookDeadlineMs)
+        {
+            gPendingUnhookDeadlineMs = 0;
+        }
 
         for (auto& hk : Hotkeys)
         {
@@ -148,6 +156,22 @@ namespace HotkeyManager
                     {
                         if (bIsMenuKey || bIsUnhookKey || !ImGui::GetIO().WantCaptureKeyboard)
                         {
+                            if (bIsUnhookKey)
+                            {
+                                if (gPendingUnhookDeadlineMs != 0 && nowMs <= gPendingUnhookDeadlineMs)
+                                {
+                                    gPendingUnhookDeadlineMs = 0;
+                                    LOG_WARN("Hotkey", "Unhook confirmed on second press.");
+                                    hk.Callback();
+                                }
+                                else
+                                {
+                                    gPendingUnhookDeadlineMs = nowMs + kUnhookConfirmWindowMs;
+                                    LOG_WARN("Hotkey", "Press %s again within %llums to confirm unhook.", ImGui::GetKeyName(currentKey), kUnhookConfirmWindowMs);
+                                }
+                                continue;
+                            }
+
                             if (!hk.bIsHold) {
                                 LOG_DEBUG("Hotkey", "Triggered: %s (Key: %s)", hk.Label.c_str(), ImGui::GetKeyName(currentKey));
                             }

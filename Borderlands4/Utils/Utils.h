@@ -100,9 +100,13 @@ struct Utils
 	static FVector GetBestAimPoint(ACharacter* TargetChar, const std::string& PreferredBone);
 	static void SendMouseLeftDown();
 	static void SendMouseLeftUp();
-
     static inline std::atomic<bool> bIsLoading = false;
     static inline std::atomic<bool> bIsInGame = false;
+    static inline std::atomic<bool> bIsCinematicMode = false;
+	static bool ShouldSuspendOverlayRendering()
+	{
+		return bIsCinematicMode.load(std::memory_order_relaxed);
+	}
 };
 
 struct Variables
@@ -173,6 +177,7 @@ struct Variables
 			Logger::LogThrottled(Logger::Level::Debug, "GVars", 5000, "AutoSetVariables: Waiting for World/VTable...");
 			Utils::bIsLoading = true;
 			Utils::bIsInGame = false;
+			Utils::bIsCinematicMode = false;
 			return;
 		}
 
@@ -180,6 +185,7 @@ struct Variables
 		if (!this->Level) {
 			Utils::bIsLoading = true;
 			Utils::bIsInGame = false;
+			Utils::bIsCinematicMode = false;
 			return;
 		}
 
@@ -190,6 +196,7 @@ struct Variables
 		if (Utils::bIsLoading) {
 			Logger::LogThrottled(Logger::Level::Debug, "GVars", 5000, "AutoSetVariables: Game is in loading state.");
 			Utils::bIsInGame = false;
+			Utils::bIsCinematicMode = false;
 			return;
 		}
 
@@ -211,6 +218,7 @@ struct Variables
 		if (!this->PlayerController || !this->PlayerController->VTable) {
 			Logger::LogThrottled(Logger::Level::Debug, "GVars", 5000, "AutoSetVariables: Waiting for PlayerController...");
 			Utils::bIsInGame = false;
+			Utils::bIsCinematicMode = false;
 			return;
 		}
 

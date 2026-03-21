@@ -39,7 +39,6 @@ void Cheats::RenderEnabledOptions()
     addEntry(ConfigManager::B("Player.GodMode"), "GODMODE");
     addEntry(ConfigManager::B("Player.InfAmmo"), "INF_AMMO");
     addEntry(ConfigManager::B("Player.InfGrenades"), "INF_GRENADES");
-    addEntry(ConfigManager::B("Player.InfVehicleBoost"), "INF_VEHICLE_BOOST");
     addEntry(ConfigManager::B("Player.InfGlideStamina"), "INF_GLIDE_STAMINA");
     addEntry(ConfigManager::B("Aimbot.Enabled"), "AIMBOT");
     addEntry(ConfigManager::B("Player.ESP"), "ESP");

@@ -529,7 +529,6 @@ namespace
             AnimatedToggle(Localization::T("SPEED_HACK"), &B("Player.SpeedEnabled"));
             AnimatedToggle(Localization::T("FLIGHT"), &B("Player.Flight"));
             AnimatedToggle(Localization::T("VEHICLE_SPEED_HACK"), &B("Player.VehicleSpeedEnabled"));
-            AnimatedToggle(Localization::T("INF_VEHICLE_BOOST"), &B("Player.InfVehicleBoost"));
             AnimatedToggle(Localization::T("INF_GLIDE_STAMINA"), &B("Player.InfGlideStamina"));
             break;
         case PanelId::Camera:
@@ -872,7 +871,6 @@ namespace
         {
             ImGui::SliderFloat(Localization::T("FLIGHT_SPEED"), &F("Player.FlightSpeed"), 1.0f, 20.0f, "%.1f");
         }
-        AnimatedToggle(Localization::T("INF_VEHICLE_BOOST"), &B("Player.InfVehicleBoost"));
         AnimatedToggle(Localization::T("VEHICLE_SPEED_HACK"), &B("Player.VehicleSpeedEnabled"));
         if (B("Player.VehicleSpeedEnabled"))
         {

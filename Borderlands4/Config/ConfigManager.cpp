@@ -98,7 +98,6 @@ namespace ConfigManager
         Register("Player.Freecam", false);
         Register("Player.Flight", false);
         Register("Player.FlightSpeed", 1.0f);
-        Register("Player.InfVehicleBoost", false);
         Register("Player.VehicleSpeedEnabled", false);
         Register("Player.VehicleSpeed", 1.0f);
         Register("Player.InfGlideStamina", false);

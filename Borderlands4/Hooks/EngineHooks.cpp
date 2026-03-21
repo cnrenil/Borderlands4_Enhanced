@@ -32,7 +32,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     // even when the menu is closed.
     ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 
-	if (GUI::ShowMenu) {
+	if (GUI::ShowMenu && !Utils::ShouldSuspendOverlayRendering()) {
 		// Fully block user input from reaching the game when menu is open.
 		switch (uMsg) {
 			case WM_INPUT:

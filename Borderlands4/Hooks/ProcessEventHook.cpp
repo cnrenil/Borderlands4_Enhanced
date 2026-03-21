@@ -44,8 +44,30 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
 
 	bInsideHook = true;
     try {
+        std::string fnName = Function->GetName();
+
+        if (Params && (fnName == "ClientSetCinematicMode" || fnName == "SetCinematicMode"))
+        {
+            bool bNewCinematicMode = false;
+            if (fnName == "ClientSetCinematicMode")
+            {
+                const auto* cinematicParams = static_cast<const SDK::Params::PlayerController_ClientSetCinematicMode*>(Params);
+                bNewCinematicMode = cinematicParams->bInCinematicMode;
+            }
+            else
+            {
+                const auto* cinematicParams = static_cast<const SDK::Params::PlayerController_SetCinematicMode*>(Params);
+                bNewCinematicMode = cinematicParams->bInCinematicMode;
+            }
+
+            const bool bPreviousMode = Utils::bIsCinematicMode.exchange(bNewCinematicMode);
+            if (bPreviousMode != bNewCinematicMode)
+            {
+                LOG_INFO("Overlay", "Cinematic mode %s. %s overlay rendering.", bNewCinematicMode ? "enabled" : "disabled", bNewCinematicMode ? "Suspending" : "Resuming");
+            }
+        }
+
         if (Utils::bIsInGame) {
-            std::string fnName = Function->GetName();
             auto IsInputEvent = [](const std::string& name) -> bool
             {
                 return name.find("InputKey") != std::string::npos ||
@@ -64,7 +86,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
             };
 
             // Block Input when Menu is open
-            if (GUI::ShowMenu)
+            if (GUI::ShowMenu && !Utils::ShouldSuspendOverlayRendering())
             {
                 if (IsInputEvent(fnName))
                 {

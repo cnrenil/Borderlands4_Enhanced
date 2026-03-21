@@ -135,7 +135,6 @@ namespace Localization
         Register("SPEED_VALUE", "Speed Multiplier", (const char*)u8"速度倍率");
         Register("FLIGHT", "Flight Mode", (const char*)u8"飞行模式");
         Register("FLIGHT_SPEED", "Flight Speed", (const char*)u8"飞行速度");
-        Register("INF_VEHICLE_BOOST", "Infinite Vehicle Boost", (const char*)u8"无限车辆氮气");
         Register("VEHICLE_SPEED_HACK", "Vehicle Speed Hack", (const char*)u8"载具加速");
         Register("VEHICLE_SPEED_VALUE", "Vehicle Speed Multiplier", (const char*)u8"载具速度倍率");
         Register("INF_GLIDE_STAMINA", "Infinite Glide Stamina", (const char*)u8"无限滑翔体力");

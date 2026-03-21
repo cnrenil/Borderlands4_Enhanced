@@ -33,18 +33,6 @@ namespace
         float BoostMaxAccelBase = -1.0f;
     };
 
-    struct VehicleBoostResourceBinding
-    {
-        SDK::TScriptInterface<SDK::IGameResourcePoolOwnerInterface> Owner;
-        SDK::FGameDataHandleProperty_ Resource{};
-    };
-
-    struct GameResourcePoolOwnerResourceParams
-    {
-        SDK::TScriptInterface<SDK::IGameResourcePoolOwnerInterface> owner;
-        SDK::FGameDataHandleProperty_ InResource;
-    };
-
     static SDK::UOakCharacterMovementComponent* g_LastMoveComp = nullptr;
     static SDK::UOakCharacterMovementComponent* g_LastGlideMoveComp = nullptr;
     static MovementOriginalState g_OriginalMoveState{};
@@ -61,8 +49,6 @@ namespace
     static SDK::FVehicleAttributesState* g_LastVehicleAttrState = nullptr;
     static VehicleOriginalState g_OriginalVehicleState{};
     static bool g_WasVehicleSpeedHackOn = false;
-    static SDK::AOakVehicle* g_LastVehicleBoostOwner = nullptr;
-    static std::vector<VehicleBoostResourceBinding> g_VehicleBoostResources;
 
     void ResetMovementState()
     {
@@ -80,8 +66,6 @@ namespace
         g_LastVehicleAttrState = nullptr;
         g_OriginalVehicleState = VehicleOriginalState{};
         g_WasVehicleSpeedHackOn = false;
-        g_LastVehicleBoostOwner = nullptr;
-        g_VehicleBoostResources.clear();
     }
 
     void CaptureMovementOriginals(SDK::UOakCharacterMovementComponent* Move)
@@ -337,55 +321,6 @@ namespace
             n.find("dash") != std::string::npos;
     }
 
-    bool IsLikelyVehicleBoostResourceName(const SDK::FName& ResourceName)
-    {
-        std::string n = ResourceName.ToString();
-        std::transform(n.begin(), n.end(), n.begin(), [](unsigned char c) {
-            if (c >= 'A' && c <= 'Z') return (char)(c + ('a' - 'A'));
-            return (char)c;
-        });
-
-        return n.find("boost") != std::string::npos ||
-            n.find("fuel") != std::string::npos ||
-            n.find("nitro") != std::string::npos ||
-            n.find("turbo") != std::string::npos;
-    }
-
-    bool IsLocalVehicleBoostContext(const SDK::UObject* OwnerContext)
-    {
-        if (!OwnerContext)
-            return false;
-
-        SDK::AOakVehicle* localVehicle = GetControlledVehicle();
-        if (!localVehicle || !Utils::IsValidActor(localVehicle))
-            return false;
-
-        if (OwnerContext == localVehicle)
-            return true;
-
-        SDK::UOakWheeledVehicleMovementComponent* vehicleMove = localVehicle->OakVehicleMovement;
-        if (vehicleMove && OwnerContext == vehicleMove)
-            return true;
-
-        if (localVehicle->DriverPawn && OwnerContext == localVehicle->DriverPawn)
-            return true;
-
-        if (GVars.Character && OwnerContext == GVars.Character)
-            return true;
-
-        if (GVars.Pawn && OwnerContext == GVars.Pawn)
-            return true;
-
-        if (GVars.PlayerController && GVars.PlayerController->Pawn && OwnerContext == GVars.PlayerController->Pawn)
-            return true;
-
-        SDK::AActor* selfActor = Utils::GetSelfActor();
-        if (selfActor && OwnerContext == selfActor)
-            return true;
-
-        return false;
-    }
-
     bool IsLocalMovementComponent(const SDK::UObject* Object)
     {
         if (!Object || !GVars.Character || !Utils::IsValidActor(GVars.Character))
@@ -397,83 +332,6 @@ namespace
         const SDK::AOakCharacter* localChar = (const SDK::AOakCharacter*)GVars.Character;
         const SDK::UOakCharacterMovementComponent* move = (const SDK::UOakCharacterMovementComponent*)Object;
         return move && localChar && move == localChar->OakCharacterMovement;
-    }
-
-    bool ShouldMaintainVehicleBoost(SDK::AOakVehicle* vehicle, SDK::UOakWheeledVehicleMovementComponent* vehicleMove)
-    {
-        if (!vehicle || !vehicleMove)
-            return false;
-
-        if (vehicleMove->bBoostInput || vehicleMove->bWantsToBoost)
-            return true;
-
-        if (vehicleMove->IsBoosting())
-            return true;
-
-        return SDK::UOakVehicleBlueprintLibrary::IsBoosting(vehicle);
-    }
-
-    bool IsLocalVehicleBoostOwner(const SDK::TScriptInterface<SDK::IGameResourcePoolOwnerInterface>& owner)
-    {
-        return IsLocalVehicleBoostContext(owner.ObjectPointer);
-    }
-
-    bool IsSameVehicleBoostResource(const VehicleBoostResourceBinding& lhs, const VehicleBoostResourceBinding& rhs)
-    {
-        return lhs.Owner.ObjectPointer == rhs.Owner.ObjectPointer &&
-            std::memcmp(&lhs.Resource, &rhs.Resource, sizeof(SDK::FGameDataHandleProperty_)) == 0;
-    }
-
-    void CacheVehicleBoostResource(const SDK::TScriptInterface<SDK::IGameResourcePoolOwnerInterface>& owner, const SDK::FGameDataHandleProperty_& resource)
-    {
-        if (!owner.ObjectPointer || !IsLocalVehicleBoostOwner(owner))
-            return;
-
-        VehicleBoostResourceBinding binding{};
-        binding.Owner = owner;
-        binding.Resource = resource;
-
-        for (const auto& existing : g_VehicleBoostResources)
-        {
-            if (IsSameVehicleBoostResource(existing, binding))
-                return;
-        }
-
-        g_VehicleBoostResources.push_back(binding);
-    }
-
-    void ApplyInfiniteVehicleBoost()
-    {
-        if (!ConfigManager::B("Player.InfVehicleBoost"))
-        {
-            return;
-        }
-
-        SDK::AOakVehicle* vehicle = GetControlledVehicle();
-        if (!vehicle || !Utils::IsValidActor(vehicle)) return;
-        if (g_LastVehicleBoostOwner != vehicle)
-        {
-            g_LastVehicleBoostOwner = vehicle;
-            g_VehicleBoostResources.clear();
-        }
-
-        SDK::UOakWheeledVehicleMovementComponent* vehicleMove = vehicle->OakVehicleMovement;
-        if (!vehicleMove) return;
-
-        vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
-        vehicleMove->OnBoostFilled();
-
-        for (const auto& binding : g_VehicleBoostResources)
-        {
-            SDK::UGameResourcePoolFunctionLibrary::SetResourcePoolValueByPercentage(binding.Owner, binding.Resource, 1.0f);
-            SDK::UGameResourcePoolFunctionLibrary::ResetResourcePoolRegenDelay(binding.Owner, binding.Resource);
-        }
-
-        if (!SDK::UOakVehicleBlueprintLibrary::CanBoost(vehicle))
-            vehicle->ServerRecomputeBoostCost();
-
-        if (ShouldMaintainVehicleBoost(vehicle, vehicleMove) || vehicleMove->bBoostInput || vehicleMove->bWantsToBoost)
-            SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
     }
 
     SDK::AInventoryGadget* GetLocalInventoryGadget()
@@ -707,7 +565,6 @@ void Cheats::UpdateMovement()
     ApplyInfiniteGrenades();
     ApplyVehicleSpeedMultiplier();
     ApplyInfiniteGlideStamina();
-    ApplyInfiniteVehicleBoost();
     DiscoveryPinWatcher();
 }
 
@@ -748,101 +605,6 @@ bool Cheats::HandleMovementEvents(const SDK::UObject* Object, SDK::UFunction* Fu
             move->ClientOnVaultPowerNotDepleted();
             return true;
         }
-    }
-
-    if (ConfigManager::B("Player.InfVehicleBoost") &&
-        Object &&
-        Object->IsA(SDK::UOakWheeledVehicleMovementComponent::StaticClass()))
-    {
-        SDK::UOakWheeledVehicleMovementComponent* vehicleMove = (SDK::UOakWheeledVehicleMovementComponent*)Object;
-        SDK::AOakVehicle* vehicle = vehicleMove ? vehicleMove->OakVehicleOwner : nullptr;
-
-        if (FuncName == "OnBoostDepleted")
-        {
-            if (!vehicle || !Utils::IsValidActor(vehicle) || !ShouldMaintainVehicleBoost(vehicle, vehicleMove))
-                return false;
-
-            vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
-            vehicleMove->OnBoostFilled();
-            SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
-            vehicle->ServerRecomputeBoostCost();
-            return true;
-        }
-
-        if (FuncName == "FreeBoostElapsed")
-        {
-            if (!vehicle || !Utils::IsValidActor(vehicle) || !ShouldMaintainVehicleBoost(vehicle, vehicleMove))
-                return false;
-
-            vehicleMove->LastBoostFailureReason = SDK::EBoostFailureReason::None;
-            vehicleMove->OnBoostFilled();
-            SDK::UOakVehicleBlueprintLibrary::ToggleBoost(vehicle, true);
-            return true;
-        }
-    }
-
-    if (ConfigManager::B("Player.InfVehicleBoost"))
-    {
-        if (FuncName == "DrainResourcePoolByPercentage" && Params)
-        {
-            auto* p = (SDK::Params::GameResourcePoolFunctionLibrary_DrainResourcePoolByPercentage*)Params;
-            if (p && IsLocalVehicleBoostOwner(p->owner))
-            {
-                CacheVehicleBoostResource(p->owner, p->InResource);
-                return true;
-            }
-        }
-
-        if (FuncName == "DrainResourcePoolSegment" && Params)
-        {
-            auto* p = (SDK::Params::GameResourcePoolFunctionLibrary_DrainResourcePoolSegment*)Params;
-            if (p && IsLocalVehicleBoostOwner(p->owner))
-            {
-                CacheVehicleBoostResource(p->owner, p->InResource);
-                return true;
-            }
-        }
-
-        if ((FuncName == "GetResourcePoolPercent" ||
-             FuncName == "GetResourcePoolValue" ||
-             FuncName == "IsResourcePoolInState" ||
-             FuncName == "RefillResourcePoolByPercentage" ||
-             FuncName == "RefillResourcePoolSegment" ||
-             FuncName == "SetResourcePoolValue" ||
-             FuncName == "SetResourcePoolValueByPercentage" ||
-             FuncName == "ResetResourcePoolRegenDelay") && Params)
-        {
-            auto* base = (GameResourcePoolOwnerResourceParams*)Params;
-            if (base && IsLocalVehicleBoostOwner(base->owner))
-            {
-                CacheVehicleBoostResource(base->owner, base->InResource);
-            }
-        }
-
-        if (FuncName == "NotEnoughFuelError")
-        {
-            return true;
-        }
-
-        if (FuncName == "DrainResourcePool" && Params)
-        {
-            struct DrainResourcePoolParams
-            {
-                SDK::UObject* OwnerContext;
-                SDK::FName ResourceName;
-                float Percentage;
-                float MinPercentage;
-            };
-
-            auto* p = (DrainResourcePoolParams*)Params;
-            if (p &&
-                IsLocalVehicleBoostContext(p->OwnerContext) &&
-                IsLikelyVehicleBoostResourceName(p->ResourceName))
-            {
-                return true;
-            }
-        }
-
     }
 
     if (!ConfigManager::B("Misc.MapTeleport")) return false;
