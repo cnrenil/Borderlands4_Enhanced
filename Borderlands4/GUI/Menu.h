@@ -7,9 +7,12 @@ namespace GUI
     extern ImGuiKey ESPKey;
     extern ImGuiKey AimButton;
 
+    struct MenuBackdropState;
+
     void RenderMenu();
     void AddDefaultTooltip(const char* desc);
     void HostOnlyTooltip();
+    const MenuBackdropState& GetMenuBackdropState();
 }
 
 

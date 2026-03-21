@@ -274,6 +274,18 @@ namespace Localization
         Register("SAVE_SETTINGS", "Save Settings", (const char*)u8"保存设置");
         Register("LOAD_SETTINGS", "Load Settings", (const char*)u8"加载设置");
         Register("SILENT_AIM_SETTINGS", "Silent Aim Settings", (const char*)u8"静默自瞄设置");
+        Register("THEME_STUDIO", "Theme Studio", (const char*)u8"主题工坊");
+        Register("THEME_ACCENT", "Accent", (const char*)u8"强调色");
+        Register("THEME_GLOW", "Glow", (const char*)u8"高亮辉光");
+        Register("THEME_GLOW_STRENGTH", "Glow Strength", (const char*)u8"辉光强度");
+        Register("THEME_GLOW_SPREAD", "Glow Spread", (const char*)u8"辉光范围");
+        Register("THEME_TINT", "Tint", (const char*)u8"玻璃染色");
+        Register("THEME_BACKDROP", "Backdrop", (const char*)u8"背景强度");
+        Register("QUICK_ACTIONS", "Quick Actions", (const char*)u8"快捷操作");
+        Register("VISUAL_TUNING", "Visual Tuning", (const char*)u8"视觉调整");
+        Register("VISUAL_TUNING_HINT", "Interactive theme colors update immediately.", (const char*)u8"主题颜色修改会立即生效。");
+        Register("COLOR_CURRENT", "Current", (const char*)u8"当前");
+        Register("COLOR_ORIGINAL", "Original", (const char*)u8"原始");
         
         Register("DUMP_GOBJECTS", "Dump GObjects", (const char*)u8"导出 GObjects");
         Register("KILL_SYMBIOTE", "Kill Symbiote (Anti-Debug)", (const char*)u8"干掉反调试");

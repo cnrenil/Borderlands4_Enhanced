@@ -8,4 +8,5 @@ namespace GUI::Overlay
     void BuildFrame();
     ImDrawData* GetDrawData();
     bool IsInitialized();
+    float GetDpiScale();
 }

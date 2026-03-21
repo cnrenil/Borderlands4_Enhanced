@@ -133,6 +133,12 @@ namespace ConfigManager
         Register("Misc.FreecamBlockInput", false);
         Register("Misc.Language", 0);
         Register("Misc.Theme", 0);
+        Register("Misc.ThemeAccent", ImVec4(0.29f, 0.68f, 0.96f, 1.0f));
+        Register("Misc.ThemeTint", ImVec4(0.08f, 0.10f, 0.14f, 0.58f));
+        Register("Misc.ThemeGlow", ImVec4(0.66f, 0.90f, 1.0f, 1.0f));
+        Register("Misc.ThemeGlowStrength", 0.42f);
+        Register("Misc.ThemeGlowSpread", 22.0f);
+        Register("Misc.ThemeBackdropOpacity", 0.88f);
         Register("Misc.Debug", false);
         Register("Misc.PingDump", false);
         Register("Misc.RenderOptions", false);

@@ -34,6 +34,12 @@
     <ClCompile Include="DLLMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Fonts\Embedded\EmbeddedFontFallback.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Fonts\Embedded\EmbeddedFontMain.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
     <ClCompile Include="Utils\Localization.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -181,6 +187,9 @@
     <ClCompile Include="GUI\Themes.cpp">
       <Filter>Source Files\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\BackdropBlur.cpp">
+      <Filter>Source Files\GUI</Filter>
+    </ClCompile>
     <ClCompile Include="Hooks\EngineHooks.cpp">
       <Filter>Source Files\Hooks</Filter>
     </ClCompile>
@@ -229,6 +238,15 @@
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="GUI\Overlay.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\BackdropBlur.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts\Embedded\EmbeddedFontFallback.h">
+      <Filter>Source Files\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts\Embedded\EmbeddedFontMain.h">
       <Filter>Source Files\GUI</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />

@@ -15,41 +15,13 @@ namespace
             0.98f);
     }
 
-    void DrawOverlayHudChrome(const ImVec2& pos, const ImVec2& size, ImU32 accent)
+    ImU32 ToOverlayColor(const ImVec4& color, float alphaScale = 1.0f)
     {
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
-        const float rounding = 20.0f;
-        const ImVec2 max(pos.x + size.x, pos.y + size.y);
-
-        drawList->AddRectFilled(
-            ImVec2(pos.x + 10.0f, pos.y + 14.0f),
-            ImVec2(max.x + 10.0f, max.y + 14.0f),
-            IM_COL32(0, 0, 0, 24),
-            rounding + 4.0f);
-
-        drawList->AddRectFilledMultiColor(
-            pos,
-            max,
-            IM_COL32(255, 255, 255, 16),
-            IM_COL32(255, 255, 255, 10),
-            IM_COL32(255, 255, 255, 6),
-            IM_COL32(255, 255, 255, 12));
-
-        drawList->AddRect(pos, max, IM_COL32(255, 255, 255, 24), rounding, 0, 1.0f);
-        drawList->AddRect(
-            ImVec2(pos.x + 1.0f, pos.y + 1.0f),
-            ImVec2(max.x - 1.0f, max.y - 1.0f),
-            IM_COL32(255, 255, 255, 10),
-            rounding - 1.0f,
-            0,
-            1.0f);
-
-        drawList->AddLine(
-            ImVec2(pos.x + 18.0f, pos.y + 48.0f),
-            ImVec2(pos.x + size.x - 18.0f, pos.y + 48.0f),
-            IM_COL32(255, 255, 255, 14),
-            1.0f);
+        ImVec4 copy = color;
+        copy.w *= alphaScale;
+        return ImGui::ColorConvertFloat4ToU32(copy);
     }
+
 }
 
 void Cheats::RenderEnabledOptions()
@@ -85,13 +57,18 @@ void Cheats::RenderEnabledOptions()
     }
 
     const ImVec2 displaySize = ImGui::GetIO().DisplaySize;
-    const float titleWidth = ImGui::CalcTextSize(Localization::T("ACTIVE_FEATURES")).x;
-    const float horizontalPadding = 14.0f;
-    const float maxAllowedWidth = (std::max)(210.0f, displaySize.x - 32.0f);
-    const float desiredWidth = (std::max)(titleWidth, maxLabelWidth) + (horizontalPadding * 2.0f) + 8.0f;
+    const ImVec4 glow = ConfigManager::Color("Misc.ThemeGlow");
+    const float horizontalPadding = 18.0f;
+    const float chipPaddingX = 14.0f;
+    const float chipGap = 4.0f;
+    const float maxAllowedWidth = (std::max)(260.0f, displaySize.x - 32.0f);
+    const float desiredWidth = (maxLabelWidth + chipPaddingX * 2.0f) + (horizontalPadding * 2.0f) + 18.0f;
     const float windowWidth = (std::clamp)(desiredWidth, 210.0f, maxAllowedWidth);
-    const float rowHeight = ImGui::GetTextLineHeightWithSpacing();
-    const ImVec2 windowSize(windowWidth, 56.0f + (static_cast<float>(activeLabels.size()) * rowHeight));
+    const float chipHeight = 28.0f;
+    const float rowsHeight =
+        static_cast<float>(activeLabels.size()) * chipHeight +
+        static_cast<float>((std::max)(static_cast<int>(activeLabels.size()) - 1, 0)) * chipGap;
+    const ImVec2 windowSize(windowWidth, 12.0f + rowsHeight + 8.0f);
     const float windowX = 16.0f;
     ImGui::SetNextWindowPos(ImVec2(windowX, 30.0f), ImGuiCond_Always);
     ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
@@ -103,21 +80,48 @@ void Cheats::RenderEnabledOptions()
         ImGuiWindowFlags_NoSavedSettings |
         ImGuiWindowFlags_NoMove);
 
-    const ImVec2 pos = ImGui::GetWindowPos();
-    const ImVec2 size = ImGui::GetWindowSize();
-    DrawOverlayHudChrome(pos, size, IM_COL32(102, 214, 213, 220));
-
-    ImGui::SetCursorPos(ImVec2(16.0f, 12.0f));
-    ImGui::TextColored(ImVec4(0.86f, 0.92f, 0.95f, 0.94f), "%s", Localization::T("ACTIVE_FEATURES"));
-    ImGui::SetCursorPos(ImVec2(16.0f, 38.0f));
+    ImGui::SetCursorPos(ImVec2(horizontalPadding, 6.0f));
 
     const float rainbowTime = static_cast<float>(ImGui::GetTime()) * 2.2f;
     for (size_t i = 0; i < activeLabels.size(); ++i)
     {
         const char* label = activeLabels[i];
-        ImGui::SetCursorPosX(16.0f);
         const ImVec4 rainbowColor = GetRainbowTextColor(rainbowTime + (static_cast<float>(i) * 0.55f));
-        ImGui::TextColored(rainbowColor, "%s", label);
+        const ImVec2 chipPos = ImGui::GetCursorScreenPos();
+        const ImVec2 textSize = ImGui::CalcTextSize(label);
+        const ImVec2 chipSize(windowWidth - horizontalPadding * 2.0f, chipHeight);
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        const float pulse = 0.5f + 0.5f * std::sinf(rainbowTime + static_cast<float>(i) * 0.42f);
+
+        drawList->AddRectFilled(
+            chipPos,
+            ImVec2(chipPos.x + chipSize.x, chipPos.y + chipSize.y),
+            ToOverlayColor(ImVec4(1.0f, 1.0f, 1.0f, 0.060f)),
+            14.0f);
+        drawList->AddRect(
+            ImVec2(chipPos.x - 1.5f, chipPos.y - 1.5f),
+            ImVec2(chipPos.x + chipSize.x + 1.5f, chipPos.y + chipSize.y + 1.5f),
+            ToOverlayColor(glow, 0.14f + pulse * 0.10f),
+            14.0f,
+            0,
+            3.0f);
+        drawList->AddRect(
+            chipPos,
+            ImVec2(chipPos.x + chipSize.x, chipPos.y + chipSize.y),
+            ToOverlayColor(ImVec4(glow.x, glow.y, glow.z, 0.22f + pulse * 0.10f)),
+            14.0f,
+            0,
+            1.0f);
+        drawList->AddCircleFilled(
+            ImVec2(chipPos.x + 14.0f, chipPos.y + chipSize.y * 0.5f),
+            4.0f,
+            ToOverlayColor(glow, 0.90f));
+        drawList->AddText(
+            ImVec2(chipPos.x + 26.0f, chipPos.y + (chipSize.y - textSize.y) * 0.5f),
+            ToOverlayColor(rainbowColor, 0.96f),
+            label);
+
+        ImGui::Dummy(ImVec2(chipSize.x, chipHeight + (i + 1 < activeLabels.size() ? chipGap : 0.0f)));
     }
 	ImGui::End();
 }

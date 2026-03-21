@@ -21,5 +21,6 @@ namespace GUI
         const ThemeDefinition* GetThemeByIndex(int index);
         const char* GetThemeDisplayName(int index);
         int ClampThemeIndex(int index);
+        void ApplyRuntimeAccent();
     }
 }

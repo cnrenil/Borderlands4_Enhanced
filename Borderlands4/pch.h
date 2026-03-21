@@ -15,6 +15,7 @@
 #include <Windows.h>
 #include <d3d11.h>
 #include <d3d12.h>
+#include <d3dcompiler.h>
 #include <dxgi1_6.h>
 #include <tlhelp32.h>
 #include <winternl.h>
@@ -22,6 +23,7 @@
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "Psapi.lib")
 
@@ -87,6 +89,7 @@ using namespace SDK;
 #include "Engine.h"
 #include "Cheats.h"
 #include "GUI/Menu.h"
+#include "GUI/BackdropBlur.h"
 #include "GUI/Draw.h"
 #include "GUI/Overlay.h"
 #include "GUI/Themes.h"

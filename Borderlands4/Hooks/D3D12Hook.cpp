@@ -263,6 +263,15 @@ namespace d3d12hook {
             return;
         }
 
+        RECT clientRect{};
+        GetClientRect(g_hWnd, &clientRect);
+        GUI::BackdropBlur::Initialize(
+            gDevice,
+            gHeapSRV,
+            desc.BufferDesc.Format,
+            static_cast<UINT>((std::max)(clientRect.right - clientRect.left, 1L)),
+            static_cast<UINT>((std::max)(clientRect.bottom - clientRect.top, 1L)));
+
         // Sync Objects
         gDevice->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&gOverlayFence));
         gFenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -294,8 +303,6 @@ namespace d3d12hook {
         GUI::Overlay::BuildFrame();
         ImDrawData* drawData = GUI::Overlay::GetDrawData();
         if (!drawData) return;
-        if (drawData->CmdListsCount <= 0 || drawData->TotalVtxCount <= 0)
-            return;
 
         UINT frameIdx = pSwapChain->GetCurrentBackBufferIndex();
         if (frameIdx >= gBufferCount) return; // Safety check
@@ -325,21 +332,38 @@ namespace d3d12hook {
         if (FAILED(hr)) return;
 
         D3D12_RESOURCE_BARRIER barrier = {};
-        barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-        barrier.Transition.pResource = ctx.renderTarget;
-        barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-        barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-        barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-        gCommandList->ResourceBarrier(1, &barrier);
+        const GUI::MenuBackdropState& backdropState = GUI::GetMenuBackdropState();
+        if (backdropState.Visible)
+        {
+            RECT clientRect{};
+            GetClientRect(g_hWnd, &clientRect);
+            GUI::BackdropBlur::Resize(
+                static_cast<UINT>((std::max)(clientRect.right - clientRect.left, 1L)),
+                static_cast<UINT>((std::max)(clientRect.bottom - clientRect.top, 1L)),
+                gSwapChainFormat);
+            GUI::BackdropBlur::Render(gCommandList, ctx.renderTarget, ctx.rtvHandle, backdropState);
+        }
+        else
+        {
+            barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+            barrier.Transition.pResource = ctx.renderTarget;
+            barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+            barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+            barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+            gCommandList->ResourceBarrier(1, &barrier);
+        }
 
         gCommandList->OMSetRenderTargets(1, &ctx.rtvHandle, FALSE, nullptr);
         ID3D12DescriptorHeap* heaps[] = { gHeapSRV };
         gCommandList->SetDescriptorHeaps(1, heaps);
+        if (drawData->CmdListsCount > 0 && drawData->TotalVtxCount > 0)
+            ImGui_ImplDX12_RenderDrawData(drawData, gCommandList);
 
-        ImGui_ImplDX12_RenderDrawData(drawData, gCommandList);
-
+        barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        barrier.Transition.pResource = ctx.renderTarget;
         barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
         barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+        barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
         gCommandList->ResourceBarrier(1, &barrier);
         gCommandList->Close();
 
@@ -505,6 +529,7 @@ namespace d3d12hook {
             std::scoped_lock overlayLock(gOverlayMutex);
 
             if (gInitialized) {
+                GUI::BackdropBlur::Shutdown();
                 GUI::Overlay::Shutdown();
 
                 // Release all our GPU resources
@@ -544,6 +569,7 @@ namespace d3d12hook {
             std::scoped_lock overlayLock(gOverlayMutex);
 
             if (gInitialized) {
+                GUI::BackdropBlur::Shutdown();
                 GUI::Overlay::Shutdown();
 
                 ReleaseOverlayResources();
