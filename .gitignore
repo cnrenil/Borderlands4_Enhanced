@@ -238,6 +238,10 @@ ClientBin/
 *.jfm
 *.pfx
 *.publishsettings
+
+# Source font binaries
+Borderlands4/Fonts/*.ttf
+!Borderlands4/Fonts/Subset/*.ttf
 orleans.codegen.cs
 
 # Including strong name files can present a security risk
@@ -361,3 +365,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Borderlands4/Fonts/Subset
