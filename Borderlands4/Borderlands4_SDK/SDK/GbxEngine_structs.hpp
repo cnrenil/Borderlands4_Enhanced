@@ -305,37 +305,73 @@ enum class ENumericRangeEditMode : uint8
 	ENumericRangeEditMode_MAX                = 4,
 };
 
-// ScriptStruct GbxEngine.SectorRange
-// 0x0008 (0x0008 - 0x0000)
-struct FSectorRange final
-{
-public:
-	float                                         MinValue;                                          // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         MaxValue;                                          // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FSectorRange;
-
-// ScriptStruct GbxEngine.ManagedVector2D
+// ScriptStruct GbxEngine.GbxAnimAssetRef
 // 0x0018 (0x0018 - 0x0000)
-struct FManagedVector2D final
+struct FGbxAnimAssetRef
 {
 public:
-	struct FVector2D                              Vector;                                            // 0x0000(0x0010)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetDirectionManually;                             // 0x0010(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGameplayTag                           AnimSetKey;                                        // 0x0000(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UAnimationAsset*                        Asset;                                             // 0x0008(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	EGbxAnimAssetRefType                          type;                                              // 0x0010(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FManagedVector2D;
+DUMPER7_ASSERTS_FGbxAnimAssetRef;
 
-// ScriptStruct GbxEngine.GbxDirectionNodePin
-// 0x0028 (0x0028 - 0x0000)
-struct FGbxDirectionNodePin final
+// ScriptStruct GbxEngine.GbxAnimSeqRef
+// 0x0000 (0x0018 - 0x0018)
+struct FGbxAnimSeqRef final : public FGbxAnimAssetRef
+{
+};
+DUMPER7_ASSERTS_FGbxAnimSeqRef;
+
+// ScriptStruct GbxEngine.GbxActorStateMachineKey
+// 0x000C (0x000C - 0x0000)
+struct FGbxActorStateMachineKey final
 {
 public:
-	struct FGameplayTag                           Name;                                              // 0x0000(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSectorRange                           Range;                                             // 0x0008(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	struct FManagedVector2D                       Direction;                                         // 0x0010(0x0018)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	class FName                                   Name;                                              // 0x0000(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         Index;                                             // 0x0008(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FGbxDirectionNodePin;
+DUMPER7_ASSERTS_FGbxActorStateMachineKey;
+
+// ScriptStruct GbxEngine.GbxActorStateMachineStateKey
+// 0x000C (0x000C - 0x0000)
+struct FGbxActorStateMachineStateKey final
+{
+public:
+	class FName                                   Name;                                              // 0x0000(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         Index;                                             // 0x0008(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxActorStateMachineStateKey;
+
+// ScriptStruct GbxEngine.GbxActorStateMachineDefault
+// 0x0018 (0x0018 - 0x0000)
+struct FGbxActorStateMachineDefault final
+{
+public:
+	struct FGbxActorStateMachineKey               StateMachine;                                      // 0x0000(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxActorStateMachineStateKey          DefaultState;                                      // 0x000C(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxActorStateMachineDefault;
+
+// ScriptStruct GbxEngine.GbxGraphNodeOutputRef
+// 0x0018 (0x0018 - 0x0000)
+struct alignas(0x08) FGbxGraphNodeOutputRef final
+{
+public:
+	uint8                                         Pad_0[0x18];                                       // 0x0000(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxGraphNodeOutputRef;
+
+// ScriptStruct GbxEngine.NumericRange
+// 0x0008 (0x0008 - 0x0000)
+struct FNumericRange final
+{
+public:
+	float                                         Value;                                             // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Variance;                                          // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FNumericRange;
 
 // ScriptStruct GbxEngine.AttributeContextResolver
 // 0x0000 (0x0008 - 0x0008)
@@ -344,12 +380,12 @@ struct FAttributeContextResolver : public FGbxHasStructType
 };
 DUMPER7_ASSERTS_FAttributeContextResolver;
 
-// ScriptStruct GbxEngine.AnimInstanceContextResolver
+// ScriptStruct GbxEngine.ActorRootComponentContextResolver
 // 0x0000 (0x0008 - 0x0008)
-struct FAnimInstanceContextResolver : public FAttributeContextResolver
+struct FActorRootComponentContextResolver final : public FAttributeContextResolver
 {
 };
-DUMPER7_ASSERTS_FAnimInstanceContextResolver;
+DUMPER7_ASSERTS_FActorRootComponentContextResolver;
 
 // ScriptStruct GbxEngine.GbxBlackboardEntryRef
 // 0x000C (0x000C - 0x0000)
@@ -361,26 +397,44 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBlackboardEntryRef;
 
-// ScriptStruct GbxEngine.GbxBlackboard
-// 0x0960 (0x0960 - 0x0000)
-struct FGbxBlackboard final
+// ScriptStruct GbxEngine.GbxAttributeEvaluator
+// 0x0038 (0x0038 - 0x0000)
+struct FGbxAttributeEvaluator final
 {
 public:
-	uint8                                         Pad_0[0x928];                                      // 0x0000(0x0928)(Fixing Size After Last Property [ Dumper-7 ])
-	TMulticastInlineDelegate<void(const struct FGbxBlackboardEntryRef& Entry)> ValueChangedEventBP;  // 0x0928(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	uint8                                         Pad_938[0x28];                                     // 0x0938(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	EGbxAttributeEvaluatorType                    type;                                              // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxInlineStruct                       InlineStruct;                                      // 0x0008(0x0018)(Edit, NativeAccessSpecifierPrivate)
+	FGameDataHandleProperty_                      ExternalAttribute;                                 // 0x0020(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 };
-DUMPER7_ASSERTS_FGbxBlackboard;
+DUMPER7_ASSERTS_FGbxAttributeEvaluator;
 
-// ScriptStruct GbxEngine.GbxActorStateMachineStateKey
-// 0x000C (0x000C - 0x0000)
-struct FGbxActorStateMachineStateKey final
+// ScriptStruct GbxEngine.GbxActorStateMachineAspectSettings
+// 0x0058 (0x0060 - 0x0008)
+struct FGbxActorStateMachineAspectSettings : public FGbxHasStructType
 {
 public:
-	class FName                                   Name;                                              // 0x0000(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         Index;                                             // 0x0008(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxActorStateMachineStateKey          State;                                             // 0x0008(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxActorStateMachineStateKey          FromState;                                         // 0x0014(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseFromState;                                     // 0x0020(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxAttributeEvaluator                 Condition;                                         // 0x0028(0x0038)(Edit, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FGbxActorStateMachineStateKey;
+DUMPER7_ASSERTS_FGbxActorStateMachineAspectSettings;
+
+// ScriptStruct GbxEngine.AnimInstanceContextResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FAnimInstanceContextResolver : public FAttributeContextResolver
+{
+};
+DUMPER7_ASSERTS_FAnimInstanceContextResolver;
+
+// ScriptStruct GbxEngine.CharacterAnimInstanceContextResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FCharacterAnimInstanceContextResolver final : public FAnimInstanceContextResolver
+{
+};
+DUMPER7_ASSERTS_FCharacterAnimInstanceContextResolver;
 
 // ScriptStruct GbxEngine.GbxActorStateSchemaSource
 // 0x0050 (0x0050 - 0x0000)
@@ -428,12 +482,295 @@ public:
 };
 DUMPER7_ASSERTS_FGbxParam;
 
-// ScriptStruct GbxEngine.ActorRootComponentContextResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FActorRootComponentContextResolver final : public FAttributeContextResolver
+// ScriptStruct GbxEngine.GbxDef_GbxDefPtrEngineTest_InvalidStruct
+// 0x0001 (0x0001 - 0x0000)
+struct FGbxDef_GbxDefPtrEngineTest_InvalidStruct
+{
+public:
+	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxDef_GbxDefPtrEngineTest_InvalidStruct;
+
+// ScriptStruct GbxEngine.DefSelectorBaseDef
+// 0x0010 (0x0028 - 0x0018)
+struct FDefSelectorBaseDef : public FGbxDef
+{
+public:
+	uint8                                         Pad_18[0x4];                                       // 0x0018(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   DefaultState;                                      // 0x001C(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFallbackToSelf;                                   // 0x0024(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_25[0x3];                                       // 0x0025(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FDefSelectorBaseDef;
+
+// ScriptStruct GbxEngine.GbxActorStateMachineAspect
+// 0x0048 (0x0050 - 0x0008)
+struct FGbxActorStateMachineAspect : public FGbxHasStructType
+{
+public:
+	uint8                                         Pad_8[0x48];                                       // 0x0008(0x0048)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxActorStateMachineAspect;
+
+// ScriptStruct GbxEngine.GbxActorStateMachineAspect_SetState
+// 0x0000 (0x0050 - 0x0050)
+struct FGbxActorStateMachineAspect_SetState final : public FGbxActorStateMachineAspect
 {
 };
-DUMPER7_ASSERTS_FActorRootComponentContextResolver;
+DUMPER7_ASSERTS_FGbxActorStateMachineAspect_SetState;
+
+// ScriptStruct GbxEngine.GbxAnimPoseRef
+// 0x0010 (0x0010 - 0x0000)
+struct FGbxAnimPoseRef final
+{
+public:
+	class UAnimSequence*                          Anim;                                              // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	float                                         time;                                              // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxAnimPoseRef;
+
+// ScriptStruct GbxEngine.GbxAnimSetPair
+// 0x0010 (0x0010 - 0x0000)
+struct FGbxAnimSetPair final
+{
+public:
+	bool                                          bActive;                                           // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxAnimSet*                            AnimSet;                                           // 0x0008(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+};
+DUMPER7_ASSERTS_FGbxAnimSetPair;
+
+// ScriptStruct GbxEngine.GbxAnimSetValue
+// 0x0038 (0x0038 - 0x0000)
+struct FGbxAnimSetValue final
+{
+public:
+	TSoftObjectPtr<class UAnimationAsset>         Asset;                                             // 0x0000(0x0028)(Edit, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseHardRef;                                       // 0x0028(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class UAnimationAsset*                        HardRef;                                           // 0x0030(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+};
+DUMPER7_ASSERTS_FGbxAnimSetValue;
+
+// ScriptStruct GbxEngine.GbxAnimSetState
+// 0x01A8 (0x01A8 - 0x0000)
+struct FGbxAnimSetState final
+{
+public:
+	TArray<struct FGbxAnimSetPair>                AlwaysLoadedAnimSets;                              // 0x0000(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	TArray<class UGbxAnimSetPickerBase*>          AnimSetPickers;                                    // 0x0010(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_20[0x60];                                      // 0x0020(0x0060)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UGbxAnimSet*>                    TransientAnimSets;                                 // 0x0080(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_90[0x20];                                      // 0x0090(0x0020)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UGbxAnimSet*>                    CalculatedAnimSets;                                // 0x00B0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class UGbxAnimSet*>                    CalculatedProviderAnimSets;                        // 0x00C0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TMap<struct FGameplayTag, struct FGbxAnimSetValue> AnimSetDictionary;                            // 0x00D0(0x0050)(Transient, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_120[0x88];                                     // 0x0120(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxAnimSetState;
+
+// ScriptStruct GbxEngine.DataTableValueHandle
+// 0x0028 (0x0028 - 0x0000)
+struct alignas(0x08) FDataTableValueHandle final
+{
+public:
+	FGbxDefPtrProperty_                           DataTable;                                         // 0x0000(0x0018)(Edit, BlueprintVisible, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	class FName                                   RowName;                                           // 0x0018(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	class FName                                   ColumnName;                                        // 0x0020(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+};
+DUMPER7_ASSERTS_FDataTableValueHandle;
+
+// ScriptStruct GbxEngine.GbxAttributeInit
+// 0x0050 (0x0050 - 0x0000)
+struct FGbxAttributeInit final
+{
+public:
+	float                                         constant;                                          // 0x0000(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FDataTableValueHandle                  DataTableValue;                                    // 0x0008(0x0028)(Edit, BlueprintVisible, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      attribute;                                         // 0x0030(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         PostScale;                                         // 0x0048(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxAttributeInit;
+
+// ScriptStruct GbxEngine.GbxAttributeGameDataCategories_DONTUSE
+// 0x0001 (0x0001 - 0x0000)
+struct FGbxAttributeGameDataCategories_DONTUSE final
+{
+public:
+	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxAttributeGameDataCategories_DONTUSE;
+
+// ScriptStruct GbxEngine.GbxBaseMapAutoSaveData
+// 0x0000 (0x0008 - 0x0008)
+struct FGbxBaseMapAutoSaveData : public FGbxHasStructType
+{
+};
+DUMPER7_ASSERTS_FGbxBaseMapAutoSaveData;
+
+// ScriptStruct GbxEngine.GbxAttributeDef
+// 0x0030 (0x0048 - 0x0018)
+struct FGbxAttributeDef final : public FGbxDef
+{
+public:
+	struct FGbxInlineStruct                       Context;                                           // 0x0018(0x0018)(Edit, NativeAccessSpecifierPrivate)
+	struct FGbxInlineStruct                       Value;                                             // 0x0030(0x0018)(Edit, NativeAccessSpecifierPrivate)
+};
+DUMPER7_ASSERTS_FGbxAttributeDef;
+
+// ScriptStruct GbxEngine.AttributeValueResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FAttributeValueResolver : public FGbxHasStructType
+{
+};
+DUMPER7_ASSERTS_FAttributeValueResolver;
+
+// ScriptStruct GbxEngine.GbxConditionValueResolver
+// 0x0008 (0x0010 - 0x0008)
+struct FGbxConditionValueResolver : public FAttributeValueResolver
+{
+public:
+	bool                                          bInvert;                                           // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxConditionValueResolver;
+
+// ScriptStruct GbxEngine.GbxCondition_Random
+// 0x0008 (0x0018 - 0x0010)
+struct FGbxCondition_Random final : public FGbxConditionValueResolver
+{
+public:
+	float                                         probability;                                       // 0x0010(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxCondition_Random;
+
+// ScriptStruct GbxEngine.GbxAttributeEffect
+// 0x0070 (0x0070 - 0x0000)
+struct FGbxAttributeEffect final
+{
+public:
+	FGameDataHandleProperty_                      AttributeToModify;                                 // 0x0000(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxAttributeModifierType                     ModifierType;                                      // 0x0018(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxAttributeInit                      modifiervalue;                                     // 0x0020(0x0050)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxAttributeEffect;
+
+// ScriptStruct GbxEngine.GbxUEDataTableDef
+// 0x0088 (0x00A0 - 0x0018)
+struct FGbxUEDataTableDef final : public FGbxDef
+{
+public:
+	TSoftObjectPtr<class UScriptStruct>           RowStructPath;                                     // 0x0018(0x0028)(Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_40[0x60];                                      // 0x0040(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxUEDataTableDef;
+
+// ScriptStruct GbxEngine.GbxUEDataTableRowHandle
+// 0x0020 (0x0020 - 0x0000)
+struct alignas(0x08) FGbxUEDataTableRowHandle final
+{
+public:
+	FGameDataHandleProperty_                      DataTable;                                         // 0x0000(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   RowName;                                           // 0x0018(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxUEDataTableRowHandle;
+
+// ScriptStruct GbxEngine.GbxEasingFunc
+// 0x000C (0x000C - 0x0000)
+struct FGbxEasingFunc final
+{
+public:
+	EEasingFunc                                   func;                                              // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         BlendExp;                                          // 0x0004(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         steps;                                             // 0x0008(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxEasingFunc;
+
+// ScriptStruct GbxEngine.GbxRelativeRotation
+// 0x0030 (0x0030 - 0x0000)
+struct FGbxRelativeRotation final
+{
+public:
+	EGbxRelativeRotationType                      type;                                              // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxRelativeRotationModifier                  Modifier;                                          // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2[0x6];                                        // 0x0002(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FRotator                               Offset;                                            // 0x0008(0x0018)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         ConeAroundDirection;                               // 0x0020(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   socket;                                            // 0x0024(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxRelativeRotation;
+
+// ScriptStruct GbxEngine.GbxRelativeLocation
+// 0x0060 (0x0060 - 0x0000)
+struct FGbxRelativeLocation final
+{
+public:
+	EGbxRelativeLocationType                      type;                                              // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   socket;                                            // 0x0004(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxRelativeRotation                   OffsetDirection;                                   // 0x0010(0x0030)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         OffsetDistance;                                    // 0x0040(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_44[0x4];                                       // 0x0044(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVector                                OffsetVector;                                      // 0x0048(0x0018)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxRelativeLocation;
+
+// ScriptStruct GbxEngine.GbxAnimSetPreview
+// 0x0001 (0x0001 - 0x0000)
+struct FGbxAnimSetPreview final
+{
+public:
+	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxAnimSetPreview;
+
+// ScriptStruct GbxEngine.GbxBindingList
+// 0x01D0 (0x01D0 - 0x0000)
+struct FGbxBindingList final
+{
+public:
+	TMap<class FName, struct FGbxParam>           params;                                            // 0x0000(0x0050)(Edit, EditFixedSize, NativeAccessSpecifierPublic)
+	TMap<class FName, struct FGbxParam>           Defaults;                                          // 0x0050(0x0050)(NativeAccessSpecifierPublic)
+	uint8                                         Pad_A0[0x130];                                     // 0x00A0(0x0130)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBindingList;
+
+// ScriptStruct GbxEngine.GbxParticleParameter
+// 0x0058 (0x0058 - 0x0000)
+struct FGbxParticleParameter final
+{
+public:
+	class FName                                   ParameterName;                                     // 0x0000(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EParticleParameterType                        type;                                              // 0x0008(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          BoolParameter;                                     // 0x0009(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_A[0x2];                                        // 0x000A(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         IntParameter;                                      // 0x000C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         FloatParameter;                                    // 0x0010(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVector                                VectorParameter;                                   // 0x0018(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLinearColor                           ColorParameter;                                    // 0x0030(0x0010)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Condition;                                         // 0x0040(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxParticleParameter;
+
+// ScriptStruct GbxEngine.GbxBlackboard
+// 0x0960 (0x0960 - 0x0000)
+struct FGbxBlackboard final
+{
+public:
+	uint8                                         Pad_0[0x928];                                      // 0x0000(0x0928)(Fixing Size After Last Property [ Dumper-7 ])
+	TMulticastInlineDelegate<void(const struct FGbxBlackboardEntryRef& Entry)> ValueChangedEventBP;  // 0x0928(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	uint8                                         Pad_938[0x28];                                     // 0x0938(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBlackboard;
 
 // ScriptStruct GbxEngine.GbxBlackboardExtensionSet
 // 0x0004 (0x0004 - 0x0000)
@@ -468,6 +805,27 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBlackboardDefaults;
 
+// ScriptStruct GbxEngine.GbxBinding
+// 0x0018 (0x0018 - 0x0000)
+struct alignas(0x08) FGbxBinding
+{
+public:
+	uint8                                         Pad_0[0x8];                                        // 0x0000(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   BindName;                                          // 0x0008(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxBindSource                                Source;                                            // 0x0010(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBinding;
+
+// ScriptStruct GbxEngine.GbxBinding_GameplayTag
+// 0x0008 (0x0020 - 0x0018)
+struct FGbxBinding_GameplayTag final : public FGbxBinding
+{
+public:
+	struct FGameplayTag                           constant;                                          // 0x0018(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBinding_GameplayTag;
+
 // ScriptStruct GbxEngine.GbxGraphState
 // 0x0128 (0x0130 - 0x0008)
 struct FGbxGraphState : public FGbxHasStructType
@@ -477,120 +835,112 @@ public:
 };
 DUMPER7_ASSERTS_FGbxGraphState;
 
-// ScriptStruct GbxEngine.GbxActorStateMachineKey
-// 0x000C (0x000C - 0x0000)
-struct FGbxActorStateMachineKey final
+// ScriptStruct GbxEngine.GbxActorStateMachine
+// 0x0088 (0x0088 - 0x0000)
+struct alignas(0x08) FGbxActorStateMachine final
 {
 public:
-	class FName                                   Name;                                              // 0x0000(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         Index;                                             // 0x0008(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_0[0x88];                                       // 0x0000(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxActorStateMachineKey;
+DUMPER7_ASSERTS_FGbxActorStateMachine;
 
-// ScriptStruct GbxEngine.GbxAttributeEvaluator
-// 0x0038 (0x0038 - 0x0000)
-struct FGbxAttributeEvaluator final
+// ScriptStruct GbxEngine.GbxGraphParamOverrides
+// 0x0080 (0x0080 - 0x0000)
+struct FGbxGraphParamOverrides final
 {
 public:
-	EGbxAttributeEvaluatorType                    type;                                              // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxInlineStruct                       InlineStruct;                                      // 0x0008(0x0018)(Edit, NativeAccessSpecifierPrivate)
-	FGameDataHandleProperty_                      ExternalAttribute;                                 // 0x0020(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TMap<class FName, struct FGbxParam>           Overrides;                                         // 0x0000(0x0050)(Edit, NativeAccessSpecifierPublic)
+	uint8                                         Pad_50[0x30];                                      // 0x0050(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxAttributeEvaluator;
+DUMPER7_ASSERTS_FGbxGraphParamOverrides;
 
-// ScriptStruct GbxEngine.AttributeValueResolver
+// ScriptStruct GbxEngine.GbxActorStateDefaults
+// 0x0010 (0x0010 - 0x0000)
+struct FGbxActorStateDefaults final
+{
+public:
+	TArray<struct FGbxActorStateMachineDefault>   StateMachines;                                     // 0x0000(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxActorStateDefaults;
+
+// ScriptStruct GbxEngine.GbxActorState
+// 0x0070 (0x0070 - 0x0000)
+struct FGbxActorState final
+{
+public:
+	uint8                                         Pad_0[0x20];                                       // 0x0000(0x0020)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxActorStateDefaults                 StateMachineDefaults;                              // 0x0020(0x0010)(Edit, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const struct FGbxActorStateMachineKey& StateMachine, const struct FGbxActorStateMachineStateKey& NewState, const struct FGbxActorStateMachineStateKey& PreviousState)> ChangedEventBP; // 0x0030(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	uint8                                         Pad_40[0x30];                                      // 0x0040(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxActorState;
+
+// ScriptStruct GbxEngine.GbxBlackboardOwnerContextResolver
 // 0x0000 (0x0008 - 0x0008)
-struct FAttributeValueResolver : public FGbxHasStructType
+struct FGbxBlackboardOwnerContextResolver final : public FAttributeContextResolver
 {
 };
-DUMPER7_ASSERTS_FAttributeValueResolver;
+DUMPER7_ASSERTS_FGbxBlackboardOwnerContextResolver;
 
-// ScriptStruct GbxEngine.GbxConditionValueResolver
-// 0x0008 (0x0010 - 0x0008)
-struct FGbxConditionValueResolver : public FAttributeValueResolver
+// ScriptStruct GbxEngine.AttributeDefinedValueRow
+// 0x0000 (0x0008 - 0x0008)
+struct FAttributeDefinedValueRow : public FTableRowBase
+{
+};
+DUMPER7_ASSERTS_FAttributeDefinedValueRow;
+
+// ScriptStruct GbxEngine.ActorContextResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FActorContextResolver final : public FAttributeContextResolver
+{
+};
+DUMPER7_ASSERTS_FActorContextResolver;
+
+// ScriptStruct GbxEngine.ContextResolverChain
+// 0x0010 (0x0018 - 0x0008)
+struct FContextResolverChain final : public FAttributeContextResolver
 {
 public:
-	bool                                          bInvert;                                           // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxInlineStruct>               Chain;                                             // 0x0008(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
 };
-DUMPER7_ASSERTS_FGbxConditionValueResolver;
+DUMPER7_ASSERTS_FContextResolverChain;
 
-// ScriptStruct GbxEngine.GbxCondition_AttributeEvaluatorList
-// 0x0010 (0x0020 - 0x0010)
-struct FGbxCondition_AttributeEvaluatorList final : public FGbxConditionValueResolver
+// ScriptStruct GbxEngine.DeveloperSettingsDef
+// 0x0028 (0x0040 - 0x0018)
+struct FDeveloperSettingsDef final : public FGbxDef
 {
 public:
-	TArray<struct FGbxAttributeEvaluator>         Conditions;                                        // 0x0010(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	TSoftClassPtr<class UClass>                   SettingsClass;                                     // 0x0018(0x0028)(Edit, EditConst, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 };
-DUMPER7_ASSERTS_FGbxCondition_AttributeEvaluatorList;
+DUMPER7_ASSERTS_FDeveloperSettingsDef;
 
-// ScriptStruct GbxEngine.GbxAnimAssetRef
-// 0x0018 (0x0018 - 0x0000)
-struct FGbxAnimAssetRef
+// ScriptStruct GbxEngine.GameStateContextResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FGameStateContextResolver final : public FAttributeContextResolver
+{
+};
+DUMPER7_ASSERTS_FGameStateContextResolver;
+
+// ScriptStruct GbxEngine.GbxActorStateMachineAspectSettings_SetState
+// 0x0018 (0x0078 - 0x0060)
+struct FGbxActorStateMachineAspectSettings_SetState final : public FGbxActorStateMachineAspectSettings
 {
 public:
-	struct FGameplayTag                           AnimSetKey;                                        // 0x0000(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UAnimationAsset*                        Asset;                                             // 0x0008(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	EGbxAnimAssetRefType                          type;                                              // 0x0010(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxActorStateMachineKey               StateMachineToSet;                                 // 0x0060(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxActorStateMachineStateKey          StateToSet;                                        // 0x006C(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FGbxAnimAssetRef;
+DUMPER7_ASSERTS_FGbxActorStateMachineAspectSettings_SetState;
 
-// ScriptStruct GbxEngine.GbxAnimSeqRef
-// 0x0000 (0x0018 - 0x0018)
-struct FGbxAnimSeqRef final : public FGbxAnimAssetRef
-{
-};
-DUMPER7_ASSERTS_FGbxAnimSeqRef;
-
-// ScriptStruct GbxEngine.NumericRange
-// 0x0008 (0x0008 - 0x0000)
-struct FNumericRange final
+// ScriptStruct GbxEngine.GbxActorStateMachineSchemaRef
+// 0x0060 (0x0060 - 0x0000)
+struct FGbxActorStateMachineSchemaRef final
 {
 public:
-	float                                         Value;                                             // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Variance;                                          // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxActorStateSchemaSource             Source;                                            // 0x0000(0x0050)(NativeAccessSpecifierPublic)
+	struct FGbxActorStateMachineKey               Key;                                               // 0x0050(0x000C)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_5C[0x4];                                       // 0x005C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FNumericRange;
-
-// ScriptStruct GbxEngine.GbxActorStateMachineAspectSettings
-// 0x0058 (0x0060 - 0x0008)
-struct FGbxActorStateMachineAspectSettings : public FGbxHasStructType
-{
-public:
-	struct FGbxActorStateMachineStateKey          State;                                             // 0x0008(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxActorStateMachineStateKey          FromState;                                         // 0x0014(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseFromState;                                     // 0x0020(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxAttributeEvaluator                 Condition;                                         // 0x0028(0x0038)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxActorStateMachineAspectSettings;
-
-// ScriptStruct GbxEngine.DataTableValueHandle
-// 0x0028 (0x0028 - 0x0000)
-struct alignas(0x08) FDataTableValueHandle final
-{
-public:
-	FGbxDefPtrProperty_                           DataTable;                                         // 0x0000(0x0018)(Edit, BlueprintVisible, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	class FName                                   RowName;                                           // 0x0018(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	class FName                                   ColumnName;                                        // 0x0020(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-};
-DUMPER7_ASSERTS_FDataTableValueHandle;
-
-// ScriptStruct GbxEngine.GbxAttributeInit
-// 0x0050 (0x0050 - 0x0000)
-struct FGbxAttributeInit final
-{
-public:
-	float                                         constant;                                          // 0x0000(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FDataTableValueHandle                  DataTableValue;                                    // 0x0008(0x0028)(Edit, BlueprintVisible, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      attribute;                                         // 0x0030(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         PostScale;                                         // 0x0048(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAttributeInit;
+DUMPER7_ASSERTS_FGbxActorStateMachineSchemaRef;
 
 // ScriptStruct GbxEngine.GbxActorStateValueResolver
 // 0x0018 (0x0028 - 0x0010)
@@ -601,60 +951,6 @@ public:
 	struct FGbxActorStateMachineStateKey          State;                                             // 0x001C(0x000C)(Edit, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 };
 DUMPER7_ASSERTS_FGbxActorStateValueResolver;
-
-// ScriptStruct GbxEngine.GbxAttributeDef
-// 0x0030 (0x0048 - 0x0018)
-struct FGbxAttributeDef final : public FGbxDef
-{
-public:
-	struct FGbxInlineStruct                       Context;                                           // 0x0018(0x0018)(Edit, NativeAccessSpecifierPrivate)
-	struct FGbxInlineStruct                       Value;                                             // 0x0030(0x0018)(Edit, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FGbxAttributeDef;
-
-// ScriptStruct GbxEngine.GbxAnimSetProxyState
-// 0x0060 (0x0060 - 0x0000)
-struct alignas(0x08) FGbxAnimSetProxyState final
-{
-public:
-	uint8                                         Pad_0[0x60];                                       // 0x0000(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAnimSetProxyState;
-
-// ScriptStruct GbxEngine.DefSelectorBaseDef
-// 0x0010 (0x0028 - 0x0018)
-struct FDefSelectorBaseDef : public FGbxDef
-{
-public:
-	uint8                                         Pad_18[0x4];                                       // 0x0018(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   DefaultState;                                      // 0x001C(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFallbackToSelf;                                   // 0x0024(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_25[0x3];                                       // 0x0025(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FDefSelectorBaseDef;
-
-// ScriptStruct GbxEngine.GbxAnimPoseRef
-// 0x0010 (0x0010 - 0x0000)
-struct FGbxAnimPoseRef final
-{
-public:
-	class UAnimSequence*                          Anim;                                              // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	float                                         time;                                              // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAnimPoseRef;
-
-// ScriptStruct GbxEngine.GbxAnimSetValue
-// 0x0038 (0x0038 - 0x0000)
-struct FGbxAnimSetValue final
-{
-public:
-	TSoftObjectPtr<class UAnimationAsset>         Asset;                                             // 0x0000(0x0028)(Edit, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseHardRef;                                       // 0x0028(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class UAnimationAsset*                        HardRef;                                           // 0x0030(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-};
-DUMPER7_ASSERTS_FGbxAnimSetValue;
 
 // ScriptStruct GbxEngine.GbxAnimationPerformanceFeatureData
 // 0x0020 (0x0020 - 0x0000)
@@ -680,324 +976,6 @@ public:
 };
 DUMPER7_ASSERTS_FGbxAnimationPerformanceGlobals;
 
-// ScriptStruct GbxEngine.GbxUEDataTableDef
-// 0x0088 (0x00A0 - 0x0018)
-struct FGbxUEDataTableDef final : public FGbxDef
-{
-public:
-	TSoftObjectPtr<class UScriptStruct>           RowStructPath;                                     // 0x0018(0x0028)(Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_40[0x60];                                      // 0x0040(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxUEDataTableDef;
-
-// ScriptStruct GbxEngine.GbxAttributeEffect
-// 0x0070 (0x0070 - 0x0000)
-struct FGbxAttributeEffect final
-{
-public:
-	FGameDataHandleProperty_                      AttributeToModify;                                 // 0x0000(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxAttributeModifierType                     ModifierType;                                      // 0x0018(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxAttributeInit                      modifiervalue;                                     // 0x0020(0x0050)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxAttributeEffect;
-
-// ScriptStruct GbxEngine.GbxUEDataTableRowHandle
-// 0x0020 (0x0020 - 0x0000)
-struct alignas(0x08) FGbxUEDataTableRowHandle final
-{
-public:
-	FGameDataHandleProperty_                      DataTable;                                         // 0x0000(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   RowName;                                           // 0x0018(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxUEDataTableRowHandle;
-
-// ScriptStruct GbxEngine.GbxEasingFunc
-// 0x000C (0x000C - 0x0000)
-struct FGbxEasingFunc final
-{
-public:
-	EEasingFunc                                   func;                                              // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         BlendExp;                                          // 0x0004(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         steps;                                             // 0x0008(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxEasingFunc;
-
-// ScriptStruct GbxEngine.GbxActorStateMachine
-// 0x0088 (0x0088 - 0x0000)
-struct alignas(0x08) FGbxActorStateMachine final
-{
-public:
-	uint8                                         Pad_0[0x88];                                       // 0x0000(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxActorStateMachine;
-
-// ScriptStruct GbxEngine.GbxAnimNode_Insertion
-// 0x0028 (0x0040 - 0x0018)
-struct FGbxAnimNode_Insertion final : public FAnimNode_Base
-{
-public:
-	struct FGameplayTag                           label;                                             // 0x0018(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FComponentSpacePoseLink                ComponentPose;                                     // 0x0020(0x0010)(Edit, BlueprintVisible, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_30[0x10];                                      // 0x0030(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAnimNode_Insertion;
-
-// ScriptStruct GbxEngine.GbxRelativeRotation
-// 0x0030 (0x0030 - 0x0000)
-struct FGbxRelativeRotation final
-{
-public:
-	EGbxRelativeRotationType                      type;                                              // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxRelativeRotationModifier                  Modifier;                                          // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2[0x6];                                        // 0x0002(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FRotator                               Offset;                                            // 0x0008(0x0018)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         ConeAroundDirection;                               // 0x0020(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   socket;                                            // 0x0024(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxRelativeRotation;
-
-// ScriptStruct GbxEngine.GbxActorStateMachineSchemaRef
-// 0x0060 (0x0060 - 0x0000)
-struct FGbxActorStateMachineSchemaRef final
-{
-public:
-	struct FGbxActorStateSchemaSource             Source;                                            // 0x0000(0x0050)(NativeAccessSpecifierPublic)
-	struct FGbxActorStateMachineKey               Key;                                               // 0x0050(0x000C)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_5C[0x4];                                       // 0x005C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxActorStateMachineSchemaRef;
-
-// ScriptStruct GbxEngine.GbxFlag
-// 0x000C (0x000C - 0x0000)
-struct alignas(0x04) FGbxFlag final
-{
-public:
-	uint8                                         Pad_0[0xC];                                        // 0x0000(0x000C)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxFlag;
-
-// ScriptStruct GbxEngine.GbxRelativeLocation
-// 0x0060 (0x0060 - 0x0000)
-struct FGbxRelativeLocation final
-{
-public:
-	EGbxRelativeLocationType                      type;                                              // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   socket;                                            // 0x0004(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxRelativeRotation                   OffsetDirection;                                   // 0x0010(0x0030)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         OffsetDistance;                                    // 0x0040(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_44[0x4];                                       // 0x0044(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVector                                OffsetVector;                                      // 0x0048(0x0018)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxRelativeLocation;
-
-// ScriptStruct GbxEngine.GbxAnimSetPickerExBase
-// 0x0000 (0x0008 - 0x0008)
-struct FGbxAnimSetPickerExBase : public FGbxHasStructType
-{
-};
-DUMPER7_ASSERTS_FGbxAnimSetPickerExBase;
-
-// ScriptStruct GbxEngine.GbxParticleParameter
-// 0x0058 (0x0058 - 0x0000)
-struct FGbxParticleParameter final
-{
-public:
-	class FName                                   ParameterName;                                     // 0x0000(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EParticleParameterType                        type;                                              // 0x0008(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          BoolParameter;                                     // 0x0009(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A[0x2];                                        // 0x000A(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         IntParameter;                                      // 0x000C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         FloatParameter;                                    // 0x0010(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVector                                VectorParameter;                                   // 0x0018(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLinearColor                           ColorParameter;                                    // 0x0030(0x0010)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Condition;                                         // 0x0040(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxParticleParameter;
-
-// ScriptStruct GbxEngine.GbxGraphParamOverrides
-// 0x0080 (0x0080 - 0x0000)
-struct FGbxGraphParamOverrides final
-{
-public:
-	TMap<class FName, struct FGbxParam>           Overrides;                                         // 0x0000(0x0050)(Edit, NativeAccessSpecifierPublic)
-	uint8                                         Pad_50[0x30];                                      // 0x0050(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxGraphParamOverrides;
-
-// ScriptStruct GbxEngine.GbxActorStateMachineDefault
-// 0x0018 (0x0018 - 0x0000)
-struct FGbxActorStateMachineDefault final
-{
-public:
-	struct FGbxActorStateMachineKey               StateMachine;                                      // 0x0000(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxActorStateMachineStateKey          DefaultState;                                      // 0x000C(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxActorStateMachineDefault;
-
-// ScriptStruct GbxEngine.GbxActorStateDefaults
-// 0x0010 (0x0010 - 0x0000)
-struct FGbxActorStateDefaults final
-{
-public:
-	TArray<struct FGbxActorStateMachineDefault>   StateMachines;                                     // 0x0000(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxActorStateDefaults;
-
-// ScriptStruct GbxEngine.GbxActorState
-// 0x0070 (0x0070 - 0x0000)
-struct FGbxActorState final
-{
-public:
-	uint8                                         Pad_0[0x20];                                       // 0x0000(0x0020)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxActorStateDefaults                 StateMachineDefaults;                              // 0x0020(0x0010)(Edit, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const struct FGbxActorStateMachineKey& StateMachine, const struct FGbxActorStateMachineStateKey& NewState, const struct FGbxActorStateMachineStateKey& PreviousState)> ChangedEventBP; // 0x0030(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	uint8                                         Pad_40[0x30];                                      // 0x0040(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxActorState;
-
-// ScriptStruct GbxEngine.ContextResolverChain
-// 0x0010 (0x0018 - 0x0008)
-struct FContextResolverChain final : public FAttributeContextResolver
-{
-public:
-	TArray<struct FGbxInlineStruct>               Chain;                                             // 0x0008(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FContextResolverChain;
-
-// ScriptStruct GbxEngine.GbxBaseMapAutoSaveData
-// 0x0000 (0x0008 - 0x0008)
-struct FGbxBaseMapAutoSaveData : public FGbxHasStructType
-{
-};
-DUMPER7_ASSERTS_FGbxBaseMapAutoSaveData;
-
-// ScriptStruct GbxEngine.GbxAttributeDefinedContextResolver
-// 0x0018 (0x0020 - 0x0008)
-struct FGbxAttributeDefinedContextResolver final : public FAttributeContextResolver
-{
-public:
-	FGameDataHandleProperty_                      ContextAttribute;                                  // 0x0008(0x0018)(Edit, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-};
-DUMPER7_ASSERTS_FGbxAttributeDefinedContextResolver;
-
-// ScriptStruct GbxEngine.GbxPrimaryPlayerValueResolver
-// 0x0008 (0x0010 - 0x0008)
-struct FGbxPrimaryPlayerValueResolver final : public FAttributeValueResolver
-{
-public:
-	bool                                          bIgnoreContext;                                    // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxPrimaryPlayerValueResolver;
-
-// ScriptStruct GbxEngine.GbxBindingList
-// 0x01D0 (0x01D0 - 0x0000)
-struct FGbxBindingList final
-{
-public:
-	TMap<class FName, struct FGbxParam>           params;                                            // 0x0000(0x0050)(Edit, EditFixedSize, NativeAccessSpecifierPublic)
-	TMap<class FName, struct FGbxParam>           Defaults;                                          // 0x0050(0x0050)(NativeAccessSpecifierPublic)
-	uint8                                         Pad_A0[0x130];                                     // 0x00A0(0x0130)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBindingList;
-
-// ScriptStruct GbxEngine.ActorContextResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FActorContextResolver final : public FAttributeContextResolver
-{
-};
-DUMPER7_ASSERTS_FActorContextResolver;
-
-// ScriptStruct GbxEngine.GbxAnimSetPair
-// 0x0010 (0x0010 - 0x0000)
-struct FGbxAnimSetPair final
-{
-public:
-	bool                                          bActive;                                           // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxAnimSet*                            AnimSet;                                           // 0x0008(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-};
-DUMPER7_ASSERTS_FGbxAnimSetPair;
-
-// ScriptStruct GbxEngine.GbxAnimSetState
-// 0x01A8 (0x01A8 - 0x0000)
-struct FGbxAnimSetState final
-{
-public:
-	TArray<struct FGbxAnimSetPair>                AlwaysLoadedAnimSets;                              // 0x0000(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	TArray<class UGbxAnimSetPickerBase*>          AnimSetPickers;                                    // 0x0010(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_20[0x60];                                      // 0x0020(0x0060)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UGbxAnimSet*>                    TransientAnimSets;                                 // 0x0080(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_90[0x20];                                      // 0x0090(0x0020)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UGbxAnimSet*>                    CalculatedAnimSets;                                // 0x00B0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class UGbxAnimSet*>                    CalculatedProviderAnimSets;                        // 0x00C0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TMap<struct FGameplayTag, struct FGbxAnimSetValue> AnimSetDictionary;                            // 0x00D0(0x0050)(Transient, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_120[0x88];                                     // 0x0120(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAnimSetState;
-
-// ScriptStruct GbxEngine.AttributeDefinedValueRow
-// 0x0000 (0x0008 - 0x0008)
-struct FAttributeDefinedValueRow : public FTableRowBase
-{
-};
-DUMPER7_ASSERTS_FAttributeDefinedValueRow;
-
-// ScriptStruct GbxEngine.CharacterAnimInstanceContextResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FCharacterAnimInstanceContextResolver final : public FAnimInstanceContextResolver
-{
-};
-DUMPER7_ASSERTS_FCharacterAnimInstanceContextResolver;
-
-// ScriptStruct GbxEngine.DeveloperSettingsDef
-// 0x0028 (0x0040 - 0x0018)
-struct FDeveloperSettingsDef final : public FGbxDef
-{
-public:
-	TSoftClassPtr<class UClass>                   SettingsClass;                                     // 0x0018(0x0028)(Edit, EditConst, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FDeveloperSettingsDef;
-
-// ScriptStruct GbxEngine.GameStateContextResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FGameStateContextResolver final : public FAttributeContextResolver
-{
-};
-DUMPER7_ASSERTS_FGameStateContextResolver;
-
-// ScriptStruct GbxEngine.GbxActorStateMachineAspect
-// 0x0048 (0x0050 - 0x0008)
-struct FGbxActorStateMachineAspect : public FGbxHasStructType
-{
-public:
-	uint8                                         Pad_8[0x48];                                       // 0x0008(0x0048)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxActorStateMachineAspect;
-
-// ScriptStruct GbxEngine.GbxActorStateMachineAspectSettings_SetState
-// 0x0018 (0x0078 - 0x0060)
-struct FGbxActorStateMachineAspectSettings_SetState final : public FGbxActorStateMachineAspectSettings
-{
-public:
-	struct FGbxActorStateMachineKey               StateMachineToSet;                                 // 0x0060(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxActorStateMachineStateKey          StateToSet;                                        // 0x006C(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxActorStateMachineAspectSettings_SetState;
-
-// ScriptStruct GbxEngine.GbxActorStateMachineAspect_SetState
-// 0x0000 (0x0050 - 0x0050)
-struct FGbxActorStateMachineAspect_SetState final : public FGbxActorStateMachineAspect
-{
-};
-DUMPER7_ASSERTS_FGbxActorStateMachineAspect_SetState;
-
 // ScriptStruct GbxEngine.GbxAnimFrame
 // 0x0010 (0x0010 - 0x0000)
 struct FGbxAnimFrame
@@ -1018,14 +996,41 @@ public:
 };
 DUMPER7_ASSERTS_FGbxAnimLoader;
 
-// ScriptStruct GbxEngine.GbxAnimSetPreview
-// 0x0001 (0x0001 - 0x0000)
-struct FGbxAnimSetPreview final
+// ScriptStruct GbxEngine.GbxAnimNode_Insertion
+// 0x0028 (0x0040 - 0x0018)
+struct FGbxAnimNode_Insertion final : public FAnimNode_Base
 {
 public:
-	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGameplayTag                           label;                                             // 0x0018(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FComponentSpacePoseLink                ComponentPose;                                     // 0x0020(0x0010)(Edit, BlueprintVisible, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_30[0x10];                                      // 0x0030(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxAnimSetPreview;
+DUMPER7_ASSERTS_FGbxAnimNode_Insertion;
+
+// ScriptStruct GbxEngine.GbxAnimSetPickerExBase
+// 0x0000 (0x0008 - 0x0008)
+struct FGbxAnimSetPickerExBase : public FGbxHasStructType
+{
+};
+DUMPER7_ASSERTS_FGbxAnimSetPickerExBase;
+
+// ScriptStruct GbxEngine.GbxAnimSetProxyState
+// 0x0060 (0x0060 - 0x0000)
+struct alignas(0x08) FGbxAnimSetProxyState final
+{
+public:
+	uint8                                         Pad_0[0x60];                                       // 0x0000(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxAnimSetProxyState;
+
+// ScriptStruct GbxEngine.GbxAttributeDefinedContextResolver
+// 0x0018 (0x0020 - 0x0008)
+struct FGbxAttributeDefinedContextResolver final : public FAttributeContextResolver
+{
+public:
+	FGameDataHandleProperty_                      ContextAttribute;                                  // 0x0008(0x0018)(Edit, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+};
+DUMPER7_ASSERTS_FGbxAttributeDefinedContextResolver;
 
 // ScriptStruct GbxEngine.GbxAttributeDelegateBindingHandle
 // 0x0058 (0x0058 - 0x0000)
@@ -1035,15 +1040,6 @@ public:
 	uint8                                         Pad_0[0x58];                                       // 0x0000(0x0058)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxAttributeDelegateBindingHandle;
-
-// ScriptStruct GbxEngine.GbxAttributeGameDataCategories_DONTUSE
-// 0x0001 (0x0001 - 0x0000)
-struct FGbxAttributeGameDataCategories_DONTUSE final
-{
-public:
-	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAttributeGameDataCategories_DONTUSE;
 
 // ScriptStruct GbxEngine.GbxAttributeModifierHandle
 // 0x0010 (0x0010 - 0x0000)
@@ -1096,18 +1092,6 @@ public:
 	class FString                                 ToolTip;                                           // 0x0008(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FGbxBindingEditorData;
-
-// ScriptStruct GbxEngine.GbxBinding
-// 0x0018 (0x0018 - 0x0000)
-struct alignas(0x08) FGbxBinding
-{
-public:
-	uint8                                         Pad_0[0x8];                                        // 0x0000(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   BindName;                                          // 0x0008(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxBindSource                                Source;                                            // 0x0010(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBinding;
 
 // ScriptStruct GbxEngine.GbxBinding_Bool
 // 0x0008 (0x0020 - 0x0018)
@@ -1162,15 +1146,6 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBinding_Rotator;
 
-// ScriptStruct GbxEngine.GbxBinding_GameplayTag
-// 0x0008 (0x0020 - 0x0018)
-struct FGbxBinding_GameplayTag final : public FGbxBinding
-{
-public:
-	struct FGameplayTag                           constant;                                          // 0x0018(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBinding_GameplayTag;
-
 // ScriptStruct GbxEngine.GbxBinding_Actor
 // 0x0008 (0x0020 - 0x0018)
 struct FGbxBinding_Actor final : public FGbxBinding
@@ -1215,13 +1190,6 @@ public:
 	struct FTrajectoryOptions                     constant;                                          // 0x0018(0x0048)(Edit, NoDestructor, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FGbxBinding_TrajectoryOptions;
-
-// ScriptStruct GbxEngine.GbxBlackboardOwnerContextResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FGbxBlackboardOwnerContextResolver final : public FAttributeContextResolver
-{
-};
-DUMPER7_ASSERTS_FGbxBlackboardOwnerContextResolver;
 
 // ScriptStruct GbxEngine.GbxBlackboardValueResolver
 // 0x0048 (0x0050 - 0x0008)
@@ -1278,6 +1246,15 @@ public:
 };
 DUMPER7_ASSERTS_FGbxConditionalAttributeValueResolver;
 
+// ScriptStruct GbxEngine.GbxCondition_AttributeEvaluatorList
+// 0x0010 (0x0020 - 0x0010)
+struct FGbxCondition_AttributeEvaluatorList final : public FGbxConditionValueResolver
+{
+public:
+	TArray<struct FGbxAttributeEvaluator>         Conditions;                                        // 0x0010(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+};
+DUMPER7_ASSERTS_FGbxCondition_AttributeEvaluatorList;
+
 // ScriptStruct GbxEngine.GbxCondition_MeshViewFlag
 // 0x0008 (0x0018 - 0x0010)
 struct FGbxCondition_MeshViewFlag final : public FGbxConditionValueResolver
@@ -1287,16 +1264,6 @@ public:
 	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxCondition_MeshViewFlag;
-
-// ScriptStruct GbxEngine.GbxCondition_Random
-// 0x0008 (0x0018 - 0x0010)
-struct FGbxCondition_Random final : public FGbxConditionValueResolver
-{
-public:
-	float                                         probability;                                       // 0x0010(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxCondition_Random;
 
 // ScriptStruct GbxEngine.GbxConstantAttributeValueResolver
 // 0x0050 (0x0058 - 0x0008)
@@ -1346,15 +1313,6 @@ public:
 };
 DUMPER7_ASSERTS_FGbxDef_GbxDefPtrEngineTest_SimpleStruct;
 
-// ScriptStruct GbxEngine.GbxDef_GbxDefPtrEngineTest_InvalidStruct
-// 0x0001 (0x0001 - 0x0000)
-struct FGbxDef_GbxDefPtrEngineTest_InvalidStruct
-{
-public:
-	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxDef_GbxDefPtrEngineTest_InvalidStruct;
-
 // ScriptStruct GbxEngine.GbxDef_GbxDefPtrEngineTest_InvalidSubStruct
 // 0x0000 (0x0001 - 0x0001)
 struct FGbxDef_GbxDefPtrEngineTest_InvalidSubStruct final : public FGbxDef_GbxDefPtrEngineTest_InvalidStruct
@@ -1371,6 +1329,38 @@ public:
 	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxDef_IntegratedTest_Cook;
+
+// ScriptStruct GbxEngine.SectorRange
+// 0x0008 (0x0008 - 0x0000)
+struct FSectorRange final
+{
+public:
+	float                                         MinValue;                                          // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         MaxValue;                                          // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+};
+DUMPER7_ASSERTS_FSectorRange;
+
+// ScriptStruct GbxEngine.ManagedVector2D
+// 0x0018 (0x0018 - 0x0000)
+struct FManagedVector2D final
+{
+public:
+	struct FVector2D                              Vector;                                            // 0x0000(0x0010)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetDirectionManually;                             // 0x0010(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FManagedVector2D;
+
+// ScriptStruct GbxEngine.GbxDirectionNodePin
+// 0x0028 (0x0028 - 0x0000)
+struct FGbxDirectionNodePin final
+{
+public:
+	struct FGameplayTag                           Name;                                              // 0x0000(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSectorRange                           Range;                                             // 0x0008(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	struct FManagedVector2D                       Direction;                                         // 0x0010(0x0018)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxDirectionNodePin;
 
 // ScriptStruct GbxEngine.DirectionNodeSettingsConditional
 // 0x0028 (0x0028 - 0x0000)
@@ -1440,6 +1430,15 @@ public:
 };
 DUMPER7_ASSERTS_FGbxExpressionValueResolver;
 
+// ScriptStruct GbxEngine.GbxFlag
+// 0x000C (0x000C - 0x0000)
+struct alignas(0x04) FGbxFlag final
+{
+public:
+	uint8                                         Pad_0[0xC];                                        // 0x0000(0x000C)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxFlag;
+
 // ScriptStruct GbxEngine.AssetPlayerGaitScalingState
 // 0x0040 (0x0040 - 0x0000)
 struct alignas(0x08) FAssetPlayerGaitScalingState final
@@ -1458,15 +1457,6 @@ public:
 	struct FBoneReference                         HipBone;                                           // 0x0000(0x0010)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FGaitScalingData;
-
-// ScriptStruct GbxEngine.GbxGraphNodeOutputRef
-// 0x0018 (0x0018 - 0x0000)
-struct alignas(0x08) FGbxGraphNodeOutputRef final
-{
-public:
-	uint8                                         Pad_0[0x18];                                       // 0x0000(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxGraphNodeOutputRef;
 
 // ScriptStruct GbxEngine.GbxGraphNodeSettings
 // 0x0030 (0x0038 - 0x0008)
@@ -1597,6 +1587,16 @@ public:
 	TMap<struct FGbxAnimFrame, struct FGbxAnimFrameError> PoseMap;                                   // 0x01B8(0x0050)(Edit, EditConst, NativeAccessSpecifierPrivate)
 };
 DUMPER7_ASSERTS_FGbxPoseMatchData;
+
+// ScriptStruct GbxEngine.GbxPrimaryPlayerValueResolver
+// 0x0008 (0x0010 - 0x0008)
+struct FGbxPrimaryPlayerValueResolver final : public FAttributeValueResolver
+{
+public:
+	bool                                          bIgnoreContext;                                    // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxPrimaryPlayerValueResolver;
 
 // ScriptStruct GbxEngine.GbxSelectorValueResolver
 // 0x0010 (0x0018 - 0x0008)

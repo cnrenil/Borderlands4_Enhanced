@@ -11,8 +11,8 @@
 #include "Basic.hpp"
 
 #include "Engine_structs.hpp"
-#include "OakGame_structs.hpp"
 #include "GbxGame_structs.hpp"
+#include "OakGame_structs.hpp"
 #include "WyvrnSDKPlugin_structs.hpp"
 
 

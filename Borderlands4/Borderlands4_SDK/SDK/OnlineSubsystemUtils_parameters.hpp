@@ -480,6 +480,17 @@ public:
 };
 DUMPER7_ASSERTS_PartyBeaconClient_ServerUpdateReservationRequest;
 
+// Function OnlineSubsystemUtils.ShowLoginUICallbackProxy.ShowExternalLoginUI
+// 0x0018 (0x0018 - 0x0000)
+struct ShowLoginUICallbackProxy_ShowExternalLoginUI final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class APlayerController*                      InPlayerController;                                // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UShowLoginUICallbackProxy*              ReturnValue;                                       // 0x0010(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ShowLoginUICallbackProxy_ShowExternalLoginUI;
+
 // Function OnlineSubsystemUtils.QuitMatchCallbackProxy.QuitMatch
 // 0x0030 (0x0030 - 0x0000)
 struct QuitMatchCallbackProxy_QuitMatch final
@@ -494,17 +505,6 @@ public:
 	class UQuitMatchCallbackProxy*                ReturnValue;                                       // 0x0028(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_QuitMatchCallbackProxy_QuitMatch;
-
-// Function OnlineSubsystemUtils.ShowLoginUICallbackProxy.ShowExternalLoginUI
-// 0x0018 (0x0018 - 0x0000)
-struct ShowLoginUICallbackProxy_ShowExternalLoginUI final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class APlayerController*                      InPlayerController;                                // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UShowLoginUICallbackProxy*              ReturnValue;                                       // 0x0010(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ShowLoginUICallbackProxy_ShowExternalLoginUI;
 
 // Function OnlineSubsystemUtils.SpectatorBeaconClient.ClientCancelReservationResponse
 // 0x0001 (0x0001 - 0x0000)

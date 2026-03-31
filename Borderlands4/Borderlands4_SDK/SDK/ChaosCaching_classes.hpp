@@ -47,7 +47,7 @@ DUMPER7_ASSERTS_UMovieSceneSpawnableChaosCacheBinding;
 class UChaosCacheCollection final : public UObject
 {
 public:
-	TArray<class UChaosCache*>                    Caches;                                            // 0x0028(0x0010)(Edit, ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
+	TArray<class UChaosCache*>                    caches;                                            // 0x0028(0x0010)(Edit, ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
 	EChaosCacheInterpolationMode                  InterpolationMode;                                 // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 

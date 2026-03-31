@@ -13,8 +13,6 @@
 #include "InputCore_structs.hpp"
 #include "CoreUObject_structs.hpp"
 #include "CoreUObject_classes.hpp"
-#include "DeveloperSettings_structs.hpp"
-#include "DeveloperSettings_classes.hpp"
 #include "AudioPlatformConfiguration_structs.hpp"
 #include "Engine_structs.hpp"
 #include "GbxCore_structs.hpp"
@@ -23,6 +21,8 @@
 #include "PhysicsCore_classes.hpp"
 #include "ClothingSystemRuntimeInterface_structs.hpp"
 #include "RenderCore_structs.hpp"
+#include "DeveloperSettings_structs.hpp"
+#include "DeveloperSettings_classes.hpp"
 #include "NetCore_structs.hpp"
 #include "NetCore_classes.hpp"
 #include "Chaos_structs.hpp"
@@ -2531,28 +2531,28 @@ public:
 DUMPER7_ASSERTS_INavRelevantInterface;
 
 // Class Engine.AssetManager
-// 0x04F8 (0x0520 - 0x0028)
+// 0x04B8 (0x04E0 - 0x0028)
 class UAssetManager : public UObject
 {
 public:
-	uint8                                         Pad_28[0x358];                                     // 0x0028(0x0358)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UObject*>                        ObjectReferenceList;                               // 0x0380(0x0010)(ZeroConstructor, Protected, UObjectWrapper, NativeAccessSpecifierProtected, TObjectPtr)
-	bool                                          bIsGlobalAsyncScanEnvironment;                     // 0x0390(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bShouldGuessTypeAndName;                           // 0x0391(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bShouldUseSynchronousLoad;                         // 0x0392(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bIsLoadingFromPakFiles;                            // 0x0393(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bShouldAcquireMissingChunksOnLoad;                 // 0x0394(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bOnlyCookProductionAssets;                         // 0x0395(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_396[0x2];                                      // 0x0396(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         NumBulkScanRequests;                               // 0x0398(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bIsPrimaryAssetDirectoryCurrent;                   // 0x039C(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bIsManagementDatabaseCurrent;                      // 0x039D(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bUpdateManagementDatabaseAfterScan;                // 0x039E(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bIncludeOnlyOnDiskAssets;                          // 0x039F(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bHasCompletedInitialScan;                          // 0x03A0(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_3A1[0x3];                                      // 0x03A1(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         NumberOfSpawnedNotifications;                      // 0x03A4(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_3A8[0x178];                                    // 0x03A8(0x0178)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_28[0x318];                                     // 0x0028(0x0318)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UObject*>                        ObjectReferenceList;                               // 0x0340(0x0010)(ZeroConstructor, Protected, UObjectWrapper, NativeAccessSpecifierProtected, TObjectPtr)
+	bool                                          bIsGlobalAsyncScanEnvironment;                     // 0x0350(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bShouldGuessTypeAndName;                           // 0x0351(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bShouldUseSynchronousLoad;                         // 0x0352(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bIsLoadingFromPakFiles;                            // 0x0353(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bShouldAcquireMissingChunksOnLoad;                 // 0x0354(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bOnlyCookProductionAssets;                         // 0x0355(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_356[0x2];                                      // 0x0356(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         NumBulkScanRequests;                               // 0x0358(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bIsPrimaryAssetDirectoryCurrent;                   // 0x035C(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bIsManagementDatabaseCurrent;                      // 0x035D(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bUpdateManagementDatabaseAfterScan;                // 0x035E(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bIncludeOnlyOnDiskAssets;                          // 0x035F(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bHasCompletedInitialScan;                          // 0x0360(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_361[0x3];                                      // 0x0361(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         NumberOfSpawnedNotifications;                      // 0x0364(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_368[0x178];                                    // 0x0368(0x0178)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
@@ -2600,11 +2600,11 @@ public:
 DUMPER7_ASSERTS_ITimeOfDayListener;
 
 // Class Engine.GbxBaseAssetManager
-// 0x0058 (0x0578 - 0x0520)
+// 0x0058 (0x0538 - 0x04E0)
 class UGbxBaseAssetManager : public UAssetManager
 {
 public:
-	uint8                                         Pad_520[0x58];                                     // 0x0520(0x0058)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_4E0[0x58];                                     // 0x04E0(0x0058)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
@@ -27678,8 +27678,9 @@ public:
 DUMPER7_ASSERTS_ASceneCapture2D;
 
 // Class Engine.SceneCaptureComponent2D
-// 0x0A10 (0x0DA0 - 0x0390)
-class USceneCaptureComponent2D : public USceneCaptureComponent
+// 0x0A20 (0x0DB0 - 0x0390)
+#pragma pack(push, 0x1)
+class alignas(0x10) USceneCaptureComponent2D : public USceneCaptureComponent
 {
 public:
 	ECameraProjectionMode                         ProjectionType;                                    // 0x0388(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -27730,7 +27731,7 @@ public:
 	bool                                          bDisableVirtualTexturing;                          // 0x0D78(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bDisableGlobalDistanceField;                       // 0x0D79(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          bGBXAllowGPUParticleUpdate;                        // 0x0D7A(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D7B[0x25];                                     // 0x0D7B(0x0025)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_D7B[0x2D];                                     // 0x0D7B(0x002D)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	void AddOrUpdateBlendable(TScriptInterface<class IBlendableInterface> InBlendableObject, float InWeight);
@@ -27751,6 +27752,7 @@ public:
 		return GetDefaultObjImpl<USceneCaptureComponent2D>();
 	}
 };
+#pragma pack(pop)
 DUMPER7_ASSERTS_USceneCaptureComponent2D;
 
 // Class Engine.SceneCaptureComponentCube
@@ -28034,6 +28036,7 @@ public:
 	uint8                                         Pad_400[0xD0];                                     // 0x0400(0x00D0)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
+	void GbxTriggerSkyEnvMapUpdate();
 	void RecaptureSky();
 	void SetCubemap(class UTextureCube* NewCubemap);
 	void SetCubemapBlend(class UTextureCube* SourceCubemap, class UTextureCube* DestinationCubemap, float InBlendFraction);
@@ -36790,7 +36793,7 @@ public:
 	static float PerlinNoise1D(const float Value);
 	static bool PointsAreCoplanar(const TArray<struct FVector>& points, float Tolerance);
 	static struct FVector ProjectPointOnToPlane(const struct FVector& Point, const struct FVector& PlaneBase, const struct FVector& PlaneNormal);
-	static struct FVector ProjectVectorOnToPlane(const struct FVector& V, const struct FVector& PlaneNormal);
+	static struct FVector ProjectVectorOntoPlane(const struct FVector& V, const struct FVector& PlaneNormal);
 	static struct FVector ProjectVectorOnToVector(const struct FVector& V, const struct FVector& target);
 	static float Quat_AngularDistance(const struct FQuat& A, const struct FQuat& B);
 	static void Quat_EnforceShortestArcWith(struct FQuat& A, const struct FQuat& B);
@@ -36862,7 +36865,7 @@ public:
 	static void ResetRandomStream(const struct FRandomStream& Stream);
 	static void ResetVectorSpringState(struct FVectorSpringState& SpringState);
 	static struct FLinearColor RGBLinearToHSV(const struct FLinearColor& RGB);
-	static void RGBToHSV(const struct FLinearColor& InColor, float* H, float* S, float* V, float* A);
+	static void RGBtoHSV(const struct FLinearColor& InColor, float* H, float* S, float* V, float* A);
 	static void RGBToHSV_Vector(const struct FLinearColor& RGB, struct FLinearColor* HSV);
 	static struct FRotator RInterpTo(const struct FRotator& current, const struct FRotator& target, float DeltaTime, float InterpSpeed);
 	static struct FRotator RInterpTo_Constant(const struct FRotator& current, const struct FRotator& target, float DeltaTime, float InterpSpeed);

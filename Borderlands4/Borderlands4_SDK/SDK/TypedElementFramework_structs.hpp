@@ -46,30 +46,14 @@ struct alignas(0x01) FEditorDataStorageColumn
 #pragma pack(pop)
 DUMPER7_ASSERTS_FEditorDataStorageColumn;
 
-// ScriptStruct TypedElementFramework.TypedElementAlertActionColumn
-// 0x0040 (0x0040 - 0x0000)
-struct alignas(0x10) FTypedElementAlertActionColumn final : public FEditorDataStorageColumn
+// ScriptStruct TypedElementFramework.TypedElementLabelColumn
+// 0x0010 (0x0010 - 0x0000)
+struct FTypedElementLabelColumn final : public FEditorDataStorageColumn
 {
 public:
-	uint8                                         Pad_0[0x40];                                       // 0x0000(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FString                                 label;                                             // 0x0000(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FTypedElementAlertActionColumn;
-
-// ScriptStruct TypedElementFramework.EditorDataStorageTag
-// 0x0001 (0x0001 - 0x0000)
-struct FEditorDataStorageTag
-{
-public:
-	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FEditorDataStorageTag;
-
-// ScriptStruct TypedElementFramework.TypedElementSyncBackToWorldTag
-// 0x0000 (0x0001 - 0x0001)
-struct FTypedElementSyncBackToWorldTag final : public FEditorDataStorageTag
-{
-};
-DUMPER7_ASSERTS_FTypedElementSyncBackToWorldTag;
+DUMPER7_ASSERTS_FTypedElementLabelColumn;
 
 // ScriptStruct TypedElementFramework.ScriptTypedElementHandle
 // 0x0008 (0x0008 - 0x0000)
@@ -100,6 +84,24 @@ public:
 	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FTypedElementChildAlertColumn;
+
+// ScriptStruct TypedElementFramework.TypedElementAlertActionColumn
+// 0x0040 (0x0040 - 0x0000)
+struct alignas(0x10) FTypedElementAlertActionColumn final : public FEditorDataStorageColumn
+{
+public:
+	uint8                                         Pad_0[0x40];                                       // 0x0000(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FTypedElementAlertActionColumn;
+
+// ScriptStruct TypedElementFramework.EditorDataStorageTag
+// 0x0001 (0x0001 - 0x0000)
+struct FEditorDataStorageTag
+{
+public:
+	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FEditorDataStorageTag;
 
 // ScriptStruct TypedElementFramework.TypedElementUObjectColumn
 // 0x0008 (0x0008 - 0x0000)
@@ -261,15 +263,6 @@ public:
 };
 DUMPER7_ASSERTS_FTypedElementIconOverrideColumn;
 
-// ScriptStruct TypedElementFramework.TypedElementLabelColumn
-// 0x0010 (0x0010 - 0x0000)
-struct FTypedElementLabelColumn final : public FEditorDataStorageColumn
-{
-public:
-	class FString                                 label;                                             // 0x0000(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FTypedElementLabelColumn;
-
 // ScriptStruct TypedElementFramework.TypedElementLabelHashColumn
 // 0x0008 (0x0008 - 0x0000)
 struct FTypedElementLabelHashColumn final : public FEditorDataStorageColumn
@@ -287,6 +280,13 @@ public:
 	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FScriptTypedElementListProxy;
+
+// ScriptStruct TypedElementFramework.TypedElementSyncBackToWorldTag
+// 0x0000 (0x0001 - 0x0001)
+struct FTypedElementSyncBackToWorldTag final : public FEditorDataStorageTag
+{
+};
+DUMPER7_ASSERTS_FTypedElementSyncBackToWorldTag;
 
 // ScriptStruct TypedElementFramework.TypedElementSyncFromWorldTag
 // 0x0000 (0x0001 - 0x0001)

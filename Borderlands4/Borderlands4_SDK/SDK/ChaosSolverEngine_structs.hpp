@@ -31,16 +31,14 @@ enum class EClusterConnectionTypeEnum : uint8
 	Chaos_MAX                                = 7,
 };
 
-// ScriptStruct ChaosSolverEngine.ChaosDebugSubstepControl
-// 0x0003 (0x0003 - 0x0000)
-struct FChaosDebugSubstepControl final
+// ScriptStruct ChaosSolverEngine.RemovalEventCallbackWrapper
+// 0x0040 (0x0040 - 0x0000)
+struct alignas(0x10) FRemovalEventCallbackWrapper final
 {
 public:
-	bool                                          bPause;                                            // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSubstep;                                          // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bStep;                                             // 0x0002(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_0[0x40];                                       // 0x0000(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FChaosDebugSubstepControl;
+DUMPER7_ASSERTS_FRemovalEventCallbackWrapper;
 
 // ScriptStruct ChaosSolverEngine.ChaosPhysicsCollisionInfo
 // 0x00C0 (0x00C0 - 0x0000)
@@ -70,15 +68,6 @@ public:
 };
 DUMPER7_ASSERTS_FBreakEventCallbackWrapper;
 
-// ScriptStruct ChaosSolverEngine.RemovalEventCallbackWrapper
-// 0x0040 (0x0040 - 0x0000)
-struct alignas(0x10) FRemovalEventCallbackWrapper final
-{
-public:
-	uint8                                         Pad_0[0x40];                                       // 0x0000(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FRemovalEventCallbackWrapper;
-
 // ScriptStruct ChaosSolverEngine.CrumblingEventCallbackWrapper
 // 0x0040 (0x0040 - 0x0000)
 struct alignas(0x10) FCrumblingEventCallbackWrapper final
@@ -97,6 +86,17 @@ public:
 	TSet<class UObject*>                          ChaosHandlers;                                     // 0x0008(0x0050)(UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
 };
 DUMPER7_ASSERTS_FChaosHandlerSet;
+
+// ScriptStruct ChaosSolverEngine.ChaosDebugSubstepControl
+// 0x0003 (0x0003 - 0x0000)
+struct FChaosDebugSubstepControl final
+{
+public:
+	bool                                          bPause;                                            // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSubstep;                                          // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bStep;                                             // 0x0002(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FChaosDebugSubstepControl;
 
 // ScriptStruct ChaosSolverEngine.DataflowRigidSolverProxy
 // 0x0018 (0x0090 - 0x0078)

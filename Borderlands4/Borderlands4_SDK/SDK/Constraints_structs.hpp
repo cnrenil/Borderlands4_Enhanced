@@ -28,13 +28,6 @@ enum class EHandleEvent : uint8
 	Max                                      = 4,
 };
 
-// ScriptStruct Constraints.MovieSceneConstraintChannel
-// 0x0000 (0x0108 - 0x0108)
-struct FMovieSceneConstraintChannel final : public FMovieSceneBoolChannel
-{
-};
-DUMPER7_ASSERTS_FMovieSceneConstraintChannel;
-
 // ScriptStruct Constraints.ConstraintsInWorld
 // 0x0028 (0x0028 - 0x0000)
 struct FConstraintsInWorld final
@@ -45,6 +38,13 @@ public:
 	uint8                                         Pad_18[0x10];                                      // 0x0018(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FConstraintsInWorld;
+
+// ScriptStruct Constraints.MovieSceneConstraintChannel
+// 0x0000 (0x0108 - 0x0108)
+struct FMovieSceneConstraintChannel final : public FMovieSceneBoolChannel
+{
+};
+DUMPER7_ASSERTS_FMovieSceneConstraintChannel;
 
 // ScriptStruct Constraints.ConstraintAndActiveChannel
 // 0x0110 (0x0110 - 0x0000)

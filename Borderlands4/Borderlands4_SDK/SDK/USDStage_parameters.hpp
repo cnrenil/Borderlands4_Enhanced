@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "USDStage_structs.hpp"
 #include "MovieScene_structs.hpp"
+#include "USDStage_structs.hpp"
 #include "UnrealUSDWrapper_structs.hpp"
 
 

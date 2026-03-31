@@ -658,7 +658,7 @@ public:
 	static void AIScriptedTask(class AActor* AIActor, class UGbxBrainTaskData* Task);
 	static void AIScriptedTeleport(class AActor* AIActor, const struct FVector& GoalLocation, EGbxBrainExec* Exec, const struct FLatentActionInfo& LatentInfo);
 	static void AIScriptedWait(class AActor* AIActor);
-	static void LockThinking(class AActor* AIActor, class FName reason, bool Block, bool bAbort);
+	static void LockThinking(class AActor* AIActor, class FName reason, bool block, bool bAbort);
 	static void UnlockThinking(class AActor* AIActor, class FName reason);
 
 public:
@@ -927,11 +927,11 @@ public:
 	static void GetTarget(class AActor* AIActor, class AActor** PrimaryTarget, TArray<class AActor*>* TargetList);
 	static TArray<class AActor*> GetTargetList(class AActor* AIActor);
 	static bool GetTargetLocation(class AActor* Targeter, class AActor* target, struct FVector* OutLocation);
-	static void LockPerceivability(class AActor* Actor, class FName reason, bool Block);
-	static bool LockTarget(class AActor* Actor, class FName reason, bool Block);
-	static void LockTargetability(class AActor* Actor, class FName reason, bool Block);
-	static void LockTargetableByAI(class AActor* Actor, class FName reason, bool Block, bool bEveryoneForget);
-	static void LockTargeting(class AActor* Actor, class FName reason, bool Block, bool bForget);
+	static void LockPerceivability(class AActor* Actor, class FName reason, bool block);
+	static bool LockTarget(class AActor* Actor, class FName reason, bool block);
+	static void LockTargetability(class AActor* Actor, class FName reason, bool block);
+	static void LockTargetableByAI(class AActor* Actor, class FName reason, bool block, bool bEveryoneForget);
+	static void LockTargeting(class AActor* Actor, class FName reason, bool block, bool bForget);
 	static void RejoinAIGroup(class AActor* AIActor);
 	static void SetInvisibleToAI(class AActor* Actor, class FName reason, bool bEnable);
 

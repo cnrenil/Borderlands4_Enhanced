@@ -239,9 +239,9 @@ class FString UGbxNavBlueprintLibrary::GetGbxNavAnimPath(class AActor* Actor)
 // Parameters:
 // class AActor*                           Actor                                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UGbxNavBlueprintLibrary::LockNavigation(class AActor* Actor, class FName reason, bool Block)
+void UGbxNavBlueprintLibrary::LockNavigation(class AActor* Actor, class FName reason, bool block)
 {
 	static class UFunction* Func = nullptr;
 
@@ -252,7 +252,7 @@ void UGbxNavBlueprintLibrary::LockNavigation(class AActor* Actor, class FName re
 
 	Parms.Actor = Actor;
 	Parms.reason = reason;
-	Parms.Block = Block;
+	Parms.block = block;
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;
@@ -268,10 +268,10 @@ void UGbxNavBlueprintLibrary::LockNavigation(class AActor* Actor, class FName re
 // Parameters:
 // class AActor*                           Actor                                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // FGameDataHandleProperty_                stance                                                 (Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UGbxNavBlueprintLibrary::LockStance(class AActor* Actor, class FName reason, bool Block, FGameDataHandleProperty_ stance)
+void UGbxNavBlueprintLibrary::LockStance(class AActor* Actor, class FName reason, bool block, FGameDataHandleProperty_ stance)
 {
 	static class UFunction* Func = nullptr;
 
@@ -282,7 +282,7 @@ void UGbxNavBlueprintLibrary::LockStance(class AActor* Actor, class FName reason
 
 	Parms.Actor = Actor;
 	Parms.reason = reason;
-	Parms.Block = Block;
+	Parms.block = block;
 	Parms.stance = stance;
 
 	auto Flgs = Func->FunctionFlags;

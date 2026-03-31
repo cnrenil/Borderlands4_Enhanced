@@ -245,31 +245,6 @@ void UEditMeshPolygonsToolActions_Triangles::RecalcNormals()
 }
 
 
-// Function MeshModelingTools.MeshUVChannelProperties.GetUVChannelNamesFunc
-// (Final, Native, Public, Const)
-// Parameters:
-// const TArray<class FString>             ReturnValue                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
-
-const TArray<class FString> UMeshUVChannelProperties::GetUVChannelNamesFunc() const
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("MeshUVChannelProperties", "GetUVChannelNamesFunc");
-
-	Params::MeshUVChannelProperties_GetUVChannelNamesFunc Parms{};
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-
-	return Parms.ReturnValue;
-}
-
-
 // Function MeshModelingTools.EditMeshPolygonsToolEdgeActions.Bevel
 // (Final, Native, Public)
 
@@ -1005,6 +980,31 @@ const TArray<class FString> UExistingMeshMaterialProperties::GetUVChannelNamesFu
 		Func = Class->GetFunction("ExistingMeshMaterialProperties", "GetUVChannelNamesFunc");
 
 	Params::ExistingMeshMaterialProperties_GetUVChannelNamesFunc Parms{};
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
+// Function MeshModelingTools.MeshUVChannelProperties.GetUVChannelNamesFunc
+// (Final, Native, Public, Const)
+// Parameters:
+// const TArray<class FString>             ReturnValue                                            (ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
+
+const TArray<class FString> UMeshUVChannelProperties::GetUVChannelNamesFunc() const
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("MeshUVChannelProperties", "GetUVChannelNamesFunc");
+
+	Params::MeshUVChannelProperties_GetUVChannelNamesFunc Parms{};
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;

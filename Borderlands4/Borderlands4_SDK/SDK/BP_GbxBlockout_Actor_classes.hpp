@@ -10,11 +10,11 @@
 
 #include "Basic.hpp"
 
-#include "E_Blockout_Shape_structs.hpp"
-#include "GbxDecorator_classes.hpp"
 #include "CoreUObject_structs.hpp"
 #include "E_Blockout_SizeTemplate_structs.hpp"
+#include "E_Blockout_Shape_structs.hpp"
 #include "Engine_structs.hpp"
+#include "GbxDecorator_classes.hpp"
 
 
 namespace SDK

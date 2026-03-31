@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "GbxShiftExtensions_structs.hpp"
 #include "GbxCore_classes.hpp"
+#include "GbxShiftExtensions_structs.hpp"
 
 
 namespace SDK

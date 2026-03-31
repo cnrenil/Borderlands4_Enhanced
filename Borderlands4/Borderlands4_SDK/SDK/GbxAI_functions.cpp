@@ -1012,10 +1012,10 @@ void UGbxBrainFunctionLibrary::AIScriptedWait(class AActor* AIActor)
 // Parameters:
 // class AActor*                           AIActor                                                (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bAbort                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UGbxBrainFunctionLibrary::LockThinking(class AActor* AIActor, class FName reason, bool Block, bool bAbort)
+void UGbxBrainFunctionLibrary::LockThinking(class AActor* AIActor, class FName reason, bool block, bool bAbort)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1026,7 +1026,7 @@ void UGbxBrainFunctionLibrary::LockThinking(class AActor* AIActor, class FName r
 
 	Parms.AIActor = AIActor;
 	Parms.reason = reason;
-	Parms.Block = Block;
+	Parms.block = block;
 	Parms.bAbort = bAbort;
 
 	auto Flgs = Func->FunctionFlags;
@@ -1553,9 +1553,9 @@ bool UGbxTargetingFunctionLibrary::GetTargetLocation(class AActor* Targeter, cla
 // Parameters:
 // class AActor*                           Actor                                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UGbxTargetingFunctionLibrary::LockPerceivability(class AActor* Actor, class FName reason, bool Block)
+void UGbxTargetingFunctionLibrary::LockPerceivability(class AActor* Actor, class FName reason, bool block)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1566,7 +1566,7 @@ void UGbxTargetingFunctionLibrary::LockPerceivability(class AActor* Actor, class
 
 	Parms.Actor = Actor;
 	Parms.reason = reason;
-	Parms.Block = Block;
+	Parms.block = block;
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;
@@ -1582,10 +1582,10 @@ void UGbxTargetingFunctionLibrary::LockPerceivability(class AActor* Actor, class
 // Parameters:
 // class AActor*                           Actor                                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-bool UGbxTargetingFunctionLibrary::LockTarget(class AActor* Actor, class FName reason, bool Block)
+bool UGbxTargetingFunctionLibrary::LockTarget(class AActor* Actor, class FName reason, bool block)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1596,7 +1596,7 @@ bool UGbxTargetingFunctionLibrary::LockTarget(class AActor* Actor, class FName r
 
 	Parms.Actor = Actor;
 	Parms.reason = reason;
-	Parms.Block = Block;
+	Parms.block = block;
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;
@@ -1614,9 +1614,9 @@ bool UGbxTargetingFunctionLibrary::LockTarget(class AActor* Actor, class FName r
 // Parameters:
 // class AActor*                           Actor                                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UGbxTargetingFunctionLibrary::LockTargetability(class AActor* Actor, class FName reason, bool Block)
+void UGbxTargetingFunctionLibrary::LockTargetability(class AActor* Actor, class FName reason, bool block)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1627,7 +1627,7 @@ void UGbxTargetingFunctionLibrary::LockTargetability(class AActor* Actor, class 
 
 	Parms.Actor = Actor;
 	Parms.reason = reason;
-	Parms.Block = Block;
+	Parms.block = block;
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;
@@ -1643,10 +1643,10 @@ void UGbxTargetingFunctionLibrary::LockTargetability(class AActor* Actor, class 
 // Parameters:
 // class AActor*                           Actor                                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bEveryoneForget                                        (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UGbxTargetingFunctionLibrary::LockTargetableByAI(class AActor* Actor, class FName reason, bool Block, bool bEveryoneForget)
+void UGbxTargetingFunctionLibrary::LockTargetableByAI(class AActor* Actor, class FName reason, bool block, bool bEveryoneForget)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1657,7 +1657,7 @@ void UGbxTargetingFunctionLibrary::LockTargetableByAI(class AActor* Actor, class
 
 	Parms.Actor = Actor;
 	Parms.reason = reason;
-	Parms.Block = Block;
+	Parms.block = block;
 	Parms.bEveryoneForget = bEveryoneForget;
 
 	auto Flgs = Func->FunctionFlags;
@@ -1674,10 +1674,10 @@ void UGbxTargetingFunctionLibrary::LockTargetableByAI(class AActor* Actor, class
 // Parameters:
 // class AActor*                           Actor                                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 // bool                                    bForget                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UGbxTargetingFunctionLibrary::LockTargeting(class AActor* Actor, class FName reason, bool Block, bool bForget)
+void UGbxTargetingFunctionLibrary::LockTargeting(class AActor* Actor, class FName reason, bool block, bool bForget)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1688,7 +1688,7 @@ void UGbxTargetingFunctionLibrary::LockTargeting(class AActor* Actor, class FNam
 
 	Parms.Actor = Actor;
 	Parms.reason = reason;
-	Parms.Block = Block;
+	Parms.block = block;
 	Parms.bForget = bForget;
 
 	auto Flgs = Func->FunctionFlags;

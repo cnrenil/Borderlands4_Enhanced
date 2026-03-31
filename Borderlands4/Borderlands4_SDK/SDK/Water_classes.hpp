@@ -950,7 +950,7 @@ DUMPER7_ASSERTS_URiverGenerator;
 
 // Class Water.WaterBodyRiver
 // 0x0000 (0x0420 - 0x0420)
-class AWaterBodyRiver : public AWaterBody
+class AWaterBodyRiver final : public AWaterBody
 {
 public:
 	static class UClass* StaticClass()

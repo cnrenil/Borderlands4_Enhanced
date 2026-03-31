@@ -10,9 +10,9 @@
 
 #include "Basic.hpp"
 
+#include "GbxEngine_structs.hpp"
 #include "GbxGame_classes.hpp"
 #include "Engine_structs.hpp"
-#include "GbxEngine_structs.hpp"
 
 
 namespace SDK

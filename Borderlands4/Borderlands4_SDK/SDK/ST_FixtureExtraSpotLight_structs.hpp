@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "EN_FixtureLightTypes_structs.hpp"
 #include "CoreUObject_structs.hpp"
+#include "EN_FixtureLightTypes_structs.hpp"
 
 
 namespace SDK

@@ -11,8 +11,8 @@
 #include "Basic.hpp"
 
 #include "GameplayTags_structs.hpp"
-#include "CoreUObject_structs.hpp"
 #include "Engine_structs.hpp"
+#include "CoreUObject_structs.hpp"
 #include "GbxEngine_structs.hpp"
 #include "GbxNexus_structs.hpp"
 
@@ -163,6 +163,42 @@ enum class ESpawnerActivationType : uint8
 	ESpawnerActivationType_MAX               = 4,
 };
 
+// ScriptStruct GbxSpawn.SpawnFilter
+// 0x0028 (0x0028 - 0x0000)
+struct FSpawnFilter final
+{
+public:
+	ESpawnFilterType                              type;                                              // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGameplayTagContainer                  tags;                                              // 0x0008(0x0020)(Edit, BlueprintVisible, NativeAccessSpecifierPrivate)
+};
+DUMPER7_ASSERTS_FSpawnFilter;
+
+// ScriptStruct GbxSpawn.SpawnEncounterWave
+// 0x0028 (0x0028 - 0x0000)
+struct FSpawnEncounterWave final
+{
+public:
+	TArray<class USpawnEncounterEvent*>           events;                                            // 0x0000(0x0010)(Edit, ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
+	class USpawnEncounterCondition*               Condition;                                         // 0x0010(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, NoDestructor, PersistentInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	bool                                          bWaitForAllEvents;                                 // 0x0018(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FColor                                 ColorOverride;                                     // 0x001C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOverrideColor;                                    // 0x0020(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FSpawnEncounterWave;
+
+// ScriptStruct GbxSpawn.SpawnerReclaimedActorInfo
+// 0x0040 (0x0048 - 0x0008)
+struct FSpawnerReclaimedActorInfo : public FGbxHasStructType
+{
+public:
+	FGbxDefPtrProperty_                           ActorDefPtr;                                       // 0x0008(0x0018)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TSoftObjectPtr<class USpawnPointComponent>    SpawnPointPtr;                                     // 0x0020(0x0028)(ExportObject, InstancedReference, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+};
+DUMPER7_ASSERTS_FSpawnerReclaimedActorInfo;
+
 // ScriptStruct GbxSpawn.SpawnDetails
 // 0x000C (0x000C - 0x0000)
 struct FSpawnDetails final
@@ -201,32 +237,21 @@ public:
 };
 DUMPER7_ASSERTS_FGbxActorDef;
 
-// ScriptStruct GbxSpawn.SpawnFilter
-// 0x0028 (0x0028 - 0x0000)
-struct FSpawnFilter final
+// ScriptStruct GbxSpawn.GbxEnemyActorDefInfo
+// 0x0038 (0x0038 - 0x0000)
+struct alignas(0x08) FGbxEnemyActorDefInfo final
 {
 public:
-	ESpawnFilterType                              type;                                              // 0x0000(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGameplayTagContainer                  tags;                                              // 0x0008(0x0020)(Edit, BlueprintVisible, NativeAccessSpecifierPrivate)
+	float                                         SpawnCost;                                         // 0x0000(0x0004)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCritical;                                         // 0x0004(0x0001)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIsBoss;                                           // 0x0005(0x0001)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_6[0x2];                                        // 0x0006(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	FGameDataHandleProperty_                      ActorDef;                                          // 0x0008(0x0018)(BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Body;                                              // 0x0020(0x0008)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   brain;                                             // 0x0028(0x0008)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Team;                                              // 0x0030(0x0008)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FSpawnFilter;
-
-// ScriptStruct GbxSpawn.TaggedAnimDef
-// 0x0008 (0x0020 - 0x0018)
-struct FTaggedAnimDef : public FGbxDef
-{
-public:
-	uint8                                         Pad_18[0x8];                                       // 0x0018(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FTaggedAnimDef;
-
-// ScriptStruct GbxSpawn.TaggedAnimDef_GbxSpawn
-// 0x0000 (0x0020 - 0x0020)
-struct FTaggedAnimDef_GbxSpawn : public FTaggedAnimDef
-{
-};
-DUMPER7_ASSERTS_FTaggedAnimDef_GbxSpawn;
+DUMPER7_ASSERTS_FGbxEnemyActorDefInfo;
 
 // ScriptStruct GbxSpawn.GbxActorData
 // 0x0108 (0x0108 - 0x0000)
@@ -243,21 +268,6 @@ public:
 };
 DUMPER7_ASSERTS_FGbxActorData;
 
-// ScriptStruct GbxSpawn.SpawnEncounterWave
-// 0x0028 (0x0028 - 0x0000)
-struct FSpawnEncounterWave final
-{
-public:
-	TArray<class USpawnEncounterEvent*>           events;                                            // 0x0000(0x0010)(Edit, ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
-	class USpawnEncounterCondition*               Condition;                                         // 0x0010(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, NoDestructor, PersistentInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	bool                                          bWaitForAllEvents;                                 // 0x0018(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FColor                                 ColorOverride;                                     // 0x001C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOverrideColor;                                    // 0x0020(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FSpawnEncounterWave;
-
 // ScriptStruct GbxSpawn.GbxActorInstanceData
 // 0x0010 (0x0018 - 0x0008)
 struct FGbxActorInstanceData : public FGbxHasStructType
@@ -267,21 +277,14 @@ public:
 };
 DUMPER7_ASSERTS_FGbxActorInstanceData;
 
-// ScriptStruct GbxSpawn.GbxEnemyActorDefInfo
-// 0x0038 (0x0038 - 0x0000)
-struct alignas(0x08) FGbxEnemyActorDefInfo final
+// ScriptStruct GbxSpawn.TaggedAnimDef
+// 0x0008 (0x0020 - 0x0018)
+struct FTaggedAnimDef : public FGbxDef
 {
 public:
-	float                                         SpawnCost;                                         // 0x0000(0x0004)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCritical;                                         // 0x0004(0x0001)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIsBoss;                                           // 0x0005(0x0001)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_6[0x2];                                        // 0x0006(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	FGameDataHandleProperty_                      ActorDef;                                          // 0x0008(0x0018)(BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Body;                                              // 0x0020(0x0008)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   brain;                                             // 0x0028(0x0008)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Team;                                              // 0x0030(0x0008)(BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_18[0x8];                                       // 0x0018(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxEnemyActorDefInfo;
+DUMPER7_ASSERTS_FTaggedAnimDef;
 
 // ScriptStruct GbxSpawn.SpawnEncounterEventEncounterRef
 // 0x0010 (0x0010 - 0x0000)
@@ -486,16 +489,6 @@ public:
 };
 DUMPER7_ASSERTS_FSpawnPointComponentInstanceData;
 
-// ScriptStruct GbxSpawn.SpawnerReclaimedActorInfo
-// 0x0040 (0x0048 - 0x0008)
-struct FSpawnerReclaimedActorInfo : public FGbxHasStructType
-{
-public:
-	FGbxDefPtrProperty_                           ActorDefPtr;                                       // 0x0008(0x0018)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TSoftObjectPtr<class USpawnPointComponent>    SpawnPointPtr;                                     // 0x0020(0x0028)(ExportObject, InstancedReference, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FSpawnerReclaimedActorInfo;
-
 // ScriptStruct GbxSpawn.SpawnerActivation
 // 0x0020 (0x0020 - 0x0000)
 struct FSpawnerActivation final
@@ -510,6 +503,13 @@ public:
 	TArray<class AVolume*>                        Volumes;                                           // 0x0010(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
 };
 DUMPER7_ASSERTS_FSpawnerActivation;
+
+// ScriptStruct GbxSpawn.TaggedAnimDef_GbxSpawn
+// 0x0000 (0x0020 - 0x0020)
+struct FTaggedAnimDef_GbxSpawn : public FTaggedAnimDef
+{
+};
+DUMPER7_ASSERTS_FTaggedAnimDef_GbxSpawn;
 
 }
 

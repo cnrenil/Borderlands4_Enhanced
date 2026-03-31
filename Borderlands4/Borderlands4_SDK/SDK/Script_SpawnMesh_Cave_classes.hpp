@@ -10,9 +10,9 @@
 
 #include "Basic.hpp"
 
+#include "GbxGame_classes.hpp"
 #include "Enum_SpawnMesh_CharacterAnimStyle_structs.hpp"
 #include "Enum_SpawnMesh_Cave_ArtBiome_structs.hpp"
-#include "GbxGame_classes.hpp"
 
 
 namespace SDK

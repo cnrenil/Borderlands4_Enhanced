@@ -112,7 +112,7 @@ namespace AntiDebug
             size_t exeSize = 0;
             if (GetExeRange(exeBase, exeSize))
             {
-                RemoveNoAccessPages(exeBase, exeSize);
+                // RemoveNoAccessPages(exeBase, exeSize);
             }
 
             const bool bDebugEnabled = ConfigManager::Exists("Misc.Debug") && ConfigManager::B("Misc.Debug");

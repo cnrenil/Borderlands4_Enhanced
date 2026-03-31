@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "GbxUICoreGame_structs.hpp"
 #include "CoreUObject_structs.hpp"
+#include "GbxUICoreGame_structs.hpp"
 #include "GbxGame_structs.hpp"
 #include "GbxNexus_structs.hpp"
 #include "GameplayTags_structs.hpp"

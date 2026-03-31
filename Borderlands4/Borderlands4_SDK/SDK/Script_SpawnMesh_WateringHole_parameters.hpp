@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "Enum_SpawnMesh_WateringHole_LiquidType_structs.hpp"
 #include "OakGame_structs.hpp"
+#include "Enum_SpawnMesh_WateringHole_LiquidType_structs.hpp"
 #include "GbxEngine_structs.hpp"
 
 

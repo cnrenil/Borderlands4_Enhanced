@@ -16,6 +16,9 @@ namespace SignatureRegistry
         const char* Name;
         const char* Pattern;
         HookTiming Timing = HookTiming::Immediate;
+        bool bResolveRipRelative = false;
+        size_t RipDisplacementOffset = 3;
+        size_t RipInstructionLength = 7;
     };
 
     struct SignatureSnapshot
@@ -29,7 +32,13 @@ namespace SignatureRegistry
     };
 
     void Clear();
-    void Register(const char* name, const char* pattern, HookTiming timing = HookTiming::Immediate);
+    void Register(
+        const char* name,
+        const char* pattern,
+        HookTiming timing = HookTiming::Immediate,
+        bool bResolveRipRelative = false,
+        size_t ripDisplacementOffset = 3,
+        size_t ripInstructionLength = 7);
     bool IsTimingReady(HookTiming timing);
     bool ShouldAttempt(const char* name, HookTiming timing);
     uintptr_t Resolve(const char* name);

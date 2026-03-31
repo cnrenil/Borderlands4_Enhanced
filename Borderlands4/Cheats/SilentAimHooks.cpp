@@ -23,6 +23,7 @@ namespace SilentAimHooks
 		static std::atomic<bool> g_FireDirectionTraceHookInstalled{ false };
 
 		static std::atomic<bool> g_WeaponBehaviorFireHookInstalled{ false };
+		static std::atomic<bool> g_KnownNewWeaponBehaviorBuild{ false };
 		static std::atomic<ULONGLONG> g_LastNativeProjectileAttemptMs{ 0 };
 		static std::atomic<ULONGLONG> g_LastWeaponBehaviorAttemptMs{ 0 };
 
@@ -34,10 +35,18 @@ namespace SilentAimHooks
 		static FireDirectionTraceFn oFireDirectionTrace = nullptr;
 		static WeaponBehaviorFireProjectileFn oWeaponBehaviorFireProjectile = nullptr;
 
-		// IDA references (for the current build this was derived from):
+		// IDA references:
+		// Legacy build:
 		// - FireProjectileLoop:  sub_1414F12F8
 		// - FireDirectionTrace:  sub_1418AD7C2
 		// - WeaponBehavior slot 130 target: sub_1441789C2
+		// Current/new build:
+		// - WeaponBehavior slot 130 target: sub_1412D5D40
+		// - sub_1412D5D40 -> sub_1412CB890 is the new firing chain currently under re-analysis.
+		//
+		// The two native signatures below are intentionally kept as legacy-only until the new build's
+		// projectile redirect point is re-derived. The new build no longer matches the old fire-param layout.
+		static constexpr uintptr_t kNewWeaponBehaviorFireProjectileRva = 0x12D5D40;
 		static constexpr SignatureRegistry::Signature kFireProjectileLoopSignature{
 			"FireProjectileLoop",
 			"41 57 41 56 41 55 41 54 56 57 55 53 48 81 EC ? ? ? ? "
@@ -87,6 +96,11 @@ namespace SilentAimHooks
 
 		void RegisterSilentAimSignatures()
 		{
+			if (g_KnownNewWeaponBehaviorBuild.load())
+			{
+				return;
+			}
+
 			SignatureRegistry::Register(
 				kFireProjectileLoopSignature.Name,
 				kFireProjectileLoopSignature.Pattern,
@@ -596,6 +610,12 @@ namespace SilentAimHooks
 			}
 
 			*targetOut = target;
+			const uintptr_t imageBase = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
+			const uintptr_t targetRva = reinterpret_cast<uintptr_t>(target) - imageBase;
+			if (targetRva == kNewWeaponBehaviorFireProjectileRva)
+			{
+				g_KnownNewWeaponBehaviorBuild.store(true);
+			}
 			return true;
 		}
 
@@ -635,6 +655,18 @@ namespace SilentAimHooks
 			std::lock_guard<std::mutex> guard(g_HookInstallMutex);
 			if (g_FireProjectileLoopHookInstalled.load() && g_FireDirectionTraceHookInstalled.load()) return true;
 			if (g_NativeProjectileHookBlocked.load()) return false;
+			if (g_KnownNewWeaponBehaviorBuild.load())
+			{
+				g_NativeProjectileHookBlocked.store(true);
+				Logger::LogThrottled(
+					Logger::Level::Warning,
+					"SilentAim",
+					kInfoLogIntervalMs,
+					"Native projectile hooks are disabled on the current build. "
+					"WeaponBehavior slot 130 resolves to RVA 0x%llX (sub_1412D5D40), but the old FireProjectileLoop/FireDirectionTrace signatures no longer map to the new firing chain.",
+					static_cast<unsigned long long>(kNewWeaponBehaviorFireProjectileRva));
+				return false;
+			}
 			if (!ShouldAttemptDelayedHook(g_LastNativeProjectileAttemptMs))
 			{
 				return false;

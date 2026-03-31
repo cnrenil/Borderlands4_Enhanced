@@ -400,6 +400,29 @@ public:
 };
 DUMPER7_ASSERTS_IRigHierarchyProvider;
 
+// Class ControlRig.ControlRigPoseProjectSettings
+// 0x0010 (0x0038 - 0x0028)
+class UControlRigPoseProjectSettings final : public UObject
+{
+public:
+	TArray<struct FDirectoryPath>                 RootSaveDirs;                                      // 0x0028(0x0010)(Edit, BlueprintVisible, ZeroConstructor, Config, NativeAccessSpecifierPublic)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ControlRigPoseProjectSettings")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ControlRigPoseProjectSettings")
+	}
+	static class UControlRigPoseProjectSettings* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UControlRigPoseProjectSettings>();
+	}
+};
+DUMPER7_ASSERTS_UControlRigPoseProjectSettings;
+
 // Class ControlRig.AnimNodeControlRigLibrary
 // 0x0000 (0x0028 - 0x0028)
 class UAnimNodeControlRigLibrary final : public UBlueprintFunctionLibrary
@@ -584,6 +607,60 @@ public:
 };
 DUMPER7_ASSERTS_UControlRigComponent;
 
+// Class ControlRig.ControlRigValidationPass
+// 0x0000 (0x0028 - 0x0028)
+class UControlRigValidationPass : public UObject
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ControlRigValidationPass")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ControlRigValidationPass")
+	}
+	static class UControlRigValidationPass* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UControlRigValidationPass>();
+	}
+};
+DUMPER7_ASSERTS_UControlRigValidationPass;
+
+// Class ControlRig.ControlRigNumericalValidationPass
+// 0x0098 (0x00C0 - 0x0028)
+class UControlRigNumericalValidationPass final : public UControlRigValidationPass
+{
+public:
+	bool                                          bCheckControls;                                    // 0x0028(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCheckBones;                                       // 0x0029(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCheckCurves;                                      // 0x002A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2B[0x1];                                       // 0x002B(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         TranslationPrecision;                              // 0x002C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         RotationPrecision;                                 // 0x0030(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ScalePrecision;                                    // 0x0034(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         CurvePrecision;                                    // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   EventNameA;                                        // 0x003C(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	class FName                                   EventNameB;                                        // 0x0044(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FRigPose                               Pose;                                              // 0x0050(0x0070)(Transient, NativeAccessSpecifierPrivate)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ControlRigNumericalValidationPass")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ControlRigNumericalValidationPass")
+	}
+	static class UControlRigNumericalValidationPass* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UControlRigNumericalValidationPass>();
+	}
+};
+DUMPER7_ASSERTS_UControlRigNumericalValidationPass;
+
 // Class ControlRig.ControlRigControlActor
 // 0x00B0 (0x0440 - 0x0390)
 class AControlRigControlActor final : public AActor
@@ -749,6 +826,33 @@ public:
 };
 DUMPER7_ASSERTS_UControlRigTestData;
 
+// Class ControlRig.ControlRigPoseMirrorSettings
+// 0x0028 (0x0050 - 0x0028)
+class UControlRigPoseMirrorSettings final : public UObject
+{
+public:
+	class FString                                 RightSide;                                         // 0x0028(0x0010)(Edit, BlueprintVisible, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 LeftSide;                                          // 0x0038(0x0010)(Edit, BlueprintVisible, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAxis                                         MirrorAxis;                                        // 0x0048(0x0001)(Edit, BlueprintVisible, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAxis                                         AxisToFlip;                                        // 0x0049(0x0001)(Edit, BlueprintVisible, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4A[0x6];                                       // 0x004A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ControlRigPoseMirrorSettings")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ControlRigPoseMirrorSettings")
+	}
+	static class UControlRigPoseMirrorSettings* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UControlRigPoseMirrorSettings>();
+	}
+};
+DUMPER7_ASSERTS_UControlRigPoseMirrorSettings;
+
 // Class ControlRig.ControlRigValidator
 // 0x0040 (0x0068 - 0x0028)
 class UControlRigValidator final : public UObject
@@ -772,26 +876,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UControlRigValidator;
-
-// Class ControlRig.ControlRigValidationPass
-// 0x0000 (0x0028 - 0x0028)
-class UControlRigValidationPass : public UObject
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ControlRigValidationPass")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ControlRigValidationPass")
-	}
-	static class UControlRigValidationPass* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UControlRigValidationPass>();
-	}
-};
-DUMPER7_ASSERTS_UControlRigValidationPass;
 
 // Class ControlRig.ModularRigController
 // 0x0028 (0x0050 - 0x0028)
@@ -1137,56 +1221,6 @@ public:
 };
 DUMPER7_ASSERTS_UControlRigPoseAsset;
 
-// Class ControlRig.ControlRigPoseMirrorSettings
-// 0x0028 (0x0050 - 0x0028)
-class UControlRigPoseMirrorSettings final : public UObject
-{
-public:
-	class FString                                 RightSide;                                         // 0x0028(0x0010)(Edit, BlueprintVisible, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 LeftSide;                                          // 0x0038(0x0010)(Edit, BlueprintVisible, ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAxis                                         MirrorAxis;                                        // 0x0048(0x0001)(Edit, BlueprintVisible, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAxis                                         AxisToFlip;                                        // 0x0049(0x0001)(Edit, BlueprintVisible, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4A[0x6];                                       // 0x004A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ControlRigPoseMirrorSettings")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ControlRigPoseMirrorSettings")
-	}
-	static class UControlRigPoseMirrorSettings* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UControlRigPoseMirrorSettings>();
-	}
-};
-DUMPER7_ASSERTS_UControlRigPoseMirrorSettings;
-
-// Class ControlRig.ControlRigPoseProjectSettings
-// 0x0010 (0x0038 - 0x0028)
-class UControlRigPoseProjectSettings final : public UObject
-{
-public:
-	TArray<struct FDirectoryPath>                 RootSaveDirs;                                      // 0x0028(0x0010)(Edit, BlueprintVisible, ZeroConstructor, Config, NativeAccessSpecifierPublic)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ControlRigPoseProjectSettings")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ControlRigPoseProjectSettings")
-	}
-	static class UControlRigPoseProjectSettings* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UControlRigPoseProjectSettings>();
-	}
-};
-DUMPER7_ASSERTS_UControlRigPoseProjectSettings;
-
 // Class ControlRig.ControlRigWorkflowOptions
 // 0x0018 (0x00B0 - 0x0098)
 class UControlRigWorkflowOptions : public URigVMUserWorkflowOptions
@@ -1240,40 +1274,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UControlRigTransformWorkflowOptions;
-
-// Class ControlRig.ControlRigNumericalValidationPass
-// 0x0098 (0x00C0 - 0x0028)
-class UControlRigNumericalValidationPass final : public UControlRigValidationPass
-{
-public:
-	bool                                          bCheckControls;                                    // 0x0028(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCheckBones;                                       // 0x0029(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCheckCurves;                                      // 0x002A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2B[0x1];                                       // 0x002B(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         TranslationPrecision;                              // 0x002C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         RotationPrecision;                                 // 0x0030(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ScalePrecision;                                    // 0x0034(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         CurvePrecision;                                    // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   EventNameA;                                        // 0x003C(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	class FName                                   EventNameB;                                        // 0x0044(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FRigPose                               Pose;                                              // 0x0050(0x0070)(Transient, NativeAccessSpecifierPrivate)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ControlRigNumericalValidationPass")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ControlRigNumericalValidationPass")
-	}
-	static class UControlRigNumericalValidationPass* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UControlRigNumericalValidationPass>();
-	}
-};
-DUMPER7_ASSERTS_UControlRigNumericalValidationPass;
 
 }
 

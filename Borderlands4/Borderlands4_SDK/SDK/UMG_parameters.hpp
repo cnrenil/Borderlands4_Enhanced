@@ -3135,113 +3135,113 @@ public:
 };
 DUMPER7_ASSERTS_BackgroundBlurSlot_SetVerticalAlignment;
 
-// Function UMG.Border.GetDynamicMaterial
+// Function UMG.border.GetDynamicMaterial
 // 0x0008 (0x0008 - 0x0000)
-struct Border_GetDynamicMaterial final
+struct border_GetDynamicMaterial final
 {
 public:
 	class UMaterialInstanceDynamic*               ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_GetDynamicMaterial;
+DUMPER7_ASSERTS_border_GetDynamicMaterial;
 
-// Function UMG.Border.SetBrush
+// Function UMG.border.SetBrush
 // 0x00B0 (0x00B0 - 0x0000)
-struct Border_SetBrush final
+struct border_SetBrush final
 {
 public:
 	struct FSlateBrush                            InBrush;                                           // 0x0000(0x00B0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetBrush;
+DUMPER7_ASSERTS_border_SetBrush;
 
-// Function UMG.Border.SetBrushColor
+// Function UMG.border.SetBrushColor
 // 0x0010 (0x0010 - 0x0000)
-struct Border_SetBrushColor final
+struct border_SetBrushColor final
 {
 public:
 	struct FLinearColor                           InBrushColor;                                      // 0x0000(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetBrushColor;
+DUMPER7_ASSERTS_border_SetBrushColor;
 
-// Function UMG.Border.SetBrushFromAsset
+// Function UMG.border.SetBrushFromAsset
 // 0x0008 (0x0008 - 0x0000)
-struct Border_SetBrushFromAsset final
+struct border_SetBrushFromAsset final
 {
 public:
 	class USlateBrushAsset*                       Asset;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetBrushFromAsset;
+DUMPER7_ASSERTS_border_SetBrushFromAsset;
 
-// Function UMG.Border.SetBrushFromMaterial
+// Function UMG.border.SetBrushFromMaterial
 // 0x0008 (0x0008 - 0x0000)
-struct Border_SetBrushFromMaterial final
+struct border_SetBrushFromMaterial final
 {
 public:
 	class UMaterialInterface*                     Material;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetBrushFromMaterial;
+DUMPER7_ASSERTS_border_SetBrushFromMaterial;
 
-// Function UMG.Border.SetBrushFromTexture
+// Function UMG.border.SetBrushFromTexture
 // 0x0008 (0x0008 - 0x0000)
-struct Border_SetBrushFromTexture final
+struct border_SetBrushFromTexture final
 {
 public:
 	class UTexture2D*                             Texture;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetBrushFromTexture;
+DUMPER7_ASSERTS_border_SetBrushFromTexture;
 
-// Function UMG.Border.SetContentColorAndOpacity
+// Function UMG.border.SetContentColorAndOpacity
 // 0x0010 (0x0010 - 0x0000)
-struct Border_SetContentColorAndOpacity final
+struct border_SetContentColorAndOpacity final
 {
 public:
 	struct FLinearColor                           InContentColorAndOpacity;                          // 0x0000(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetContentColorAndOpacity;
+DUMPER7_ASSERTS_border_SetContentColorAndOpacity;
 
-// Function UMG.Border.SetDesiredSizeScale
+// Function UMG.border.SetDesiredSizeScale
 // 0x0010 (0x0010 - 0x0000)
-struct Border_SetDesiredSizeScale final
+struct border_SetDesiredSizeScale final
 {
 public:
 	struct FVector2D                              InScale;                                           // 0x0000(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetDesiredSizeScale;
+DUMPER7_ASSERTS_border_SetDesiredSizeScale;
 
-// Function UMG.Border.SetHorizontalAlignment
+// Function UMG.border.SetHorizontalAlignment
 // 0x0001 (0x0001 - 0x0000)
-struct Border_SetHorizontalAlignment final
+struct border_SetHorizontalAlignment final
 {
 public:
 	EHorizontalAlignment                          InHorizontalAlignment;                             // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetHorizontalAlignment;
+DUMPER7_ASSERTS_border_SetHorizontalAlignment;
 
-// Function UMG.Border.SetPadding
+// Function UMG.border.SetPadding
 // 0x0010 (0x0010 - 0x0000)
-struct Border_SetPadding final
+struct border_SetPadding final
 {
 public:
 	struct FMargin                                InPadding;                                         // 0x0000(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetPadding;
+DUMPER7_ASSERTS_border_SetPadding;
 
-// Function UMG.Border.SetShowEffectWhenDisabled
+// Function UMG.border.SetShowEffectWhenDisabled
 // 0x0001 (0x0001 - 0x0000)
-struct Border_SetShowEffectWhenDisabled final
+struct border_SetShowEffectWhenDisabled final
 {
 public:
 	bool                                          bInShowEffectWhenDisabled;                         // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetShowEffectWhenDisabled;
+DUMPER7_ASSERTS_border_SetShowEffectWhenDisabled;
 
-// Function UMG.Border.SetVerticalAlignment
+// Function UMG.border.SetVerticalAlignment
 // 0x0001 (0x0001 - 0x0000)
-struct Border_SetVerticalAlignment final
+struct border_SetVerticalAlignment final
 {
 public:
 	EVerticalAlignment                            InVerticalAlignment;                               // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Border_SetVerticalAlignment;
+DUMPER7_ASSERTS_border_SetVerticalAlignment;
 
 // Function UMG.BorderSlot.SetHorizontalAlignment
 // 0x0001 (0x0001 - 0x0000)

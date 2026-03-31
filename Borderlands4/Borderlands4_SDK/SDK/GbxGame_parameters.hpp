@@ -17,13 +17,13 @@
 #include "GbxAI_structs.hpp"
 #include "CoreUObject_structs.hpp"
 #include "EngineSettings_structs.hpp"
+#include "GbxPhysics_structs.hpp"
 #include "GameplayTags_structs.hpp"
 #include "GbxDestruction_structs.hpp"
 #include "MovieScene_structs.hpp"
 #include "GbxNexus_structs.hpp"
 #include "GbxAudio_structs.hpp"
 #include "ChaosSolverEngine_structs.hpp"
-#include "GbxPhysics_structs.hpp"
 #include "AIModule_structs.hpp"
 
 
@@ -328,58 +328,83 @@ public:
 };
 DUMPER7_ASSERTS_GbxSkillManagedResourceType_Actor_Unregister;
 
-// Function GbxGame.GbxMaterialParamInterpStatics.BreakGbxParamInterpOptions
-// 0x0040 (0x0040 - 0x0000)
-struct GbxMaterialParamInterpStatics_BreakGbxParamInterpOptions final
+// Function GbxGame.GbxMovingPlatformLibrary.MovePlatformAlongSpline
+// 0x0018 (0x0018 - 0x0000)
+struct GbxMovingPlatformLibrary_MovePlatformAlongSpline final
 {
 public:
-	struct FGbxMaterialParamInterpOptions         InterpData;                                        // 0x0000(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	class FName                                   ParamName;                                         // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         InterpTime;                                        // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   MaterialSlot;                                      // 0x002C(0x0008)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAlphaBlendOption                             CurveOption;                                       // 0x0034(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_35[0x3];                                       // 0x0035(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	class UCurveFloat*                            CustomCurve;                                       // 0x0038(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 SplineActor;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SpeedMultiplier;                                   // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxMaterialParamInterpStatics_BreakGbxParamInterpOptions;
+DUMPER7_ASSERTS_GbxMovingPlatformLibrary_MovePlatformAlongSpline;
 
-// Function GbxGame.GbxMaterialParamInterpStatics.InterpScalar
-// 0x0030 (0x0030 - 0x0000)
-struct GbxMaterialParamInterpStatics_InterpScalar final
+// Function GbxGame.GbxMovingPlatformLibrary.MovePlatformToDestination
+// 0x0010 (0x0010 - 0x0000)
+struct GbxMovingPlatformLibrary_MovePlatformToDestination final
 {
 public:
-	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         NewValue;                                          // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         DestinationIndex;                                  // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bTeleport;                                         // 0x000C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxMovingPlatformLibrary_MovePlatformToDestination;
+
+// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformConfig
+// 0x0128 (0x0128 - 0x0000)
+struct GbxMovingPlatformLibrary_SetMovingPlatformConfig final
+{
+public:
+	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxMovingPlatformConfig               InConfig;                                          // 0x0008(0x0120)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformConfig;
+
+// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformDestinationTransform
+// 0x0070 (0x0070 - 0x0000)
+struct GbxMovingPlatformLibrary_SetMovingPlatformDestinationTransform final
+{
+public:
+	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         DestinationIndex;                                  // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxMaterialParamInterpOptions         options;                                           // 0x0010(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FTransform                             RelativeTransform;                                 // 0x0010(0x0060)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxMaterialParamInterpStatics_InterpScalar;
+DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformDestinationTransform;
 
-// Function GbxGame.GbxMaterialParamInterpStatics.InterpVector
-// 0x0038 (0x0038 - 0x0000)
-struct GbxMaterialParamInterpStatics_InterpVector final
+// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformMoveCompleteCallback
+// 0x0018 (0x0018 - 0x0000)
+struct GbxMovingPlatformLibrary_SetMovingPlatformMoveCompleteCallback final
 {
 public:
-	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLinearColor                           NewValue;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxMaterialParamInterpOptions         options;                                           // 0x0018(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TDelegate<void()>                             Delegate;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxMaterialParamInterpStatics_InterpVector;
+DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformMoveCompleteCallback;
 
-// Function GbxGame.GbxMaterialParamInterpStatics.MakeGbxParamInterpOptions
-// 0x0040 (0x0040 - 0x0000)
-struct GbxMaterialParamInterpStatics_MakeGbxParamInterpOptions final
+// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformMoveSpeed
+// 0x0128 (0x0128 - 0x0000)
+struct GbxMovingPlatformLibrary_SetMovingPlatformMoveSpeed final
 {
 public:
-	class FName                                   ParamName;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         InterpTime;                                        // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   MaterialSlot;                                      // 0x000C(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAlphaBlendOption                             CurveOption;                                       // 0x0014(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_15[0x3];                                       // 0x0015(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	class UCurveFloat*                            CustomCurve;                                       // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxMaterialParamInterpOptions         ReturnValue;                                       // 0x0020(0x0020)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxMovingPlatformConfig               Config;                                            // 0x0000(0x0120)(Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	float                                         InMoveSpeed;                                       // 0x0120(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_124[0x4];                                      // 0x0124(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxMaterialParamInterpStatics_MakeGbxParamInterpOptions;
+DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformMoveSpeed;
+
+// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformMoveTime
+// 0x0128 (0x0128 - 0x0000)
+struct GbxMovingPlatformLibrary_SetMovingPlatformMoveTime final
+{
+public:
+	struct FGbxMovingPlatformConfig               Config;                                            // 0x0000(0x0120)(Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	float                                         InMoveTime;                                        // 0x0120(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_124[0x4];                                      // 0x0124(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformMoveTime;
 
 // Function GbxGame.GbxBodyData.GetBodySwitchState
 // 0x0028 (0x0028 - 0x0000)
@@ -601,41 +626,169 @@ public:
 };
 DUMPER7_ASSERTS_ClimbableInterface_IsClimbable;
 
-// Function GbxGame.GbxNavTest_NavMeshPath.SetGbxActorDef
-// 0x0018 (0x0018 - 0x0000)
-struct GbxNavTest_NavMeshPath_SetGbxActorDef final
-{
-public:
-	FGameDataHandleProperty_                      NewGbxActorDef;                                    // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxNavTest_NavMeshPath_SetGbxActorDef;
-
-// Function GbxGame.GbxNavTest_NavMeshPath.SetStance
-// 0x0018 (0x0018 - 0x0000)
-struct GbxNavTest_NavMeshPath_SetStance final
-{
-public:
-	FGameDataHandleProperty_                      NewStance;                                         // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxNavTest_NavMeshPath_SetStance;
-
-// Function GbxGame.LightBeamScript.OnBegin
+// Function GbxGame.GbxGameStateBase.OnGroupAdded
 // 0x0008 (0x0008 - 0x0000)
-struct LightBeamScript_OnBegin final
+struct GbxGameStateBase_OnGroupAdded final
 {
 public:
-	class ULightBeam*                             Beam;                                              // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxPlayerGroupState*                   PlayerGroup;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_LightBeamScript_OnBegin;
+DUMPER7_ASSERTS_GbxGameStateBase_OnGroupAdded;
 
-// Function GbxGame.LightBeamScript.OnShutdown
+// Function GbxGame.GbxGameStateBase.OnGroupRemoved
 // 0x0008 (0x0008 - 0x0000)
-struct LightBeamScript_OnShutdown final
+struct GbxGameStateBase_OnGroupRemoved final
 {
 public:
-	class ULightBeam*                             Beam;                                              // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxPlayerGroupState*                   PlayerGroup;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_LightBeamScript_OnShutdown;
+DUMPER7_ASSERTS_GbxGameStateBase_OnGroupRemoved;
+
+// Function GbxGame.GbxGameStateBase.OnPlayerAddedToGroup
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameStateBase_OnPlayerAddedToGroup final
+{
+public:
+	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxPlayerState*                        PlayerState;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameStateBase_OnPlayerAddedToGroup;
+
+// Function GbxGame.GbxGameStateBase.OnPlayerRemovedFromGroup
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameStateBase_OnPlayerRemovedFromGroup final
+{
+public:
+	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxPlayerState*                        PlayerState;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameStateBase_OnPlayerRemovedFromGroup;
+
+// Function GbxGame.GbxGameState.PlayMusicEvent
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameState_PlayMusicEvent final
+{
+public:
+	struct FGameplayTag                           MusicEvent;                                        // 0x0000(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameState_PlayMusicEvent;
+
+// Function GbxGame.GbxGameState.PlaySoundInWorldMulticast
+// 0x0110 (0x0110 - 0x0000)
+struct GbxGameState_PlaySoundInWorldMulticast final
+{
+public:
+	class AActor*                                 ActorInstigator;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxAudioEmitterSource                 EmitterSource;                                     // 0x0010(0x0080)(ConstParm, Parm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxAudioEvent                         Event;                                             // 0x0090(0x0030)(ConstParm, Parm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FWwiseSwitchDef                        OptionalSwitch;                                    // 0x00C0(0x0050)(ConstParm, Parm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameState_PlaySoundInWorldMulticast;
+
+// Function GbxGame.GbxGameState.PlaySoundOnActorMulticast
+// 0x0090 (0x0090 - 0x0000)
+struct GbxGameState_PlaySoundOnActorMulticast final
+{
+public:
+	class AActor*                                 ActorInstigator;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxAudioEvent                         Event;                                             // 0x0008(0x0030)(ConstParm, Parm, ReferenceParm, NativeAccessSpecifierPublic)
+	class FName                                   EmitterTag;                                        // 0x0038(0x0008)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FWwiseSwitchDef                        OptionalSwitch;                                    // 0x0040(0x0050)(ConstParm, Parm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameState_PlaySoundOnActorMulticast;
+
+// Function GbxGame.GbxGameState.PlaySoundOnActorSocketMulticast
+// 0x0040 (0x0040 - 0x0000)
+struct GbxGameState_PlaySoundOnActorSocketMulticast final
+{
+public:
+	class AActor*                                 ActorInstigator;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxAudioEvent                         Event;                                             // 0x0008(0x0030)(ConstParm, Parm, ReferenceParm, NativeAccessSpecifierPublic)
+	class FName                                   SocketName;                                        // 0x0038(0x0008)(ConstParm, Parm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameState_PlaySoundOnActorSocketMulticast;
+
+// Function GbxGame.GbxGameAudioBlueprintFunctionLibrary.PlayFoleyImpactOnActor
+// 0x0048 (0x0048 - 0x0000)
+struct GbxGameAudioBlueprintFunctionLibrary_PlayFoleyImpactOnActor final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FFoleyImpactParams                     FoleyImpactParams;                                 // 0x0008(0x0040)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameAudioBlueprintFunctionLibrary_PlayFoleyImpactOnActor;
+
+// Function GbxGame.GbxGameAudioBlueprintFunctionLibrary.PostEventInWorldMulticast
+// 0x00E0 (0x00E0 - 0x0000)
+struct GbxGameAudioBlueprintFunctionLibrary_PostEventInWorldMulticast final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 ActorInstigator;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxAudioEmitterSource                 EmitterSource;                                     // 0x0010(0x0080)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxAudioEvent                         Event;                                             // 0x0090(0x0030)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           OptionalSwitch;                                    // 0x00C0(0x0018)(Parm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameAudioBlueprintFunctionLibrary_PostEventInWorldMulticast;
+
+// Function GbxGame.GbxGameAudioBlueprintFunctionLibrary.PostWwiseEventOnActorMulticast
+// 0x0060 (0x0060 - 0x0000)
+struct GbxGameAudioBlueprintFunctionLibrary_PostWwiseEventOnActorMulticast final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 ActorInstigator;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxAudioEvent                         Event;                                             // 0x0010(0x0030)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class FName                                   EmitterTag;                                        // 0x0040(0x0008)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           OptionalSwitch;                                    // 0x0048(0x0018)(Parm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameAudioBlueprintFunctionLibrary_PostWwiseEventOnActorMulticast;
+
+// Function GbxGame.GbxGameAudioBlueprintFunctionLibrary.TryGetGlobalWetnessForActor
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameAudioBlueprintFunctionLibrary_TryGetGlobalWetnessForActor final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         GlobalWetnessValue;                                // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIsValueValid;                                     // 0x000C(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameAudioBlueprintFunctionLibrary_TryGetGlobalWetnessForActor;
+
+// Function GbxGame.LightBeamCollisionHandler.StartBeamImpact
+// 0x0110 (0x0110 - 0x0000)
+struct LightBeamCollisionHandler_StartBeamImpact final
+{
+public:
+	const class ULightBeam*                       Beam;                                              // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Impact;                                            // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	ELightBeamCollisionHandlerResult              ReturnValue;                                       // 0x0108(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_109[0x7];                                      // 0x0109(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_LightBeamCollisionHandler_StartBeamImpact;
+
+// Function GbxGame.LightBeamCollisionHandler.StopBeamImpact
+// 0x0108 (0x0108 - 0x0000)
+struct LightBeamCollisionHandler_StopBeamImpact final
+{
+public:
+	const class ULightBeam*                       Beam;                                              // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             LastImpact;                                        // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightBeamCollisionHandler_StopBeamImpact;
+
+// Function GbxGame.LightBeamCollisionHandler.UpdateBeamImpact
+// 0x0108 (0x0108 - 0x0000)
+struct LightBeamCollisionHandler_UpdateBeamImpact final
+{
+public:
+	const class ULightBeam*                       Beam;                                              // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Impact;                                            // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightBeamCollisionHandler_UpdateBeamImpact;
 
 // Function GbxGame.GbxPlayerController.Client_ConsumePremiumCurrency
 // 0x000C (0x000C - 0x0000)
@@ -857,107 +1010,150 @@ public:
 };
 DUMPER7_ASSERTS_GbxPlayerController_GetPlayerGroupState;
 
-// Function GbxGame.GbxGameplayDirector.OnActiveMissionsChanged
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameplayDirector_OnActiveMissionsChanged final
-{
-public:
-	struct FSToken                                mission;                                           // 0x0000(0x000C)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          IsActive;                                          // 0x000C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayDirector_OnActiveMissionsChanged;
-
-// Function GbxGame.GbxGameplayDirector.ReceiveMissionStatusChanged
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameplayDirector_ReceiveMissionStatusChanged final
-{
-public:
-	EMissionStatus                                status;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FMissionInstanceHandle                 MissionHandle;                                     // 0x0004(0x000C)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayDirector_ReceiveMissionStatusChanged;
-
-// Function GbxGame.GbxGameplayDirector.ReceivePlayerGroupAdded
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameplayDirector_ReceivePlayerGroupAdded final
-{
-public:
-	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerGroupAdded;
-
-// Function GbxGame.GbxGameplayDirector.ReceivePlayerGroupPlayerAdded
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameplayDirector_ReceivePlayerGroupPlayerAdded final
-{
-public:
-	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AGbxPlayerState*                        PlayerState;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerGroupPlayerAdded;
-
-// Function GbxGame.GbxGameplayDirector.ReceivePlayerGroupPlayerRemoved
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameplayDirector_ReceivePlayerGroupPlayerRemoved final
-{
-public:
-	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AGbxPlayerState*                        PlayerState;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerGroupPlayerRemoved;
-
-// Function GbxGame.GbxGameplayDirector.ReceivePlayerGroupRemoved
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameplayDirector_ReceivePlayerGroupRemoved final
-{
-public:
-	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerGroupRemoved;
-
-// Function GbxGame.GbxGameplayDirector.ReceivePlayerLogout
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameplayDirector_ReceivePlayerLogout final
-{
-public:
-	class AController*                            Exiting;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerLogout;
-
-// Function GbxGame.GbxGameplayDirector.ReceivePlayerPostLogin
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameplayDirector_ReceivePlayerPostLogin final
-{
-public:
-	class APlayerController*                      NewPlayer;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerPostLogin;
-
-// Function GbxGame.GbxGameplayDirector.InstantiateGeneratedMissionForGroup
+// Function GbxGame.GbxGameModeStatics.ChangePlayerTeam
 // 0x0030 (0x0030 - 0x0000)
-struct GbxGameplayDirector_InstantiateGeneratedMissionForGroup final
+struct GbxGameModeStatics_ChangePlayerTeam final
 {
 public:
-	FGameDataHandleProperty_                      MissionDef;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	const class AActor*                           Actor;                                             // 0x0018(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0020(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class APlayerController*                      PlayerController;                                  // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           TeamDef;                                           // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         TeamIndex;                                         // 0x0028(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxGameplayDirector_InstantiateGeneratedMissionForGroup;
+DUMPER7_ASSERTS_GbxGameModeStatics_ChangePlayerTeam;
 
-// Function GbxGame.GbxGameplayDirector.InstantiateGeneratedMissionForPlayer
+// Function GbxGame.GbxGameModeStatics.EnableModulesWithTags
 // 0x0030 (0x0030 - 0x0000)
-struct GbxGameplayDirector_InstantiateGeneratedMissionForPlayer final
+struct GbxGameModeStatics_EnableModulesWithTags final
 {
 public:
-	FGameDataHandleProperty_                      MissionDef;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	const class AActor*                           Actor;                                             // 0x0018(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0020(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxGameModeModuleTags                 tags;                                              // 0x0008(0x0020)(Parm, NativeAccessSpecifierPublic)
+	ENexusBitSetOperator                          Op;                                                // 0x0028(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bEnable;                                           // 0x0029(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOnlyEnableFirstModule;                            // 0x002A(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2B[0x5];                                       // 0x002B(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxGameplayDirector_InstantiateGeneratedMissionForPlayer;
+DUMPER7_ASSERTS_GbxGameModeStatics_EnableModulesWithTags;
+
+// Function GbxGame.GbxGameModeStatics.EnableModulesWithType
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameModeStatics_EnableModulesWithType final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TSubclassOf<class UGbxGameModeModuleHost>     type;                                              // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bEnable;                                           // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOnlyEnableFirstModule;                            // 0x0011(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_12[0x6];                                       // 0x0012(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_EnableModulesWithType;
+
+// Function GbxGame.GbxGameModeStatics.EnableModuleWithName
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameModeStatics_EnableModuleWithName final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ModuleName;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bEnable;                                           // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_EnableModuleWithName;
+
+// Function GbxGame.GbxGameModeStatics.GetGameModeModuleParameter
+// 0x0048 (0x0048 - 0x0000)
+struct GbxGameModeStatics_GetGameModeModuleParameter final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ParameterName;                                     // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxParam                              ReturnValue;                                       // 0x0010(0x0038)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_GetGameModeModuleParameter;
+
+// Function GbxGame.GbxGameModeStatics.GetGameModePhase
+// 0x0020 (0x0020 - 0x0000)
+struct GbxGameModeStatics_GetGameModePhase final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           ReturnValue;                                       // 0x0008(0x0018)(Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_GetGameModePhase;
+
+// Function GbxGame.GbxGameModeStatics.HasGameModeTag
+// 0x0030 (0x0030 - 0x0000)
+struct GbxGameModeStatics_HasGameModeTag final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxGameModeTags                       tags;                                              // 0x0008(0x0020)(Parm, NativeAccessSpecifierPublic)
+	ENexusBitSetOperator                          Op;                                                // 0x0028(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0029(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2A[0x6];                                       // 0x002A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_HasGameModeTag;
+
+// Function GbxGame.GbxGameModeStatics.SendEventToModules
+// 0x0070 (0x0070 - 0x0000)
+struct GbxGameModeStatics_SendEventToModules final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           EventDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxGameModeModuleEventParams          params;                                            // 0x0020(0x0050)(Parm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_SendEventToModules;
+
+// Function GbxGame.GbxGameModeStatics.SendEventToModulesWithTags
+// 0x0098 (0x0098 - 0x0000)
+struct GbxGameModeStatics_SendEventToModulesWithTags final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           EventDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxGameModeModuleEventParams          params;                                            // 0x0020(0x0050)(Parm, NativeAccessSpecifierPublic)
+	struct FGbxGameModeModuleTags                 tags;                                              // 0x0070(0x0020)(Parm, NativeAccessSpecifierPublic)
+	ENexusBitSetOperator                          Op;                                                // 0x0090(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_91[0x7];                                       // 0x0091(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_SendEventToModulesWithTags;
+
+// Function GbxGame.GbxGameModeStatics.SendEventToModulesWithType
+// 0x0078 (0x0078 - 0x0000)
+struct GbxGameModeStatics_SendEventToModulesWithType final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           EventDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxGameModeModuleEventParams          params;                                            // 0x0020(0x0050)(Parm, NativeAccessSpecifierPublic)
+	TSubclassOf<class UGbxGameModeModuleHost>     type;                                              // 0x0070(0x0008)(Parm, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_SendEventToModulesWithType;
+
+// Function GbxGame.GbxGameModeStatics.SendEventToModuleWithName
+// 0x0078 (0x0078 - 0x0000)
+struct GbxGameModeStatics_SendEventToModuleWithName final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           EventDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxGameModeModuleEventParams          params;                                            // 0x0020(0x0050)(Parm, NativeAccessSpecifierPublic)
+	class FName                                   ModuleName;                                        // 0x0070(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_SendEventToModuleWithName;
+
+// Function GbxGame.GbxGameModeStatics.SetGameModePhase
+// 0x0020 (0x0020 - 0x0000)
+struct GbxGameModeStatics_SetGameModePhase final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           GameModePhase;                                     // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeStatics_SetGameModePhase;
 
 // Function GbxGame.GbxActivityAreaStamp.SetDefaultLayout
 // 0x0008 (0x0008 - 0x0000)
@@ -976,19 +1172,6 @@ public:
 	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_GbxActivityAreaStamp_GetLayoutNames;
-
-// Function GbxGame.GbxTrick_Ragdoll.ComponentHitCallback
-// 0x0130 (0x0130 - 0x0000)
-struct GbxTrick_Ragdoll_ComponentHitCallback final
-{
-public:
-	class UPrimitiveComponent*                    HitComp;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                NormalImpulse;                                     // 0x0018(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0030(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxTrick_Ragdoll_ComponentHitCallback;
 
 // Function GbxGame.GbxActivityBlueprintLibrary.CreateActivityRequest
 // 0x0078 (0x0078 - 0x0000)
@@ -1114,6 +1297,37 @@ public:
 };
 DUMPER7_ASSERTS_GbxActivityBlueprintLibrary_SetAreasInLevelInstanceIsLocked;
 
+// Function GbxGame.GbxPlayerUtilsBlueprintLibrary.GetPlayerController
+// 0x0010 (0x0010 - 0x0000)
+struct GbxPlayerUtilsBlueprintLibrary_GetPlayerController final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class APlayerController*                      ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerUtilsBlueprintLibrary_GetPlayerController;
+
+// Function GbxGame.GbxPlayerUtilsBlueprintLibrary.GetPlayerState
+// 0x0010 (0x0010 - 0x0000)
+struct GbxPlayerUtilsBlueprintLibrary_GetPlayerState final
+{
+public:
+	const class AActor*                           Actor;                                             // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class APlayerState*                           ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerUtilsBlueprintLibrary_GetPlayerState;
+
+// Function GbxGame.GbxPlayerUtilsBlueprintLibrary.IsPlayerControlled
+// 0x0010 (0x0010 - 0x0000)
+struct GbxPlayerUtilsBlueprintLibrary_IsPlayerControlled final
+{
+public:
+	const class AActor*                           Actor;                                             // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxPlayerUtilsBlueprintLibrary_IsPlayerControlled;
+
 // Function GbxGame.AvatarDummy.SetSerialNumberForChannel
 // 0x0018 (0x0018 - 0x0000)
 struct AvatarDummy_SetSerialNumberForChannel final
@@ -1133,6 +1347,70 @@ public:
 };
 DUMPER7_ASSERTS_AvatarDummy_GetDummy;
 
+// Function GbxGame.InventoryBase.GetIdentity
+// 0x00D8 (0x00D8 - 0x0000)
+struct InventoryBase_GetIdentity final
+{
+public:
+	struct FInventoryIdentity                     ReturnValue;                                       // 0x0000(0x00D8)(ConstParm, Parm, OutParm, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_InventoryBase_GetIdentity;
+
+// Function GbxGame.InventoryPickup.OnActorOverlap
+// 0x0010 (0x0010 - 0x0000)
+struct InventoryPickup_OnActorOverlap final
+{
+public:
+	class AActor*                                 OverlappedActor;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_InventoryPickup_OnActorOverlap;
+
+// Function GbxGame.InventoryPickup.OnHit
+// 0x0128 (0x0128 - 0x0000)
+struct InventoryPickup_OnHit final
+{
+public:
+	class AActor*                                 SelfActor;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                NormalImpulse;                                     // 0x0010(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0028(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_InventoryPickup_OnHit;
+
+// Function GbxGame.InventoryPickup.OnPhysicsSleep
+// 0x0010 (0x0010 - 0x0000)
+struct InventoryPickup_OnPhysicsSleep final
+{
+public:
+	class UPrimitiveComponent*                    Component;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   BoneName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_InventoryPickup_OnPhysicsSleep;
+
+// Function GbxGame.InventoryPickup.OnPhysicsWake
+// 0x0010 (0x0010 - 0x0000)
+struct InventoryPickup_OnPhysicsWake final
+{
+public:
+	class UPrimitiveComponent*                    Component;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   BoneName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_InventoryPickup_OnPhysicsWake;
+
+// Function GbxGame.InventoryPickup.OnPickupHit_CheckImpactEffect
+// 0x0130 (0x0130 - 0x0000)
+struct InventoryPickup_OnPickupHit_CheckImpactEffect final
+{
+public:
+	class UPrimitiveComponent*                    HitComponent;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                NormalImpulse;                                     // 0x0018(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0030(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_InventoryPickup_OnPickupHit_CheckImpactEffect;
+
 // Function GbxGame.DialogFunctionImplementation.PerformTest
 // 0x02F0 (0x02F0 - 0x0000)
 struct DialogFunctionImplementation_PerformTest final
@@ -1144,23 +1422,33 @@ public:
 };
 DUMPER7_ASSERTS_DialogFunctionImplementation_PerformTest;
 
-// Function GbxGame.GbxInventorySettings.GetInventoryEffectTypes
-// 0x0010 (0x0010 - 0x0000)
-struct GbxInventorySettings_GetInventoryEffectTypes final
+// Function GbxGame.GbxInventoryAugmentScript.OnInventoryAugmentCausedDamageConditionMet
+// 0x0130 (0x0130 - 0x0000)
+struct GbxInventoryAugmentScript_OnInventoryAugmentCausedDamageConditionMet final
 {
 public:
-	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+	class AActor*                                 DamagedActor;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FCausedDamageDetails                   Details;                                           // 0x0008(0x0128)(ConstParm, Parm, OutParm, ReferenceParm, ContainsInstancedReference, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxInventorySettings_GetInventoryEffectTypes;
+DUMPER7_ASSERTS_GbxInventoryAugmentScript_OnInventoryAugmentCausedDamageConditionMet;
 
-// Function GbxGame.LightBeamManager.OnParticleSystemFinished
+// Function GbxGame.GbxInventoryAugmentScript.OnInventoryAugmentConditionMet
 // 0x0008 (0x0008 - 0x0000)
-struct LightBeamManager_OnParticleSystemFinished final
+struct GbxInventoryAugmentScript_OnInventoryAugmentConditionMet final
 {
 public:
-	class UFXSystemComponent*                     FinishedComponent;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 EnemyActor;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_LightBeamManager_OnParticleSystemFinished;
+DUMPER7_ASSERTS_GbxInventoryAugmentScript_OnInventoryAugmentConditionMet;
+
+// Function GbxGame.GbxInventoryAugmentScript.OnInventoryAugmentReceivedDamageConditionMet
+// 0x0140 (0x0140 - 0x0000)
+struct GbxInventoryAugmentScript_OnInventoryAugmentReceivedDamageConditionMet final
+{
+public:
+	struct FReceivedDamageDetails                 Details;                                           // 0x0000(0x0140)(ConstParm, Parm, OutParm, ReferenceParm, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxInventoryAugmentScript_OnInventoryAugmentReceivedDamageConditionMet;
 
 // Function GbxGame.AvatarStatics.AddOption
 // 0x0040 (0x0040 - 0x0000)
@@ -1249,42 +1537,61 @@ public:
 };
 DUMPER7_ASSERTS_BalanceBlueprintLibrary_GetBalancedActorLevel;
 
-// Function GbxGame.GbxInventoryAugmentScript.OnInventoryAugmentCausedDamageConditionMet
-// 0x0130 (0x0130 - 0x0000)
-struct GbxInventoryAugmentScript_OnInventoryAugmentCausedDamageConditionMet final
+// Function GbxGame.NexusConfigStoreInventory.GetAspectMeshGestaltPartNames
+// 0x0038 (0x0038 - 0x0000)
+struct NexusConfigStoreInventory_GetAspectMeshGestaltPartNames final
 {
 public:
-	class AActor*                                 DamagedActor;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FCausedDamageDetails                   Details;                                           // 0x0008(0x0128)(ConstParm, Parm, OutParm, ReferenceParm, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	TSoftObjectPtr<class UObject>                 Mesh;                                              // 0x0000(0x0028)(Parm, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class FName>                           OutNames;                                          // 0x0028(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxInventoryAugmentScript_OnInventoryAugmentCausedDamageConditionMet;
+DUMPER7_ASSERTS_NexusConfigStoreInventory_GetAspectMeshGestaltPartNames;
 
-// Function GbxGame.GbxInventoryAugmentScript.OnInventoryAugmentConditionMet
-// 0x0008 (0x0008 - 0x0000)
-struct GbxInventoryAugmentScript_OnInventoryAugmentConditionMet final
-{
-public:
-	class AActor*                                 EnemyActor;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxInventoryAugmentScript_OnInventoryAugmentConditionMet;
-
-// Function GbxGame.GbxInventoryAugmentScript.OnInventoryAugmentReceivedDamageConditionMet
-// 0x0140 (0x0140 - 0x0000)
-struct GbxInventoryAugmentScript_OnInventoryAugmentReceivedDamageConditionMet final
-{
-public:
-	struct FReceivedDamageDetails                 Details;                                           // 0x0000(0x0140)(ConstParm, Parm, OutParm, ReferenceParm, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxInventoryAugmentScript_OnInventoryAugmentReceivedDamageConditionMet;
-
-// Function GbxGame.GbxPlayerGroup.GetPlayerStateArray
+// Function GbxGame.NexusConfigStoreInventory.GetCriterionDisplayNames
 // 0x0010 (0x0010 - 0x0000)
-struct GbxPlayerGroup_GetPlayerStateArray final
+struct NexusConfigStoreInventory_GetCriterionDisplayNames final
 {
 public:
-	TArray<class AGbxPlayerState*>                ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxPlayerGroup_GetPlayerStateArray;
+DUMPER7_ASSERTS_NexusConfigStoreInventory_GetCriterionDisplayNames;
+
+// Function GbxGame.NexusConfigStoreInventory.GetCriterionNameFromDisplayName
+// 0x0018 (0x0018 - 0x0000)
+struct NexusConfigStoreInventory_GetCriterionNameFromDisplayName final
+{
+public:
+	class FString                                 DisplayName;                                       // 0x0000(0x0010)(Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ReturnValue;                                       // 0x0010(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_NexusConfigStoreInventory_GetCriterionNameFromDisplayName;
+
+// Function GbxGame.NexusConfigStoreInventory.GetCriterionNames
+// 0x0010 (0x0010 - 0x0000)
+struct NexusConfigStoreInventory_GetCriterionNames final
+{
+public:
+	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_NexusConfigStoreInventory_GetCriterionNames;
+
+// Function GbxGame.NexusConfigStoreInventory.GetCriterionTagNames
+// 0x0010 (0x0010 - 0x0000)
+struct NexusConfigStoreInventory_GetCriterionTagNames final
+{
+public:
+	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_NexusConfigStoreInventory_GetCriterionTagNames;
+
+// Function GbxGame.NexusConfigStoreInventory.GetStorePartTypeNames
+// 0x0010 (0x0010 - 0x0000)
+struct NexusConfigStoreInventory_GetStorePartTypeNames final
+{
+public:
+	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_NexusConfigStoreInventory_GetStorePartTypeNames;
 
 // Function GbxGame.GbxActorStateSequence.GetSequenceState
 // 0x0028 (0x0028 - 0x0000)
@@ -1359,14 +1666,50 @@ public:
 };
 DUMPER7_ASSERTS_BodyActionAnimOwner_StopBodyActionTrick;
 
-// Function GbxGame.GbxPlayerCustomization.ApplyPlayerCustomization
-// 0x0018 (0x0018 - 0x0000)
-struct GbxPlayerCustomization_ApplyPlayerCustomization final
+// Function GbxGame.GbxPlayerBotBlueprintLibrary.IsPlayerBot
+// 0x0010 (0x0010 - 0x0000)
+struct GbxPlayerBotBlueprintLibrary_IsPlayerBot final
 {
 public:
-	FGbxDefPtrProperty_                           NewCustomization;                                  // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxPlayerCustomization_ApplyPlayerCustomization;
+DUMPER7_ASSERTS_GbxPlayerBotBlueprintLibrary_IsPlayerBot;
+
+// Function GbxGame.GbxPlayerBotBlueprintLibrary.RemovePlayerBot
+// 0x0008 (0x0008 - 0x0000)
+struct GbxPlayerBotBlueprintLibrary_RemovePlayerBot final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerBotBlueprintLibrary_RemovePlayerBot;
+
+// Function GbxGame.GbxPlayerBotBlueprintLibrary.RemovePlayerBots
+// 0x0008 (0x0008 - 0x0000)
+struct GbxPlayerBotBlueprintLibrary_RemovePlayerBots final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerBotBlueprintLibrary_RemovePlayerBots;
+
+// Function GbxGame.GbxPlayerBotBlueprintLibrary.SpawnPlayerBot
+// 0x00A0 (0x00A0 - 0x0000)
+struct GbxPlayerBotBlueprintLibrary_SpawnPlayerBot final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 SpawnAt;                                           // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      CharacterDef;                                      // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FTransform                             Transform;                                         // 0x0030(0x0060)(Parm, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bEnableSplitscreen;                                // 0x0090(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_91[0x7];                                       // 0x0091(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class AGbxCharacter*                          ReturnValue;                                       // 0x0098(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerBotBlueprintLibrary_SpawnPlayerBot;
 
 // Function GbxGame.GbxAINode.AttachActor
 // 0x0008 (0x0008 - 0x0000)
@@ -1542,18 +1885,6 @@ public:
 };
 DUMPER7_ASSERTS_CameraModeState_GetBaseRotation;
 
-// Function GbxGame.GbxLegIKBlueprintLibrary.SetLegIKEnabled
-// 0x0020 (0x0020 - 0x0000)
-struct GbxLegIKBlueprintLibrary_SetLegIKEnabled final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bNewEnabled;                                       // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class FString                                 reason;                                            // 0x0010(0x0010)(Parm, ZeroConstructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLegIKBlueprintLibrary_SetLegIKEnabled;
-
 // Function GbxGame.GbxActorScript_DeliverySpawnPoint.GetLoopTricks
 // 0x0010 (0x0010 - 0x0000)
 struct GbxActorScript_DeliverySpawnPoint_GetLoopTricks final
@@ -1563,114 +1894,341 @@ public:
 };
 DUMPER7_ASSERTS_GbxActorScript_DeliverySpawnPoint_GetLoopTricks;
 
-// Function GbxGame.GbxMusicBlueprintFunctions.PostMusicEvent
-// 0x0010 (0x0010 - 0x0000)
-struct GbxMusicBlueprintFunctions_PostMusicEvent final
+// Function GbxGame.GbxNavTest_NavMeshPath.SetGbxActorDef
+// 0x0018 (0x0018 - 0x0000)
+struct GbxNavTest_NavMeshPath_SetGbxActorDef final
+{
+public:
+	FGameDataHandleProperty_                      NewGbxActorDef;                                    // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxNavTest_NavMeshPath_SetGbxActorDef;
+
+// Function GbxGame.GbxNavTest_NavMeshPath.SetStance
+// 0x0018 (0x0018 - 0x0000)
+struct GbxNavTest_NavMeshPath_SetStance final
+{
+public:
+	FGameDataHandleProperty_                      NewStance;                                         // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxNavTest_NavMeshPath_SetStance;
+
+// Function GbxGame.GbxGameplayStatics.AreAllPlayersOverlappingActor
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameplayStatics_AreAllPlayersOverlappingActor final
 {
 public:
 	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           MusicEventTag;                                     // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxMusicBlueprintFunctions_PostMusicEvent;
+DUMPER7_ASSERTS_GbxGameplayStatics_AreAllPlayersOverlappingActor;
 
-// Function GbxGame.GbxGeometryCollectionScript.OnApplyCollision
-// 0x0110 (0x0110 - 0x0000)
-struct GbxGeometryCollectionScript_OnApplyCollision final
-{
-public:
-	class UGbxGeometryCollectionScriptedComponent* Destructible;                                     // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             HitResult;                                         // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	float                                         CollisionSpeed;                                    // 0x0108(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_10C[0x4];                                      // 0x010C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGeometryCollectionScript_OnApplyCollision;
-
-// Function GbxGame.GbxGeometryCollectionScript.OnApplyHit
-// 0x0160 (0x0160 - 0x0000)
-struct GbxGeometryCollectionScript_OnApplyHit final
-{
-public:
-	class UGbxGeometryCollectionScriptedComponent* Destructible;                                     // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FDestructionHitProperties              Properties;                                        // 0x0010(0x0150)(ConstParm, Parm, OutParm, ReferenceParm, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGeometryCollectionScript_OnApplyHit;
-
-// Function GbxGame.HazardInteractionInterface.OnBeginHazardDamageOverlap
-// 0x0120 (0x0120 - 0x0000)
-struct HazardInteractionInterface_OnBeginHazardDamageOverlap final
-{
-public:
-	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFromSweep;                                        // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FHitResult                             SweepResult;                                       // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_HazardInteractionInterface_OnBeginHazardDamageOverlap;
-
-// Function GbxGame.HazardInteractionInterface.OnBeginHazardInteractionOverlap
-// 0x0120 (0x0120 - 0x0000)
-struct HazardInteractionInterface_OnBeginHazardInteractionOverlap final
-{
-public:
-	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFromSweep;                                        // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FHitResult                             SweepResult;                                       // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_HazardInteractionInterface_OnBeginHazardInteractionOverlap;
-
-// Function GbxGame.HazardInteractionInterface.OnEndHazardDamageOverlap
+// Function GbxGame.GbxGameplayStatics.AreAllPlayersOverlappingActors
 // 0x0020 (0x0020 - 0x0000)
-struct HazardInteractionInterface_OnEndHazardDamageOverlap final
+struct GbxGameplayStatics_AreAllPlayersOverlappingActors final
 {
 public:
-	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class AActor*>                         Actors;                                            // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_HazardInteractionInterface_OnEndHazardDamageOverlap;
+DUMPER7_ASSERTS_GbxGameplayStatics_AreAllPlayersOverlappingActors;
 
-// Function GbxGame.HazardInteractionInterface.OnEndHazardInteractionOverlap
+// Function GbxGame.GbxGameplayStatics.AreAnyPlayersOverlappingActor
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameplayStatics_AreAnyPlayersOverlappingActor final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_AreAnyPlayersOverlappingActor;
+
+// Function GbxGame.GbxGameplayStatics.AreAnyPlayersOverlappingActors
 // 0x0020 (0x0020 - 0x0000)
-struct HazardInteractionInterface_OnEndHazardInteractionOverlap final
+struct GbxGameplayStatics_AreAnyPlayersOverlappingActors final
 {
 public:
-	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class AActor*>                         Actors;                                            // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_HazardInteractionInterface_OnEndHazardInteractionOverlap;
+DUMPER7_ASSERTS_GbxGameplayStatics_AreAnyPlayersOverlappingActors;
 
-// Function GbxGame.GbxMovingPlatformKillVolume.GetAvailablePlatformStates
-// 0x0010 (0x0010 - 0x0000)
-struct GbxMovingPlatformKillVolume_GetAvailablePlatformStates final
+// Function GbxGame.GbxGameplayStatics.BranchOnAreAllPlayersOverlappingActor
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameplayStatics_BranchOnAreAllPlayersOverlappingActor final
 {
 public:
-	TArray<class FName>                           OptionList;                                        // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EPlayersOverlappingActorOutput                Branches;                                          // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxMovingPlatformKillVolume_GetAvailablePlatformStates;
+DUMPER7_ASSERTS_GbxGameplayStatics_BranchOnAreAllPlayersOverlappingActor;
 
-// Function GbxGame.NexusActorDataLayerHelper.OnDataLayerInstanceRuntimeStateChanged
-// 0x0010 (0x0010 - 0x0000)
-struct NexusActorDataLayerHelper_OnDataLayerInstanceRuntimeStateChanged final
+// Function GbxGame.GbxGameplayStatics.BranchOnAreAllPlayersOverlappingActors
+// 0x0020 (0x0020 - 0x0000)
+struct GbxGameplayStatics_BranchOnAreAllPlayersOverlappingActors final
 {
 public:
-	const class UDataLayerInstance*               InDataLayerInstance;                               // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EDataLayerRuntimeState                        InEffectiveState;                                  // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class AActor*>                         Actors;                                            // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	EPlayersOverlappingActorOutput                Branches;                                          // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_NexusActorDataLayerHelper_OnDataLayerInstanceRuntimeStateChanged;
+DUMPER7_ASSERTS_GbxGameplayStatics_BranchOnAreAllPlayersOverlappingActors;
+
+// Function GbxGame.GbxGameplayStatics.BranchOnAreAnyPlayersOverlappingActor
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameplayStatics_BranchOnAreAnyPlayersOverlappingActor final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EPlayersOverlappingActorOutput                Branches;                                          // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_BranchOnAreAnyPlayersOverlappingActor;
+
+// Function GbxGame.GbxGameplayStatics.BranchOnAreAnyPlayersOverlappingActors
+// 0x0020 (0x0020 - 0x0000)
+struct GbxGameplayStatics_BranchOnAreAnyPlayersOverlappingActors final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class AActor*>                         Actors;                                            // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	EPlayersOverlappingActorOutput                Branches;                                          // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_BranchOnAreAnyPlayersOverlappingActors;
+
+// Function GbxGame.GbxGameplayStatics.CalculateConeVector
+// 0x0058 (0x0058 - 0x0000)
+struct GbxGameplayStatics_CalculateConeVector final
+{
+public:
+	float                                         Fraction;                                          // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVector                                Origin;                                            // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Direction;                                         // 0x0020(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         AngleWidth;                                        // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         AngleHeight;                                       // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                ReturnValue;                                       // 0x0040(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_CalculateConeVector;
+
+// Function GbxGame.GbxGameplayStatics.GeneratePointsOnCone
+// 0x0050 (0x0050 - 0x0000)
+struct GbxGameplayStatics_GeneratePointsOnCone final
+{
+public:
+	struct FVector                                Origin;                                            // 0x0000(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Direction;                                         // 0x0018(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         SampleCount;                                       // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SpreadAngle;                                       // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         RotateAngle;                                       // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OriginOffset;                                      // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FTransform>                     ReturnValue;                                       // 0x0040(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_GeneratePointsOnCone;
+
+// Function GbxGame.GbxGameplayStatics.GeneratePointsOnFan
+// 0x0050 (0x0050 - 0x0000)
+struct GbxGameplayStatics_GeneratePointsOnFan final
+{
+public:
+	struct FVector                                Origin;                                            // 0x0000(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Direction;                                         // 0x0018(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         SampleCount;                                       // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SpreadAngle;                                       // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         RotateAngle;                                       // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OriginOffset;                                      // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FTransform>                     ReturnValue;                                       // 0x0040(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_GeneratePointsOnFan;
+
+// Function GbxGame.GbxGameplayStatics.GetAssociatedPrimaryCharacter
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameplayStatics_GetAssociatedPrimaryCharacter final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxCharacter*                          ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_GetAssociatedPrimaryCharacter;
+
+// Function GbxGame.GbxGameplayStatics.GetGameplayDirector
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameplayStatics_GetGameplayDirector final
+{
+public:
+	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxGameplayDirector*                   ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_GetGameplayDirector;
+
+// Function GbxGame.GbxGameplayStatics.GetViewRelativeSpawnLocation
+// 0x0098 (0x0098 - 0x0000)
+struct GbxGameplayStatics_GetViewRelativeSpawnLocation final
+{
+public:
+	class AActor*                                 Source;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   RelativeLocation;                                  // 0x0008(0x0060)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                ViewRelativeOffset;                                // 0x0068(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                ReturnValue;                                       // 0x0080(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_GetViewRelativeSpawnLocation;
+
+// Function GbxGame.GbxGameplayStatics.SetCanCharacterStepUpOn
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameplayStatics_SetCanCharacterStepUpOn final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ECanBeCharacterBase                           CanCharacterStepUpOn;                              // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0009(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_A[0x6];                                        // 0x000A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_SetCanCharacterStepUpOn;
+
+// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtActorSocketMulticast
+// 0x0028 (0x0028 - 0x0000)
+struct GbxGameplayStatics_SpawnEmitterAtActorSocketMulticast final
+{
+public:
+	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   socket;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoDestroy;                                      // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoActivateSystem;                               // 0x0021(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_22[0x6];                                       // 0x0022(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtActorSocketMulticast;
+
+// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtComponentSocketMulticast
+// 0x0028 (0x0028 - 0x0000)
+struct GbxGameplayStatics_SpawnEmitterAtComponentSocketMulticast final
+{
+public:
+	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class USceneComponent*                        Component;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   socket;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoDestroy;                                      // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoActivateSystem;                               // 0x0021(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_22[0x6];                                       // 0x0022(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtComponentSocketMulticast;
+
+// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtLocation_Generic
+// 0x0078 (0x0078 - 0x0000)
+struct GbxGameplayStatics_SpawnEmitterAtLocation_Generic final
+{
+public:
+	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FGbxParticleParameter>          EmitterParameters;                                 // 0x0010(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0020(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               Rotation;                                          // 0x0038(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                scale;                                             // 0x0050(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoDestroy;                                      // 0x0068(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EPSCPoolMethod                                PoolingMethod;                                     // 0x0069(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoActivateSystem;                               // 0x006A(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGameplayEffectVisibility                     Visibility;                                        // 0x006B(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGameplayEffectReplication                    Replication;                                       // 0x006C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_6D[0x3];                                       // 0x006D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	class UFXSystemComponent*                     ReturnValue;                                       // 0x0070(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtLocation_Generic;
+
+// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtLocation_GenericConst
+// 0x0078 (0x0078 - 0x0000)
+struct GbxGameplayStatics_SpawnEmitterAtLocation_GenericConst final
+{
+public:
+	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FGbxParticleParameter>          EmitterParameters;                                 // 0x0010(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0020(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               Rotation;                                          // 0x0038(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                scale;                                             // 0x0050(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoDestroy;                                      // 0x0068(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EPSCPoolMethod                                PoolingMethod;                                     // 0x0069(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoActivateSystem;                               // 0x006A(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGameplayEffectVisibility                     Visibility;                                        // 0x006B(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGameplayEffectReplication                    Replication;                                       // 0x006C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_6D[0x3];                                       // 0x006D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	class UFXSystemComponent*                     ReturnValue;                                       // 0x0070(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtLocation_GenericConst;
+
+// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtLocationMulticast
+// 0x0060 (0x0060 - 0x0000)
+struct GbxGameplayStatics_SpawnEmitterAtLocationMulticast final
+{
+public:
+	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0010(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               Rotation;                                          // 0x0028(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                scale;                                             // 0x0040(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoDestroy;                                      // 0x0058(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoActivateSystem;                               // 0x0059(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_5A[0x6];                                       // 0x005A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtLocationMulticast;
+
+// Function GbxGame.GbxGameplayStatics.SpawnEmitterAttached_Body
+// 0x0078 (0x0078 - 0x0000)
+struct GbxGameplayStatics_SpawnEmitterAttached_Body final
+{
+public:
+	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FGbxParticleParameter>          EmitterParameters;                                 // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	class AActor*                                 AttachToActor;                                     // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   AttachPointName;                                   // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0028(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               Rotation;                                          // 0x0040(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                scale;                                             // 0x0058(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAttachLocation                               LocationType;                                      // 0x0070(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoDestroy;                                      // 0x0071(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EPSCPoolMethod                                PoolingMethod;                                     // 0x0072(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoActivate;                                     // 0x0073(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGameplayEffectBodyVisibility                 Visibility;                                        // 0x0074(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGameplayEffectReplication                    Replication;                                       // 0x0075(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_76[0x2];                                       // 0x0076(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAttached_Body;
+
+// Function GbxGame.GbxGameplayStatics.SpawnEmitterAttached_Generic
+// 0x0080 (0x0080 - 0x0000)
+struct GbxGameplayStatics_SpawnEmitterAttached_Generic final
+{
+public:
+	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FGbxParticleParameter>          EmitterParameters;                                 // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	class USceneComponent*                        AttachToComponent;                                 // 0x0018(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   AttachPointName;                                   // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0028(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               Rotation;                                          // 0x0040(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                scale;                                             // 0x0058(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAttachLocation                               LocationType;                                      // 0x0070(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoDestroy;                                      // 0x0071(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EPSCPoolMethod                                PoolingMethod;                                     // 0x0072(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAutoActivate;                                     // 0x0073(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGameplayEffectVisibility                     Visibility;                                        // 0x0074(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGameplayEffectReplication                    Replication;                                       // 0x0075(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_76[0x2];                                       // 0x0076(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	class UFXSystemComponent*                     ReturnValue;                                       // 0x0078(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAttached_Generic;
 
 // Function GbxGame.InteractiveObject.SetRecipeCost
 // 0x0020 (0x0020 - 0x0000)
@@ -1701,6 +2259,124 @@ public:
 };
 DUMPER7_ASSERTS_ClimbableInteractiveObject_IsClimbable;
 
+// Function GbxGame.MissionBlueprintLibrary.GetOrCreateMissionInstanceForPlayer
+// 0x0028 (0x0028 - 0x0000)
+struct MissionBlueprintLibrary_GetOrCreateMissionInstanceForPlayer final
+{
+public:
+	struct FMissionInstanceHandle                 primarymission;                                    // 0x0000(0x000C)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	const class AActor*                           Actor;                                             // 0x0010(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0018(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_GetOrCreateMissionInstanceForPlayer;
+
+// Function GbxGame.MissionBlueprintLibrary.GetOrCreateMissionInstanceForPlayerGroup
+// 0x0028 (0x0028 - 0x0000)
+struct MissionBlueprintLibrary_GetOrCreateMissionInstanceForPlayerGroup final
+{
+public:
+	struct FMissionInstanceHandle                 primarymission;                                    // 0x0000(0x000C)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	const class AActor*                           Actor;                                             // 0x0010(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0018(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_GetOrCreateMissionInstanceForPlayerGroup;
+
+// Function GbxGame.MissionBlueprintLibrary.IsActorPartOfActiveMission
+// 0x0010 (0x0010 - 0x0000)
+struct MissionBlueprintLibrary_IsActorPartOfActiveMission final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_IsActorPartOfActiveMission;
+
+// Function GbxGame.MissionBlueprintLibrary.IsPlayerRelevantForMissionInstance
+// 0x0028 (0x0028 - 0x0000)
+struct MissionBlueprintLibrary_IsPlayerRelevantForMissionInstance final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMissionInstanceHandle                 MissionHandle;                                     // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class AActor*                                 Actor;                                             // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0020(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_IsPlayerRelevantForMissionInstance;
+
+// Function GbxGame.MissionBlueprintLibrary.IsValid
+// 0x0010 (0x0010 - 0x0000)
+struct MissionBlueprintLibrary_IsValid final
+{
+public:
+	struct FMissionInstanceHandle                 MissionHandle;                                     // 0x0000(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x000C(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_IsValid;
+
+// Function GbxGame.MissionBlueprintLibrary.QueryPrimaryMissionInstance
+// 0x0030 (0x0030 - 0x0000)
+struct MissionBlueprintLibrary_QueryPrimaryMissionInstance final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           MissionDef;                                        // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMissionInstanceHandle                 OutMission;                                        // 0x0020(0x000C)(Parm, OutParm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_QueryPrimaryMissionInstance;
+
+// Function GbxGame.MissionBlueprintLibrary.QuerySubordinateMissionInstancesForPlayer
+// 0x0038 (0x0038 - 0x0000)
+struct MissionBlueprintLibrary_QuerySubordinateMissionInstancesForPlayer final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           MissionDef;                                        // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FMissionInstanceHandle>         OutMissions;                                       // 0x0028(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_QuerySubordinateMissionInstancesForPlayer;
+
+// Function GbxGame.MissionBlueprintLibrary.ResetRepeatableMission
+// 0x0020 (0x0020 - 0x0000)
+struct MissionBlueprintLibrary_ResetRepeatableMission final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           mission;                                           // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_ResetRepeatableMission;
+
+// Function GbxGame.MissionBlueprintLibrary.SendMissionEvent
+// 0x0028 (0x0028 - 0x0000)
+struct MissionBlueprintLibrary_SendMissionEvent final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           mission;                                           // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Event;                                             // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_SendMissionEvent;
+
+// Function GbxGame.MissionBlueprintLibrary.GetMissionIdent
+// 0x0020 (0x0020 - 0x0000)
+struct MissionBlueprintLibrary_GetMissionIdent final
+{
+public:
+	struct FMissionInstanceHandle                 MissionInstanceHandle;                             // 0x0000(0x000C)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class FString                                 ReturnValue;                                       // 0x0010(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_MissionBlueprintLibrary_GetMissionIdent;
+
 // Function GbxGame.ClimbableVolume.SetIsClimbable
 // 0x0001 (0x0001 - 0x0000)
 struct ClimbableVolume_SetIsClimbable final
@@ -1718,17 +2394,6 @@ public:
 	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_ClimbableVolume_IsClimbable;
-
-// Function GbxGame.GbxGamePhysicsBlueprintLibrary.GrabIt_Crosshair
-// 0x0050 (0x0050 - 0x0000)
-struct GbxGamePhysicsBlueprintLibrary_GrabIt_Crosshair final
-{
-public:
-	class APlayerController*                      ControllerToUse;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGrabItParams                          params;                                            // 0x0008(0x0040)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	class AGbxCharacter*                          ReturnValue;                                       // 0x0048(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGamePhysicsBlueprintLibrary_GrabIt_Crosshair;
 
 // Function GbxGame.GbxTrickScript.GetTrickValueActor
 // 0x0010 (0x0010 - 0x0000)
@@ -2212,17 +2877,167 @@ public:
 };
 DUMPER7_ASSERTS_GbxTrickScript_ControlledMove_OnTeleported_Const;
 
-// Function GbxGame.UsableFunctionLibrary.LockUsableInteractability
-// 0x0018 (0x0018 - 0x0000)
-struct UsableFunctionLibrary_LockUsableInteractability final
+// Function GbxGame.GbxGameModeModule.GetModuleName
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameModeModule_GetModuleName final
 {
 public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          Block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FName                                   ReturnValue;                                       // 0x0000(0x0008)(ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_UsableFunctionLibrary_LockUsableInteractability;
+DUMPER7_ASSERTS_GbxGameModeModule_GetModuleName;
+
+// Function GbxGame.GbxGameModeModule.GetTags
+// 0x0020 (0x0020 - 0x0000)
+struct GbxGameModeModule_GetTags final
+{
+public:
+	struct FGbxGameModeModuleTags                 ReturnValue;                                       // 0x0000(0x0020)(ConstParm, Parm, OutParm, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeModule_GetTags;
+
+// Function GbxGame.GbxLocalPlayer.SetCameraShakeIntensity
+// 0x0004 (0x0004 - 0x0000)
+struct GbxLocalPlayer_SetCameraShakeIntensity final
+{
+public:
+	float                                         InCameraShakeIntensity;                            // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetCameraShakeIntensity;
+
+// Function GbxGame.GbxLocalPlayer.SetDialogVolume
+// 0x0004 (0x0004 - 0x0000)
+struct GbxLocalPlayer_SetDialogVolume final
+{
+public:
+	float                                         NewDialogVolume;                                   // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetDialogVolume;
+
+// Function GbxGame.GbxLocalPlayer.SetMouseSmoothingEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_SetMouseSmoothingEnabled final
+{
+public:
+	bool                                          bInMouseSmoothingEnabled;                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetMouseSmoothingEnabled;
+
+// Function GbxGame.GbxLocalPlayer.SetMusicVolume
+// 0x0004 (0x0004 - 0x0000)
+struct GbxLocalPlayer_SetMusicVolume final
+{
+public:
+	float                                         NewMusicVolume;                                    // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetMusicVolume;
+
+// Function GbxGame.GbxLocalPlayer.SetMuteHitNotifies
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_SetMuteHitNotifies final
+{
+public:
+	bool                                          NewMHN;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetMuteHitNotifies;
+
+// Function GbxGame.GbxLocalPlayer.SetOverallVolume
+// 0x0004 (0x0004 - 0x0000)
+struct GbxLocalPlayer_SetOverallVolume final
+{
+public:
+	float                                         NewOverallVolume;                                  // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetOverallVolume;
+
+// Function GbxGame.GbxLocalPlayer.SetPlayInBackground
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_SetPlayInBackground final
+{
+public:
+	bool                                          NewPIB;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetPlayInBackground;
+
+// Function GbxGame.GbxLocalPlayer.SetReactiveTriggersEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_SetReactiveTriggersEnabled final
+{
+public:
+	bool                                          bInReactiveTriggersEnabled;                        // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetReactiveTriggersEnabled;
+
+// Function GbxGame.GbxLocalPlayer.SetRumbleEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_SetRumbleEnabled final
+{
+public:
+	bool                                          bInRumbleEnabled;                                  // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetRumbleEnabled;
+
+// Function GbxGame.GbxLocalPlayer.SetSFXVolume
+// 0x0004 (0x0004 - 0x0000)
+struct GbxLocalPlayer_SetSFXVolume final
+{
+public:
+	float                                         NewSFXVolume;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_SetSFXVolume;
+
+// Function GbxGame.GbxLocalPlayer.GetCameraShakeIntensity
+// 0x0004 (0x0004 - 0x0000)
+struct GbxLocalPlayer_GetCameraShakeIntensity final
+{
+public:
+	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_GetCameraShakeIntensity;
+
+// Function GbxGame.GbxLocalPlayer.GetMouseSmoothingEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_GetMouseSmoothingEnabled final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_GetMouseSmoothingEnabled;
+
+// Function GbxGame.GbxLocalPlayer.GetMuteHitNotifies
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_GetMuteHitNotifies final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_GetMuteHitNotifies;
+
+// Function GbxGame.GbxLocalPlayer.GetReactiveTriggersEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_GetReactiveTriggersEnabled final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_GetReactiveTriggersEnabled;
+
+// Function GbxGame.GbxLocalPlayer.GetRumbleEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxLocalPlayer_GetRumbleEnabled final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLocalPlayer_GetRumbleEnabled;
+
+// Function GbxGame.Usable.BP_OnUsed
+// 0x0018 (0x0018 - 0x0000)
+struct Usable_BP_OnUsed final
+{
+public:
+	struct FUseEvent                              UseEvent;                                          // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_Usable_BP_OnUsed;
 
 // Function GbxGame.ControlledMoveFunctionLibrary.IsPerformingControlledMove
 // 0x0010 (0x0010 - 0x0000)
@@ -2301,97 +3116,51 @@ public:
 };
 DUMPER7_ASSERTS_DamageAreaInterface_GetEffectLocationInfo;
 
-// Function GbxGame.GbxGameAudioBlueprintFunctionLibrary.PlayFoleyImpactOnActor
-// 0x0048 (0x0048 - 0x0000)
-struct GbxGameAudioBlueprintFunctionLibrary_PlayFoleyImpactOnActor final
+// Function GbxGame.UsableFunctionLibrary.LockUsableInteractability
+// 0x0018 (0x0018 - 0x0000)
+struct UsableFunctionLibrary_LockUsableInteractability final
 {
 public:
 	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FFoleyImpactParams                     FoleyImpactParams;                                 // 0x0008(0x0040)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxGameAudioBlueprintFunctionLibrary_PlayFoleyImpactOnActor;
-
-// Function GbxGame.GbxGameAudioBlueprintFunctionLibrary.PostEventInWorldMulticast
-// 0x00E0 (0x00E0 - 0x0000)
-struct GbxGameAudioBlueprintFunctionLibrary_PostEventInWorldMulticast final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 ActorInstigator;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxAudioEmitterSource                 EmitterSource;                                     // 0x0010(0x0080)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxAudioEvent                         Event;                                             // 0x0090(0x0030)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           OptionalSwitch;                                    // 0x00C0(0x0018)(Parm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameAudioBlueprintFunctionLibrary_PostEventInWorldMulticast;
-
-// Function GbxGame.GbxGameAudioBlueprintFunctionLibrary.PostWwiseEventOnActorMulticast
-// 0x0060 (0x0060 - 0x0000)
-struct GbxGameAudioBlueprintFunctionLibrary_PostWwiseEventOnActorMulticast final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 ActorInstigator;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxAudioEvent                         Event;                                             // 0x0010(0x0030)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	class FName                                   EmitterTag;                                        // 0x0040(0x0008)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           OptionalSwitch;                                    // 0x0048(0x0018)(Parm, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameAudioBlueprintFunctionLibrary_PostWwiseEventOnActorMulticast;
-
-// Function GbxGame.GbxGameAudioBlueprintFunctionLibrary.TryGetGlobalWetnessForActor
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameAudioBlueprintFunctionLibrary_TryGetGlobalWetnessForActor final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         GlobalWetnessValue;                                // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIsValueValid;                                     // 0x000C(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameAudioBlueprintFunctionLibrary_TryGetGlobalWetnessForActor;
-
-// Function GbxGame.GbxProjectileMovementComponent.ScaleVelocity
-// 0x0004 (0x0004 - 0x0000)
-struct GbxProjectileMovementComponent_ScaleVelocity final
-{
-public:
-	float                                         InScale;                                           // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProjectileMovementComponent_ScaleVelocity;
+DUMPER7_ASSERTS_UsableFunctionLibrary_LockUsableInteractability;
 
 // Function GbxGame.DamageScript.OnDamage
-// 0x0108 (0x0108 - 0x0000)
+// 0x0128 (0x0128 - 0x0000)
 struct DamageScript_OnDamage final
 {
 public:
 	class AActor*                                 instigator;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AActor*                                 Causer;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AActor*                                 target;                                            // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FDamageEventDetails                    Details;                                           // 0x0018(0x00F0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FDamageEventDetails                    Details;                                           // 0x0018(0x0110)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_DamageScript_OnDamage;
 
 // Function GbxGame.DamageScript.OnDamageEnemy
-// 0x0108 (0x0108 - 0x0000)
+// 0x0128 (0x0128 - 0x0000)
 struct DamageScript_OnDamageEnemy final
 {
 public:
 	class AActor*                                 instigator;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AActor*                                 Causer;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AActor*                                 target;                                            // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FDamageEventDetails                    Details;                                           // 0x0018(0x00F0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FDamageEventDetails                    Details;                                           // 0x0018(0x0110)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_DamageScript_OnDamageEnemy;
 
 // Function GbxGame.DamageScript.OnDamageFriendly
-// 0x0108 (0x0108 - 0x0000)
+// 0x0128 (0x0128 - 0x0000)
 struct DamageScript_OnDamageFriendly final
 {
 public:
 	class AActor*                                 instigator;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AActor*                                 Causer;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AActor*                                 target;                                            // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FDamageEventDetails                    Details;                                           // 0x0018(0x00F0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FDamageEventDetails                    Details;                                           // 0x0018(0x0110)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_DamageScript_OnDamageFriendly;
 
@@ -2407,16 +3176,100 @@ public:
 DUMPER7_ASSERTS_DamageScript_OnEffectTick;
 
 // Function GbxGame.DamageScript.OnKillEnemy
-// 0x0108 (0x0108 - 0x0000)
+// 0x0128 (0x0128 - 0x0000)
 struct DamageScript_OnKillEnemy final
 {
 public:
 	class AActor*                                 instigator;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AActor*                                 Causer;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class AActor*                                 target;                                            // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FDamageEventDetails                    Details;                                           // 0x0018(0x00F0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FDamageEventDetails                    Details;                                           // 0x0018(0x0110)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_DamageScript_OnKillEnemy;
+
+// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.DrainPercentage
+// 0x0038 (0x0038 - 0x0000)
+struct GbxSkillComponentFunctions_ResourcePool_DrainPercentage final
+{
+public:
+	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Percentage;                                        // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         MinPercentage;                                     // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_DrainPercentage;
+
+// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.GetCurrentPercentage
+// 0x0038 (0x0038 - 0x0000)
+struct GbxSkillComponentFunctions_ResourcePool_GetCurrentPercentage final
+{
+public:
+	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0030(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_GetCurrentPercentage;
+
+// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.GetCurrentValue
+// 0x0038 (0x0038 - 0x0000)
+struct GbxSkillComponentFunctions_ResourcePool_GetCurrentValue final
+{
+public:
+	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0030(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_GetCurrentValue;
+
+// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.GetMaxValue
+// 0x0038 (0x0038 - 0x0000)
+struct GbxSkillComponentFunctions_ResourcePool_GetMaxValue final
+{
+public:
+	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0030(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_GetMaxValue;
+
+// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.RefillPercentage
+// 0x0038 (0x0038 - 0x0000)
+struct GbxSkillComponentFunctions_ResourcePool_RefillPercentage final
+{
+public:
+	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Percentage;                                        // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         MaxPercentage;                                     // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_RefillPercentage;
+
+// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.SetCurrentPercentage
+// 0x0038 (0x0038 - 0x0000)
+struct GbxSkillComponentFunctions_ResourcePool_SetCurrentPercentage final
+{
+public:
+	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         NewValue;                                          // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_SetCurrentPercentage;
+
+// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.SetCurrentValue
+// 0x0038 (0x0038 - 0x0000)
+struct GbxSkillComponentFunctions_ResourcePool_SetCurrentValue final
+{
+public:
+	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         NewValue;                                          // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_SetCurrentValue;
 
 // Function GbxGame.DamageStatics.Add_DamageSourceContainers
 // 0x00C0 (0x00C0 - 0x0000)
@@ -2749,7 +3602,7 @@ struct DamageStatics_LockDemigod final
 public:
 	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          Block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_DamageStatics_LockDemigod;
@@ -2761,7 +3614,7 @@ struct DamageStatics_LockGod final
 public:
 	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          Block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_DamageStatics_LockGod;
@@ -2841,6 +3694,22 @@ public:
 	float                                         MaxPercent;                                        // 0x0024(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_DamageStatics_RefillHealthPercent;
+
+// Function GbxGame.DamageStatics.RefillHealthPercentOvertime
+// 0x0038 (0x0038 - 0x0000)
+struct DamageStatics_RefillHealthPercentOvertime final
+{
+public:
+	class AActor*                                 Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      HealthType;                                        // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Percent;                                           // 0x0020(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         MaxPercent;                                        // 0x0024(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Duration;                                          // 0x0028(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         TickRate;                                          // 0x002C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0030(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_DamageStatics_RefillHealthPercentOvertime;
 
 // Function GbxGame.DamageStatics.RefillHitRegionHealth
 // 0x0030 (0x0030 - 0x0000)
@@ -3128,16 +3997,175 @@ public:
 };
 DUMPER7_ASSERTS_DangerWarningFunctionLibrary_RemoveDangerWarningSource;
 
-// Function GbxGame.ProjectileBounceStatics.GetGameplayBounceSurfaceType
-// 0x0108 (0x0108 - 0x0000)
-struct ProjectileBounceStatics_GetGameplayBounceSurfaceType final
+// Function GbxGame.PlayerCameraModeManager.ApplyActorCameraRotation
+// 0x0020 (0x0020 - 0x0000)
+struct PlayerCameraModeManager_ApplyActorCameraRotation final
 {
 public:
-	struct FHitResult                             Impact;                                            // 0x0000(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	EProjectileGameplayBounceSurfaceType          ReturnValue;                                       // 0x0100(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_101[0x7];                                      // 0x0101(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               DeltaRotation;                                     // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_ProjectileBounceStatics_GetGameplayBounceSurfaceType;
+DUMPER7_ASSERTS_PlayerCameraModeManager_ApplyActorCameraRotation;
+
+// Function GbxGame.PlayerCameraModeManager.GetActorCameraMode
+// 0x0010 (0x0010 - 0x0000)
+struct PlayerCameraModeManager_GetActorCameraMode final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_GetActorCameraMode;
+
+// Function GbxGame.PlayerCameraModeManager.GetActorDefaultCameraMode
+// 0x0010 (0x0010 - 0x0000)
+struct PlayerCameraModeManager_GetActorDefaultCameraMode final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_GetActorDefaultCameraMode;
+
+// Function GbxGame.PlayerCameraModeManager.PopActorCameraMode
+// 0x0020 (0x0020 - 0x0000)
+struct PlayerCameraModeManager_PopActorCameraMode final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ModeName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   OptionalTransitionName;                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BlendTimeOverride;                                 // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bTeleport;                                         // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_PopActorCameraMode;
+
+// Function GbxGame.PlayerCameraModeManager.PopActorCameraModeDef
+// 0x0040 (0x0040 - 0x0000)
+struct PlayerCameraModeManager_PopActorCameraModeDef final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           CameraModeDef;                                     // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           CameraTransitionDef;                               // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BlendTimeOverride;                                 // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bTeleport;                                         // 0x003C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_PopActorCameraModeDef;
+
+// Function GbxGame.PlayerCameraModeManager.PushActorCameraMode
+// 0x0020 (0x0020 - 0x0000)
+struct PlayerCameraModeManager_PushActorCameraMode final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ModeName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   OptionalTransitionName;                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BlendTimeOverride;                                 // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bTeleport;                                         // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_PushActorCameraMode;
+
+// Function GbxGame.PlayerCameraModeManager.PushActorCameraModeDef
+// 0x0040 (0x0040 - 0x0000)
+struct PlayerCameraModeManager_PushActorCameraModeDef final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           CameraModeDef;                                     // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           CameraTransitionDef;                               // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BlendTimeOverride;                                 // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bTeleport;                                         // 0x003C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_PushActorCameraModeDef;
+
+// Function GbxGame.PlayerCameraModeManager.ResetActorCameraRotation
+// 0x0020 (0x0020 - 0x0000)
+struct PlayerCameraModeManager_ResetActorCameraRotation final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               NewRotation;                                       // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_ResetActorCameraRotation;
+
+// Function GbxGame.PlayerCameraModeManager.SetActorCameraMode
+// 0x0020 (0x0020 - 0x0000)
+struct PlayerCameraModeManager_SetActorCameraMode final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ModeName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   OptionalTransitionName;                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BlendTimeOverride;                                 // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bTeleport;                                         // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bForceResetMode;                                   // 0x001D(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1E[0x2];                                       // 0x001E(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_SetActorCameraMode;
+
+// Function GbxGame.PlayerCameraModeManager.SetActorCameraModeDef
+// 0x0040 (0x0040 - 0x0000)
+struct PlayerCameraModeManager_SetActorCameraModeDef final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           CameraModeDef;                                     // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           CameraTransitionDef;                               // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BlendTimeOverride;                                 // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bTeleport;                                         // 0x003C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bForceResetMode;                                   // 0x003D(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3E[0x2];                                       // 0x003E(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_SetActorCameraModeDef;
+
+// Function GbxGame.PlayerCameraModeManager.OnBaseFOVChanged
+// 0x0004 (0x0004 - 0x0000)
+struct PlayerCameraModeManager_OnBaseFOVChanged final
+{
+public:
+	float                                         NewBaseFOV;                                        // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_OnBaseFOVChanged;
+
+// Function GbxGame.PlayerCameraModeManager.PlayGbxCameraShake
+// 0x0040 (0x0040 - 0x0000)
+struct PlayerCameraModeManager_PlayGbxCameraShake final
+{
+public:
+	FGameDataHandleProperty_                      ShakeAsset;                                        // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         scale;                                             // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ECameraShakePlaySpace                         PlaySpace;                                         // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FRotator                               UserPlaySpaceRot;                                  // 0x0020(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	bool                                          bLoopingShake;                                     // 0x0038(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_PlayGbxCameraShake;
+
+// Function GbxGame.PlayerCameraModeManager.StopAllGbxCameraShakes
+// 0x0001 (0x0001 - 0x0000)
+struct PlayerCameraModeManager_StopAllGbxCameraShakes final
+{
+public:
+	bool                                          bImmediately;                                      // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_StopAllGbxCameraShakes;
+
+// Function GbxGame.PlayerCameraModeManager.StopAllInstancesOfGbxCameraShake
+// 0x0020 (0x0020 - 0x0000)
+struct PlayerCameraModeManager_StopAllInstancesOfGbxCameraShake final
+{
+public:
+	FGameDataHandleProperty_                      Shake;                                             // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bImmediately;                                      // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PlayerCameraModeManager_StopAllInstancesOfGbxCameraShake;
 
 // Function GbxGame.DeliverySpawnPointComponent.GetLoopTrick
 // 0x0008 (0x0008 - 0x0000)
@@ -3148,40 +4176,152 @@ public:
 };
 DUMPER7_ASSERTS_DeliverySpawnPointComponent_GetLoopTrick;
 
-// Function GbxGame.GbxLevelSequencePlayer.CreateGbxLevelSequencePlayer
-// 0x00B0 (0x00B0 - 0x0000)
-struct GbxLevelSequencePlayer_CreateGbxLevelSequencePlayer final
+// Function GbxGame.GbxRewards_BlueprintFunctions.GiveReward
+// 0x0020 (0x0020 - 0x0000)
+struct GbxRewards_BlueprintFunctions_GiveReward final
 {
 public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxLevelSequence*                      LevelSequence;                                     // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMovieSceneSequencePlaybackSettings    settings;                                          // 0x0010(0x0028)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      CinematicMode_0;                                   // 0x0038(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMap<class FName, class AActor*>              GbxBindingOverrides;                               // 0x0050(0x0050)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	class AGbxLevelSequenceActor*                 OutActor;                                          // 0x00A0(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxLevelSequencePlayer*                ReturnValue;                                       // 0x00A8(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           RewardDef;                                         // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxLevelSequencePlayer_CreateGbxLevelSequencePlayer;
+DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_GiveReward;
 
-// Function GbxGame.GbxFlyToActorFunctionLibrary.EndActorFlight
-// 0x0008 (0x0008 - 0x0000)
-struct GbxFlyToActorFunctionLibrary_EndActorFlight final
+// Function GbxGame.GbxRewards_BlueprintFunctions.GiveRewardAllPlayers
+// 0x0020 (0x0020 - 0x0000)
+struct GbxRewards_BlueprintFunctions_GiveRewardAllPlayers final
 {
 public:
-	class AActor*                                 FlightActor;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           RewardDef;                                         // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                WorldContextObject;                                // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxFlyToActorFunctionLibrary_EndActorFlight;
+DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_GiveRewardAllPlayers;
 
-// Function GbxGame.GbxFlyToActorFunctionLibrary.FlyActorToActor
+// Function GbxGame.GbxRewards_BlueprintFunctions.GiveRewardPackage
+// 0x0020 (0x0020 - 0x0000)
+struct GbxRewards_BlueprintFunctions_GiveRewardPackage final
+{
+public:
+	FGbxDefPtrProperty_                           RewardDef;                                         // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_GiveRewardPackage;
+
+// Function GbxGame.GbxRewards_BlueprintFunctions.GiveRewardPackageAllPlayers
+// 0x0020 (0x0020 - 0x0000)
+struct GbxRewards_BlueprintFunctions_GiveRewardPackageAllPlayers final
+{
+public:
+	FGbxDefPtrProperty_                           RewardDef;                                         // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                WorldContextObject;                                // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_GiveRewardPackageAllPlayers;
+
+// Function GbxGame.GbxRewards_BlueprintFunctions.HasReward
 // 0x0028 (0x0028 - 0x0000)
-struct GbxFlyToActorFunctionLibrary_FlyActorToActor final
+struct GbxRewards_BlueprintFunctions_HasReward final
 {
 public:
-	FGbxDefPtrProperty_                           FlightConfig;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 FlightActor;                                       // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 TargetActor;                                       // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRewardRef                          RewardRef;                                         // 0x0000(0x0018)(Parm, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0020(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxFlyToActorFunctionLibrary_FlyActorToActor;
+DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_HasReward;
+
+// Function GbxGame.GbxRewards_BlueprintFunctions.MakeGbxRewardRef
+// 0x0030 (0x0030 - 0x0000)
+struct GbxRewards_BlueprintFunctions_MakeGbxRewardRef final
+{
+public:
+	struct FGbxRewardRef                          RewardRef;                                         // 0x0000(0x0018)(Parm, NativeAccessSpecifierPublic)
+	struct FGbxRewardRef                          ReturnValue;                                       // 0x0018(0x0018)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_MakeGbxRewardRef;
+
+// Function GbxGame.GbxFeedbackBlueprintLibrary.PlayGbxFeedback2D
+// 0x0048 (0x0048 - 0x0000)
+struct GbxFeedbackBlueprintLibrary_PlayGbxFeedback2D final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      data;                                              // 0x0008(0x0018)(ConstParm, Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TScriptInterface<class IGbxFeedbackObserver>  Observer;                                          // 0x0020(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIgnoreObserver;                                   // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         PlayFlags;                                         // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bLoop;                                             // 0x0038(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_39[0x3];                                       // 0x0039(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         scale;                                             // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                SourceContext;                                     // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxFeedbackBlueprintLibrary_PlayGbxFeedback2D;
+
+// Function GbxGame.GbxFeedbackBlueprintLibrary.PlayGbxFeedback3D
+// 0x0068 (0x0068 - 0x0000)
+struct GbxFeedbackBlueprintLibrary_PlayGbxFeedback3D final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      data;                                              // 0x0008(0x0018)(ConstParm, Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TScriptInterface<class IGbxFeedbackObserver>  Observer;                                          // 0x0020(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIgnoreObserver;                                   // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         PlayFlags;                                         // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bLoop;                                             // 0x0038(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_39[0x3];                                       // 0x0039(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         scale;                                             // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                SourceContext;                                     // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                SourceLocation;                                    // 0x0048(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         EffectFalloffMinDistance;                          // 0x0060(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         EffectFalloffMaxDistance;                          // 0x0064(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxFeedbackBlueprintLibrary_PlayGbxFeedback3D;
+
+// Function GbxGame.GbxFeedbackBlueprintLibrary.ResetGbxFeedbackPlayTime
+// 0x0038 (0x0038 - 0x0000)
+struct GbxFeedbackBlueprintLibrary_ResetGbxFeedbackPlayTime final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      data;                                              // 0x0008(0x0018)(ConstParm, Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TScriptInterface<class IGbxFeedbackObserver>  Observer;                                          // 0x0020(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIgnoreObserver;                                   // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_31[0x7];                                       // 0x0031(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxFeedbackBlueprintLibrary_ResetGbxFeedbackPlayTime;
+
+// Function GbxGame.GbxFeedbackBlueprintLibrary.StopGbxFeedback
+// 0x0038 (0x0038 - 0x0000)
+struct GbxFeedbackBlueprintLibrary_StopGbxFeedback final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      data;                                              // 0x0008(0x0018)(ConstParm, Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TScriptInterface<class IGbxFeedbackObserver>  Observer;                                          // 0x0020(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIgnoreObserver;                                   // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_31[0x7];                                       // 0x0031(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxFeedbackBlueprintLibrary_StopGbxFeedback;
+
+// Function GbxGame.GbxTriggerVolume.BindAndCallOnTouchedTrigger
+// 0x0014 (0x0014 - 0x0000)
+struct GbxTriggerVolume_BindAndCallOnTouchedTrigger final
+{
+public:
+	TDelegate<void(class AActor* InActor, bool bIsPlayer)> InEvent;                                  // 0x0000(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCallThisEventOnly;                                // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x3];                                       // 0x0011(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxTriggerVolume_BindAndCallOnTouchedTrigger;
+
+// Function GbxGame.PuddleHazardConfigurationData.GetParticleEmitterNames
+// 0x0010 (0x0010 - 0x0000)
+struct PuddleHazardConfigurationData_GetParticleEmitterNames final
+{
+public:
+	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PuddleHazardConfigurationData_GetParticleEmitterNames;
 
 // Function GbxGame.DodgingFunctionLibrary.AIDodgeOverride
 // 0x0020 (0x0020 - 0x0000)
@@ -3190,7 +4330,7 @@ struct DodgingFunctionLibrary_AIDodgeOverride final
 public:
 	class AActor*                                 AIActor;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          Block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
 	const class UAIDodgeData*                     DodgeData;                                         // 0x0018(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
@@ -3217,7 +4357,7 @@ struct DodgingFunctionLibrary_LockDodging final
 public:
 	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          Block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          block;                                             // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_DodgingFunctionLibrary_LockDodging;
@@ -3259,6 +4399,297 @@ public:
 	class AActor*                                 ActorRef;                                          // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_DodgingFunctionLibrary_TriggerZoneDodge;
+
+// Function GbxGame.GbxGameUserSettings.ApplyNewVSyncValue
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_ApplyNewVSyncValue final
+{
+public:
+	bool                                          NewValue;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_ApplyNewVSyncValue;
+
+// Function GbxGame.GbxGameUserSettings.GetActiveGraphicsPreset
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameUserSettings_GetActiveGraphicsPreset final
+{
+public:
+	class FName                                   ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetActiveGraphicsPreset;
+
+// Function GbxGame.GbxGameUserSettings.GetAvailableGraphicsPresets
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameUserSettings_GetAvailableGraphicsPresets final
+{
+public:
+	TArray<class FName>                           ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetAvailableGraphicsPresets;
+
+// Function GbxGame.GbxGameUserSettings.GetDefaultGraphicsPreset
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameUserSettings_GetDefaultGraphicsPreset final
+{
+public:
+	class FName                                   ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetDefaultGraphicsPreset;
+
+// Function GbxGame.GbxGameUserSettings.GetFrameGenerationState
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_GetFrameGenerationState final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetFrameGenerationState;
+
+// Function GbxGame.GbxGameUserSettings.GetMaxFrameGenerationGeneratedFrames
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_GetMaxFrameGenerationGeneratedFrames final
+{
+public:
+	int32                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetMaxFrameGenerationGeneratedFrames;
+
+// Function GbxGame.GbxGameUserSettings.GetMotionblurAmout
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_GetMotionblurAmout final
+{
+public:
+	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetMotionblurAmout;
+
+// Function GbxGame.GbxGameUserSettings.IsFrameGenerationSupported
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_IsFrameGenerationSupported final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_IsFrameGenerationSupported;
+
+// Function GbxGame.GbxGameUserSettings.IsNvidiaReflexSupported
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_IsNvidiaReflexSupported final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_IsNvidiaReflexSupported;
+
+// Function GbxGame.GbxGameUserSettings.RevertGraphicsSetting
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameUserSettings_RevertGraphicsSetting final
+{
+public:
+	class FName                                   GraphicsSetting;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_RevertGraphicsSetting;
+
+// Function GbxGame.GbxGameUserSettings.SetBaseFOV
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_SetBaseFOV final
+{
+public:
+	float                                         InBaseFOV;                                         // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetBaseFOV;
+
+// Function GbxGame.GbxGameUserSettings.SetBlackLevel
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_SetBlackLevel final
+{
+public:
+	float                                         NewBlackLevel;                                     // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetBlackLevel;
+
+// Function GbxGame.GbxGameUserSettings.SetFrameGenerationState
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_SetFrameGenerationState final
+{
+public:
+	bool                                          NewState;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetFrameGenerationState;
+
+// Function GbxGame.GbxGameUserSettings.SetFramesToGenerate
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_SetFramesToGenerate final
+{
+public:
+	int32                                         FramesToGenerate_0;                                // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetFramesToGenerate;
+
+// Function GbxGame.GbxGameUserSettings.SetGraphicsPreset
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameUserSettings_SetGraphicsPreset final
+{
+public:
+	class FName                                   newPreset;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetGraphicsPreset;
+
+// Function GbxGame.GbxGameUserSettings.SetGraphicsSettingOption
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameUserSettings_SetGraphicsSettingOption final
+{
+public:
+	class FName                                   GraphicsSetting;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Option;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetGraphicsSettingOption;
+
+// Function GbxGame.GbxGameUserSettings.SetHDRBrightness
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_SetHDRBrightness final
+{
+public:
+	float                                         NewHDRBrightness;                                  // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetHDRBrightness;
+
+// Function GbxGame.GbxGameUserSettings.SetLumenHardwareRayTracing
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_SetLumenHardwareRayTracing final
+{
+public:
+	bool                                          NewValue;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetLumenHardwareRayTracing;
+
+// Function GbxGame.GbxGameUserSettings.SetMotionblurAmount
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_SetMotionblurAmount final
+{
+public:
+	float                                         NewValue;                                          // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetMotionblurAmount;
+
+// Function GbxGame.GbxGameUserSettings.SetNvidiaStreamlineMode
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_SetNvidiaStreamlineMode final
+{
+public:
+	EGbxNvidiaReflexMode                          ReflexMode_0;                                      // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetNvidiaStreamlineMode;
+
+// Function GbxGame.GbxGameUserSettings.SetShowFPSMode
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_SetShowFPSMode final
+{
+public:
+	EShowFPSMode                                  ShowFPSMode_0;                                     // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_SetShowFPSMode;
+
+// Function GbxGame.GbxGameUserSettings.ToggleHDR
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_ToggleHDR final
+{
+public:
+	bool                                          Activate;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_ToggleHDR;
+
+// Function GbxGame.GbxGameUserSettings.GetActiveGraphicsSettingOption
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameUserSettings_GetActiveGraphicsSettingOption final
+{
+public:
+	class FName                                   GraphicsSetting;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetActiveGraphicsSettingOption;
+
+// Function GbxGame.GbxGameUserSettings.GetAvailableGraphicsSettingOptions
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameUserSettings_GetAvailableGraphicsSettingOptions final
+{
+public:
+	class FName                                   GraphicsSetting;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class FName>                           ReturnValue;                                       // 0x0008(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetAvailableGraphicsSettingOptions;
+
+// Function GbxGame.GbxGameUserSettings.GetAvailableGraphicsSettings
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameUserSettings_GetAvailableGraphicsSettings final
+{
+public:
+	TArray<class FName>                           ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetAvailableGraphicsSettings;
+
+// Function GbxGame.GbxGameUserSettings.GetBaseFOV
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_GetBaseFOV final
+{
+public:
+	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetBaseFOV;
+
+// Function GbxGame.GbxGameUserSettings.GetFramesToGenerate
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_GetFramesToGenerate final
+{
+public:
+	int32                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetFramesToGenerate;
+
+// Function GbxGame.GbxGameUserSettings.GetHDRBrightness
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameUserSettings_GetHDRBrightness final
+{
+public:
+	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetHDRBrightness;
+
+// Function GbxGame.GbxGameUserSettings.GetNvidiaReflexMode
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_GetNvidiaReflexMode final
+{
+public:
+	EGbxNvidiaReflexMode                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetNvidiaReflexMode;
+
+// Function GbxGame.GbxGameUserSettings.GetShowFPSMode
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_GetShowFPSMode final
+{
+public:
+	EShowFPSMode                                  ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_GetShowFPSMode;
+
+// Function GbxGame.GbxGameUserSettings.HasOverridenGraphicsSettings
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_HasOverridenGraphicsSettings final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_HasOverridenGraphicsSettings;
+
+// Function GbxGame.GbxGameUserSettings.IsLumenHardwareRayTracingEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameUserSettings_IsLumenHardwareRayTracingEnabled final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameUserSettings_IsLumenHardwareRayTracingEnabled;
 
 // Function GbxGame.FactsBlueprintLibrary.BoolToFactValue
 // 0x0014 (0x0014 - 0x0000)
@@ -3638,29 +5069,123 @@ public:
 };
 DUMPER7_ASSERTS_FactsBlueprintLibrary_WriteFactNewGetHandle;
 
-// Function GbxGame.PerchStatics.AIScriptedPerch
-// 0x0030 (0x0030 - 0x0000)
-struct PerchStatics_AIScriptedPerch final
-{
-public:
-	class AActor*                                 AIActor;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Perch;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxBrainExec                                 Exec;                                              // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FLatentActionInfo                      LatentInfo;                                        // 0x0018(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PerchStatics_AIScriptedPerch;
-
-// Function GbxGame.PerchStatics.SetPerchEnabled
+// Function GbxGame.GbxMusicBlueprintFunctions.PostMusicEvent
 // 0x0010 (0x0010 - 0x0000)
-struct PerchStatics_SetPerchEnabled final
+struct GbxMusicBlueprintFunctions_PostMusicEvent final
 {
 public:
-	class AActor*                                 Perch;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bEnabled;                                          // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           MusicEventTag;                                     // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_PerchStatics_SetPerchEnabled;
+DUMPER7_ASSERTS_GbxMusicBlueprintFunctions_PostMusicEvent;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.AddMissionSource
+// 0x0030 (0x0030 - 0x0000)
+struct MissionSourceBlueprintLibrary_AddMissionSource final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           MSDef;                                             // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                OutIndex;                                          // 0x0020(0x000C)(Parm, OutParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_AddMissionSource;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.GetBestMission
+// 0x0028 (0x0028 - 0x0000)
+struct MissionSourceBlueprintLibrary_GetBestMission final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         Count;                                             // 0x0014(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FMissionInstanceHandle>         ReturnValue;                                       // 0x0018(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_GetBestMission;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.GetMissionSource
+// 0x0030 (0x0030 - 0x0000)
+struct MissionSourceBlueprintLibrary_GetMissionSource final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           MSDef;                                             // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                OutIndex;                                          // 0x0020(0x000C)(Parm, OutParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_GetMissionSource;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.GetMissionSourceRank
+// 0x0018 (0x0018 - 0x0000)
+struct MissionSourceBlueprintLibrary_GetMissionSourceRank final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OutRank;                                           // 0x0014(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_GetMissionSourceRank;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.GetMissionSourceTimerTimeRemaining
+// 0x0028 (0x0028 - 0x0000)
+struct MissionSourceBlueprintLibrary_GetMissionSourceTimerTimeRemaining final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                TimerLabel;                                        // 0x0014(0x000C)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OutRemainingTime;                                  // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_GetMissionSourceTimerTimeRemaining;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.SetMissionSourceRank
+// 0x0028 (0x0028 - 0x0000)
+struct MissionSourceBlueprintLibrary_SetMissionSourceRank final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FFactValue                             Rank;                                              // 0x0014(0x0010)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_SetMissionSourceRank;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.StartBestMission
+// 0x0020 (0x0020 - 0x0000)
+struct MissionSourceBlueprintLibrary_StartBestMission final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0014(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_StartBestMission;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.StartMissionSourceMission
+// 0x0030 (0x0030 - 0x0000)
+struct MissionSourceBlueprintLibrary_StartMissionSourceMission final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                MissionName;                                       // 0x0014(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0020(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_StartMissionSourceMission;
+
+// Function GbxGame.MissionSourceBlueprintLibrary.StartMissionSourceTimer
+// 0x0020 (0x0020 - 0x0000)
+struct MissionSourceBlueprintLibrary_StartMissionSourceTimer final
+{
+public:
+	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   TimerName;                                         // 0x0014(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OutRemainingTime;                                  // 0x001C(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_StartMissionSourceTimer;
 
 // Function GbxGame.GameResourcePoolFunctionLibrary.AdjustResourcePoolValue
 // 0x0030 (0x0030 - 0x0000)
@@ -3881,24 +5406,6 @@ public:
 };
 DUMPER7_ASSERTS_GameResourcePoolFunctionLibrary_UnbindResourcePoolStateEvent;
 
-// Function GbxGame.GbxGameSpawner.SetTerritory
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameSpawner_SetTerritory final
-{
-public:
-	TScriptInterface<class IGbxTerritoryProvider> TerritoryProvider;                                 // 0x0000(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameSpawner_SetTerritory;
-
-// Function GbxGame.GbxGameSpawner.GetTerritory
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameSpawner_GetTerritory final
-{
-public:
-	class UGbxTerritoryComponent*                 ReturnValue;                                       // 0x0000(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameSpawner_GetTerritory;
-
 // Function GbxGame.GbxActivityLandscapeBlueprintBrushBase.OverrideHeightmapMaterialParamValues
 // 0x0008 (0x0008 - 0x0000)
 struct GbxActivityLandscapeBlueprintBrushBase_OverrideHeightmapMaterialParamValues final
@@ -3907,6 +5414,21 @@ public:
 	class UMaterialInstanceDynamic*               InDMI;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_GbxActivityLandscapeBlueprintBrushBase_OverrideHeightmapMaterialParamValues;
+
+// Function GbxGame.GbxLevelSequencePlayer.CreateGbxLevelSequencePlayer
+// 0x00B0 (0x00B0 - 0x0000)
+struct GbxLevelSequencePlayer_CreateGbxLevelSequencePlayer final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxLevelSequence*                      LevelSequence;                                     // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMovieSceneSequencePlaybackSettings    settings;                                          // 0x0010(0x0028)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      CinematicMode_0;                                   // 0x0038(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMap<class FName, class AActor*>              GbxBindingOverrides;                               // 0x0050(0x0050)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class AGbxLevelSequenceActor*                 OutActor;                                          // 0x00A0(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxLevelSequencePlayer*                ReturnValue;                                       // 0x00A8(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLevelSequencePlayer_CreateGbxLevelSequencePlayer;
 
 // Function GbxGame.GbxActorPartStatics.GetGbxActorPartParam
 // 0x0058 (0x0058 - 0x0000)
@@ -3929,164 +5451,39 @@ public:
 };
 DUMPER7_ASSERTS_GbxActorPartStatics_GetGbxActorPartShowTags;
 
-// Function GbxGame.ScreenParticleStateManager.OnScreenParticleFinished
+// Function GbxGame.LightProjectileManager.OnParticleSystemFinished
 // 0x0008 (0x0008 - 0x0000)
-struct ScreenParticleStateManager_OnScreenParticleFinished final
+struct LightProjectileManager_OnParticleSystemFinished final
 {
 public:
-	class UFXSystemComponent*                     Component;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UFXSystemComponent*                     FinishedComponent;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_ScreenParticleStateManager_OnScreenParticleFinished;
+DUMPER7_ASSERTS_LightProjectileManager_OnParticleSystemFinished;
 
-// Function GbxGame.LightProjectileScript.OnAttached
-// 0x0010 (0x0010 - 0x0000)
-struct LightProjectileScript_OnAttached final
+// Function GbxGame.LightProjectileManager.ServerSendDebugProjectileImpact
+// 0x0020 (0x0020 - 0x0000)
+struct LightProjectileManager_ServerSendDebugProjectileImpact final
 {
 public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 AttachedActor;                                     // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ProjSyncID;                                        // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class AActor*                                 HitActor;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   BoneName;                                          // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint16                                        ProjFlags;                                         // 0x0018(0x0002)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1A[0x6];                                       // 0x001A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_LightProjectileScript_OnAttached;
+DUMPER7_ASSERTS_LightProjectileManager_ServerSendDebugProjectileImpact;
 
-// Function GbxGame.LightProjectileScript.OnBegin
-// 0x0008 (0x0008 - 0x0000)
-struct LightProjectileScript_OnBegin final
+// Function GbxGame.LightProjectileManager.ServerSendDebugProjectilePath
+// 0x0020 (0x0020 - 0x0000)
+struct LightProjectileManager_ServerSendDebugProjectilePath final
 {
 public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ProjSyncID;                                        // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVector_NetQuantize                    Location;                                          // 0x0008(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_LightProjectileScript_OnBegin;
-
-// Function GbxGame.LightProjectileScript.OnBounce
-// 0x0120 (0x0120 - 0x0000)
-struct LightProjectileScript_OnBounce final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	struct FVector                                ImpactVelocity;                                    // 0x0108(0x0018)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnBounce;
-
-// Function GbxGame.LightProjectileScript.OnDetached
-// 0x0008 (0x0008 - 0x0000)
-struct LightProjectileScript_OnDetached final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnDetached;
-
-// Function GbxGame.LightProjectileScript.OnDirectDamage
-// 0x0110 (0x0110 - 0x0000)
-struct LightProjectileScript_OnDirectDamage final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	bool                                          bCritical;                                         // 0x0108(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_109[0x7];                                      // 0x0109(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnDirectDamage;
-
-// Function GbxGame.LightProjectileScript.OnExplode
-// 0x0008 (0x0008 - 0x0000)
-struct LightProjectileScript_OnExplode final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnExplode;
-
-// Function GbxGame.LightProjectileScript.OnGameplayBounce
-// 0x0120 (0x0120 - 0x0000)
-struct LightProjectileScript_OnGameplayBounce final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	struct FVector                                ImpactVelocity;                                    // 0x0108(0x0018)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnGameplayBounce;
-
-// Function GbxGame.LightProjectileScript.OnHomingTargetLost
-// 0x0010 (0x0010 - 0x0000)
-struct LightProjectileScript_OnHomingTargetLost final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EHomingTargetLostReason                       reason;                                            // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnHomingTargetLost;
-
-// Function GbxGame.LightProjectileScript.OnHomingTargetReached
-// 0x0008 (0x0008 - 0x0000)
-struct LightProjectileScript_OnHomingTargetReached final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnHomingTargetReached;
-
-// Function GbxGame.LightProjectileScript.OnImpact
-// 0x0108 (0x0108 - 0x0000)
-struct LightProjectileScript_OnImpact final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnImpact;
-
-// Function GbxGame.LightProjectileScript.OnLastGameplayBounce
-// 0x0108 (0x0108 - 0x0000)
-struct LightProjectileScript_OnLastGameplayBounce final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnLastGameplayBounce;
-
-// Function GbxGame.LightProjectileScript.OnLifetimeExpired
-// 0x0008 (0x0008 - 0x0000)
-struct LightProjectileScript_OnLifetimeExpired final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnLifetimeExpired;
-
-// Function GbxGame.LightProjectileScript.OnNonGameplayBounce
-// 0x0120 (0x0120 - 0x0000)
-struct LightProjectileScript_OnNonGameplayBounce final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	struct FVector                                ImpactVelocity;                                    // 0x0108(0x0018)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnNonGameplayBounce;
-
-// Function GbxGame.LightProjectileScript.OnProxyImpact
-// 0x0108 (0x0108 - 0x0000)
-struct LightProjectileScript_OnProxyImpact final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnProxyImpact;
-
-// Function GbxGame.LightProjectileScript.OnStopHomingDistanceReached
-// 0x0008 (0x0008 - 0x0000)
-struct LightProjectileScript_OnStopHomingDistanceReached final
-{
-public:
-	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileScript_OnStopHomingDistanceReached;
+DUMPER7_ASSERTS_LightProjectileManager_ServerSendDebugProjectilePath;
 
 // Function GbxGame.GbxActorScriptInterface.SetScriptStateEnabled
 // 0x000C (0x000C - 0x0000)
@@ -4109,37 +5506,6 @@ public:
 	uint8                                         Pad_9[0x3];                                        // 0x0009(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_GbxActorScriptInterface_IsScriptStateEnabled;
-
-// Function GbxGame.GbxPlayerUtilsBlueprintLibrary.GetPlayerController
-// 0x0010 (0x0010 - 0x0000)
-struct GbxPlayerUtilsBlueprintLibrary_GetPlayerController final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class APlayerController*                      ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerUtilsBlueprintLibrary_GetPlayerController;
-
-// Function GbxGame.GbxPlayerUtilsBlueprintLibrary.GetPlayerState
-// 0x0010 (0x0010 - 0x0000)
-struct GbxPlayerUtilsBlueprintLibrary_GetPlayerState final
-{
-public:
-	const class AActor*                           Actor;                                             // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class APlayerState*                           ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerUtilsBlueprintLibrary_GetPlayerState;
-
-// Function GbxGame.GbxPlayerUtilsBlueprintLibrary.IsPlayerControlled
-// 0x0010 (0x0010 - 0x0000)
-struct GbxPlayerUtilsBlueprintLibrary_IsPlayerControlled final
-{
-public:
-	const class AActor*                           Actor;                                             // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxPlayerUtilsBlueprintLibrary_IsPlayerControlled;
 
 // Function GbxGame.GbxAINodeComponent.GetOrWaitForSpawnedActor
 // 0x0028 (0x0028 - 0x0000)
@@ -4218,184 +5584,135 @@ public:
 };
 DUMPER7_ASSERTS_GbxAINodeComponent_IsNodeEnabled;
 
-// Function GbxGame.Perch.K2_GetPerchComponent
-// 0x0008 (0x0008 - 0x0000)
-struct Perch_K2_GetPerchComponent final
+// Function GbxGame.OxygenConsumptionStatics.RegisterOxygenConsumption
+// 0x0018 (0x0018 - 0x0000)
+struct OxygenConsumptionStatics_RegisterOxygenConsumption final
 {
 public:
-	class UPerchComponent*                        ReturnValue;                                       // 0x0000(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxCharacter*                          TargetCharacter;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ConsumptionRate;                                   // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_Perch_K2_GetPerchComponent;
+DUMPER7_ASSERTS_OxygenConsumptionStatics_RegisterOxygenConsumption;
 
-// Function GbxGame.PlayerCameraModeManager.ApplyActorCameraRotation
-// 0x0020 (0x0020 - 0x0000)
-struct PlayerCameraModeManager_ApplyActorCameraRotation final
+// Function GbxGame.OxygenConsumptionStatics.RegisterOxygenConsumptionForAllPlayers
+// 0x0018 (0x0018 - 0x0000)
+struct OxygenConsumptionStatics_RegisterOxygenConsumptionForAllPlayers final
 {
 public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               DeltaRotation;                                     // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	class AActor*                                 ContextActor;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ConsumptionRate;                                   // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_PlayerCameraModeManager_ApplyActorCameraRotation;
+DUMPER7_ASSERTS_OxygenConsumptionStatics_RegisterOxygenConsumptionForAllPlayers;
 
-// Function GbxGame.PlayerCameraModeManager.GetActorCameraMode
+// Function GbxGame.OxygenConsumptionStatics.RegisterOxygenRegeneration
+// 0x0018 (0x0018 - 0x0000)
+struct OxygenConsumptionStatics_RegisterOxygenRegeneration final
+{
+public:
+	class AGbxCharacter*                          TargetCharacter;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         RegenerationRate;                                  // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_OxygenConsumptionStatics_RegisterOxygenRegeneration;
+
+// Function GbxGame.OxygenConsumptionStatics.SetSkipDefaultOxygenDepletedBehavior
 // 0x0010 (0x0010 - 0x0000)
-struct PlayerCameraModeManager_GetActorCameraMode final
+struct OxygenConsumptionStatics_SetSkipDefaultOxygenDepletedBehavior final
 {
 public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bShouldSkipDefaultOxygenDepletedBehavior;          // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_PlayerCameraModeManager_GetActorCameraMode;
+DUMPER7_ASSERTS_OxygenConsumptionStatics_SetSkipDefaultOxygenDepletedBehavior;
 
-// Function GbxGame.PlayerCameraModeManager.GetActorDefaultCameraMode
-// 0x0010 (0x0010 - 0x0000)
-struct PlayerCameraModeManager_GetActorDefaultCameraMode final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_GetActorDefaultCameraMode;
-
-// Function GbxGame.PlayerCameraModeManager.PopActorCameraMode
+// Function GbxGame.OxygenConsumptionStatics.SubscribeToOxygenDepletedEvent
 // 0x0020 (0x0020 - 0x0000)
-struct PlayerCameraModeManager_PopActorCameraMode final
+struct OxygenConsumptionStatics_SubscribeToOxygenDepletedEvent final
 {
 public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ModeName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   OptionalTransitionName;                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BlendTimeOverride;                                 // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bTeleport;                                         // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_PopActorCameraMode;
-
-// Function GbxGame.PlayerCameraModeManager.PopActorCameraModeDef
-// 0x0040 (0x0040 - 0x0000)
-struct PlayerCameraModeManager_PopActorCameraModeDef final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           CameraModeDef;                                     // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           CameraTransitionDef;                               // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BlendTimeOverride;                                 // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bTeleport;                                         // 0x003C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_PopActorCameraModeDef;
-
-// Function GbxGame.PlayerCameraModeManager.PushActorCameraMode
-// 0x0020 (0x0020 - 0x0000)
-struct PlayerCameraModeManager_PushActorCameraMode final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ModeName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   OptionalTransitionName;                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BlendTimeOverride;                                 // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bTeleport;                                         // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_PushActorCameraMode;
-
-// Function GbxGame.PlayerCameraModeManager.PushActorCameraModeDef
-// 0x0040 (0x0040 - 0x0000)
-struct PlayerCameraModeManager_PushActorCameraModeDef final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           CameraModeDef;                                     // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           CameraTransitionDef;                               // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BlendTimeOverride;                                 // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bTeleport;                                         // 0x003C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_PushActorCameraModeDef;
-
-// Function GbxGame.PlayerCameraModeManager.ResetActorCameraRotation
-// 0x0020 (0x0020 - 0x0000)
-struct PlayerCameraModeManager_ResetActorCameraRotation final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               NewRotation;                                       // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_ResetActorCameraRotation;
-
-// Function GbxGame.PlayerCameraModeManager.SetActorCameraMode
-// 0x0020 (0x0020 - 0x0000)
-struct PlayerCameraModeManager_SetActorCameraMode final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ModeName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   OptionalTransitionName;                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BlendTimeOverride;                                 // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bTeleport;                                         // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bForceResetMode;                                   // 0x001D(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1E[0x2];                                       // 0x001E(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_SetActorCameraMode;
-
-// Function GbxGame.PlayerCameraModeManager.SetActorCameraModeDef
-// 0x0040 (0x0040 - 0x0000)
-struct PlayerCameraModeManager_SetActorCameraModeDef final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           CameraModeDef;                                     // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           CameraTransitionDef;                               // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BlendTimeOverride;                                 // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bTeleport;                                         // 0x003C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bForceResetMode;                                   // 0x003D(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3E[0x2];                                       // 0x003E(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_SetActorCameraModeDef;
-
-// Function GbxGame.PlayerCameraModeManager.OnBaseFOVChanged
-// 0x0004 (0x0004 - 0x0000)
-struct PlayerCameraModeManager_OnBaseFOVChanged final
-{
-public:
-	float                                         NewBaseFOV;                                        // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_OnBaseFOVChanged;
-
-// Function GbxGame.PlayerCameraModeManager.PlayGbxCameraShake
-// 0x0040 (0x0040 - 0x0000)
-struct PlayerCameraModeManager_PlayGbxCameraShake final
-{
-public:
-	FGameDataHandleProperty_                      ShakeAsset;                                        // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         scale;                                             // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ECameraShakePlaySpace                         PlaySpace;                                         // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FRotator                               UserPlaySpaceRot;                                  // 0x0020(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	bool                                          bLoopingShake;                                     // 0x0038(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_PlayGbxCameraShake;
-
-// Function GbxGame.PlayerCameraModeManager.StopAllGbxCameraShakes
-// 0x0001 (0x0001 - 0x0000)
-struct PlayerCameraModeManager_StopAllGbxCameraShakes final
-{
-public:
-	bool                                          bImmediately;                                      // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PlayerCameraModeManager_StopAllGbxCameraShakes;
-
-// Function GbxGame.PlayerCameraModeManager.StopAllInstancesOfGbxCameraShake
-// 0x0020 (0x0020 - 0x0000)
-struct PlayerCameraModeManager_StopAllInstancesOfGbxCameraShake final
-{
-public:
-	FGameDataHandleProperty_                      Shake;                                             // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bImmediately;                                      // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TDelegate<void(class AActor* OxygenConsumer)> Delegate;                                          // 0x0008(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOverrideDefaultBehavior;                          // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_PlayerCameraModeManager_StopAllInstancesOfGbxCameraShake;
+DUMPER7_ASSERTS_OxygenConsumptionStatics_SubscribeToOxygenDepletedEvent;
+
+// Function GbxGame.OxygenConsumptionStatics.SubscribeToOxygenNotDepletedEvent
+// 0x0018 (0x0018 - 0x0000)
+struct OxygenConsumptionStatics_SubscribeToOxygenNotDepletedEvent final
+{
+public:
+	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TDelegate<void(class AActor* OxygenConsumer)> Delegate;                                          // 0x0008(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_OxygenConsumptionStatics_SubscribeToOxygenNotDepletedEvent;
+
+// Function GbxGame.OxygenConsumptionStatics.UnregisterOxygenConsumption
+// 0x0010 (0x0010 - 0x0000)
+struct OxygenConsumptionStatics_UnregisterOxygenConsumption final
+{
+public:
+	class AGbxCharacter*                          TargetCharacter;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_OxygenConsumptionStatics_UnregisterOxygenConsumption;
+
+// Function GbxGame.OxygenConsumptionStatics.UnregisterOxygenConsumptionForAllPlayers
+// 0x0010 (0x0010 - 0x0000)
+struct OxygenConsumptionStatics_UnregisterOxygenConsumptionForAllPlayers final
+{
+public:
+	class AActor*                                 ContextActor;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_OxygenConsumptionStatics_UnregisterOxygenConsumptionForAllPlayers;
+
+// Function GbxGame.OxygenConsumptionStatics.UnregisterOxygenRegeneration
+// 0x0010 (0x0010 - 0x0000)
+struct OxygenConsumptionStatics_UnregisterOxygenRegeneration final
+{
+public:
+	class AGbxCharacter*                          TargetCharacter;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_OxygenConsumptionStatics_UnregisterOxygenRegeneration;
+
+// Function GbxGame.OxygenConsumptionStatics.UnsubscribeFromOxygenDepletedEvent
+// 0x0020 (0x0020 - 0x0000)
+struct OxygenConsumptionStatics_UnsubscribeFromOxygenDepletedEvent final
+{
+public:
+	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TDelegate<void(class AActor* OxygenConsumer)> Delegate;                                          // 0x0008(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bRemoveDefaultBehaviorOverride;                    // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_OxygenConsumptionStatics_UnsubscribeFromOxygenDepletedEvent;
+
+// Function GbxGame.OxygenConsumptionStatics.UnsubscribeFromOxygenNotDepletedEvent
+// 0x0018 (0x0018 - 0x0000)
+struct OxygenConsumptionStatics_UnsubscribeFromOxygenNotDepletedEvent final
+{
+public:
+	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TDelegate<void(class AActor* OxygenConsumer)> Delegate;                                          // 0x0008(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_OxygenConsumptionStatics_UnsubscribeFromOxygenNotDepletedEvent;
+
+// Function GbxGame.GbxProjectileMovementComponent.ScaleVelocity
+// 0x0004 (0x0004 - 0x0000)
+struct GbxProjectileMovementComponent_ScaleVelocity final
+{
+public:
+	float                                         InScale;                                           // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProjectileMovementComponent_ScaleVelocity;
 
 // Function GbxGame.GbxAnimBlueprintLibrary.CalculateAnimations
 // 0x0008 (0x0008 - 0x0000)
@@ -4406,126 +5723,14 @@ public:
 };
 DUMPER7_ASSERTS_GbxAnimBlueprintLibrary_CalculateAnimations;
 
-// Function GbxGame.GbxStandInStatics.ClearStandIn
-// 0x0010 (0x0010 - 0x0000)
-struct GbxStandInStatics_ClearStandIn final
-{
-public:
-	class UObject*                                owner;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           StandInId;                                         // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxStandInStatics_ClearStandIn;
-
-// Function GbxGame.GbxStandInStatics.PlayStandInTrick
-// 0x0018 (0x0018 - 0x0000)
-struct GbxStandInStatics_PlayStandInTrick final
-{
-public:
-	class UObject*                                owner;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           StandInId;                                         // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           TrickId;                                           // 0x0010(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxStandInStatics_PlayStandInTrick;
-
-// Function GbxGame.GbxStandInStatics.RequestStandIn
-// 0x00C0 (0x00C0 - 0x0000)
-struct GbxStandInStatics_RequestStandIn final
-{
-public:
-	class UObject*                                owner;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           StandInId;                                         // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           StandInSettings;                                   // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             SpawnTransform;                                    // 0x0030(0x0060)(Parm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           LinkedActorDef;                                    // 0x0090(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(class AGbxStandIn* StandIn)>   OnStandInInitialized;                              // 0x00A8(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_B8[0x8];                                       // 0x00B8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStandInStatics_RequestStandIn;
-
-// Function GbxGame.GbxStandInStatics.ResetStandInBodySwitchesToDefaultState
-// 0x0010 (0x0010 - 0x0000)
-struct GbxStandInStatics_ResetStandInBodySwitchesToDefaultState final
-{
-public:
-	class UObject*                                owner;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           StandInId;                                         // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxStandInStatics_ResetStandInBodySwitchesToDefaultState;
-
-// Function GbxGame.GbxSequenceBlueprintLibrary.IsPlayingGbxSequence
-// 0x0018 (0x0018 - 0x0000)
-struct GbxSequenceBlueprintLibrary_IsPlayingGbxSequence final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxSequence*                           GbxSequence;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSequenceBlueprintLibrary_IsPlayingGbxSequence;
-
-// Function GbxGame.GbxSequenceBlueprintLibrary.PlayGbxSequence
-// 0x0020 (0x0020 - 0x0000)
-struct GbxSequenceBlueprintLibrary_PlayGbxSequence final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxSequence*                           GbxSequence;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxSequencePlaybackSettings           PlaybackSettings;                                  // 0x0010(0x0010)(Parm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSequenceBlueprintLibrary_PlayGbxSequence;
-
-// Function GbxGame.GbxSequenceBlueprintLibrary.StopGbxSequence
+// Function GbxGame.Perch.K2_GetPerchComponent
 // 0x0008 (0x0008 - 0x0000)
-struct GbxSequenceBlueprintLibrary_StopGbxSequence final
+struct Perch_K2_GetPerchComponent final
 {
 public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPerchComponent*                        ReturnValue;                                       // 0x0000(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxSequenceBlueprintLibrary_StopGbxSequence;
-
-// Function GbxGame.GbxSplineActor.GetClosestLocationOnSpline
-// 0x0030 (0x0030 - 0x0000)
-struct GbxSplineActor_GetClosestLocationOnSpline final
-{
-public:
-	struct FVector                                Location;                                          // 0x0000(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                ReturnValue;                                       // 0x0018(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSplineActor_GetClosestLocationOnSpline;
-
-// Function GbxGame.GbxSplineActor.GetClosestRotationOnSpline
-// 0x0030 (0x0030 - 0x0000)
-struct GbxSplineActor_GetClosestRotationOnSpline final
-{
-public:
-	struct FVector                                Location;                                          // 0x0000(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               ReturnValue;                                       // 0x0018(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSplineActor_GetClosestRotationOnSpline;
-
-// Function GbxGame.GbxSplineActor.GetTotalLength
-// 0x0004 (0x0004 - 0x0000)
-struct GbxSplineActor_GetTotalLength final
-{
-public:
-	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSplineActor_GetTotalLength;
-
-// Function GbxGame.GbxSplineActor.GetTransformAtDistanceAlongSpline
-// 0x0070 (0x0070 - 0x0000)
-struct GbxSplineActor_GetTransformAtDistanceAlongSpline final
-{
-public:
-	float                                         Distance;                                          // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bWorldCoordinate;                                  // 0x0004(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseScale;                                         // 0x0005(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_6[0xA];                                        // 0x0006(0x000A)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             ReturnValue;                                       // 0x0010(0x0060)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSplineActor_GetTransformAtDistanceAlongSpline;
+DUMPER7_ASSERTS_Perch_K2_GetPerchComponent;
 
 // Function GbxGame.GbxAOEComponent.AttachTargetQueryFunction
 // 0x0010 (0x0010 - 0x0000)
@@ -4564,141 +5769,173 @@ public:
 };
 DUMPER7_ASSERTS_GbxAOEComponent_OnEndOverlap;
 
-// Function GbxGame.GbxSkillLibraryStatics.GetLibraryEntryValue
-// 0x0078 (0x0078 - 0x0000)
-struct GbxSkillLibraryStatics_GetLibraryEntryValue final
-{
-public:
-	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           SkillDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           ComponentIdentifier;                               // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   EntryName;                                         // 0x0038(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxParam                              ReturnValue;                                       // 0x0040(0x0038)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkillLibraryStatics_GetLibraryEntryValue;
-
-// Function GbxGame.GbxGameModeModule.GetModuleName
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameModeModule_GetModuleName final
-{
-public:
-	class FName                                   ReturnValue;                                       // 0x0000(0x0008)(ConstParm, Parm, OutParm, ZeroConstructor, ReturnParm, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameModeModule_GetModuleName;
-
-// Function GbxGame.GbxGameModeModule.GetTags
+// Function GbxGame.GbxSkillComponentFunctions_AOE_Gps.SetQueryOwner
 // 0x0020 (0x0020 - 0x0000)
-struct GbxGameModeModule_GetTags final
+struct GbxSkillComponentFunctions_AOE_Gps_SetQueryOwner final
 {
 public:
-	struct FGbxGameModeModuleTags                 ReturnValue;                                       // 0x0000(0x0020)(ConstParm, Parm, OutParm, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class AActor*                                 QueryOwner;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeModule_GetTags;
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_AOE_Gps_SetQueryOwner;
 
-// Function GbxGame.GbxGameModeModuleHost.EnableBP
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameModeModuleHost_EnableBP final
+// Function GbxGame.GbxGameplayDirector.OnActiveMissionsChanged
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameplayDirector_OnActiveMissionsChanged final
 {
 public:
-	bool                                          bEnable;                                           // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSToken                                mission;                                           // 0x0000(0x000C)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          IsActive;                                          // 0x000C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_EnableBP;
+DUMPER7_ASSERTS_GbxGameplayDirector_OnActiveMissionsChanged;
 
-// Function GbxGame.GbxGameModeModuleHost.GetModuleConduit
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameModeModuleHost_GetModuleConduit final
+// Function GbxGame.GbxGameplayDirector.ReceiveMissionStatusChanged
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameplayDirector_ReceiveMissionStatusChanged final
 {
 public:
-	TSubclassOf<class UGbxGameModeModuleConduit>  ConduitType;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxGameModeModuleHostConduitExecs            Exec;                                              // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxGameModeModuleConduit*              ReturnValue;                                       // 0x0010(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EMissionStatus                                status;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FMissionInstanceHandle                 MissionHandle;                                     // 0x0004(0x000C)(Parm, NoDestructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_GetModuleConduit;
+DUMPER7_ASSERTS_GbxGameplayDirector_ReceiveMissionStatusChanged;
 
-// Function GbxGame.GbxGameModeModuleHost.OnGameModePhaseChangedBP
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameModeModuleHost_OnGameModePhaseChangedBP final
-{
-public:
-	FGbxDefPtrProperty_                           PhaseDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameModeModuleHost_OnGameModePhaseChangedBP;
-
-// Function GbxGame.GbxGameModeModuleHost.OnLogoutBP
+// Function GbxGame.GbxGameplayDirector.ReceivePlayerGroupAdded
 // 0x0008 (0x0008 - 0x0000)
-struct GbxGameModeModuleHost_OnLogoutBP final
+struct GbxGameplayDirector_ReceivePlayerGroupAdded final
 {
 public:
-	class AController*                            ExitingController;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_OnLogoutBP;
+DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerGroupAdded;
 
-// Function GbxGame.GbxGameModeModuleHost.OnPostLoginBP
+// Function GbxGame.GbxGameplayDirector.ReceivePlayerGroupPlayerAdded
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameplayDirector_ReceivePlayerGroupPlayerAdded final
+{
+public:
+	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxPlayerState*                        PlayerState;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerGroupPlayerAdded;
+
+// Function GbxGame.GbxGameplayDirector.ReceivePlayerGroupPlayerRemoved
+// 0x0010 (0x0010 - 0x0000)
+struct GbxGameplayDirector_ReceivePlayerGroupPlayerRemoved final
+{
+public:
+	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AGbxPlayerState*                        PlayerState;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerGroupPlayerRemoved;
+
+// Function GbxGame.GbxGameplayDirector.ReceivePlayerGroupRemoved
 // 0x0008 (0x0008 - 0x0000)
-struct GbxGameModeModuleHost_OnPostLoginBP final
+struct GbxGameplayDirector_ReceivePlayerGroupRemoved final
+{
+public:
+	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerGroupRemoved;
+
+// Function GbxGame.GbxGameplayDirector.ReceivePlayerLogout
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameplayDirector_ReceivePlayerLogout final
+{
+public:
+	class AController*                            Exiting;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerLogout;
+
+// Function GbxGame.GbxGameplayDirector.ReceivePlayerPostLogin
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameplayDirector_ReceivePlayerPostLogin final
 {
 public:
 	class APlayerController*                      NewPlayer;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_OnPostLoginBP;
+DUMPER7_ASSERTS_GbxGameplayDirector_ReceivePlayerPostLogin;
 
-// Function GbxGame.GbxGameModeModuleHost.UnwatchEvent
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameModeModuleHost_UnwatchEvent final
+// Function GbxGame.GbxGameplayDirector.InstantiateGeneratedMissionForGroup
+// 0x0030 (0x0030 - 0x0000)
+struct GbxGameplayDirector_InstantiateGeneratedMissionForGroup final
 {
 public:
-	FGbxDefPtrProperty_                           EventDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      MissionDef;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	const class AActor*                           Actor;                                             // 0x0018(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0020(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_UnwatchEvent;
+DUMPER7_ASSERTS_GbxGameplayDirector_InstantiateGeneratedMissionForGroup;
 
-// Function GbxGame.GbxGameModeModuleHost.WatchEvent
-// 0x0028 (0x0028 - 0x0000)
-struct GbxGameModeModuleHost_WatchEvent final
+// Function GbxGame.GbxGameplayDirector.InstantiateGeneratedMissionForPlayer
+// 0x0030 (0x0030 - 0x0000)
+struct GbxGameplayDirector_InstantiateGeneratedMissionForPlayer final
 {
 public:
-	FGbxDefPtrProperty_                           EventDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(const struct FGbxGameModeModuleEventParams& params)> Delegate;                    // 0x0018(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      MissionDef;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	const class AActor*                           Actor;                                             // 0x0018(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0020(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_WatchEvent;
+DUMPER7_ASSERTS_GbxGameplayDirector_InstantiateGeneratedMissionForPlayer;
 
-// Function GbxGame.GbxGameModeModuleHost.GetGameMode
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameModeModuleHost_GetGameMode final
+// Function GbxGame.HazardInteractionInterface.OnBeginHazardDamageOverlap
+// 0x0120 (0x0120 - 0x0000)
+struct HazardInteractionInterface_OnBeginHazardDamageOverlap final
 {
 public:
-	class AGbxGameMode*                           ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFromSweep;                                        // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FHitResult                             SweepResult;                                       // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_GetGameMode;
+DUMPER7_ASSERTS_HazardInteractionInterface_OnBeginHazardDamageOverlap;
 
-// Function GbxGame.GbxGameModeModuleHost.GetModuleParameter
-// 0x0040 (0x0040 - 0x0000)
-struct GbxGameModeModuleHost_GetModuleParameter final
+// Function GbxGame.HazardInteractionInterface.OnBeginHazardInteractionOverlap
+// 0x0120 (0x0120 - 0x0000)
+struct HazardInteractionInterface_OnBeginHazardInteractionOverlap final
 {
 public:
-	class FName                                   ParamName;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxParam                              ReturnValue;                                       // 0x0008(0x0038)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFromSweep;                                        // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FHitResult                             SweepResult;                                       // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_GetModuleParameter;
+DUMPER7_ASSERTS_HazardInteractionInterface_OnBeginHazardInteractionOverlap;
 
-// Function GbxGame.GbxGameModeModuleHost.IsEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameModeModuleHost_IsEnabled final
+// Function GbxGame.HazardInteractionInterface.OnEndHazardDamageOverlap
+// 0x0020 (0x0020 - 0x0000)
+struct HazardInteractionInterface_OnEndHazardDamageOverlap final
 {
 public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_IsEnabled;
+DUMPER7_ASSERTS_HazardInteractionInterface_OnEndHazardDamageOverlap;
 
-// Function GbxGame.GbxGameModeModuleHost.SetModuleParameter
-// 0x0040 (0x0040 - 0x0000)
-struct GbxGameModeModuleHost_SetModuleParameter final
+// Function GbxGame.HazardInteractionInterface.OnEndHazardInteractionOverlap
+// 0x0020 (0x0020 - 0x0000)
+struct HazardInteractionInterface_OnEndHazardInteractionOverlap final
 {
 public:
-	class FName                                   ParamName;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Value;                                             // 0x0008(0x0038)(Parm, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_SetModuleParameter;
+DUMPER7_ASSERTS_HazardInteractionInterface_OnEndHazardInteractionOverlap;
 
 // Function GbxGame.GbxAudioVolumeComponent.IsInsideVolume
 // 0x0020 (0x0020 - 0x0000)
@@ -4781,71 +6018,6 @@ public:
 };
 DUMPER7_ASSERTS_GbxBodyFunctionLibrary_SetBodyParameter;
 
-// Function GbxGame.GbxFeedbackBlueprintLibrary.PlayGbxFeedback2D
-// 0x0048 (0x0048 - 0x0000)
-struct GbxFeedbackBlueprintLibrary_PlayGbxFeedback2D final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      data;                                              // 0x0008(0x0018)(ConstParm, Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TScriptInterface<class IGbxFeedbackObserver>  Observer;                                          // 0x0020(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIgnoreObserver;                                   // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         PlayFlags;                                         // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bLoop;                                             // 0x0038(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_39[0x3];                                       // 0x0039(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         scale;                                             // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                SourceContext;                                     // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxFeedbackBlueprintLibrary_PlayGbxFeedback2D;
-
-// Function GbxGame.GbxFeedbackBlueprintLibrary.PlayGbxFeedback3D
-// 0x0068 (0x0068 - 0x0000)
-struct GbxFeedbackBlueprintLibrary_PlayGbxFeedback3D final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      data;                                              // 0x0008(0x0018)(ConstParm, Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TScriptInterface<class IGbxFeedbackObserver>  Observer;                                          // 0x0020(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIgnoreObserver;                                   // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         PlayFlags;                                         // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bLoop;                                             // 0x0038(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_39[0x3];                                       // 0x0039(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         scale;                                             // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                SourceContext;                                     // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                SourceLocation;                                    // 0x0048(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         EffectFalloffMinDistance;                          // 0x0060(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         EffectFalloffMaxDistance;                          // 0x0064(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxFeedbackBlueprintLibrary_PlayGbxFeedback3D;
-
-// Function GbxGame.GbxFeedbackBlueprintLibrary.ResetGbxFeedbackPlayTime
-// 0x0038 (0x0038 - 0x0000)
-struct GbxFeedbackBlueprintLibrary_ResetGbxFeedbackPlayTime final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      data;                                              // 0x0008(0x0018)(ConstParm, Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TScriptInterface<class IGbxFeedbackObserver>  Observer;                                          // 0x0020(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIgnoreObserver;                                   // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_31[0x7];                                       // 0x0031(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxFeedbackBlueprintLibrary_ResetGbxFeedbackPlayTime;
-
-// Function GbxGame.GbxFeedbackBlueprintLibrary.StopGbxFeedback
-// 0x0038 (0x0038 - 0x0000)
-struct GbxFeedbackBlueprintLibrary_StopGbxFeedback final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      data;                                              // 0x0008(0x0018)(ConstParm, Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TScriptInterface<class IGbxFeedbackObserver>  Observer;                                          // 0x0020(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIgnoreObserver;                                   // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_31[0x7];                                       // 0x0031(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxFeedbackBlueprintLibrary_StopGbxFeedback;
-
 // Function GbxGame.GbxStatusEffectSignatureParam.AddParam_Actor
 // 0x00A0 (0x00A0 - 0x0000)
 struct GbxStatusEffectSignatureParam_AddParam_Actor final
@@ -4883,26 +6055,73 @@ public:
 };
 DUMPER7_ASSERTS_GbxStatusEffectSignatureParam_AddParam_GbxDef;
 
-// Function GbxGame.GbxStatusEffectSignatureParam_Duration.GetDuration
-// 0x0020 (0x0020 - 0x0000)
-struct GbxStatusEffectSignatureParam_Duration_GetDuration final
+// Function GbxGame.GbxStatusEffectScript_Const.OnBegin
+// 0x0018 (0x0018 - 0x0000)
+struct GbxStatusEffectScript_Const_OnBegin final
 {
 public:
-	struct FGbxStatusEffectSpec_Params            params;                                            // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	EGetStatusEffectParamResultPins               Outcome;                                           // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ReturnValue;                                       // 0x001C(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectScript_ExecContext     execContext;                                       // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxStatusEffectSignatureParam_Duration_GetDuration;
+DUMPER7_ASSERTS_GbxStatusEffectScript_Const_OnBegin;
 
-// Function GbxGame.GbxReplicatedNiagaraActor.OnSystemFinished
-// 0x0008 (0x0008 - 0x0000)
-struct GbxReplicatedNiagaraActor_OnSystemFinished final
+// Function GbxGame.GbxStatusEffectScript_Const.OnEnd
+// 0x0018 (0x0018 - 0x0000)
+struct GbxStatusEffectScript_Const_OnEnd final
 {
 public:
-	class UNiagaraComponent*                      Component;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectScript_ExecContext     execContext;                                       // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxReplicatedNiagaraActor_OnSystemFinished;
+DUMPER7_ASSERTS_GbxStatusEffectScript_Const_OnEnd;
+
+// Function GbxGame.GbxStatusEffectScript_Const.OnPushEvent
+// 0x0070 (0x0070 - 0x0000)
+struct GbxStatusEffectScript_Const_OnPushEvent final
+{
+public:
+	FGbxDefPtrProperty_                           EventDef;                                          // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectScript_ExecContext     execContext;                                       // 0x0018(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	const class UObject*                          PushOwner;                                         // 0x0030(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTagContainer                  tags;                                              // 0x0038(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectSpec_Params            params;                                            // 0x0058(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxStatusEffectScript_Const_OnPushEvent;
+
+// Function GbxGame.GbxStatusEffectScript_Const.RequestShutdown
+// 0x0018 (0x0018 - 0x0000)
+struct GbxStatusEffectScript_Const_RequestShutdown final
+{
+public:
+	struct FGbxStatusEffectScript_ExecContext     execContext;                                       // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxStatusEffectScript_Const_RequestShutdown;
+
+// Function GbxGame.GbxProximityProcessingActor.OnEnteringProximityZone
+// 0x0120 (0x0120 - 0x0000)
+struct GbxProximityProcessingActor_OnEnteringProximityZone final
+{
+public:
+	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFromSweep;                                        // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FHitResult                             SweepResult;                                       // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProximityProcessingActor_OnEnteringProximityZone;
+
+// Function GbxGame.GbxProximityProcessingActor.OnExitingProximityZone
+// 0x0020 (0x0020 - 0x0000)
+struct GbxProximityProcessingActor_OnExitingProximityZone final
+{
+public:
+	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProximityProcessingActor_OnExitingProximityZone;
 
 // Function GbxGame.GbxCharacter.NetMulticast_PlayLanded
 // 0x0110 (0x0110 - 0x0000)
@@ -4916,6 +6135,15 @@ public:
 	class FName                                   LandingDefOverrideName;                            // 0x0108(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_GbxCharacter_NetMulticast_PlayLanded;
+
+// Function GbxGame.GbxCharacter.OnRep_ReplicateForwardDynamicsUpdate
+// 0x0050 (0x0050 - 0x0000)
+struct GbxCharacter_OnRep_ReplicateForwardDynamicsUpdate final
+{
+public:
+	struct FForwardDynamicsRepData                PrevForwardDynamicsState;                          // 0x0000(0x0050)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxCharacter_OnRep_ReplicateForwardDynamicsUpdate;
 
 // Function GbxGame.GbxCharacter.SetTerritory
 // 0x0008 (0x0008 - 0x0000)
@@ -4998,14 +6226,167 @@ public:
 };
 DUMPER7_ASSERTS_GbxCharacter_SupportsLiveRagdoll;
 
-// Function GbxGame.GbxSkill.GetActor
-// 0x0008 (0x0008 - 0x0000)
-struct GbxSkill_GetActor final
+// Function GbxGame.GbxSkeletalMeshComponent.AddExternalGestaltMeshes_BP
+// 0x0010 (0x0010 - 0x0000)
+struct GbxSkeletalMeshComponent_AddExternalGestaltMeshes_BP final
 {
 public:
-	class AActor*                                 ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class USkeletalMesh*>                  InGestaltMeshes;                                   // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxSkill_GetActor;
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_AddExternalGestaltMeshes_BP;
+
+// Function GbxGame.GbxSkeletalMeshComponent.GetForwardDynamicAngularVelocity
+// 0x0028 (0x0028 - 0x0000)
+struct GbxSkeletalMeshComponent_GetForwardDynamicAngularVelocity final
+{
+public:
+	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                ReturnValue;                                       // 0x0010(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_GetForwardDynamicAngularVelocity;
+
+// Function GbxGame.GbxSkeletalMeshComponent.GetForwardDynamicLinearVelocity
+// 0x0028 (0x0028 - 0x0000)
+struct GbxSkeletalMeshComponent_GetForwardDynamicLinearVelocity final
+{
+public:
+	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                ReturnValue;                                       // 0x0010(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_GetForwardDynamicLinearVelocity;
+
+// Function GbxGame.GbxSkeletalMeshComponent.GetForwardDynamicTransform
+// 0x0070 (0x0070 - 0x0000)
+struct GbxSkeletalMeshComponent_GetForwardDynamicTransform final
+{
+public:
+	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FTransform                             ReturnValue;                                       // 0x0010(0x0060)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_GetForwardDynamicTransform;
+
+// Function GbxGame.GbxSkeletalMeshComponent.RemoveBodyAndChildren
+// 0x0008 (0x0008 - 0x0000)
+struct GbxSkeletalMeshComponent_RemoveBodyAndChildren final
+{
+public:
+	class FName                                   BoneName;                                          // 0x0000(0x0008)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_RemoveBodyAndChildren;
+
+// Function GbxGame.GbxSkeletalMeshComponent.RemoveBodyTarget
+// 0x0010 (0x0010 - 0x0000)
+struct GbxSkeletalMeshComponent_RemoveBodyTarget final
+{
+public:
+	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_RemoveBodyTarget;
+
+// Function GbxGame.GbxSkeletalMeshComponent.RemoveExternalGestaltMeshes_BP
+// 0x0010 (0x0010 - 0x0000)
+struct GbxSkeletalMeshComponent_RemoveExternalGestaltMeshes_BP final
+{
+public:
+	TArray<class USkeletalMesh*>                  InGestaltMeshes;                                   // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_RemoveExternalGestaltMeshes_BP;
+
+// Function GbxGame.GbxSkeletalMeshComponent.SetBodyTarget
+// 0x0040 (0x0040 - 0x0000)
+struct GbxSkeletalMeshComponent_SetBodyTarget final
+{
+public:
+	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Pose;                                              // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	double                                        Radius;                                            // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	double                                        Stiffness;                                         // 0x0028(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	double                                        TargetSpeed;                                       // 0x0030(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x0038(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetBodyTarget;
+
+// Function GbxGame.GbxSkeletalMeshComponent.SetBodyTargetDirection
+// 0x0030 (0x0030 - 0x0000)
+struct GbxSkeletalMeshComponent_SetBodyTargetDirection final
+{
+public:
+	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Direction;                                         // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	double                                        TargetSpeed;                                       // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x0028(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetBodyTargetDirection;
+
+// Function GbxGame.GbxSkeletalMeshComponent.SetBodyTargetParams
+// 0x00B8 (0x00B8 - 0x0000)
+struct GbxSkeletalMeshComponent_SetBodyTargetParams final
+{
+public:
+	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FDBodyTargetParams                     params;                                            // 0x0008(0x00A8)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x00B0(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetBodyTargetParams;
+
+// Function GbxGame.GbxSkeletalMeshComponent.SetCollisionResponse
+// 0x0010 (0x0010 - 0x0000)
+struct GbxSkeletalMeshComponent_SetCollisionResponse final
+{
+public:
+	ECollisionEnabled                             CollisionEnabled;                                  // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   BodyName;                                          // 0x0004(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIncludeChildren;                                  // 0x000C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetCollisionResponse;
+
+// Function GbxGame.GbxSkeletalMeshComponent.SetGravityOverride
+// 0x0028 (0x0028 - 0x0000)
+struct GbxSkeletalMeshComponent_SetGravityOverride final
+{
+public:
+	bool                                          bEnabled;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVector                                Gravity;                                           // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetGravityOverride;
+
+// Function GbxGame.GbxSkeletalMeshComponent.SetPrimarySimulationTag
+// 0x000C (0x000C - 0x0000)
+struct GbxSkeletalMeshComponent_SetPrimarySimulationTag final
+{
+public:
+	class FName                                   Tag;                                               // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bForceSet;                                         // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x3];                                        // 0x0009(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetPrimarySimulationTag;
+
+// Function GbxGame.GbxSkeletalMeshComponent.TeleportPrimarySimulation
+// 0x0018 (0x0018 - 0x0000)
+struct GbxSkeletalMeshComponent_TeleportPrimarySimulation final
+{
+public:
+	struct FVector                                NewLocation;                                       // 0x0000(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_TeleportPrimarySimulation;
+
+// Function GbxGame.GbxSkeletalMeshComponent.GetAnimationFromTag
+// 0x0010 (0x0010 - 0x0000)
+struct GbxSkeletalMeshComponent_GetAnimationFromTag final
+{
+public:
+	struct FGameplayTag                           InKey;                                             // 0x0000(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UAnimSequenceBase*                      ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkeletalMeshComponent_GetAnimationFromTag;
 
 // Function GbxGame.GbxGameAnimInstance.GetAnimationFromTag
 // 0x0010 (0x0010 - 0x0000)
@@ -5446,47 +6827,79 @@ public:
 };
 DUMPER7_ASSERTS_GbxCharacterMovementComponent_IsWading;
 
-// Function GbxGame.GbxProgressGraph.Server_ActivateNodeInGroup
-// 0x0010 (0x0010 - 0x0000)
-struct GbxProgressGraph_Server_ActivateNodeInGroup final
+// Function GbxGame.GbxPlayerState.ClientLockUnlockable
+// 0x0050 (0x0050 - 0x0000)
+struct GbxPlayerState_ClientLockUnlockable final
 {
 public:
-	int32                                         InGroupIndex;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         InNodeIndex;                                       // 0x0004(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          InActivate;                                        // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x3];                                        // 0x0009(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         ActivationLevel;                                   // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSName                                 LedgerIdent;                                       // 0x0000(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSName                                 EntryIdent;                                        // 0x0028(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxProgressGraph_Server_ActivateNodeInGroup;
+DUMPER7_ASSERTS_GbxPlayerState_ClientLockUnlockable;
 
-// Function GbxGame.GbxProgressGraph.Server_AddBonusPoints
-// 0x0008 (0x0008 - 0x0000)
-struct GbxProgressGraph_Server_AddBonusPoints final
-{
-public:
-	int32                                         InNodeIndex;                                       // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         InPointsToAdd;                                     // 0x0004(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProgressGraph_Server_AddBonusPoints;
-
-// Function GbxGame.GbxProgressGraph.Server_ResetActivationsInGroup
+// Function GbxGame.GbxPlayerState.ClientSendProfileDataToVault
 // 0x0004 (0x0004 - 0x0000)
-struct GbxProgressGraph_Server_ResetActivationsInGroup final
+struct GbxPlayerState_ClientSendProfileDataToVault final
 {
 public:
-	int32                                         InGroupIndex;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         InProfileIndex;                                    // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxProgressGraph_Server_ResetActivationsInGroup;
+DUMPER7_ASSERTS_GbxPlayerState_ClientSendProfileDataToVault;
 
-// Function GbxGame.GbxProgressGraph.Server_SpendProgressPoints
-// 0x0008 (0x0008 - 0x0000)
-struct GbxProgressGraph_Server_SpendProgressPoints final
+// Function GbxGame.GbxPlayerState.ClientUnlockUnlockable
+// 0x0050 (0x0050 - 0x0000)
+struct GbxPlayerState_ClientUnlockUnlockable final
 {
 public:
-	int32                                         InNodeIndex;                                       // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         InPoints;                                          // 0x0004(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSName                                 LedgerIdent;                                       // 0x0000(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FSName                                 EntryIdent;                                        // 0x0028(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxProgressGraph_Server_SpendProgressPoints;
+DUMPER7_ASSERTS_GbxPlayerState_ClientUnlockUnlockable;
+
+// Function GbxGame.GbxPlayerState.OnGroupAssigned
+// 0x0008 (0x0008 - 0x0000)
+struct GbxPlayerState_OnGroupAssigned final
+{
+public:
+	class AGbxPlayerGroupState*                   InPlayerGroupState;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerState_OnGroupAssigned;
+
+// Function GbxGame.GbxPlayerState.OnGroupRemoved
+// 0x0008 (0x0008 - 0x0000)
+struct GbxPlayerState_OnGroupRemoved final
+{
+public:
+	class AGbxPlayerGroupState*                   InPlayerGroupState;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerState_OnGroupRemoved;
+
+// Function GbxGame.GbxPlayerState.ServerSetDiscoveryRegion
+// 0x0028 (0x0028 - 0x0000)
+struct GbxPlayerState_ServerSetDiscoveryRegion final
+{
+public:
+	struct FSName                                 InRegionName;                                      // 0x0000(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerState_ServerSetDiscoveryRegion;
+
+// Function GbxGame.GbxPlayerState.ServerSetPlatformUniqueId
+// 0x0030 (0x0030 - 0x0000)
+struct GbxPlayerState_ServerSetPlatformUniqueId final
+{
+public:
+	struct FUniqueNetIdRepl                       InPlatformUniqueId;                                // 0x0000(0x0030)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerState_ServerSetPlatformUniqueId;
+
+// Function GbxGame.GbxPlayerState.ServerSetRealtimeGameplayStatus
+// 0x0001 (0x0001 - 0x0000)
+struct GbxPlayerState_ServerSetRealtimeGameplayStatus final
+{
+public:
+	bool                                          bIsInRTGP;                                         // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerState_ServerSetRealtimeGameplayStatus;
 
 // Function GbxGame.GbxCharacterPushComponent.OnCapsuleBeginOverlap
 // 0x0120 (0x0120 - 0x0000)
@@ -5561,6 +6974,16 @@ public:
 };
 DUMPER7_ASSERTS_GbxCinematicFunctionLibrary_PopPlayerCinematicModeWithReason;
 
+// Function GbxGame.GbxCinematicFunctionLibrary.PopPlayerControllerCinematicModeWithReason
+// 0x0010 (0x0010 - 0x0000)
+struct GbxCinematicFunctionLibrary_PopPlayerControllerCinematicModeWithReason final
+{
+public:
+	class APlayerController*                      PlayerController;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxCinematicFunctionLibrary_PopPlayerControllerCinematicModeWithReason;
+
 // Function GbxGame.GbxCinematicFunctionLibrary.PushGlobalCinematicMode
 // 0x0020 (0x0020 - 0x0000)
 struct GbxCinematicFunctionLibrary_PushGlobalCinematicMode final
@@ -5603,6 +7026,18 @@ public:
 };
 DUMPER7_ASSERTS_GbxCinematicFunctionLibrary_PushPlayerCinematicModeWithReason;
 
+// Function GbxGame.GbxLegIKBlueprintLibrary.SetLegIKEnabled
+// 0x0020 (0x0020 - 0x0000)
+struct GbxLegIKBlueprintLibrary_SetLegIKEnabled final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bNewEnabled;                                       // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class FString                                 reason;                                            // 0x0010(0x0010)(Parm, ZeroConstructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxLegIKBlueprintLibrary_SetLegIKEnabled;
+
 // Function GbxGame.GbxConsoleCommands.PopulateAutoCompleteEntries
 // 0x0010 (0x0010 - 0x0000)
 struct GbxConsoleCommands_PopulateAutoCompleteEntries final
@@ -5624,24 +7059,6 @@ public:
 };
 DUMPER7_ASSERTS_GbxCurrencyFunctionLibrary_GiveCurrency;
 
-// Function GbxGame.GbxOpportunisticAmbientAudioComponent.GetAudioOpportunisticShowFlag
-// 0x0001 (0x0001 - 0x0000)
-struct GbxOpportunisticAmbientAudioComponent_GetAudioOpportunisticShowFlag final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxOpportunisticAmbientAudioComponent_GetAudioOpportunisticShowFlag;
-
-// Function GbxGame.GbxOpportunisticAmbientAudioComponent.SetAudioOpportunisticShowFlag
-// 0x0001 (0x0001 - 0x0000)
-struct GbxOpportunisticAmbientAudioComponent_SetAudioOpportunisticShowFlag final
-{
-public:
-	bool                                          bValue;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxOpportunisticAmbientAudioComponent_SetAudioOpportunisticShowFlag;
-
 // Function GbxGame.GbxCurrencyManager.OnRep_Currencies
 // 0x0010 (0x0010 - 0x0000)
 struct GbxCurrencyManager_OnRep_Currencies final
@@ -5651,298 +7068,16 @@ public:
 };
 DUMPER7_ASSERTS_GbxCurrencyManager_OnRep_Currencies;
 
-// Function GbxGame.ProjectileStatics.GetProjectileDistanceOverTime
-// 0x0028 (0x0028 - 0x0000)
-struct ProjectileStatics_GetProjectileDistanceOverTime final
+// Function GbxGame.ProjectileBounceStatics.GetGameplayBounceSurfaceType
+// 0x0108 (0x0108 - 0x0000)
+struct ProjectileBounceStatics_GetGameplayBounceSurfaceType final
 {
 public:
-	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         time;                                              // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SpeedOverride;                                     // 0x001C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FHitResult                             Impact;                                            // 0x0000(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	EProjectileGameplayBounceSurfaceType          ReturnValue;                                       // 0x0100(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_101[0x7];                                      // 0x0101(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_ProjectileStatics_GetProjectileDistanceOverTime;
-
-// Function GbxGame.ProjectileStatics.GetProjectileTimeOverDistance
-// 0x0028 (0x0028 - 0x0000)
-struct ProjectileStatics_GetProjectileTimeOverDistance final
-{
-public:
-	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Distance;                                          // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SpeedOverride;                                     // 0x001C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_ProjectileStatics_GetProjectileTimeOverDistance;
-
-// Function GbxGame.ProjectileStatics.GetSafeProjectileThrowTransform
-// 0x0100 (0x0100 - 0x0000)
-struct ProjectileStatics_GetSafeProjectileThrowTransform final
-{
-public:
-	class AActor*                                 Source;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0008(0x0060)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	TArray<class AActor*>                         IgnoreActors;                                      // 0x0068(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	ECollisionChannel                             TraceChannel;                                      // 0x0078(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0080(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FTransform                             ReturnValue;                                       // 0x00A0(0x0060)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_GetSafeProjectileThrowTransform;
-
-// Function GbxGame.ProjectileStatics.GetSafeProjectileThrowTransformFromLocation
-// 0x00A0 (0x00A0 - 0x0000)
-struct ProjectileStatics_GetSafeProjectileThrowTransformFromLocation final
-{
-public:
-	class AActor*                                 Source;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0008(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class AActor*>                         IgnoreActors;                                      // 0x0020(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	ECollisionChannel                             TraceChannel;                                      // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseAnimatedCameraRotation;                        // 0x0031(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_32[0xE];                                       // 0x0032(0x000E)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             ReturnValue;                                       // 0x0040(0x0060)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_GetSafeProjectileThrowTransformFromLocation;
-
-// Function GbxGame.ProjectileStatics.MakeViewRelativeLocation
-// 0x0038 (0x0038 - 0x0000)
-struct ProjectileStatics_MakeViewRelativeLocation final
-{
-public:
-	struct FVector                                Offset;                                            // 0x0000(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               ReturnValue;                                       // 0x0018(0x0020)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_MakeViewRelativeLocation;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile
-// 0x0160 (0x0160 - 0x0000)
-struct ProjectileStatics_SpawnProjectile final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 owner;                                             // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOwnerIsInstigator;                                // 0x0048(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_49[0x7];                                       // 0x0049(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class APawn*                                  instigator;                                        // 0x0050(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0058(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Velocity;                                          // 0x0070(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         GravityScale;                                      // 0x0088(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_8C[0x4];                                       // 0x008C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0090(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_Const
-// 0x0138 (0x0138 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_Const final
-{
-public:
-	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 owner;                                             // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOwnerIsInstigator;                                // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class APawn*                                  instigator;                                        // 0x0028(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0030(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Velocity;                                          // 0x0048(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         GravityScale;                                      // 0x0060(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_64[0x4];                                       // 0x0064(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0068(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_Const;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_Source
-// 0x01E8 (0x01E8 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_Source final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Source;                                            // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0048(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x00A8(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         SpeedOverride;                                     // 0x00D8(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         GravityScale;                                      // 0x00DC(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x00E0(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x00F8(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x01C8(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_Source;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_Source_Const
-// 0x01C0 (0x01C0 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_Source_Const final
-{
-public:
-	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Source;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0020(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x0080(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         SpeedOverride;                                     // 0x00B0(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         GravityScale;                                      // 0x00B4(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x00B8(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x00D0(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x01A0(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_Source_Const;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtActor
-// 0x0290 (0x0290 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_ThrowAtActor final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Source;                                            // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0048(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x00A8(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class AActor*                                 target;                                            // 0x00D8(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   TargetOptions;                                     // 0x00E0(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x0140(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0188(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x01A0(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0270(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtActor;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtActor_Const
-// 0x0268 (0x0268 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_ThrowAtActor_Const final
-{
-public:
-	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Source;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0020(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x0080(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class AActor*                                 target;                                            // 0x00B0(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   TargetOptions;                                     // 0x00B8(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x0118(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0160(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0178(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0248(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtActor_Const;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtCrosshair
-// 0x0230 (0x0230 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_ThrowAtCrosshair final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Source;                                            // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0048(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x00A8(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x00D8(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         TraceDistance;                                     // 0x0120(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_124[0x4];                                      // 0x0124(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0128(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0140(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0210(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtCrosshair;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtCrosshair_Const
-// 0x0208 (0x0208 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_ThrowAtCrosshair_Const final
-{
-public:
-	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Source;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0020(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x0080(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x00B0(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         TraceDistance;                                     // 0x00F8(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_FC[0x4];                                       // 0x00FC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0100(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0118(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x01E8(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtCrosshair_Const;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtLocation
-// 0x0240 (0x0240 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_ThrowAtLocation final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Source;                                            // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0048(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x00A8(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x00D8(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x00F0(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0138(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0150(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0220(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtLocation;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtLocation_Const
-// 0x0218 (0x0218 - 0x0000)
-struct ProjectileStatics_SpawnProjectile_ThrowAtLocation_Const final
-{
-public:
-	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Source;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0020(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x0080(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x00B0(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x00C8(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0110(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0128(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x01F8(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtLocation_Const;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectiles_Query
-// 0x0348 (0x0348 - 0x0000)
-struct ProjectileStatics_SpawnProjectiles_Query final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	ESpawnProjectileExec                          Exec;                                              // 0x0020(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class Aprojectile*>                    AllProjectiles;                                    // 0x0028(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-	class Aprojectile*                            SpawnedProjectile;                                 // 0x0038(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      definition;                                        // 0x0040(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 owner;                                             // 0x0058(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGpsQueryRunData                       QueryData;                                         // 0x0060(0x01E0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   Rotation;                                          // 0x0240(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	int32                                         MaxResults;                                        // 0x0270(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         delay;                                             // 0x0274(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0278(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectiles_Query;
-
-// Function GbxGame.ProjectileStatics.SpawnProjectiles_Query_Const
-// 0x0308 (0x0308 - 0x0000)
-struct ProjectileStatics_SpawnProjectiles_Query_Const final
-{
-public:
-	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 owner;                                             // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGpsQueryRunData                       QueryData;                                         // 0x0020(0x01E0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxRelativeRotation                   Rotation;                                          // 0x0200(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	int32                                         MaxResults;                                        // 0x0230(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         delay;                                             // 0x0234(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0238(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectiles_Query_Const;
+DUMPER7_ASSERTS_ProjectileBounceStatics_GetGameplayBounceSurfaceType;
 
 // Function GbxGame.GbxDangerZone.GetDistanceFromLinkedProjectile
 // 0x0004 (0x0004 - 0x0000)
@@ -6043,63 +7178,23 @@ public:
 };
 DUMPER7_ASSERTS_GbxDangerZoneCracks_GetCracks;
 
-// Function GbxGame.GbxTrickInterface.PlayTrick
+// Function GbxGame.GbxGameSpawner.SetTerritory
 // 0x0010 (0x0010 - 0x0000)
-struct GbxTrickInterface_PlayTrick final
+struct GbxGameSpawner_SetTerritory final
 {
 public:
-	class UGbxTrick*                              Trick;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	TScriptInterface<class IGbxTerritoryProvider> TerritoryProvider;                                 // 0x0000(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxTrickInterface_PlayTrick;
+DUMPER7_ASSERTS_GbxGameSpawner_SetTerritory;
 
-// Function GbxGame.GbxTrickInterface.PlayTrickLocal
-// 0x0010 (0x0010 - 0x0000)
-struct GbxTrickInterface_PlayTrickLocal final
-{
-public:
-	class UGbxTrick*                              Trick;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxTrickInterface_PlayTrickLocal;
-
-// Function GbxGame.GbxTrickInterface.StopTrick
+// Function GbxGame.GbxGameSpawner.GetTerritory
 // 0x0008 (0x0008 - 0x0000)
-struct GbxTrickInterface_StopTrick final
+struct GbxGameSpawner_GetTerritory final
 {
 public:
-	class UGbxTrick*                              Trick;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxTerritoryComponent*                 ReturnValue;                                       // 0x0000(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxTrickInterface_StopTrick;
-
-// Function GbxGame.GbxTrickInterface.StopTrickId
-// 0x0001 (0x0001 - 0x0000)
-struct GbxTrickInterface_StopTrickId final
-{
-public:
-	uint8                                         ID;                                                // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxTrickInterface_StopTrickId;
-
-// Function GbxGame.GbxTrickInterface.StopTrickIdLocal
-// 0x0001 (0x0001 - 0x0000)
-struct GbxTrickInterface_StopTrickIdLocal final
-{
-public:
-	uint8                                         ID;                                                // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxTrickInterface_StopTrickIdLocal;
-
-// Function GbxGame.GbxTrickInterface.StopTrickLocal
-// 0x0008 (0x0008 - 0x0000)
-struct GbxTrickInterface_StopTrickLocal final
-{
-public:
-	class UGbxTrick*                              Trick;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxTrickInterface_StopTrickLocal;
+DUMPER7_ASSERTS_GbxGameSpawner_GetTerritory;
 
 // Function GbxGame.GbxDangerZoneSubsystem.MakeDangerZoneSpawnOptions
 // 0x0040 (0x0040 - 0x0000)
@@ -6129,18 +7224,6 @@ public:
 	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_GbxDecoCharacter_GetInteractionStateOptions;
-
-// Function GbxGame.GoreLimb.OnHit
-// 0x0128 (0x0128 - 0x0000)
-struct GoreLimb_OnHit final
-{
-public:
-	class AActor*                                 SelfActor;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                NormalImpulse;                                     // 0x0010(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0028(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GoreLimb_OnHit;
 
 // Function GbxGame.GbxDestructibleComponent.GetDestructibleData
 // 0x0008 (0x0008 - 0x0000)
@@ -6202,7 +7285,7 @@ struct GbxDialogBlueprintLibrary_ActivateScript final
 {
 public:
 	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           script;                                            // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Script;                                            // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_GbxDialogBlueprintLibrary_ActivateScript;
 
@@ -6212,7 +7295,7 @@ struct GbxDialogBlueprintLibrary_DectivateScript final
 {
 public:
 	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           script;                                            // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Script;                                            // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_GbxDialogBlueprintLibrary_DectivateScript;
 
@@ -6368,28 +7451,184 @@ public:
 };
 DUMPER7_ASSERTS_GbxDialogBlueprintLibrary_TriggerDialogEventEx;
 
-// Function GbxGame.GbxSkillComponentFunctions_Material.InterpColor
-// 0x0038 (0x0038 - 0x0000)
-struct GbxSkillComponentFunctions_Material_InterpColor final
+// Function GbxGame.GbxStatusEffectsStatics.GetQueryResult_Float
+// 0x0028 (0x0028 - 0x0000)
+struct GbxStatusEffectsStatics_GetQueryResult_Float final
 {
 public:
-	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FLinearColor                           Color;                                             // 0x0018(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGuid                                  MaterialID;                                        // 0x0028(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectQueryResult            Result;                                            // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class FName                                   Name_0;                                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                Context;                                           // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	double                                        ReturnValue;                                       // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_Material_InterpColor;
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_GetQueryResult_Float;
 
-// Function GbxGame.GbxSkillComponentFunctions_Material.InterpScalar
+// Function GbxGame.GbxStatusEffectsStatics.GetQueryResult_Int
+// 0x0028 (0x0028 - 0x0000)
+struct GbxStatusEffectsStatics_GetQueryResult_Int final
+{
+public:
+	struct FGbxStatusEffectQueryResult            Result;                                            // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class FName                                   Name_0;                                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                Context;                                           // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_GetQueryResult_Int;
+
+// Function GbxGame.GbxStatusEffectsStatics.GetStatusEffectInstanceCount
+// 0x0028 (0x0028 - 0x0000)
+struct GbxStatusEffectsStatics_GetStatusEffectInstanceCount final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	const class UGbxStatusEffectData*             StatusEffectData;                                  // 0x0008(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFilterByOwner;                                    // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class UObject*                                InOwner;                                           // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_GetStatusEffectInstanceCount;
+
+// Function GbxGame.GbxStatusEffectsStatics.HasStatusEffect
+// 0x0018 (0x0018 - 0x0000)
+struct GbxStatusEffectsStatics_HasStatusEffect final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	const class UGbxStatusEffectData*             StatusEffectData;                                  // 0x0008(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_HasStatusEffect;
+
+// Function GbxGame.GbxStatusEffectsStatics.PopAllFromEffect
+// 0x0018 (0x0018 - 0x0000)
+struct GbxStatusEffectsStatics_PopAllFromEffect final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	const class UGbxStatusEffectData*             StatusEffectData;                                  // 0x0008(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0010(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_PopAllFromEffect;
+
+// Function GbxGame.GbxStatusEffectsStatics.PopAllFromEffectSpec
+// 0x0020 (0x0020 - 0x0000)
+struct GbxStatusEffectsStatics_PopAllFromEffectSpec final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectPopAllFromEffectSpec   Spec;                                              // 0x0008(0x0010)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0018(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_PopAllFromEffectSpec;
+
+// Function GbxGame.GbxStatusEffectsStatics.PopAllSpec
+// 0x0060 (0x0060 - 0x0000)
+struct GbxStatusEffectsStatics_PopAllSpec final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectPopAllSpec             Spec;                                              // 0x0008(0x0050)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0058(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_5C[0x4];                                       // 0x005C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_PopAllSpec;
+
+// Function GbxGame.GbxStatusEffectsStatics.PopSpec
+// 0x0028 (0x0028 - 0x0000)
+struct GbxStatusEffectsStatics_PopSpec final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectPopSpec                Spec;                                              // 0x0008(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_PopSpec;
+
+// Function GbxGame.GbxStatusEffectsStatics.PushSpec
+// 0x0058 (0x0058 - 0x0000)
+struct GbxStatusEffectsStatics_PushSpec final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectPushSpec               Spec;                                              // 0x0008(0x0048)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0050(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_51[0x7];                                       // 0x0051(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_PushSpec;
+
+// Function GbxGame.GbxStatusEffectsStatics.Query
 // 0x0030 (0x0030 - 0x0000)
-struct GbxSkillComponentFunctions_Material_InterpScalar final
+struct GbxStatusEffectsStatics_Query final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxStatusEffectData*                   StatusEffect;                                      // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxStatusEffectQuerySpec*              Spec;                                              // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectQueryResult            Result;                                            // 0x0018(0x0010)(Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_Query;
+
+// Function GbxGame.GbxStatusEffectsStatics.Query_ByTag
+// 0x0070 (0x0070 - 0x0000)
+struct GbxStatusEffectsStatics_Query_ByTag final
+{
+public:
+	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTagQuery                      TagQuery;                                          // 0x0008(0x0048)(Parm, NativeAccessSpecifierPublic)
+	class UGbxStatusEffectQuerySpec*              Spec;                                              // 0x0050(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxStatusEffectQueryResult            Result;                                            // 0x0058(0x0010)(Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0068(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_69[0x7];                                       // 0x0069(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_Query_ByTag;
+
+// Function GbxGame.GbxStatusEffectsStatics.RegisterListener
+// 0x0028 (0x0028 - 0x0000)
+struct GbxStatusEffectsStatics_RegisterListener final
+{
+public:
+	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxStatusEffectNotifyEvent*            Event;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                EventContext;                                      // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   EventName;                                         // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxStatusEffectNotifyEventType               EventType;                                         // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_RegisterListener;
+
+// Function GbxGame.GbxStatusEffectsStatics.UnRegisterListener
+// 0x0028 (0x0028 - 0x0000)
+struct GbxStatusEffectsStatics_UnRegisterListener final
+{
+public:
+	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxStatusEffectNotifyEvent*            Event;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                EventContext;                                      // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   EventName;                                         // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxStatusEffectNotifyEventType               EventType;                                         // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxStatusEffectsStatics_UnRegisterListener;
+
+// Function GbxGame.GbxSkillComponentFunctions_Library.GetEntryValue
+// 0x0058 (0x0058 - 0x0000)
+struct GbxSkillComponentFunctions_Library_GetEntryValue final
 {
 public:
 	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         Scalar;                                            // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGuid                                  MaterialID;                                        // 0x001C(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FName                                   EntryName;                                         // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxParam                              ReturnValue;                                       // 0x0020(0x0038)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_Material_InterpScalar;
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_Library_GetEntryValue;
 
 // Function GbxGame.GbxDialogProvider.NetMulticast_StartDialog
 // 0x0038 (0x0038 - 0x0000)
@@ -6410,77 +7649,203 @@ public:
 };
 DUMPER7_ASSERTS_GbxDialogProvider_NetMulticast_StopDialog;
 
-// Function GbxGame.GbxGameModeModuleHost_Timer.OnTimerEventCompletedBP
+// Function GbxGame.GbxGameModeModuleHost.EnableBP
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameModeModuleHost_EnableBP final
+{
+public:
+	bool                                          bEnable;                                           // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeModuleHost_EnableBP;
+
+// Function GbxGame.GbxGameModeModuleHost.GetModuleConduit
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameModeModuleHost_GetModuleConduit final
+{
+public:
+	TSubclassOf<class UGbxGameModeModuleConduit>  ConduitType;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxGameModeModuleHostConduitExecs            Exec;                                              // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxGameModeModuleConduit*              ReturnValue;                                       // 0x0010(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeModuleHost_GetModuleConduit;
+
+// Function GbxGame.GbxGameModeModuleHost.OnGameModePhaseChangedBP
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameModeModuleHost_OnGameModePhaseChangedBP final
+{
+public:
+	FGbxDefPtrProperty_                           PhaseDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGameModeModuleHost_OnGameModePhaseChangedBP;
+
+// Function GbxGame.GbxGameModeModuleHost.OnLogoutBP
 // 0x0008 (0x0008 - 0x0000)
-struct GbxGameModeModuleHost_Timer_OnTimerEventCompletedBP final
+struct GbxGameModeModuleHost_OnLogoutBP final
 {
 public:
-	class FName                                   EventName;                                         // 0x0000(0x0008)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AController*                            ExitingController;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_Timer_OnTimerEventCompletedBP;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_OnLogoutBP;
 
-// Function GbxGame.GbxGameModeModuleHost_Timer.RestartTimer
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameModeModuleHost_Timer_RestartTimer final
+// Function GbxGame.GbxGameModeModuleHost.OnPostLoginBP
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameModeModuleHost_OnPostLoginBP final
 {
 public:
-	int32                                         NewTimeLimit;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class APlayerController*                      NewPlayer;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeModuleHost_Timer_RestartTimer;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_OnPostLoginBP;
 
-// Function GbxGame.GbxMomentData.GetDialogScriptIdents
-// 0x0010 (0x0010 - 0x0000)
-struct GbxMomentData_GetDialogScriptIdents final
+// Function GbxGame.GbxGameModeModuleHost.UnwatchEvent
+// 0x0018 (0x0018 - 0x0000)
+struct GbxGameModeModuleHost_UnwatchEvent final
 {
 public:
-	TArray<class FName>                           ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           EventDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxMomentData_GetDialogScriptIdents;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_UnwatchEvent;
 
-// Function GbxGame.GbxRewardsManager.Client_GivenPackage
-// 0x0050 (0x0050 - 0x0000)
-struct GbxRewardsManager_Client_GivenPackage final
+// Function GbxGame.GbxGameModeModuleHost.WatchEvent
+// 0x0028 (0x0028 - 0x0000)
+struct GbxGameModeModuleHost_WatchEvent final
 {
 public:
-	struct FGbxRewardPackage                      Package;                                           // 0x0000(0x0050)(Parm, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           EventDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TDelegate<void(const struct FGbxGameModeModuleEventParams& params)> Delegate;                    // 0x0018(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxRewardsManager_Client_GivenPackage;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_WatchEvent;
 
-// Function GbxGame.GbxRewardsManager.Client_OpenedPackage
-// 0x0050 (0x0050 - 0x0000)
-struct GbxRewardsManager_Client_OpenedPackage final
+// Function GbxGame.GbxGameModeModuleHost.GetGameMode
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameModeModuleHost_GetGameMode final
 {
 public:
-	struct FGbxRewardPackage                      Package;                                           // 0x0000(0x0050)(Parm, NativeAccessSpecifierPublic)
+	class AGbxGameMode*                           ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxRewardsManager_Client_OpenedPackage;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_GetGameMode;
 
-// Function GbxGame.GbxRewardsManager.Client_OpenedPackages
-// 0x0010 (0x0010 - 0x0000)
-struct GbxRewardsManager_Client_OpenedPackages final
+// Function GbxGame.GbxGameModeModuleHost.GetModuleParameter
+// 0x0040 (0x0040 - 0x0000)
+struct GbxGameModeModuleHost_GetModuleParameter final
 {
 public:
-	TArray<struct FGbxRewardPackage>              OpenedPackages;                                    // 0x0000(0x0010)(ConstParm, Parm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	class FName                                   ParamName;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxParam                              ReturnValue;                                       // 0x0008(0x0038)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxRewardsManager_Client_OpenedPackages;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_GetModuleParameter;
 
-// Function GbxGame.GbxRewardsManager.Server_DeletePackage
-// 0x0004 (0x0004 - 0x0000)
-struct GbxRewardsManager_Server_DeletePackage final
+// Function GbxGame.GbxGameModeModuleHost.IsEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxGameModeModuleHost_IsEnabled final
 {
 public:
-	int32                                         PackageIndex;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxRewardsManager_Server_DeletePackage;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_IsEnabled;
 
-// Function GbxGame.GbxRewardsManager.Server_OpenPackage
-// 0x0004 (0x0004 - 0x0000)
-struct GbxRewardsManager_Server_OpenPackage final
+// Function GbxGame.GbxGameModeModuleHost.SetModuleParameter
+// 0x0040 (0x0040 - 0x0000)
+struct GbxGameModeModuleHost_SetModuleParameter final
 {
 public:
-	int32                                         PackageIndex;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ParamName;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Value;                                             // 0x0008(0x0038)(Parm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxRewardsManager_Server_OpenPackage;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_SetModuleParameter;
+
+// Function GbxGame.GbxReplicatedNiagaraActor.OnSystemFinished
+// 0x0008 (0x0008 - 0x0000)
+struct GbxReplicatedNiagaraActor_OnSystemFinished final
+{
+public:
+	class UNiagaraComponent*                      Component;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxReplicatedNiagaraActor_OnSystemFinished;
+
+// Function GbxGame.GbxSkillActionExecHandler.K2_BranchOnActionState
+// 0x0002 (0x0002 - 0x0000)
+struct GbxSkillActionExecHandler_K2_BranchOnActionState final
+{
+public:
+	EGbxSkillActionHandlerState                   ActionState;                                       // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ESkillStateScriptExec                         Result;                                            // 0x0001(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkillActionExecHandler_K2_BranchOnActionState;
+
+// Function GbxGame.GbxSkillActionExecHandler.K2_SkillConditionBranch
+// 0x0020 (0x0020 - 0x0000)
+struct GbxSkillActionExecHandler_K2_SkillConditionBranch final
+{
+public:
+	FGbxDefPtrProperty_                           ConditionDef;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ESkillStateScriptExec                         Result;                                            // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExecHandler_K2_SkillConditionBranch;
+
+// Function GbxGame.GbxSkillActionExecHandler.K2_SkillStateBranch
+// 0x0020 (0x0020 - 0x0000)
+struct GbxSkillActionExecHandler_K2_SkillStateBranch final
+{
+public:
+	FGbxDefPtrProperty_                           StateDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ESkillStateScriptExec                         Result;                                            // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExecHandler_K2_SkillStateBranch;
+
+// Function GbxGame.GbxSkillActionExecHandler.Publish
+// 0x0001 (0x0001 - 0x0000)
+struct GbxSkillActionExecHandler_Publish final
+{
+public:
+	EGbxSkillActionHandlerResult                  Result;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkillActionExecHandler_Publish;
+
+// Function GbxGame.GbxSkillActionExecHandler.SetTargetActionItem
+// 0x0008 (0x0008 - 0x0000)
+struct GbxSkillActionExecHandler_SetTargetActionItem final
+{
+public:
+	class FName                                   InActionItemName;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkillActionExecHandler_SetTargetActionItem;
+
+// Function GbxGame.GbxSkillActionExecHandler.IsSkillConditionEnabled
+// 0x0020 (0x0020 - 0x0000)
+struct GbxSkillActionExecHandler_IsSkillConditionEnabled final
+{
+public:
+	FGbxDefPtrProperty_                           ConditionDef;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExecHandler_IsSkillConditionEnabled;
+
+// Function GbxGame.GbxSkillActionExecHandler.IsSkillStateEnabled
+// 0x0020 (0x0020 - 0x0000)
+struct GbxSkillActionExecHandler_IsSkillStateEnabled final
+{
+public:
+	FGbxDefPtrProperty_                           StateDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExecHandler_IsSkillStateEnabled;
+
+// Function GbxGame.GbxSkillActionExecHandler.K2_CanExecute
+// 0x0018 (0x0018 - 0x0000)
+struct GbxSkillActionExecHandler_K2_CanExecute final
+{
+public:
+	class UGbxSkill*                              Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 target;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExecHandler_K2_CanExecute;
 
 // Function GbxGame.GbxDiscoveryFunctionLibrary.MakeActorDiscoverable
 // 0x0028 (0x0028 - 0x0000)
@@ -6521,6 +7886,664 @@ public:
 	class AActor*                                 InActor;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_GbxDiscoveryFunctionLibrary_RemoveLiveLocationDiscoverability;
+
+// Function GbxGame.GbxTraceTrajectoryComponent.SetTrajectoryEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxTraceTrajectoryComponent_SetTrajectoryEnabled final
+{
+public:
+	bool                                          bEnabled;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxTraceTrajectoryComponent_SetTrajectoryEnabled;
+
+// Function GbxGame.GbxTraceTrajectoryComponent.SetTrajectoryParticleComponent
+// 0x0008 (0x0008 - 0x0000)
+struct GbxTraceTrajectoryComponent_SetTrajectoryParticleComponent final
+{
+public:
+	class UFXSystemComponent*                     ParticleComponent;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxTraceTrajectoryComponent_SetTrajectoryParticleComponent;
+
+// Function GbxGame.GbxTraceTrajectoryComponent.IsTrajectoryEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct GbxTraceTrajectoryComponent_IsTrajectoryEnabled final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxTraceTrajectoryComponent_IsTrajectoryEnabled;
+
+// Function GbxGame.GbxSkill.GetActor
+// 0x0008 (0x0008 - 0x0000)
+struct GbxSkill_GetActor final
+{
+public:
+	class AActor*                                 ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkill_GetActor;
+
+// Function GbxGame.GbxDiscoveryDiscoverableActorData.OnDiscoverableActorDestroyed
+// 0x0008 (0x0008 - 0x0000)
+struct GbxDiscoveryDiscoverableActorData_OnDiscoverableActorDestroyed final
+{
+public:
+	class AActor*                                 InDestroyedActor;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDiscoveryDiscoverableActorData_OnDiscoverableActorDestroyed;
+
+// Function GbxGame.GbxProgressGraph.Server_ActivateNodeInGroup
+// 0x0010 (0x0010 - 0x0000)
+struct GbxProgressGraph_Server_ActivateNodeInGroup final
+{
+public:
+	int32                                         InGroupIndex;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         InNodeIndex;                                       // 0x0004(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          InActivate;                                        // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x3];                                        // 0x0009(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         ActivationLevel;                                   // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgressGraph_Server_ActivateNodeInGroup;
+
+// Function GbxGame.GbxProgressGraph.Server_AddBonusPoints
+// 0x0008 (0x0008 - 0x0000)
+struct GbxProgressGraph_Server_AddBonusPoints final
+{
+public:
+	int32                                         InNodeIndex;                                       // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         InPointsToAdd;                                     // 0x0004(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgressGraph_Server_AddBonusPoints;
+
+// Function GbxGame.GbxProgressGraph.Server_ResetActivationsInGroup
+// 0x0004 (0x0004 - 0x0000)
+struct GbxProgressGraph_Server_ResetActivationsInGroup final
+{
+public:
+	int32                                         InGroupIndex;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgressGraph_Server_ResetActivationsInGroup;
+
+// Function GbxGame.GbxProgressGraph.Server_SpendProgressPoints
+// 0x0008 (0x0008 - 0x0000)
+struct GbxProgressGraph_Server_SpendProgressPoints final
+{
+public:
+	int32                                         InNodeIndex;                                       // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         InPoints;                                          // 0x0004(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgressGraph_Server_SpendProgressPoints;
+
+// Function GbxGame.GbxTrick_Ragdoll.ComponentHitCallback
+// 0x0130 (0x0130 - 0x0000)
+struct GbxTrick_Ragdoll_ComponentHitCallback final
+{
+public:
+	class UPrimitiveComponent*                    HitComp;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                NormalImpulse;                                     // 0x0018(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0030(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxTrick_Ragdoll_ComponentHitCallback;
+
+// Function GbxGame.GbxPlayerCustomization.ApplyPlayerCustomization
+// 0x0018 (0x0018 - 0x0000)
+struct GbxPlayerCustomization_ApplyPlayerCustomization final
+{
+public:
+	FGbxDefPtrProperty_                           NewCustomization;                                  // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxPlayerCustomization_ApplyPlayerCustomization;
+
+// Function GbxGame.GbxDrone.EnableTargetingForMovement
+// 0x0001 (0x0001 - 0x0000)
+struct GbxDrone_EnableTargetingForMovement final
+{
+public:
+	bool                                          bUse;                                              // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_EnableTargetingForMovement;
+
+// Function GbxGame.GbxDrone.EnableTargetingForOrientation
+// 0x0001 (0x0001 - 0x0000)
+struct GbxDrone_EnableTargetingForOrientation final
+{
+public:
+	bool                                          bUse;                                              // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_EnableTargetingForOrientation;
+
+// Function GbxGame.GbxDrone.SetMovementMode
+// 0x0001 (0x0001 - 0x0000)
+struct GbxDrone_SetMovementMode final
+{
+public:
+	EGbxDroneMovementMode                         NewMovementMode;                                   // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_SetMovementMode;
+
+// Function GbxGame.GbxDrone.SetMovementTarget
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDrone_SetMovementTarget final
+{
+public:
+	class AActor*                                 NewMovementTarget;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetMovementMode;                                  // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxDroneMovementMode                         ReachedTargetMovementMode;                         // 0x0009(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetOrientationTarget;                             // 0x000A(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_B[0x5];                                        // 0x000B(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDrone_SetMovementTarget;
+
+// Function GbxGame.GbxDrone.SetMovementTargetComponent
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDrone_SetMovementTargetComponent final
+{
+public:
+	class USceneComponent*                        SceneComponent;                                    // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetMovementMode;                                  // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxDroneMovementMode                         ReachedTargetMovementMode;                         // 0x0009(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_A[0x6];                                        // 0x000A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDrone_SetMovementTargetComponent;
+
+// Function GbxGame.GbxDrone.SetMovementTargetLocation
+// 0x0020 (0x0020 - 0x0000)
+struct GbxDrone_SetMovementTargetLocation final
+{
+public:
+	struct FVector                                TargetLocation;                                    // 0x0000(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetMovementMode;                                  // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxDroneMovementMode                         ReachedTargetMovementMode;                         // 0x0019(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1A[0x6];                                       // 0x001A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDrone_SetMovementTargetLocation;
+
+// Function GbxGame.GbxDrone.SetMovementTowardsGPSQuery
+// 0x0030 (0x0030 - 0x0000)
+struct GbxDrone_SetMovementTowardsGPSQuery final
+{
+public:
+	TSoftObjectPtr<class UGpsQueryAsset>          Query;                                             // 0x0000(0x0028)(Parm, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetMovementMode;                                  // 0x0028(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxDroneMovementMode                         ReachedTargetMovementMode;                         // 0x0029(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2A[0x6];                                       // 0x002A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDrone_SetMovementTowardsGPSQuery;
+
+// Function GbxGame.GbxDrone.SetOrientationMode
+// 0x0001 (0x0001 - 0x0000)
+struct GbxDrone_SetOrientationMode final
+{
+public:
+	EGbxDroneOrientationMode                      NewOrientationMode;                                // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_SetOrientationMode;
+
+// Function GbxGame.GbxDrone.SetOrientationTarget
+// 0x0008 (0x0008 - 0x0000)
+struct GbxDrone_SetOrientationTarget final
+{
+public:
+	class AActor*                                 NewOrientationTarget;                              // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_SetOrientationTarget;
+
+// Function GbxGame.GbxDrone.SetProjectileCollision
+// 0x0001 (0x0001 - 0x0000)
+struct GbxDrone_SetProjectileCollision final
+{
+public:
+	bool                                          bEnabled;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_SetProjectileCollision;
+
+// Function GbxGame.GbxDrone.GetBestTarget
+// 0x0008 (0x0008 - 0x0000)
+struct GbxDrone_GetBestTarget final
+{
+public:
+	class AActor*                                 ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_GetBestTarget;
+
+// Function GbxGame.GbxDrone.GetMovementTarget
+// 0x0008 (0x0008 - 0x0000)
+struct GbxDrone_GetMovementTarget final
+{
+public:
+	class AActor*                                 ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_GetMovementTarget;
+
+// Function GbxGame.GbxDrone.GetMovementTargetLocation
+// 0x0018 (0x0018 - 0x0000)
+struct GbxDrone_GetMovementTargetLocation final
+{
+public:
+	struct FVector                                ReturnValue;                                       // 0x0000(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_GetMovementTargetLocation;
+
+// Function GbxGame.GbxDrone.GetOrientationTarget
+// 0x0008 (0x0008 - 0x0000)
+struct GbxDrone_GetOrientationTarget final
+{
+public:
+	class AActor*                                 ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_GetOrientationTarget;
+
+// Function GbxGame.GbxDrone.GetOrientationTargetLocation
+// 0x0018 (0x0018 - 0x0000)
+struct GbxDrone_GetOrientationTargetLocation final
+{
+public:
+	struct FVector                                ReturnValue;                                       // 0x0000(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_GetOrientationTargetLocation;
+
+// Function GbxGame.GbxDrone.GetTargetReachedDistance
+// 0x0004 (0x0004 - 0x0000)
+struct GbxDrone_GetTargetReachedDistance final
+{
+public:
+	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_GetTargetReachedDistance;
+
+// Function GbxGame.GbxDrone.IsAboveTarget
+// 0x0001 (0x0001 - 0x0000)
+struct GbxDrone_IsAboveTarget final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDrone_IsAboveTarget;
+
+// Function GbxGame.GbxDrone.IsTargetInRange
+// 0x0008 (0x0008 - 0x0000)
+struct GbxDrone_IsTargetInRange final
+{
+public:
+	float                                         Distance;                                          // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0004(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_5[0x3];                                        // 0x0005(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDrone_IsTargetInRange;
+
+// Function GbxGame.GbxDroneStatics.GetChosenOrbitAltitude
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_GetChosenOrbitAltitude final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_GetChosenOrbitAltitude;
+
+// Function GbxGame.GbxDroneStatics.GetChosenOrbitRadius
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_GetChosenOrbitRadius final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_GetChosenOrbitRadius;
+
+// Function GbxGame.GbxDroneStatics.GetOrbitAltitude
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_GetOrbitAltitude final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FNumericRange                          ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitAltitude;
+
+// Function GbxGame.GbxDroneStatics.GetOrbitAltitudeVaryRate
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_GetOrbitAltitudeVaryRate final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitAltitudeVaryRate;
+
+// Function GbxGame.GbxDroneStatics.GetOrbitRadius
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_GetOrbitRadius final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FNumericRange                          ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitRadius;
+
+// Function GbxGame.GbxDroneStatics.GetOrbitRadiusVaryRate
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_GetOrbitRadiusVaryRate final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitRadiusVaryRate;
+
+// Function GbxGame.GbxDroneStatics.GetOrbitSpeed
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_GetOrbitSpeed final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitSpeed;
+
+// Function GbxGame.GbxDroneStatics.IncrementOrbitAltitudeRange
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_IncrementOrbitAltitudeRange final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Amount;                                            // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_IncrementOrbitAltitudeRange;
+
+// Function GbxGame.GbxDroneStatics.IncrementOrbitRadiusRange
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_IncrementOrbitRadiusRange final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Amount;                                            // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_IncrementOrbitRadiusRange;
+
+// Function GbxGame.GbxDroneStatics.SetOrbitAltitudeMinMax
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetOrbitAltitudeMinMax final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Minimum;                                           // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Maximum;                                           // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitAltitudeMinMax;
+
+// Function GbxGame.GbxDroneStatics.SetOrbitAltitudeRange
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetOrbitAltitudeRange final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Value;                                             // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Variance;                                          // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitAltitudeRange;
+
+// Function GbxGame.GbxDroneStatics.SetOrbitAltitudeVaryRate
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetOrbitAltitudeVaryRate final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         rate;                                              // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitAltitudeVaryRate;
+
+// Function GbxGame.GbxDroneStatics.SetOrbitRadiusMinMax
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetOrbitRadiusMinMax final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Minimum;                                           // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Maximum;                                           // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitRadiusMinMax;
+
+// Function GbxGame.GbxDroneStatics.SetOrbitRadiusRange
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetOrbitRadiusRange final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Value;                                             // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Variance;                                          // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitRadiusRange;
+
+// Function GbxGame.GbxDroneStatics.SetOrbitRadiusVaryRate
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetOrbitRadiusVaryRate final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         rate;                                              // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitRadiusVaryRate;
+
+// Function GbxGame.GbxDroneStatics.SetOrbitSpeed
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetOrbitSpeed final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         InSpeed;                                           // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitSpeed;
+
+// Function GbxGame.GbxDroneStatics.SetVaryAltitudeRadius
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetVaryAltitudeRadius final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bVary;                                             // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetVaryAltitudeRadius;
+
+// Function GbxGame.GbxDroneStatics.SetVaryOrbitRadius
+// 0x0010 (0x0010 - 0x0000)
+struct GbxDroneStatics_SetVaryOrbitRadius final
+{
+public:
+	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bVary;                                             // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxDroneStatics_SetVaryOrbitRadius;
+
+// Function GbxGame.GbxDynamicBindingResolverLibrary.ResolveWithPrimaryPlayerStandIn
+// 0x0040 (0x0040 - 0x0000)
+struct GbxDynamicBindingResolverLibrary_ResolveWithPrimaryPlayerStandIn final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMovieSceneDynamicBindingResolveParams params;                                            // 0x0008(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           StandInCategory;                                   // 0x0028(0x0008)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMovieSceneDynamicBindingResolveResult ReturnValue;                                       // 0x0030(0x0010)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDynamicBindingResolverLibrary_ResolveWithPrimaryPlayerStandIn;
+
+// Function GbxGame.GbxDynamicBindingResolverLibrary.ResolveWithStandIn
+// 0x0040 (0x0040 - 0x0000)
+struct GbxDynamicBindingResolverLibrary_ResolveWithStandIn final
+{
+public:
+	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMovieSceneDynamicBindingResolveParams params;                                            // 0x0008(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           StandInTag;                                        // 0x0028(0x0008)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FMovieSceneDynamicBindingResolveResult ReturnValue;                                       // 0x0030(0x0010)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxDynamicBindingResolverLibrary_ResolveWithStandIn;
+
+// Function GbxGame.GbxGeometryCollectionScript.OnApplyCollision
+// 0x0110 (0x0110 - 0x0000)
+struct GbxGeometryCollectionScript_OnApplyCollision final
+{
+public:
+	class UGbxGeometryCollectionScriptedComponent* Destructible;                                     // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             HitResult;                                         // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	float                                         CollisionSpeed;                                    // 0x0108(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_10C[0x4];                                      // 0x010C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxGeometryCollectionScript_OnApplyCollision;
+
+// Function GbxGame.GbxGeometryCollectionScript.OnApplyHit
+// 0x0160 (0x0160 - 0x0000)
+struct GbxGeometryCollectionScript_OnApplyHit final
+{
+public:
+	class UGbxGeometryCollectionScriptedComponent* Destructible;                                     // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FDestructionHitProperties              Properties;                                        // 0x0010(0x0150)(ConstParm, Parm, OutParm, ReferenceParm, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxGeometryCollectionScript_OnApplyHit;
+
+// Function GbxGame.GbxEffectsManagerProxy.OnParticleSystemFinished
+// 0x0008 (0x0008 - 0x0000)
+struct GbxEffectsManagerProxy_OnParticleSystemFinished final
+{
+public:
+	class UFXSystemComponent*                     PSC;                                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxEffectsManagerProxy_OnParticleSystemFinished;
+
+// Function GbxGame.GbxEffectsFunctionLibrary.ExtractAudioImpactParameters
+// 0x0150 (0x0150 - 0x0000)
+struct GbxEffectsFunctionLibrary_ExtractAudioImpactParameters final
+{
+public:
+	struct FImpactAudioParameter                  AudioParameter;                                    // 0x0000(0x0040)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FImpactEffectParams                    OutParams;                                         // 0x0040(0x0110)(Parm, OutParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_ExtractAudioImpactParameters;
+
+// Function GbxGame.GbxEffectsFunctionLibrary.GetCollectionParticle
+// 0x0040 (0x0040 - 0x0000)
+struct GbxEffectsFunctionLibrary_GetCollectionParticle final
+{
+public:
+	FGameDataHandleProperty_                      Collection;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                ContextObject;                                     // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      ContextHandle;                                     // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UFXSystemAsset*                         ReturnValue;                                       // 0x0038(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_GetCollectionParticle;
+
+// Function GbxGame.GbxEffectsFunctionLibrary.MakeImpactEffectSelection
+// 0x0030 (0x0030 - 0x0000)
+struct GbxEffectsFunctionLibrary_MakeImpactEffectSelection final
+{
+public:
+	FGameDataHandleProperty_                      Handle;                                            // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FImpactEffectSelection                 ReturnValue;                                       // 0x0018(0x0018)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_MakeImpactEffectSelection;
+
+// Function GbxGame.GbxEffectsFunctionLibrary.PlayHitResultImpact
+// 0x0180 (0x0180 - 0x0000)
+struct GbxEffectsFunctionLibrary_PlayHitResultImpact final
+{
+public:
+	FGameDataHandleProperty_                      ImpactEffect;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 instigator;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             HitInfo;                                           // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	bool                                          bReplicate;                                        // 0x0120(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_121[0x7];                                      // 0x0121(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxParticleParameter>          ParticleParameters;                                // 0x0128(0x0010)(Parm, ZeroConstructor, NativeAccessSpecifierPublic)
+	struct FImpactAudioParameter                  AudioParameter;                                    // 0x0138(0x0040)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         Size;                                              // 0x0178(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         TimeDilation;                                      // 0x017C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_PlayHitResultImpact;
+
+// Function GbxGame.GbxEffectsFunctionLibrary.PlayTraceImpact
+// 0x00B8 (0x00B8 - 0x0000)
+struct GbxEffectsFunctionLibrary_PlayTraceImpact final
+{
+public:
+	FGameDataHandleProperty_                      ImpactEffect;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 instigator;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                TraceStart;                                        // 0x0020(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                TraceEnd;                                          // 0x0038(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bReplicate;                                        // 0x0050(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bPlayOnNoHit;                                      // 0x0051(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_52[0x6];                                       // 0x0052(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxParticleParameter>          ParticleParameters;                                // 0x0058(0x0010)(Parm, ZeroConstructor, NativeAccessSpecifierPublic)
+	struct FImpactAudioParameter                  AudioParameter;                                    // 0x0068(0x0040)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	ECollisionChannel                             TraceChannel;                                      // 0x00A8(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_A9[0x3];                                       // 0x00A9(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         Size;                                              // 0x00AC(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         TimeDilation;                                      // 0x00B0(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_B4[0x4];                                       // 0x00B4(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_PlayTraceImpact;
+
+// Function GbxGame.GbxEffectsFunctionLibrary.PlayWorldImpact
+// 0x00C0 (0x00C0 - 0x0000)
+struct GbxEffectsFunctionLibrary_PlayWorldImpact final
+{
+public:
+	FGameDataHandleProperty_                      ImpactEffect;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 instigator;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0020(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Normal;                                            // 0x0038(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bReplicate;                                        // 0x0050(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_51[0x7];                                       // 0x0051(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxParticleParameter>          ParticleParameters;                                // 0x0058(0x0010)(Parm, ZeroConstructor, NativeAccessSpecifierPublic)
+	struct FImpactAudioParameter                  AudioParameter;                                    // 0x0068(0x0040)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         Size;                                              // 0x00A8(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         TimeDilation;                                      // 0x00AC(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 ImpactActor;                                       // 0x00B0(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    ImpactComponent;                                   // 0x00B8(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_PlayWorldImpact;
+
+// Function GbxGame.ScreenParticleStateManager.OnScreenParticleFinished
+// 0x0008 (0x0008 - 0x0000)
+struct ScreenParticleStateManager_OnScreenParticleFinished final
+{
+public:
+	class UFXSystemComponent*                     Component;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ScreenParticleStateManager_OnScreenParticleFinished;
+
+// Function GbxGame.GbxFlyToActorFunctionLibrary.EndActorFlight
+// 0x0008 (0x0008 - 0x0000)
+struct GbxFlyToActorFunctionLibrary_EndActorFlight final
+{
+public:
+	class AActor*                                 FlightActor;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxFlyToActorFunctionLibrary_EndActorFlight;
+
+// Function GbxGame.GbxFlyToActorFunctionLibrary.FlyActorToActor
+// 0x0028 (0x0028 - 0x0000)
+struct GbxFlyToActorFunctionLibrary_FlyActorToActor final
+{
+public:
+	FGbxDefPtrProperty_                           FlightConfig;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 FlightActor;                                       // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 TargetActor;                                       // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxFlyToActorFunctionLibrary_FlyActorToActor;
 
 // Function GbxGame.GbxGameHeldActorFunctionLibrary.AIHeldExplosive_Destroy
 // 0x0018 (0x0018 - 0x0000)
@@ -7104,1133 +9127,6 @@ public:
 };
 DUMPER7_ASSERTS_GbxGameHeldActorFunctionLibrary_AIProjectile_CallOnThrown;
 
-// Function GbxGame.GbxSkillActionExceptionHandler.BreakActionException
-// 0x0018 (0x0018 - 0x0000)
-struct GbxSkillActionExceptionHandler_BreakActionException final
-{
-public:
-	struct FGbxSkillActionException               InActionException;                                 // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	EGbxSkillActionExecType                       ExecType;                                          // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxSkillActionExceptionType                  ExceptionType;                                     // 0x0011(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_12[0x6];                                       // 0x0012(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_BreakActionException;
-
-// Function GbxGame.GbxSkillActionExceptionHandler.HandleException
-// 0x0010 (0x0010 - 0x0000)
-struct GbxSkillActionExceptionHandler_HandleException final
-{
-public:
-	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_HandleException;
-
-// Function GbxGame.GbxSkillActionExceptionHandler.IsSkillConditionEnabled
-// 0x0030 (0x0030 - 0x0000)
-struct GbxSkillActionExceptionHandler_IsSkillConditionEnabled final
-{
-public:
-	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           ConditionDef;                                      // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_IsSkillConditionEnabled;
-
-// Function GbxGame.GbxSkillActionExceptionHandler.IsSkillStateEnabled
-// 0x0030 (0x0030 - 0x0000)
-struct GbxSkillActionExceptionHandler_IsSkillStateEnabled final
-{
-public:
-	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           StateDef;                                          // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_IsSkillStateEnabled;
-
-// Function GbxGame.GbxSkillActionExceptionHandler.K2_SkillConditionBranch
-// 0x0030 (0x0030 - 0x0000)
-struct GbxSkillActionExceptionHandler_K2_SkillConditionBranch final
-{
-public:
-	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           ConditionDef;                                      // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ESkillStateScriptExec                         Result;                                            // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_K2_SkillConditionBranch;
-
-// Function GbxGame.GbxSkillActionExceptionHandler.K2_SkillStateBranch
-// 0x0030 (0x0030 - 0x0000)
-struct GbxSkillActionExceptionHandler_K2_SkillStateBranch final
-{
-public:
-	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           StateDef;                                          // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ESkillStateScriptExec                         Result;                                            // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_K2_SkillStateBranch;
-
-// Function GbxGame.GbxSkillActionExceptionHandler.PlayActionGroup
-// 0x0018 (0x0018 - 0x0000)
-struct GbxSkillActionExceptionHandler_PlayActionGroup final
-{
-public:
-	struct FGbxSkillActionException               InActionException;                                 // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	class FName                                   GroupName;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_PlayActionGroup;
-
-// Function GbxGame.InventoryBase.GetIdentity
-// 0x00D8 (0x00D8 - 0x0000)
-struct InventoryBase_GetIdentity final
-{
-public:
-	struct FInventoryIdentity                     ReturnValue;                                       // 0x0000(0x00D8)(ConstParm, Parm, OutParm, ReturnParm, ReferenceParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_InventoryBase_GetIdentity;
-
-// Function GbxGame.InventoryPickup.OnActorOverlap
-// 0x0010 (0x0010 - 0x0000)
-struct InventoryPickup_OnActorOverlap final
-{
-public:
-	class AActor*                                 OverlappedActor;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_InventoryPickup_OnActorOverlap;
-
-// Function GbxGame.InventoryPickup.OnHit
-// 0x0128 (0x0128 - 0x0000)
-struct InventoryPickup_OnHit final
-{
-public:
-	class AActor*                                 SelfActor;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                NormalImpulse;                                     // 0x0010(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0028(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_InventoryPickup_OnHit;
-
-// Function GbxGame.InventoryPickup.OnPhysicsSleep
-// 0x0010 (0x0010 - 0x0000)
-struct InventoryPickup_OnPhysicsSleep final
-{
-public:
-	class UPrimitiveComponent*                    Component;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   BoneName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_InventoryPickup_OnPhysicsSleep;
-
-// Function GbxGame.InventoryPickup.OnPhysicsWake
-// 0x0010 (0x0010 - 0x0000)
-struct InventoryPickup_OnPhysicsWake final
-{
-public:
-	class UPrimitiveComponent*                    Component;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   BoneName;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_InventoryPickup_OnPhysicsWake;
-
-// Function GbxGame.InventoryPickup.OnPickupHit_CheckImpactEffect
-// 0x0130 (0x0130 - 0x0000)
-struct InventoryPickup_OnPickupHit_CheckImpactEffect final
-{
-public:
-	class UPrimitiveComponent*                    HitComponent;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                NormalImpulse;                                     // 0x0018(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Hit;                                               // 0x0030(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_InventoryPickup_OnPickupHit_CheckImpactEffect;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.AreProgressGraphGroupMaxNodesActivated
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_AreProgressGraphGroupMaxNodesActivated final
-{
-public:
-	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_AreProgressGraphGroupMaxNodesActivated;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.AreProgressGraphGroupMaxNodesActivatedPure
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_AreProgressGraphGroupMaxNodesActivatedPure final
-{
-public:
-	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_AreProgressGraphGroupMaxNodesActivatedPure;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphGroupTotalPoints
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_GetProgressGraphGroupTotalPoints final
-{
-public:
-	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphGroupTotalPoints;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphGroupTotalPointsPure
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_GetProgressGraphGroupTotalPointsPure final
-{
-public:
-	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphGroupTotalPointsPure;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphNodeActivationLevel
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_GetProgressGraphNodeActivationLevel final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphNodeActivationLevel;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphNodeActivationLevelPure
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_GetProgressGraphNodeActivationLevelPure final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphNodeActivationLevelPure;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphNodeTotalPoints
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_GetProgressGraphNodeTotalPoints final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphNodeTotalPoints;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphNodeTotalPointsPure
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_GetProgressGraphNodeTotalPointsPure final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphNodeTotalPointsPure;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphGroupUnlocked
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_IsProgressGraphGroupUnlocked final
-{
-public:
-	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphGroupUnlocked;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphGroupUnlockedPure
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_IsProgressGraphGroupUnlockedPure final
-{
-public:
-	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphGroupUnlockedPure;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphNodeActivated
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_IsProgressGraphNodeActivated final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphNodeActivated;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphNodeActivatedPure
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_IsProgressGraphNodeActivatedPure final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphNodeActivatedPure;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphNodeUnlocked
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_IsProgressGraphNodeUnlocked final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphNodeUnlocked;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphNodeUnlockedPure
-// 0x0030 (0x0030 - 0x0000)
-struct GbxProgression_BlueprintFunctions_IsProgressGraphNodeUnlockedPure final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphNodeUnlockedPure;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.MakeGbxProgressGraphGroupNodeRef
-// 0x0050 (0x0050 - 0x0000)
-struct GbxProgression_BlueprintFunctions_MakeGbxProgressGraphGroupNodeRef final
-{
-public:
-	struct FGbxUnlockableGroupNodeRef             GraphGroupNode;                                    // 0x0000(0x0028)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxUnlockableGroupNodeRef             ReturnValue;                                       // 0x0028(0x0028)(Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_MakeGbxProgressGraphGroupNodeRef;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.MakeGbxProgressGraphGroupRef
-// 0x0040 (0x0040 - 0x0000)
-struct GbxProgression_BlueprintFunctions_MakeGbxProgressGraphGroupRef final
-{
-public:
-	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxUnlockableGroupRef                 ReturnValue;                                       // 0x0020(0x0020)(Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_MakeGbxProgressGraphGroupRef;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.MakeGbxProgressGraphNodeRef
-// 0x0040 (0x0040 - 0x0000)
-struct GbxProgression_BlueprintFunctions_MakeGbxProgressGraphNodeRef final
-{
-public:
-	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxUnlockableNodeRef                  ReturnValue;                                       // 0x0020(0x0020)(Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_MakeGbxProgressGraphNodeRef;
-
-// Function GbxGame.GbxProgression_BlueprintFunctions.MakeGbxProgressPointsAmount
-// 0x00D0 (0x00D0 - 0x0000)
-struct GbxProgression_BlueprintFunctions_MakeGbxProgressPointsAmount final
-{
-public:
-	struct FGbxProgressPointsAmount               Amount;                                            // 0x0000(0x0068)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxProgressPointsAmount               ReturnValue;                                       // 0x0068(0x0068)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_MakeGbxProgressPointsAmount;
-
-// Function GbxGame.GbxSkillActionExecHandler.K2_BranchOnActionState
-// 0x0002 (0x0002 - 0x0000)
-struct GbxSkillActionExecHandler_K2_BranchOnActionState final
-{
-public:
-	EGbxSkillActionHandlerState                   ActionState;                                       // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ESkillStateScriptExec                         Result;                                            // 0x0001(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkillActionExecHandler_K2_BranchOnActionState;
-
-// Function GbxGame.GbxSkillActionExecHandler.K2_SkillConditionBranch
-// 0x0020 (0x0020 - 0x0000)
-struct GbxSkillActionExecHandler_K2_SkillConditionBranch final
-{
-public:
-	FGbxDefPtrProperty_                           ConditionDef;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ESkillStateScriptExec                         Result;                                            // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExecHandler_K2_SkillConditionBranch;
-
-// Function GbxGame.GbxSkillActionExecHandler.K2_SkillStateBranch
-// 0x0020 (0x0020 - 0x0000)
-struct GbxSkillActionExecHandler_K2_SkillStateBranch final
-{
-public:
-	FGbxDefPtrProperty_                           StateDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ESkillStateScriptExec                         Result;                                            // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExecHandler_K2_SkillStateBranch;
-
-// Function GbxGame.GbxSkillActionExecHandler.Publish
-// 0x0001 (0x0001 - 0x0000)
-struct GbxSkillActionExecHandler_Publish final
-{
-public:
-	EGbxSkillActionHandlerResult                  Result;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkillActionExecHandler_Publish;
-
-// Function GbxGame.GbxSkillActionExecHandler.SetTargetActionItem
-// 0x0008 (0x0008 - 0x0000)
-struct GbxSkillActionExecHandler_SetTargetActionItem final
-{
-public:
-	class FName                                   InActionItemName;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkillActionExecHandler_SetTargetActionItem;
-
-// Function GbxGame.GbxSkillActionExecHandler.IsSkillConditionEnabled
-// 0x0020 (0x0020 - 0x0000)
-struct GbxSkillActionExecHandler_IsSkillConditionEnabled final
-{
-public:
-	FGbxDefPtrProperty_                           ConditionDef;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExecHandler_IsSkillConditionEnabled;
-
-// Function GbxGame.GbxSkillActionExecHandler.IsSkillStateEnabled
-// 0x0020 (0x0020 - 0x0000)
-struct GbxSkillActionExecHandler_IsSkillStateEnabled final
-{
-public:
-	FGbxDefPtrProperty_                           StateDef;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExecHandler_IsSkillStateEnabled;
-
-// Function GbxGame.GbxSkillActionExecHandler.K2_CanExecute
-// 0x0018 (0x0018 - 0x0000)
-struct GbxSkillActionExecHandler_K2_CanExecute final
-{
-public:
-	class UGbxSkill*                              Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 target;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillActionExecHandler_K2_CanExecute;
-
-// Function GbxGame.GbxDiscoveryDiscoverableActorData.OnDiscoverableActorDestroyed
-// 0x0008 (0x0008 - 0x0000)
-struct GbxDiscoveryDiscoverableActorData_OnDiscoverableActorDestroyed final
-{
-public:
-	class AActor*                                 InDestroyedActor;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDiscoveryDiscoverableActorData_OnDiscoverableActorDestroyed;
-
-// Function GbxGame.GbxProgressionDataManager.ServerResetProgressState
-// 0x0008 (0x0008 - 0x0000)
-struct GbxProgressionDataManager_ServerResetProgressState final
-{
-public:
-	class FName                                   Name_0;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProgressionDataManager_ServerResetProgressState;
-
-// Function GbxGame.GbxDrone.EnableTargetingForMovement
-// 0x0001 (0x0001 - 0x0000)
-struct GbxDrone_EnableTargetingForMovement final
-{
-public:
-	bool                                          bUse;                                              // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_EnableTargetingForMovement;
-
-// Function GbxGame.GbxDrone.EnableTargetingForOrientation
-// 0x0001 (0x0001 - 0x0000)
-struct GbxDrone_EnableTargetingForOrientation final
-{
-public:
-	bool                                          bUse;                                              // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_EnableTargetingForOrientation;
-
-// Function GbxGame.GbxDrone.SetMovementMode
-// 0x0001 (0x0001 - 0x0000)
-struct GbxDrone_SetMovementMode final
-{
-public:
-	EGbxDroneMovementMode                         NewMovementMode;                                   // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_SetMovementMode;
-
-// Function GbxGame.GbxDrone.SetMovementTarget
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDrone_SetMovementTarget final
-{
-public:
-	class AActor*                                 NewMovementTarget;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetMovementMode;                                  // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxDroneMovementMode                         ReachedTargetMovementMode;                         // 0x0009(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetOrientationTarget;                             // 0x000A(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_B[0x5];                                        // 0x000B(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDrone_SetMovementTarget;
-
-// Function GbxGame.GbxDrone.SetMovementTargetComponent
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDrone_SetMovementTargetComponent final
-{
-public:
-	class USceneComponent*                        SceneComponent;                                    // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetMovementMode;                                  // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxDroneMovementMode                         ReachedTargetMovementMode;                         // 0x0009(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A[0x6];                                        // 0x000A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDrone_SetMovementTargetComponent;
-
-// Function GbxGame.GbxDrone.SetMovementTargetLocation
-// 0x0020 (0x0020 - 0x0000)
-struct GbxDrone_SetMovementTargetLocation final
-{
-public:
-	struct FVector                                TargetLocation;                                    // 0x0000(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetMovementMode;                                  // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxDroneMovementMode                         ReachedTargetMovementMode;                         // 0x0019(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1A[0x6];                                       // 0x001A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDrone_SetMovementTargetLocation;
-
-// Function GbxGame.GbxDrone.SetMovementTowardsGPSQuery
-// 0x0030 (0x0030 - 0x0000)
-struct GbxDrone_SetMovementTowardsGPSQuery final
-{
-public:
-	TSoftObjectPtr<class UGpsQueryAsset>          Query;                                             // 0x0000(0x0028)(Parm, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetMovementMode;                                  // 0x0028(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxDroneMovementMode                         ReachedTargetMovementMode;                         // 0x0029(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2A[0x6];                                       // 0x002A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDrone_SetMovementTowardsGPSQuery;
-
-// Function GbxGame.GbxDrone.SetOrientationMode
-// 0x0001 (0x0001 - 0x0000)
-struct GbxDrone_SetOrientationMode final
-{
-public:
-	EGbxDroneOrientationMode                      NewOrientationMode;                                // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_SetOrientationMode;
-
-// Function GbxGame.GbxDrone.SetOrientationTarget
-// 0x0008 (0x0008 - 0x0000)
-struct GbxDrone_SetOrientationTarget final
-{
-public:
-	class AActor*                                 NewOrientationTarget;                              // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_SetOrientationTarget;
-
-// Function GbxGame.GbxDrone.SetProjectileCollision
-// 0x0001 (0x0001 - 0x0000)
-struct GbxDrone_SetProjectileCollision final
-{
-public:
-	bool                                          bEnabled;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_SetProjectileCollision;
-
-// Function GbxGame.GbxDrone.GetBestTarget
-// 0x0008 (0x0008 - 0x0000)
-struct GbxDrone_GetBestTarget final
-{
-public:
-	class AActor*                                 ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_GetBestTarget;
-
-// Function GbxGame.GbxDrone.GetMovementTarget
-// 0x0008 (0x0008 - 0x0000)
-struct GbxDrone_GetMovementTarget final
-{
-public:
-	class AActor*                                 ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_GetMovementTarget;
-
-// Function GbxGame.GbxDrone.GetMovementTargetLocation
-// 0x0018 (0x0018 - 0x0000)
-struct GbxDrone_GetMovementTargetLocation final
-{
-public:
-	struct FVector                                ReturnValue;                                       // 0x0000(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_GetMovementTargetLocation;
-
-// Function GbxGame.GbxDrone.GetOrientationTarget
-// 0x0008 (0x0008 - 0x0000)
-struct GbxDrone_GetOrientationTarget final
-{
-public:
-	class AActor*                                 ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_GetOrientationTarget;
-
-// Function GbxGame.GbxDrone.GetOrientationTargetLocation
-// 0x0018 (0x0018 - 0x0000)
-struct GbxDrone_GetOrientationTargetLocation final
-{
-public:
-	struct FVector                                ReturnValue;                                       // 0x0000(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_GetOrientationTargetLocation;
-
-// Function GbxGame.GbxDrone.GetTargetReachedDistance
-// 0x0004 (0x0004 - 0x0000)
-struct GbxDrone_GetTargetReachedDistance final
-{
-public:
-	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_GetTargetReachedDistance;
-
-// Function GbxGame.GbxDrone.IsAboveTarget
-// 0x0001 (0x0001 - 0x0000)
-struct GbxDrone_IsAboveTarget final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDrone_IsAboveTarget;
-
-// Function GbxGame.GbxDrone.IsTargetInRange
-// 0x0008 (0x0008 - 0x0000)
-struct GbxDrone_IsTargetInRange final
-{
-public:
-	float                                         Distance;                                          // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0004(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_5[0x3];                                        // 0x0005(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDrone_IsTargetInRange;
-
-// Function GbxGame.GbxDroneStatics.GetChosenOrbitAltitude
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_GetChosenOrbitAltitude final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_GetChosenOrbitAltitude;
-
-// Function GbxGame.GbxDroneStatics.GetChosenOrbitRadius
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_GetChosenOrbitRadius final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_GetChosenOrbitRadius;
-
-// Function GbxGame.GbxDroneStatics.GetOrbitAltitude
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_GetOrbitAltitude final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FNumericRange                          ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitAltitude;
-
-// Function GbxGame.GbxDroneStatics.GetOrbitAltitudeVaryRate
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_GetOrbitAltitudeVaryRate final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitAltitudeVaryRate;
-
-// Function GbxGame.GbxDroneStatics.GetOrbitRadius
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_GetOrbitRadius final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FNumericRange                          ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitRadius;
-
-// Function GbxGame.GbxDroneStatics.GetOrbitRadiusVaryRate
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_GetOrbitRadiusVaryRate final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitRadiusVaryRate;
-
-// Function GbxGame.GbxDroneStatics.GetOrbitSpeed
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_GetOrbitSpeed final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0008(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_GetOrbitSpeed;
-
-// Function GbxGame.GbxDroneStatics.IncrementOrbitAltitudeRange
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_IncrementOrbitAltitudeRange final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Amount;                                            // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_IncrementOrbitAltitudeRange;
-
-// Function GbxGame.GbxDroneStatics.IncrementOrbitRadiusRange
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_IncrementOrbitRadiusRange final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Amount;                                            // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_IncrementOrbitRadiusRange;
-
-// Function GbxGame.GbxDroneStatics.SetOrbitAltitudeMinMax
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetOrbitAltitudeMinMax final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Minimum;                                           // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Maximum;                                           // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitAltitudeMinMax;
-
-// Function GbxGame.GbxDroneStatics.SetOrbitAltitudeRange
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetOrbitAltitudeRange final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Value;                                             // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Variance;                                          // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitAltitudeRange;
-
-// Function GbxGame.GbxDroneStatics.SetOrbitAltitudeVaryRate
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetOrbitAltitudeVaryRate final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         rate;                                              // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitAltitudeVaryRate;
-
-// Function GbxGame.GbxDroneStatics.SetOrbitRadiusMinMax
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetOrbitRadiusMinMax final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Minimum;                                           // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Maximum;                                           // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitRadiusMinMax;
-
-// Function GbxGame.GbxDroneStatics.SetOrbitRadiusRange
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetOrbitRadiusRange final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Value;                                             // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Variance;                                          // 0x000C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitRadiusRange;
-
-// Function GbxGame.GbxDroneStatics.SetOrbitRadiusVaryRate
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetOrbitRadiusVaryRate final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         rate;                                              // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitRadiusVaryRate;
-
-// Function GbxGame.GbxDroneStatics.SetOrbitSpeed
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetOrbitSpeed final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         InSpeed;                                           // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetOrbitSpeed;
-
-// Function GbxGame.GbxDroneStatics.SetVaryAltitudeRadius
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetVaryAltitudeRadius final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bVary;                                             // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetVaryAltitudeRadius;
-
-// Function GbxGame.GbxDroneStatics.SetVaryOrbitRadius
-// 0x0010 (0x0010 - 0x0000)
-struct GbxDroneStatics_SetVaryOrbitRadius final
-{
-public:
-	class AGbxDrone*                              Drone;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bVary;                                             // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxDroneStatics_SetVaryOrbitRadius;
-
-// Function GbxGame.GbxDynamicBindingResolverLibrary.ResolveWithPrimaryPlayerStandIn
-// 0x0040 (0x0040 - 0x0000)
-struct GbxDynamicBindingResolverLibrary_ResolveWithPrimaryPlayerStandIn final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMovieSceneDynamicBindingResolveParams params;                                            // 0x0008(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           StandInCategory;                                   // 0x0028(0x0008)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMovieSceneDynamicBindingResolveResult ReturnValue;                                       // 0x0030(0x0010)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDynamicBindingResolverLibrary_ResolveWithPrimaryPlayerStandIn;
-
-// Function GbxGame.GbxDynamicBindingResolverLibrary.ResolveWithStandIn
-// 0x0040 (0x0040 - 0x0000)
-struct GbxDynamicBindingResolverLibrary_ResolveWithStandIn final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMovieSceneDynamicBindingResolveParams params;                                            // 0x0008(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           StandInTag;                                        // 0x0028(0x0008)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMovieSceneDynamicBindingResolveResult ReturnValue;                                       // 0x0030(0x0010)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxDynamicBindingResolverLibrary_ResolveWithStandIn;
-
-// Function GbxGame.GbxTrickScript_Loop.OnLoop_Mut
-// 0x0010 (0x0010 - 0x0000)
-struct GbxTrickScript_Loop_OnLoop_Mut final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         LoopCount;                                         // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxTrickScript_Loop_OnLoop_Mut;
-
-// Function GbxGame.GbxTrickScript_Loop.OnLoopEnd_Mut
-// 0x0008 (0x0008 - 0x0000)
-struct GbxTrickScript_Loop_OnLoopEnd_Mut final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxTrickScript_Loop_OnLoopEnd_Mut;
-
-// Function GbxGame.GbxEffectsManagerProxy.OnParticleSystemFinished
-// 0x0008 (0x0008 - 0x0000)
-struct GbxEffectsManagerProxy_OnParticleSystemFinished final
-{
-public:
-	class UFXSystemComponent*                     PSC;                                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxEffectsManagerProxy_OnParticleSystemFinished;
-
-// Function GbxGame.GbxGeometryCollectionScriptedComponent.InitNavLink
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGeometryCollectionScriptedComponent_InitNavLink final
-{
-public:
-	class UGbxGeometryCollectionComponent*        GeometryCollection;                                // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxNavLinkComponent*                   NavLink;                                           // 0x0008(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGeometryCollectionScriptedComponent_InitNavLink;
-
-// Function GbxGame.GbxGeometryCollectionScriptedComponent.OnCollision
-// 0x00C0 (0x00C0 - 0x0000)
-struct GbxGeometryCollectionScriptedComponent_OnCollision final
-{
-public:
-	struct FChaosPhysicsCollisionInfo             CollisionInfo;                                     // 0x0000(0x00C0)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGeometryCollectionScriptedComponent_OnCollision;
-
-// Function GbxGame.GbxEffectsFunctionLibrary.ExtractAudioImpactParameters
-// 0x0150 (0x0150 - 0x0000)
-struct GbxEffectsFunctionLibrary_ExtractAudioImpactParameters final
-{
-public:
-	struct FImpactAudioParameter                  AudioParameter;                                    // 0x0000(0x0040)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FImpactEffectParams                    OutParams;                                         // 0x0040(0x0110)(Parm, OutParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_ExtractAudioImpactParameters;
-
-// Function GbxGame.GbxEffectsFunctionLibrary.GetCollectionParticle
-// 0x0040 (0x0040 - 0x0000)
-struct GbxEffectsFunctionLibrary_GetCollectionParticle final
-{
-public:
-	FGameDataHandleProperty_                      Collection;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                ContextObject;                                     // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      ContextHandle;                                     // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UFXSystemAsset*                         ReturnValue;                                       // 0x0038(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_GetCollectionParticle;
-
-// Function GbxGame.GbxEffectsFunctionLibrary.MakeImpactEffectSelection
-// 0x0030 (0x0030 - 0x0000)
-struct GbxEffectsFunctionLibrary_MakeImpactEffectSelection final
-{
-public:
-	FGameDataHandleProperty_                      Handle;                                            // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FImpactEffectSelection                 ReturnValue;                                       // 0x0018(0x0018)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_MakeImpactEffectSelection;
-
-// Function GbxGame.GbxEffectsFunctionLibrary.PlayHitResultImpact
-// 0x0180 (0x0180 - 0x0000)
-struct GbxEffectsFunctionLibrary_PlayHitResultImpact final
-{
-public:
-	FGameDataHandleProperty_                      ImpactEffect;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 instigator;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             HitInfo;                                           // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	bool                                          bReplicate;                                        // 0x0120(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_121[0x7];                                      // 0x0121(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FGbxParticleParameter>          ParticleParameters;                                // 0x0128(0x0010)(Parm, ZeroConstructor, NativeAccessSpecifierPublic)
-	struct FImpactAudioParameter                  AudioParameter;                                    // 0x0138(0x0040)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         Size;                                              // 0x0178(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         TimeDilation;                                      // 0x017C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_PlayHitResultImpact;
-
-// Function GbxGame.GbxEffectsFunctionLibrary.PlayTraceImpact
-// 0x00B8 (0x00B8 - 0x0000)
-struct GbxEffectsFunctionLibrary_PlayTraceImpact final
-{
-public:
-	FGameDataHandleProperty_                      ImpactEffect;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 instigator;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                TraceStart;                                        // 0x0020(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                TraceEnd;                                          // 0x0038(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bReplicate;                                        // 0x0050(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bPlayOnNoHit;                                      // 0x0051(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_52[0x6];                                       // 0x0052(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FGbxParticleParameter>          ParticleParameters;                                // 0x0058(0x0010)(Parm, ZeroConstructor, NativeAccessSpecifierPublic)
-	struct FImpactAudioParameter                  AudioParameter;                                    // 0x0068(0x0040)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	ECollisionChannel                             TraceChannel;                                      // 0x00A8(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A9[0x3];                                       // 0x00A9(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         Size;                                              // 0x00AC(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         TimeDilation;                                      // 0x00B0(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_B4[0x4];                                       // 0x00B4(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_PlayTraceImpact;
-
-// Function GbxGame.GbxEffectsFunctionLibrary.PlayWorldImpact
-// 0x00C0 (0x00C0 - 0x0000)
-struct GbxEffectsFunctionLibrary_PlayWorldImpact final
-{
-public:
-	FGameDataHandleProperty_                      ImpactEffect;                                      // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 instigator;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0020(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Normal;                                            // 0x0038(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bReplicate;                                        // 0x0050(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_51[0x7];                                       // 0x0051(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FGbxParticleParameter>          ParticleParameters;                                // 0x0058(0x0010)(Parm, ZeroConstructor, NativeAccessSpecifierPublic)
-	struct FImpactAudioParameter                  AudioParameter;                                    // 0x0068(0x0040)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         Size;                                              // 0x00A8(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         TimeDilation;                                      // 0x00AC(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 ImpactActor;                                       // 0x00B0(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    ImpactComponent;                                   // 0x00B8(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxEffectsFunctionLibrary_PlayWorldImpact;
-
-// Function GbxGame.GbxMovingPlatformLibrary.MovePlatformAlongSpline
-// 0x0018 (0x0018 - 0x0000)
-struct GbxMovingPlatformLibrary_MovePlatformAlongSpline final
-{
-public:
-	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 SplineActor;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SpeedMultiplier;                                   // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxMovingPlatformLibrary_MovePlatformAlongSpline;
-
-// Function GbxGame.GbxMovingPlatformLibrary.MovePlatformToDestination
-// 0x0010 (0x0010 - 0x0000)
-struct GbxMovingPlatformLibrary_MovePlatformToDestination final
-{
-public:
-	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         DestinationIndex;                                  // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bTeleport;                                         // 0x000C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxMovingPlatformLibrary_MovePlatformToDestination;
-
-// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformConfig
-// 0x0128 (0x0128 - 0x0000)
-struct GbxMovingPlatformLibrary_SetMovingPlatformConfig final
-{
-public:
-	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxMovingPlatformConfig               InConfig;                                          // 0x0008(0x0120)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformConfig;
-
-// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformDestinationTransform
-// 0x0070 (0x0070 - 0x0000)
-struct GbxMovingPlatformLibrary_SetMovingPlatformDestinationTransform final
-{
-public:
-	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         DestinationIndex;                                  // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             RelativeTransform;                                 // 0x0010(0x0060)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformDestinationTransform;
-
-// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformMoveCompleteCallback
-// 0x0018 (0x0018 - 0x0000)
-struct GbxMovingPlatformLibrary_SetMovingPlatformMoveCompleteCallback final
-{
-public:
-	class AActor*                                 MovingPlatformActor;                               // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void()>                             Delegate;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformMoveCompleteCallback;
-
-// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformMoveSpeed
-// 0x0128 (0x0128 - 0x0000)
-struct GbxMovingPlatformLibrary_SetMovingPlatformMoveSpeed final
-{
-public:
-	struct FGbxMovingPlatformConfig               Config;                                            // 0x0000(0x0120)(Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	float                                         InMoveSpeed;                                       // 0x0120(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_124[0x4];                                      // 0x0124(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformMoveSpeed;
-
-// Function GbxGame.GbxMovingPlatformLibrary.SetMovingPlatformMoveTime
-// 0x0128 (0x0128 - 0x0000)
-struct GbxMovingPlatformLibrary_SetMovingPlatformMoveTime final
-{
-public:
-	struct FGbxMovingPlatformConfig               Config;                                            // 0x0000(0x0120)(Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	float                                         InMoveTime;                                        // 0x0120(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_124[0x4];                                      // 0x0124(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxMovingPlatformLibrary_SetMovingPlatformMoveTime;
-
-// Function GbxGame.GbxProgressGraphUser.GbxGetUnlockableGroupNames
-// 0x0028 (0x0028 - 0x0000)
-struct GbxProgressGraphUser_GbxGetUnlockableGroupNames final
-{
-public:
-	FGbxDefPtrProperty_                           InGraph;                                           // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class FName>                           OutNames;                                          // 0x0018(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProgressGraphUser_GbxGetUnlockableGroupNames;
-
-// Function GbxGame.GbxProgressGraphUser.GbxGetUnlockableNodeNames
-// 0x0028 (0x0028 - 0x0000)
-struct GbxProgressGraphUser_GbxGetUnlockableNodeNames final
-{
-public:
-	FGbxDefPtrProperty_                           InGraph;                                           // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class FName>                           OutNames;                                          // 0x0018(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProgressGraphUser_GbxGetUnlockableNodeNames;
-
-// Function GbxGame.HazardInteractionComponent.BeginInteraction
-// 0x0028 (0x0028 - 0x0000)
-struct HazardInteractionComponent_BeginInteraction final
-{
-public:
-	FGameDataHandleProperty_                      NewState;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIsSource;                                         // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         SourceDuration;                                    // 0x001C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 NewInstigator;                                     // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_HazardInteractionComponent_BeginInteraction;
-
-// Function GbxGame.HazardInteractionComponent.SetDamageInstigator
-// 0x0008 (0x0008 - 0x0000)
-struct HazardInteractionComponent_SetDamageInstigator final
-{
-public:
-	class AActor*                                 NewInstigator;                                     // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_HazardInteractionComponent_SetDamageInstigator;
-
-// Function GbxGame.HazardInteractionComponent.SetEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct HazardInteractionComponent_SetEnabled final
-{
-public:
-	bool                                          bNewEnabled;                                       // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_HazardInteractionComponent_SetEnabled;
-
-// Function GbxGame.HazardInteractionComponent.IsEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct HazardInteractionComponent_IsEnabled final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_HazardInteractionComponent_IsEnabled;
-
 // Function GbxGame.GbxGameMode.NotifyModeConfigured
 // 0x0010 (0x0010 - 0x0000)
 struct GbxGameMode_NotifyModeConfigured final
@@ -8270,842 +9166,53 @@ public:
 };
 DUMPER7_ASSERTS_GbxGameModeModuleHost_Basic_OnPlayerRespawnBP;
 
-// Function GbxGame.GbxGameModeStatics.ChangePlayerTeam
-// 0x0030 (0x0030 - 0x0000)
-struct GbxGameModeStatics_ChangePlayerTeam final
+// Function GbxGame.GbxGameModeModuleHost_Timer.OnTimerEventCompletedBP
+// 0x0008 (0x0008 - 0x0000)
+struct GbxGameModeModuleHost_Timer_OnTimerEventCompletedBP final
 {
 public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class APlayerController*                      PlayerController;                                  // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           TeamDef;                                           // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         TeamIndex;                                         // 0x0028(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FName                                   EventName;                                         // 0x0000(0x0008)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeStatics_ChangePlayerTeam;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_Timer_OnTimerEventCompletedBP;
 
-// Function GbxGame.GbxGameModeStatics.EnableModulesWithTags
-// 0x0030 (0x0030 - 0x0000)
-struct GbxGameModeStatics_EnableModulesWithTags final
+// Function GbxGame.GbxGameModeModuleHost_Timer.RestartTimer
+// 0x0004 (0x0004 - 0x0000)
+struct GbxGameModeModuleHost_Timer_RestartTimer final
 {
 public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxGameModeModuleTags                 tags;                                              // 0x0008(0x0020)(Parm, NativeAccessSpecifierPublic)
-	ENexusBitSetOperator                          Op;                                                // 0x0028(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bEnable;                                           // 0x0029(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOnlyEnableFirstModule;                            // 0x002A(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2B[0x5];                                       // 0x002B(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	int32                                         NewTimeLimit;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameModeStatics_EnableModulesWithTags;
+DUMPER7_ASSERTS_GbxGameModeModuleHost_Timer_RestartTimer;
 
-// Function GbxGame.GbxGameModeStatics.EnableModulesWithType
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameModeStatics_EnableModulesWithType final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TSubclassOf<class UGbxGameModeModuleHost>     type;                                              // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bEnable;                                           // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOnlyEnableFirstModule;                            // 0x0011(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_12[0x6];                                       // 0x0012(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_EnableModulesWithType;
-
-// Function GbxGame.GbxGameModeStatics.EnableModuleWithName
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameModeStatics_EnableModuleWithName final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ModuleName;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bEnable;                                           // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_EnableModuleWithName;
-
-// Function GbxGame.GbxGameModeStatics.GetGameModeModuleParameter
-// 0x0048 (0x0048 - 0x0000)
-struct GbxGameModeStatics_GetGameModeModuleParameter final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ParameterName;                                     // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxParam                              ReturnValue;                                       // 0x0010(0x0038)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_GetGameModeModuleParameter;
-
-// Function GbxGame.GbxGameModeStatics.GetGameModePhase
-// 0x0020 (0x0020 - 0x0000)
-struct GbxGameModeStatics_GetGameModePhase final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           ReturnValue;                                       // 0x0008(0x0018)(Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_GetGameModePhase;
-
-// Function GbxGame.GbxGameModeStatics.HasGameModeTag
-// 0x0030 (0x0030 - 0x0000)
-struct GbxGameModeStatics_HasGameModeTag final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxGameModeTags                       tags;                                              // 0x0008(0x0020)(Parm, NativeAccessSpecifierPublic)
-	ENexusBitSetOperator                          Op;                                                // 0x0028(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0029(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2A[0x6];                                       // 0x002A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_HasGameModeTag;
-
-// Function GbxGame.GbxGameModeStatics.SendEventToModules
-// 0x0070 (0x0070 - 0x0000)
-struct GbxGameModeStatics_SendEventToModules final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           EventDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxGameModeModuleEventParams          params;                                            // 0x0020(0x0050)(Parm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_SendEventToModules;
-
-// Function GbxGame.GbxGameModeStatics.SendEventToModulesWithTags
-// 0x0098 (0x0098 - 0x0000)
-struct GbxGameModeStatics_SendEventToModulesWithTags final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           EventDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxGameModeModuleEventParams          params;                                            // 0x0020(0x0050)(Parm, NativeAccessSpecifierPublic)
-	struct FGbxGameModeModuleTags                 tags;                                              // 0x0070(0x0020)(Parm, NativeAccessSpecifierPublic)
-	ENexusBitSetOperator                          Op;                                                // 0x0090(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_91[0x7];                                       // 0x0091(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_SendEventToModulesWithTags;
-
-// Function GbxGame.GbxGameModeStatics.SendEventToModulesWithType
-// 0x0078 (0x0078 - 0x0000)
-struct GbxGameModeStatics_SendEventToModulesWithType final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           EventDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxGameModeModuleEventParams          params;                                            // 0x0020(0x0050)(Parm, NativeAccessSpecifierPublic)
-	TSubclassOf<class UGbxGameModeModuleHost>     type;                                              // 0x0070(0x0008)(Parm, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_SendEventToModulesWithType;
-
-// Function GbxGame.GbxGameModeStatics.SendEventToModuleWithName
-// 0x0078 (0x0078 - 0x0000)
-struct GbxGameModeStatics_SendEventToModuleWithName final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           EventDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxGameModeModuleEventParams          params;                                            // 0x0020(0x0050)(Parm, NativeAccessSpecifierPublic)
-	class FName                                   ModuleName;                                        // 0x0070(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_SendEventToModuleWithName;
-
-// Function GbxGame.GbxGameModeStatics.SetGameModePhase
-// 0x0020 (0x0020 - 0x0000)
-struct GbxGameModeStatics_SetGameModePhase final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           GameModePhase;                                     // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameModeStatics_SetGameModePhase;
-
-// Function GbxGame.GbxGameplayStatics.AreAllPlayersOverlappingActor
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameplayStatics_AreAllPlayersOverlappingActor final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Actor;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_AreAllPlayersOverlappingActor;
-
-// Function GbxGame.GbxGameplayStatics.AreAllPlayersOverlappingActors
-// 0x0020 (0x0020 - 0x0000)
-struct GbxGameplayStatics_AreAllPlayersOverlappingActors final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class AActor*>                         Actors;                                            // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_AreAllPlayersOverlappingActors;
-
-// Function GbxGame.GbxGameplayStatics.AreAnyPlayersOverlappingActor
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameplayStatics_AreAnyPlayersOverlappingActor final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Actor;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_AreAnyPlayersOverlappingActor;
-
-// Function GbxGame.GbxGameplayStatics.AreAnyPlayersOverlappingActors
-// 0x0020 (0x0020 - 0x0000)
-struct GbxGameplayStatics_AreAnyPlayersOverlappingActors final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class AActor*>                         Actors;                                            // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_AreAnyPlayersOverlappingActors;
-
-// Function GbxGame.GbxGameplayStatics.BranchOnAreAllPlayersOverlappingActor
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameplayStatics_BranchOnAreAllPlayersOverlappingActor final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Actor;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EPlayersOverlappingActorOutput                Branches;                                          // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_BranchOnAreAllPlayersOverlappingActor;
-
-// Function GbxGame.GbxGameplayStatics.BranchOnAreAllPlayersOverlappingActors
-// 0x0020 (0x0020 - 0x0000)
-struct GbxGameplayStatics_BranchOnAreAllPlayersOverlappingActors final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class AActor*>                         Actors;                                            // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	EPlayersOverlappingActorOutput                Branches;                                          // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_BranchOnAreAllPlayersOverlappingActors;
-
-// Function GbxGame.GbxGameplayStatics.BranchOnAreAnyPlayersOverlappingActor
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameplayStatics_BranchOnAreAnyPlayersOverlappingActor final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Actor;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EPlayersOverlappingActorOutput                Branches;                                          // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_BranchOnAreAnyPlayersOverlappingActor;
-
-// Function GbxGame.GbxGameplayStatics.BranchOnAreAnyPlayersOverlappingActors
-// 0x0020 (0x0020 - 0x0000)
-struct GbxGameplayStatics_BranchOnAreAnyPlayersOverlappingActors final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class AActor*>                         Actors;                                            // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	EPlayersOverlappingActorOutput                Branches;                                          // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_BranchOnAreAnyPlayersOverlappingActors;
-
-// Function GbxGame.GbxGameplayStatics.CalculateConeVector
-// 0x0058 (0x0058 - 0x0000)
-struct GbxGameplayStatics_CalculateConeVector final
-{
-public:
-	float                                         Fraction;                                          // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVector                                Origin;                                            // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Direction;                                         // 0x0020(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         AngleWidth;                                        // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         AngleHeight;                                       // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                ReturnValue;                                       // 0x0040(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_CalculateConeVector;
-
-// Function GbxGame.GbxGameplayStatics.GeneratePointsOnCone
+// Function GbxGame.GbxGamePhysicsBlueprintLibrary.GrabIt_Crosshair
 // 0x0050 (0x0050 - 0x0000)
-struct GbxGameplayStatics_GeneratePointsOnCone final
+struct GbxGamePhysicsBlueprintLibrary_GrabIt_Crosshair final
 {
 public:
-	struct FVector                                Origin;                                            // 0x0000(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Direction;                                         // 0x0018(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         SampleCount;                                       // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SpreadAngle;                                       // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         RotateAngle;                                       // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OriginOffset;                                      // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FTransform>                     ReturnValue;                                       // 0x0040(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
+	class APlayerController*                      ControllerToUse;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGrabItParams                          params;                                            // 0x0008(0x0040)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class AGbxCharacter*                          ReturnValue;                                       // 0x0048(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameplayStatics_GeneratePointsOnCone;
+DUMPER7_ASSERTS_GbxGamePhysicsBlueprintLibrary_GrabIt_Crosshair;
 
-// Function GbxGame.GbxGameplayStatics.GeneratePointsOnFan
-// 0x0050 (0x0050 - 0x0000)
-struct GbxGameplayStatics_GeneratePointsOnFan final
-{
-public:
-	struct FVector                                Origin;                                            // 0x0000(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Direction;                                         // 0x0018(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         SampleCount;                                       // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SpreadAngle;                                       // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         RotateAngle;                                       // 0x0038(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OriginOffset;                                      // 0x003C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FTransform>                     ReturnValue;                                       // 0x0040(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_GeneratePointsOnFan;
-
-// Function GbxGame.GbxGameplayStatics.GetAssociatedPrimaryCharacter
+// Function GbxGame.GbxGeometryCollectionScriptedComponent.InitNavLink
 // 0x0010 (0x0010 - 0x0000)
-struct GbxGameplayStatics_GetAssociatedPrimaryCharacter final
+struct GbxGeometryCollectionScriptedComponent_InitNavLink final
 {
 public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AGbxCharacter*                          ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxGeometryCollectionComponent*        GeometryCollection;                                // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxNavLinkComponent*                   NavLink;                                           // 0x0008(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameplayStatics_GetAssociatedPrimaryCharacter;
+DUMPER7_ASSERTS_GbxGeometryCollectionScriptedComponent_InitNavLink;
 
-// Function GbxGame.GbxGameplayStatics.GetGameplayDirector
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameplayStatics_GetGameplayDirector final
+// Function GbxGame.GbxGeometryCollectionScriptedComponent.OnCollision
+// 0x00C0 (0x00C0 - 0x0000)
+struct GbxGeometryCollectionScriptedComponent_OnCollision final
 {
 public:
-	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AGbxGameplayDirector*                   ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FChaosPhysicsCollisionInfo             CollisionInfo;                                     // 0x0000(0x00C0)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxGameplayStatics_GetGameplayDirector;
-
-// Function GbxGame.GbxGameplayStatics.GetViewRelativeSpawnLocation
-// 0x0098 (0x0098 - 0x0000)
-struct GbxGameplayStatics_GetViewRelativeSpawnLocation final
-{
-public:
-	class AActor*                                 Source;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   RelativeLocation;                                  // 0x0008(0x0060)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                ViewRelativeOffset;                                // 0x0068(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                ReturnValue;                                       // 0x0080(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_GetViewRelativeSpawnLocation;
-
-// Function GbxGame.GbxGameplayStatics.SetCanCharacterStepUpOn
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameplayStatics_SetCanCharacterStepUpOn final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ECanBeCharacterBase                           CanCharacterStepUpOn;                              // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0009(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A[0x6];                                        // 0x000A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_SetCanCharacterStepUpOn;
-
-// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtActorSocketMulticast
-// 0x0028 (0x0028 - 0x0000)
-struct GbxGameplayStatics_SpawnEmitterAtActorSocketMulticast final
-{
-public:
-	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Actor;                                             // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   socket;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoDestroy;                                      // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoActivateSystem;                               // 0x0021(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_22[0x6];                                       // 0x0022(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtActorSocketMulticast;
-
-// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtComponentSocketMulticast
-// 0x0028 (0x0028 - 0x0000)
-struct GbxGameplayStatics_SpawnEmitterAtComponentSocketMulticast final
-{
-public:
-	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class USceneComponent*                        Component;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   socket;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoDestroy;                                      // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoActivateSystem;                               // 0x0021(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_22[0x6];                                       // 0x0022(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtComponentSocketMulticast;
-
-// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtLocation_Generic
-// 0x0078 (0x0078 - 0x0000)
-struct GbxGameplayStatics_SpawnEmitterAtLocation_Generic final
-{
-public:
-	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FGbxParticleParameter>          EmitterParameters;                                 // 0x0010(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0020(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               Rotation;                                          // 0x0038(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                scale;                                             // 0x0050(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoDestroy;                                      // 0x0068(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EPSCPoolMethod                                PoolingMethod;                                     // 0x0069(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoActivateSystem;                               // 0x006A(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGameplayEffectVisibility                     Visibility;                                        // 0x006B(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGameplayEffectReplication                    Replication;                                       // 0x006C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_6D[0x3];                                       // 0x006D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	class UFXSystemComponent*                     ReturnValue;                                       // 0x0070(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtLocation_Generic;
-
-// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtLocation_GenericConst
-// 0x0078 (0x0078 - 0x0000)
-struct GbxGameplayStatics_SpawnEmitterAtLocation_GenericConst final
-{
-public:
-	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FGbxParticleParameter>          EmitterParameters;                                 // 0x0010(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0020(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               Rotation;                                          // 0x0038(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                scale;                                             // 0x0050(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoDestroy;                                      // 0x0068(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EPSCPoolMethod                                PoolingMethod;                                     // 0x0069(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoActivateSystem;                               // 0x006A(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGameplayEffectVisibility                     Visibility;                                        // 0x006B(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGameplayEffectReplication                    Replication;                                       // 0x006C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_6D[0x3];                                       // 0x006D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	class UFXSystemComponent*                     ReturnValue;                                       // 0x0070(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtLocation_GenericConst;
-
-// Function GbxGame.GbxGameplayStatics.SpawnEmitterAtLocationMulticast
-// 0x0060 (0x0060 - 0x0000)
-struct GbxGameplayStatics_SpawnEmitterAtLocationMulticast final
-{
-public:
-	const class UObject*                          WorldContextObject;                                // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0010(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               Rotation;                                          // 0x0028(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                scale;                                             // 0x0040(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoDestroy;                                      // 0x0058(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoActivateSystem;                               // 0x0059(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_5A[0x6];                                       // 0x005A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAtLocationMulticast;
-
-// Function GbxGame.GbxGameplayStatics.SpawnEmitterAttached_Body
-// 0x0078 (0x0078 - 0x0000)
-struct GbxGameplayStatics_SpawnEmitterAttached_Body final
-{
-public:
-	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FGbxParticleParameter>          EmitterParameters;                                 // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	class AActor*                                 AttachToActor;                                     // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   AttachPointName;                                   // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0028(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               Rotation;                                          // 0x0040(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                scale;                                             // 0x0058(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAttachLocation                               LocationType;                                      // 0x0070(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoDestroy;                                      // 0x0071(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EPSCPoolMethod                                PoolingMethod;                                     // 0x0072(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoActivate;                                     // 0x0073(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGameplayEffectBodyVisibility                 Visibility;                                        // 0x0074(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGameplayEffectReplication                    Replication;                                       // 0x0075(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_76[0x2];                                       // 0x0076(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAttached_Body;
-
-// Function GbxGame.GbxGameplayStatics.SpawnEmitterAttached_Generic
-// 0x0080 (0x0080 - 0x0000)
-struct GbxGameplayStatics_SpawnEmitterAttached_Generic final
-{
-public:
-	class UFXSystemAsset*                         EmitterTemplate;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FGbxParticleParameter>          EmitterParameters;                                 // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-	class USceneComponent*                        AttachToComponent;                                 // 0x0018(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   AttachPointName;                                   // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Location;                                          // 0x0028(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               Rotation;                                          // 0x0040(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                scale;                                             // 0x0058(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAttachLocation                               LocationType;                                      // 0x0070(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoDestroy;                                      // 0x0071(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EPSCPoolMethod                                PoolingMethod;                                     // 0x0072(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAutoActivate;                                     // 0x0073(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGameplayEffectVisibility                     Visibility;                                        // 0x0074(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGameplayEffectReplication                    Replication;                                       // 0x0075(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_76[0x2];                                       // 0x0076(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	class UFXSystemComponent*                     ReturnValue;                                       // 0x0078(0x0008)(ExportObject, Parm, OutParm, ZeroConstructor, ReturnParm, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameplayStatics_SpawnEmitterAttached_Generic;
-
-// Function GbxGame.GbxGameStateBase.OnGroupAdded
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameStateBase_OnGroupAdded final
-{
-public:
-	class AGbxPlayerGroupState*                   PlayerGroup;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameStateBase_OnGroupAdded;
-
-// Function GbxGame.GbxGameStateBase.OnGroupRemoved
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameStateBase_OnGroupRemoved final
-{
-public:
-	class AGbxPlayerGroupState*                   PlayerGroup;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameStateBase_OnGroupRemoved;
-
-// Function GbxGame.GbxGameStateBase.OnPlayerAddedToGroup
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameStateBase_OnPlayerAddedToGroup final
-{
-public:
-	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AGbxPlayerState*                        PlayerState;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameStateBase_OnPlayerAddedToGroup;
-
-// Function GbxGame.GbxGameStateBase.OnPlayerRemovedFromGroup
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameStateBase_OnPlayerRemovedFromGroup final
-{
-public:
-	class AGbxPlayerGroupState*                   PlayerGroupState;                                  // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AGbxPlayerState*                        PlayerState;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameStateBase_OnPlayerRemovedFromGroup;
-
-// Function GbxGame.GbxGameState.PlayMusicEvent
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameState_PlayMusicEvent final
-{
-public:
-	struct FGameplayTag                           MusicEvent;                                        // 0x0000(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameState_PlayMusicEvent;
-
-// Function GbxGame.GbxGameState.PlaySoundInWorldMulticast
-// 0x0110 (0x0110 - 0x0000)
-struct GbxGameState_PlaySoundInWorldMulticast final
-{
-public:
-	class AActor*                                 ActorInstigator;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxAudioEmitterSource                 EmitterSource;                                     // 0x0010(0x0080)(ConstParm, Parm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxAudioEvent                         Event;                                             // 0x0090(0x0030)(ConstParm, Parm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FWwiseSwitchDef                        OptionalSwitch;                                    // 0x00C0(0x0050)(ConstParm, Parm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameState_PlaySoundInWorldMulticast;
-
-// Function GbxGame.GbxGameState.PlaySoundOnActorMulticast
-// 0x0090 (0x0090 - 0x0000)
-struct GbxGameState_PlaySoundOnActorMulticast final
-{
-public:
-	class AActor*                                 ActorInstigator;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxAudioEvent                         Event;                                             // 0x0008(0x0030)(ConstParm, Parm, ReferenceParm, NativeAccessSpecifierPublic)
-	class FName                                   EmitterTag;                                        // 0x0038(0x0008)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FWwiseSwitchDef                        OptionalSwitch;                                    // 0x0040(0x0050)(ConstParm, Parm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameState_PlaySoundOnActorMulticast;
-
-// Function GbxGame.GbxGameState.PlaySoundOnActorSocketMulticast
-// 0x0040 (0x0040 - 0x0000)
-struct GbxGameState_PlaySoundOnActorSocketMulticast final
-{
-public:
-	class AActor*                                 ActorInstigator;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxAudioEvent                         Event;                                             // 0x0008(0x0030)(ConstParm, Parm, ReferenceParm, NativeAccessSpecifierPublic)
-	class FName                                   SocketName;                                        // 0x0038(0x0008)(ConstParm, Parm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameState_PlaySoundOnActorSocketMulticast;
-
-// Function GbxGame.GbxGameUserSettings.ApplyNewVSyncValue
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_ApplyNewVSyncValue final
-{
-public:
-	bool                                          NewValue;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_ApplyNewVSyncValue;
-
-// Function GbxGame.GbxGameUserSettings.GetActiveGraphicsPreset
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameUserSettings_GetActiveGraphicsPreset final
-{
-public:
-	class FName                                   ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetActiveGraphicsPreset;
-
-// Function GbxGame.GbxGameUserSettings.GetAvailableGraphicsPresets
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameUserSettings_GetAvailableGraphicsPresets final
-{
-public:
-	TArray<class FName>                           ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetAvailableGraphicsPresets;
-
-// Function GbxGame.GbxGameUserSettings.GetDefaultGraphicsPreset
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameUserSettings_GetDefaultGraphicsPreset final
-{
-public:
-	class FName                                   ReturnValue;                                       // 0x0000(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetDefaultGraphicsPreset;
-
-// Function GbxGame.GbxGameUserSettings.GetFrameGenerationState
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_GetFrameGenerationState final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetFrameGenerationState;
-
-// Function GbxGame.GbxGameUserSettings.GetMaxFrameGenerationGeneratedFrames
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_GetMaxFrameGenerationGeneratedFrames final
-{
-public:
-	int32                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetMaxFrameGenerationGeneratedFrames;
-
-// Function GbxGame.GbxGameUserSettings.GetMotionblurAmout
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_GetMotionblurAmout final
-{
-public:
-	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetMotionblurAmout;
-
-// Function GbxGame.GbxGameUserSettings.IsFrameGenerationSupported
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_IsFrameGenerationSupported final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_IsFrameGenerationSupported;
-
-// Function GbxGame.GbxGameUserSettings.IsNvidiaReflexSupported
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_IsNvidiaReflexSupported final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_IsNvidiaReflexSupported;
-
-// Function GbxGame.GbxGameUserSettings.RevertGraphicsSetting
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameUserSettings_RevertGraphicsSetting final
-{
-public:
-	class FName                                   GraphicsSetting;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_RevertGraphicsSetting;
-
-// Function GbxGame.GbxGameUserSettings.SetBaseFOV
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_SetBaseFOV final
-{
-public:
-	float                                         InBaseFOV;                                         // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetBaseFOV;
-
-// Function GbxGame.GbxGameUserSettings.SetBlackLevel
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_SetBlackLevel final
-{
-public:
-	float                                         NewBlackLevel;                                     // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetBlackLevel;
-
-// Function GbxGame.GbxGameUserSettings.SetFrameGenerationState
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_SetFrameGenerationState final
-{
-public:
-	bool                                          NewState;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetFrameGenerationState;
-
-// Function GbxGame.GbxGameUserSettings.SetFramesToGenerate
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_SetFramesToGenerate final
-{
-public:
-	int32                                         FramesToGenerate_0;                                // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetFramesToGenerate;
-
-// Function GbxGame.GbxGameUserSettings.SetGraphicsPreset
-// 0x0008 (0x0008 - 0x0000)
-struct GbxGameUserSettings_SetGraphicsPreset final
-{
-public:
-	class FName                                   newPreset;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetGraphicsPreset;
-
-// Function GbxGame.GbxGameUserSettings.SetGraphicsSettingOption
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameUserSettings_SetGraphicsSettingOption final
-{
-public:
-	class FName                                   GraphicsSetting;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Option;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetGraphicsSettingOption;
-
-// Function GbxGame.GbxGameUserSettings.SetHDRBrightness
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_SetHDRBrightness final
-{
-public:
-	float                                         NewHDRBrightness;                                  // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetHDRBrightness;
-
-// Function GbxGame.GbxGameUserSettings.SetLumenHardwareRayTracing
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_SetLumenHardwareRayTracing final
-{
-public:
-	bool                                          NewValue;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetLumenHardwareRayTracing;
-
-// Function GbxGame.GbxGameUserSettings.SetMotionblurAmount
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_SetMotionblurAmount final
-{
-public:
-	float                                         NewValue;                                          // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetMotionblurAmount;
-
-// Function GbxGame.GbxGameUserSettings.SetNvidiaStreamlineMode
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_SetNvidiaStreamlineMode final
-{
-public:
-	EGbxNvidiaReflexMode                          ReflexMode_0;                                      // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetNvidiaStreamlineMode;
-
-// Function GbxGame.GbxGameUserSettings.SetShowFPSMode
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_SetShowFPSMode final
-{
-public:
-	EShowFPSMode                                  ShowFPSMode_0;                                     // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_SetShowFPSMode;
-
-// Function GbxGame.GbxGameUserSettings.ToggleHDR
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_ToggleHDR final
-{
-public:
-	bool                                          Activate;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_ToggleHDR;
-
-// Function GbxGame.GbxGameUserSettings.GetActiveGraphicsSettingOption
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameUserSettings_GetActiveGraphicsSettingOption final
-{
-public:
-	class FName                                   GraphicsSetting;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetActiveGraphicsSettingOption;
-
-// Function GbxGame.GbxGameUserSettings.GetAvailableGraphicsSettingOptions
-// 0x0018 (0x0018 - 0x0000)
-struct GbxGameUserSettings_GetAvailableGraphicsSettingOptions final
-{
-public:
-	class FName                                   GraphicsSetting;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class FName>                           ReturnValue;                                       // 0x0008(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetAvailableGraphicsSettingOptions;
-
-// Function GbxGame.GbxGameUserSettings.GetAvailableGraphicsSettings
-// 0x0010 (0x0010 - 0x0000)
-struct GbxGameUserSettings_GetAvailableGraphicsSettings final
-{
-public:
-	TArray<class FName>                           ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetAvailableGraphicsSettings;
-
-// Function GbxGame.GbxGameUserSettings.GetBaseFOV
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_GetBaseFOV final
-{
-public:
-	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetBaseFOV;
-
-// Function GbxGame.GbxGameUserSettings.GetFramesToGenerate
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_GetFramesToGenerate final
-{
-public:
-	int32                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetFramesToGenerate;
-
-// Function GbxGame.GbxGameUserSettings.GetHDRBrightness
-// 0x0004 (0x0004 - 0x0000)
-struct GbxGameUserSettings_GetHDRBrightness final
-{
-public:
-	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetHDRBrightness;
-
-// Function GbxGame.GbxGameUserSettings.GetNvidiaReflexMode
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_GetNvidiaReflexMode final
-{
-public:
-	EGbxNvidiaReflexMode                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetNvidiaReflexMode;
-
-// Function GbxGame.GbxGameUserSettings.GetShowFPSMode
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_GetShowFPSMode final
-{
-public:
-	EShowFPSMode                                  ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_GetShowFPSMode;
-
-// Function GbxGame.GbxGameUserSettings.HasOverridenGraphicsSettings
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_HasOverridenGraphicsSettings final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_HasOverridenGraphicsSettings;
-
-// Function GbxGame.GbxGameUserSettings.IsLumenHardwareRayTracingEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxGameUserSettings_IsLumenHardwareRayTracingEnabled final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxGameUserSettings_IsLumenHardwareRayTracingEnabled;
+DUMPER7_ASSERTS_GbxGeometryCollectionScriptedComponent_OnCollision;
 
 // Function GbxGame.GbxVisibilityPhaseStatics.GetAllPhaseNames
 // 0x0010 (0x0010 - 0x0000)
@@ -9126,140 +9233,76 @@ public:
 };
 DUMPER7_ASSERTS_GbxVisibilityPhaseStatics_GetFilteredPhaseNames;
 
-// Function GbxGame.GbxLocalPlayer.SetCameraShakeIntensity
-// 0x0004 (0x0004 - 0x0000)
-struct GbxLocalPlayer_SetCameraShakeIntensity final
+// Function GbxGame.GbxInventorySettings.GetInventoryEffectTypes
+// 0x0010 (0x0010 - 0x0000)
+struct GbxInventorySettings_GetInventoryEffectTypes final
 {
 public:
-	float                                         InCameraShakeIntensity;                            // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxLocalPlayer_SetCameraShakeIntensity;
+DUMPER7_ASSERTS_GbxInventorySettings_GetInventoryEffectTypes;
 
-// Function GbxGame.GbxLocalPlayer.SetDialogVolume
-// 0x0004 (0x0004 - 0x0000)
-struct GbxLocalPlayer_SetDialogVolume final
+// Function GbxGame.GbxMaterialParamInterpStatics.BreakGbxParamInterpOptions
+// 0x0040 (0x0040 - 0x0000)
+struct GbxMaterialParamInterpStatics_BreakGbxParamInterpOptions final
 {
 public:
-	float                                         NewDialogVolume;                                   // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxMaterialParamInterpOptions         InterpData;                                        // 0x0000(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	class FName                                   ParamName;                                         // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         InterpTime;                                        // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   MaterialSlot;                                      // 0x002C(0x0008)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAlphaBlendOption                             CurveOption;                                       // 0x0034(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_35[0x3];                                       // 0x0035(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	class UCurveFloat*                            CustomCurve;                                       // 0x0038(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxLocalPlayer_SetDialogVolume;
+DUMPER7_ASSERTS_GbxMaterialParamInterpStatics_BreakGbxParamInterpOptions;
 
-// Function GbxGame.GbxLocalPlayer.SetMouseSmoothingEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_SetMouseSmoothingEnabled final
+// Function GbxGame.GbxMaterialParamInterpStatics.InterpScalar
+// 0x0030 (0x0030 - 0x0000)
+struct GbxMaterialParamInterpStatics_InterpScalar final
 {
 public:
-	bool                                          bInMouseSmoothingEnabled;                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         NewValue;                                          // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxMaterialParamInterpOptions         options;                                           // 0x0010(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxLocalPlayer_SetMouseSmoothingEnabled;
+DUMPER7_ASSERTS_GbxMaterialParamInterpStatics_InterpScalar;
 
-// Function GbxGame.GbxLocalPlayer.SetMusicVolume
-// 0x0004 (0x0004 - 0x0000)
-struct GbxLocalPlayer_SetMusicVolume final
+// Function GbxGame.GbxMaterialParamInterpStatics.InterpVector
+// 0x0038 (0x0038 - 0x0000)
+struct GbxMaterialParamInterpStatics_InterpVector final
 {
 public:
-	float                                         NewMusicVolume;                                    // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLinearColor                           NewValue;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxMaterialParamInterpOptions         options;                                           // 0x0018(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxLocalPlayer_SetMusicVolume;
+DUMPER7_ASSERTS_GbxMaterialParamInterpStatics_InterpVector;
 
-// Function GbxGame.GbxLocalPlayer.SetMuteHitNotifies
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_SetMuteHitNotifies final
+// Function GbxGame.GbxMaterialParamInterpStatics.MakeGbxParamInterpOptions
+// 0x0040 (0x0040 - 0x0000)
+struct GbxMaterialParamInterpStatics_MakeGbxParamInterpOptions final
 {
 public:
-	bool                                          NewMHN;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ParamName;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         InterpTime;                                        // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   MaterialSlot;                                      // 0x000C(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAlphaBlendOption                             CurveOption;                                       // 0x0014(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_15[0x3];                                       // 0x0015(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	class UCurveFloat*                            CustomCurve;                                       // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxMaterialParamInterpOptions         ReturnValue;                                       // 0x0020(0x0020)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxLocalPlayer_SetMuteHitNotifies;
+DUMPER7_ASSERTS_GbxMaterialParamInterpStatics_MakeGbxParamInterpOptions;
 
-// Function GbxGame.GbxLocalPlayer.SetOverallVolume
-// 0x0004 (0x0004 - 0x0000)
-struct GbxLocalPlayer_SetOverallVolume final
+// Function GbxGame.GbxMomentData.GetDialogScriptIdents
+// 0x0010 (0x0010 - 0x0000)
+struct GbxMomentData_GetDialogScriptIdents final
 {
 public:
-	float                                         NewOverallVolume;                                  // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class FName>                           ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxLocalPlayer_SetOverallVolume;
-
-// Function GbxGame.GbxLocalPlayer.SetPlayInBackground
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_SetPlayInBackground final
-{
-public:
-	bool                                          NewPIB;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_SetPlayInBackground;
-
-// Function GbxGame.GbxLocalPlayer.SetReactiveTriggersEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_SetReactiveTriggersEnabled final
-{
-public:
-	bool                                          bInReactiveTriggersEnabled;                        // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_SetReactiveTriggersEnabled;
-
-// Function GbxGame.GbxLocalPlayer.SetRumbleEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_SetRumbleEnabled final
-{
-public:
-	bool                                          bInRumbleEnabled;                                  // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_SetRumbleEnabled;
-
-// Function GbxGame.GbxLocalPlayer.SetSFXVolume
-// 0x0004 (0x0004 - 0x0000)
-struct GbxLocalPlayer_SetSFXVolume final
-{
-public:
-	float                                         NewSFXVolume;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_SetSFXVolume;
-
-// Function GbxGame.GbxLocalPlayer.GetCameraShakeIntensity
-// 0x0004 (0x0004 - 0x0000)
-struct GbxLocalPlayer_GetCameraShakeIntensity final
-{
-public:
-	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_GetCameraShakeIntensity;
-
-// Function GbxGame.GbxLocalPlayer.GetMouseSmoothingEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_GetMouseSmoothingEnabled final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_GetMouseSmoothingEnabled;
-
-// Function GbxGame.GbxLocalPlayer.GetMuteHitNotifies
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_GetMuteHitNotifies final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_GetMuteHitNotifies;
-
-// Function GbxGame.GbxLocalPlayer.GetReactiveTriggersEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_GetReactiveTriggersEnabled final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_GetReactiveTriggersEnabled;
-
-// Function GbxGame.GbxLocalPlayer.GetRumbleEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxLocalPlayer_GetRumbleEnabled final
-{
-public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxLocalPlayer_GetRumbleEnabled;
+DUMPER7_ASSERTS_GbxMomentData_GetDialogScriptIdents;
 
 // Function GbxGame.GbxMomentFunctionLibrary.EndMoment
 // 0x0010 (0x0010 - 0x0000)
@@ -9536,6 +9579,33 @@ public:
 };
 DUMPER7_ASSERTS_GbxMovingPlatformComponent_OnEndOverlap;
 
+// Function GbxGame.GbxMovingPlatformKillVolume.GetAvailablePlatformStates
+// 0x0010 (0x0010 - 0x0000)
+struct GbxMovingPlatformKillVolume_GetAvailablePlatformStates final
+{
+public:
+	TArray<class FName>                           OptionList;                                        // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxMovingPlatformKillVolume_GetAvailablePlatformStates;
+
+// Function GbxGame.GbxOpportunisticAmbientAudioComponent.GetAudioOpportunisticShowFlag
+// 0x0001 (0x0001 - 0x0000)
+struct GbxOpportunisticAmbientAudioComponent_GetAudioOpportunisticShowFlag final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxOpportunisticAmbientAudioComponent_GetAudioOpportunisticShowFlag;
+
+// Function GbxGame.GbxOpportunisticAmbientAudioComponent.SetAudioOpportunisticShowFlag
+// 0x0001 (0x0001 - 0x0000)
+struct GbxOpportunisticAmbientAudioComponent_SetAudioOpportunisticShowFlag final
+{
+public:
+	bool                                          bValue;                                            // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxOpportunisticAmbientAudioComponent_SetAudioOpportunisticShowFlag;
+
 // Function GbxGame.GbxOpportunisticAmbientAudioDebugSettings.GetGbxOpportunisticAmbientAudioDebugSettings
 // 0x0008 (0x0008 - 0x0000)
 struct GbxOpportunisticAmbientAudioDebugSettings_GetGbxOpportunisticAmbientAudioDebugSettings final
@@ -9545,50 +9615,14 @@ public:
 };
 DUMPER7_ASSERTS_GbxOpportunisticAmbientAudioDebugSettings_GetGbxOpportunisticAmbientAudioDebugSettings;
 
-// Function GbxGame.GbxPlayerBotBlueprintLibrary.IsPlayerBot
+// Function GbxGame.GbxPlayerGroup.GetPlayerStateArray
 // 0x0010 (0x0010 - 0x0000)
-struct GbxPlayerBotBlueprintLibrary_IsPlayerBot final
+struct GbxPlayerGroup_GetPlayerStateArray final
 {
 public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	TArray<class AGbxPlayerState*>                ReturnValue;                                       // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxPlayerBotBlueprintLibrary_IsPlayerBot;
-
-// Function GbxGame.GbxPlayerBotBlueprintLibrary.RemovePlayerBot
-// 0x0008 (0x0008 - 0x0000)
-struct GbxPlayerBotBlueprintLibrary_RemovePlayerBot final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerBotBlueprintLibrary_RemovePlayerBot;
-
-// Function GbxGame.GbxPlayerBotBlueprintLibrary.RemovePlayerBots
-// 0x0008 (0x0008 - 0x0000)
-struct GbxPlayerBotBlueprintLibrary_RemovePlayerBots final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerBotBlueprintLibrary_RemovePlayerBots;
-
-// Function GbxGame.GbxPlayerBotBlueprintLibrary.SpawnPlayerBot
-// 0x00A0 (0x00A0 - 0x0000)
-struct GbxPlayerBotBlueprintLibrary_SpawnPlayerBot final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 SpawnAt;                                           // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      CharacterDef;                                      // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             Transform;                                         // 0x0030(0x0060)(Parm, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bEnableSplitscreen;                                // 0x0090(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_91[0x7];                                       // 0x0091(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class AGbxCharacter*                          ReturnValue;                                       // 0x0098(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerBotBlueprintLibrary_SpawnPlayerBot;
+DUMPER7_ASSERTS_GbxPlayerGroup_GetPlayerStateArray;
 
 // Function GbxGame.GbxPlayerGroupState.OnPlayerAdded
 // 0x0008 (0x0008 - 0x0000)
@@ -9617,169 +9651,267 @@ public:
 };
 DUMPER7_ASSERTS_GbxPlayerGroupState_GetPlayerStateArray;
 
-// Function GbxGame.GbxPlayerState.ClientLockUnlockable
-// 0x0050 (0x0050 - 0x0000)
-struct GbxPlayerState_ClientLockUnlockable final
+// Function GbxGame.GbxProgressionDataManager.ServerResetProgressState
+// 0x0008 (0x0008 - 0x0000)
+struct GbxProgressionDataManager_ServerResetProgressState final
 {
 public:
-	struct FSName                                 LedgerIdent;                                       // 0x0000(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSName                                 EntryIdent;                                        // 0x0028(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Name_0;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxPlayerState_ClientLockUnlockable;
+DUMPER7_ASSERTS_GbxProgressionDataManager_ServerResetProgressState;
 
-// Function GbxGame.GbxPlayerState.ClientSendProfileDataToVault
+// Function GbxGame.GbxProgression_BlueprintFunctions.AreProgressGraphGroupMaxNodesActivated
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_AreProgressGraphGroupMaxNodesActivated final
+{
+public:
+	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_AreProgressGraphGroupMaxNodesActivated;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.AreProgressGraphGroupMaxNodesActivatedPure
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_AreProgressGraphGroupMaxNodesActivatedPure final
+{
+public:
+	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_AreProgressGraphGroupMaxNodesActivatedPure;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphGroupTotalPoints
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_GetProgressGraphGroupTotalPoints final
+{
+public:
+	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphGroupTotalPoints;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphGroupTotalPointsPure
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_GetProgressGraphGroupTotalPointsPure final
+{
+public:
+	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphGroupTotalPointsPure;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphNodeActivationLevel
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_GetProgressGraphNodeActivationLevel final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphNodeActivationLevel;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphNodeActivationLevelPure
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_GetProgressGraphNodeActivationLevelPure final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphNodeActivationLevelPure;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphNodeTotalPoints
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_GetProgressGraphNodeTotalPoints final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphNodeTotalPoints;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.GetProgressGraphNodeTotalPointsPure
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_GetProgressGraphNodeTotalPointsPure final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x0028(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_GetProgressGraphNodeTotalPointsPure;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphGroupUnlocked
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_IsProgressGraphGroupUnlocked final
+{
+public:
+	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphGroupUnlocked;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphGroupUnlockedPure
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_IsProgressGraphGroupUnlockedPure final
+{
+public:
+	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphGroupUnlockedPure;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphNodeActivated
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_IsProgressGraphNodeActivated final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphNodeActivated;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphNodeActivatedPure
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_IsProgressGraphNodeActivatedPure final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphNodeActivatedPure;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphNodeUnlocked
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_IsProgressGraphNodeUnlocked final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphNodeUnlocked;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.IsProgressGraphNodeUnlockedPure
+// 0x0030 (0x0030 - 0x0000)
+struct GbxProgression_BlueprintFunctions_IsProgressGraphNodeUnlockedPure final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                OwnerContext;                                      // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_IsProgressGraphNodeUnlockedPure;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.MakeGbxProgressGraphGroupNodeRef
+// 0x0050 (0x0050 - 0x0000)
+struct GbxProgression_BlueprintFunctions_MakeGbxProgressGraphGroupNodeRef final
+{
+public:
+	struct FGbxUnlockableGroupNodeRef             GraphGroupNode;                                    // 0x0000(0x0028)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxUnlockableGroupNodeRef             ReturnValue;                                       // 0x0028(0x0028)(Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_MakeGbxProgressGraphGroupNodeRef;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.MakeGbxProgressGraphGroupRef
+// 0x0040 (0x0040 - 0x0000)
+struct GbxProgression_BlueprintFunctions_MakeGbxProgressGraphGroupRef final
+{
+public:
+	struct FGbxUnlockableGroupRef                 GraphGroup;                                        // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxUnlockableGroupRef                 ReturnValue;                                       // 0x0020(0x0020)(Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_MakeGbxProgressGraphGroupRef;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.MakeGbxProgressGraphNodeRef
+// 0x0040 (0x0040 - 0x0000)
+struct GbxProgression_BlueprintFunctions_MakeGbxProgressGraphNodeRef final
+{
+public:
+	struct FGbxUnlockableNodeRef                  GraphNode;                                         // 0x0000(0x0020)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxUnlockableNodeRef                  ReturnValue;                                       // 0x0020(0x0020)(Parm, OutParm, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_MakeGbxProgressGraphNodeRef;
+
+// Function GbxGame.GbxProgression_BlueprintFunctions.MakeGbxProgressPointsAmount
+// 0x00D0 (0x00D0 - 0x0000)
+struct GbxProgression_BlueprintFunctions_MakeGbxProgressPointsAmount final
+{
+public:
+	struct FGbxProgressPointsAmount               Amount;                                            // 0x0000(0x0068)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxProgressPointsAmount               ReturnValue;                                       // 0x0068(0x0068)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgression_BlueprintFunctions_MakeGbxProgressPointsAmount;
+
+// Function GbxGame.GbxRewardsManager.Client_GivenPackage
+// 0x0050 (0x0050 - 0x0000)
+struct GbxRewardsManager_Client_GivenPackage final
+{
+public:
+	struct FGbxRewardPackage                      Package;                                           // 0x0000(0x0050)(Parm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxRewardsManager_Client_GivenPackage;
+
+// Function GbxGame.GbxRewardsManager.Client_OpenedPackage
+// 0x0050 (0x0050 - 0x0000)
+struct GbxRewardsManager_Client_OpenedPackage final
+{
+public:
+	struct FGbxRewardPackage                      Package;                                           // 0x0000(0x0050)(Parm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxRewardsManager_Client_OpenedPackage;
+
+// Function GbxGame.GbxRewardsManager.Client_OpenedPackages
+// 0x0010 (0x0010 - 0x0000)
+struct GbxRewardsManager_Client_OpenedPackages final
+{
+public:
+	TArray<struct FGbxRewardPackage>              OpenedPackages;                                    // 0x0000(0x0010)(ConstParm, Parm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxRewardsManager_Client_OpenedPackages;
+
+// Function GbxGame.GbxRewardsManager.Server_DeletePackage
 // 0x0004 (0x0004 - 0x0000)
-struct GbxPlayerState_ClientSendProfileDataToVault final
+struct GbxRewardsManager_Server_DeletePackage final
 {
 public:
-	int32                                         InProfileIndex;                                    // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         PackageIndex;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxPlayerState_ClientSendProfileDataToVault;
+DUMPER7_ASSERTS_GbxRewardsManager_Server_DeletePackage;
 
-// Function GbxGame.GbxPlayerState.ClientUnlockUnlockable
-// 0x0050 (0x0050 - 0x0000)
-struct GbxPlayerState_ClientUnlockUnlockable final
+// Function GbxGame.GbxRewardsManager.Server_OpenPackage
+// 0x0004 (0x0004 - 0x0000)
+struct GbxRewardsManager_Server_OpenPackage final
 {
 public:
-	struct FSName                                 LedgerIdent;                                       // 0x0000(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSName                                 EntryIdent;                                        // 0x0028(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         PackageIndex;                                      // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxPlayerState_ClientUnlockUnlockable;
-
-// Function GbxGame.GbxPlayerState.OnGroupAssigned
-// 0x0008 (0x0008 - 0x0000)
-struct GbxPlayerState_OnGroupAssigned final
-{
-public:
-	class AGbxPlayerGroupState*                   InPlayerGroupState;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerState_OnGroupAssigned;
-
-// Function GbxGame.GbxPlayerState.OnGroupRemoved
-// 0x0008 (0x0008 - 0x0000)
-struct GbxPlayerState_OnGroupRemoved final
-{
-public:
-	class AGbxPlayerGroupState*                   InPlayerGroupState;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerState_OnGroupRemoved;
-
-// Function GbxGame.GbxPlayerState.ServerSetDiscoveryRegion
-// 0x0028 (0x0028 - 0x0000)
-struct GbxPlayerState_ServerSetDiscoveryRegion final
-{
-public:
-	struct FSName                                 InRegionName;                                      // 0x0000(0x0028)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerState_ServerSetDiscoveryRegion;
-
-// Function GbxGame.GbxPlayerState.ServerSetPlatformUniqueId
-// 0x0030 (0x0030 - 0x0000)
-struct GbxPlayerState_ServerSetPlatformUniqueId final
-{
-public:
-	struct FUniqueNetIdRepl                       InPlatformUniqueId;                                // 0x0000(0x0030)(ConstParm, Parm, ReferenceParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerState_ServerSetPlatformUniqueId;
-
-// Function GbxGame.GbxPlayerState.ServerSetRealtimeGameplayStatus
-// 0x0001 (0x0001 - 0x0000)
-struct GbxPlayerState_ServerSetRealtimeGameplayStatus final
-{
-public:
-	bool                                          bIsInRTGP;                                         // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxPlayerState_ServerSetRealtimeGameplayStatus;
-
-// Function GbxGame.GbxProximityProcessingActor.OnEnteringProximityZone
-// 0x0120 (0x0120 - 0x0000)
-struct GbxProximityProcessingActor_OnEnteringProximityZone final
-{
-public:
-	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFromSweep;                                        // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FHitResult                             SweepResult;                                       // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxProximityProcessingActor_OnEnteringProximityZone;
-
-// Function GbxGame.GbxProximityProcessingActor.OnExitingProximityZone
-// 0x0020 (0x0020 - 0x0000)
-struct GbxProximityProcessingActor_OnExitingProximityZone final
-{
-public:
-	class UPrimitiveComponent*                    OverlappedComponent;                               // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxProximityProcessingActor_OnExitingProximityZone;
-
-// Function GbxGame.GbxRewards_BlueprintFunctions.GiveReward
-// 0x0020 (0x0020 - 0x0000)
-struct GbxRewards_BlueprintFunctions_GiveReward final
-{
-public:
-	FGbxDefPtrProperty_                           RewardDef;                                         // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_GiveReward;
-
-// Function GbxGame.GbxRewards_BlueprintFunctions.GiveRewardAllPlayers
-// 0x0020 (0x0020 - 0x0000)
-struct GbxRewards_BlueprintFunctions_GiveRewardAllPlayers final
-{
-public:
-	FGbxDefPtrProperty_                           RewardDef;                                         // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                WorldContextObject;                                // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_GiveRewardAllPlayers;
-
-// Function GbxGame.GbxRewards_BlueprintFunctions.GiveRewardPackage
-// 0x0020 (0x0020 - 0x0000)
-struct GbxRewards_BlueprintFunctions_GiveRewardPackage final
-{
-public:
-	FGbxDefPtrProperty_                           RewardDef;                                         // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_GiveRewardPackage;
-
-// Function GbxGame.GbxRewards_BlueprintFunctions.GiveRewardPackageAllPlayers
-// 0x0020 (0x0020 - 0x0000)
-struct GbxRewards_BlueprintFunctions_GiveRewardPackageAllPlayers final
-{
-public:
-	FGbxDefPtrProperty_                           RewardDef;                                         // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                WorldContextObject;                                // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_GiveRewardPackageAllPlayers;
-
-// Function GbxGame.GbxRewards_BlueprintFunctions.HasReward
-// 0x0028 (0x0028 - 0x0000)
-struct GbxRewards_BlueprintFunctions_HasReward final
-{
-public:
-	struct FGbxRewardRef                          RewardRef;                                         // 0x0000(0x0018)(Parm, NativeAccessSpecifierPublic)
-	class UObject*                                OwnerContext;                                      // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0020(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_HasReward;
-
-// Function GbxGame.GbxRewards_BlueprintFunctions.MakeGbxRewardRef
-// 0x0030 (0x0030 - 0x0000)
-struct GbxRewards_BlueprintFunctions_MakeGbxRewardRef final
-{
-public:
-	struct FGbxRewardRef                          RewardRef;                                         // 0x0000(0x0018)(Parm, NativeAccessSpecifierPublic)
-	struct FGbxRewardRef                          ReturnValue;                                       // 0x0018(0x0018)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxRewards_BlueprintFunctions_MakeGbxRewardRef;
+DUMPER7_ASSERTS_GbxRewardsManager_Server_OpenPackage;
 
 // Function GbxGame.GbxRotationBlueprintLibrary.SetRotationChannelEnabled
 // 0x0020 (0x0020 - 0x0000)
@@ -9886,167 +10018,116 @@ public:
 };
 DUMPER7_ASSERTS_GbxRotationBlueprintLibrary_SetRotationTargetRotationLocal;
 
-// Function GbxGame.GbxSkeletalMeshComponent.AddExternalGestaltMeshes_BP
-// 0x0010 (0x0010 - 0x0000)
-struct GbxSkeletalMeshComponent_AddExternalGestaltMeshes_BP final
-{
-public:
-	TArray<class USkeletalMesh*>                  InGestaltMeshes;                                   // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_AddExternalGestaltMeshes_BP;
-
-// Function GbxGame.GbxSkeletalMeshComponent.GetForwardDynamicAngularVelocity
-// 0x0028 (0x0028 - 0x0000)
-struct GbxSkeletalMeshComponent_GetForwardDynamicAngularVelocity final
-{
-public:
-	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Tag;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                ReturnValue;                                       // 0x0010(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_GetForwardDynamicAngularVelocity;
-
-// Function GbxGame.GbxSkeletalMeshComponent.GetForwardDynamicLinearVelocity
-// 0x0028 (0x0028 - 0x0000)
-struct GbxSkeletalMeshComponent_GetForwardDynamicLinearVelocity final
-{
-public:
-	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Tag;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                ReturnValue;                                       // 0x0010(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_GetForwardDynamicLinearVelocity;
-
-// Function GbxGame.GbxSkeletalMeshComponent.GetForwardDynamicTransform
-// 0x0070 (0x0070 - 0x0000)
-struct GbxSkeletalMeshComponent_GetForwardDynamicTransform final
-{
-public:
-	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Tag;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FTransform                             ReturnValue;                                       // 0x0010(0x0060)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_GetForwardDynamicTransform;
-
-// Function GbxGame.GbxSkeletalMeshComponent.RemoveBodyAndChildren
-// 0x0008 (0x0008 - 0x0000)
-struct GbxSkeletalMeshComponent_RemoveBodyAndChildren final
-{
-public:
-	class FName                                   BoneName;                                          // 0x0000(0x0008)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_RemoveBodyAndChildren;
-
-// Function GbxGame.GbxSkeletalMeshComponent.RemoveBodyTarget
-// 0x0010 (0x0010 - 0x0000)
-struct GbxSkeletalMeshComponent_RemoveBodyTarget final
-{
-public:
-	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Tag;                                               // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_RemoveBodyTarget;
-
-// Function GbxGame.GbxSkeletalMeshComponent.RemoveExternalGestaltMeshes_BP
-// 0x0010 (0x0010 - 0x0000)
-struct GbxSkeletalMeshComponent_RemoveExternalGestaltMeshes_BP final
-{
-public:
-	TArray<class USkeletalMesh*>                  InGestaltMeshes;                                   // 0x0000(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_RemoveExternalGestaltMeshes_BP;
-
-// Function GbxGame.GbxSkeletalMeshComponent.SetBodyTarget
-// 0x0040 (0x0040 - 0x0000)
-struct GbxSkeletalMeshComponent_SetBodyTarget final
-{
-public:
-	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Pose;                                              // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	double                                        Radius;                                            // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	double                                        Stiffness;                                         // 0x0028(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	double                                        TargetSpeed;                                       // 0x0030(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Tag;                                               // 0x0038(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetBodyTarget;
-
-// Function GbxGame.GbxSkeletalMeshComponent.SetBodyTargetDirection
-// 0x0030 (0x0030 - 0x0000)
-struct GbxSkeletalMeshComponent_SetBodyTargetDirection final
-{
-public:
-	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector                                Direction;                                         // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	double                                        TargetSpeed;                                       // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Tag;                                               // 0x0028(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetBodyTargetDirection;
-
-// Function GbxGame.GbxSkeletalMeshComponent.SetBodyTargetParams
-// 0x00B8 (0x00B8 - 0x0000)
-struct GbxSkeletalMeshComponent_SetBodyTargetParams final
-{
-public:
-	class FName                                   BodyName;                                          // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FDBodyTargetParams                     params;                                            // 0x0008(0x00A8)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	class FName                                   Tag;                                               // 0x00B0(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetBodyTargetParams;
-
-// Function GbxGame.GbxSkeletalMeshComponent.SetCollisionResponse
-// 0x0010 (0x0010 - 0x0000)
-struct GbxSkeletalMeshComponent_SetCollisionResponse final
-{
-public:
-	ECollisionEnabled                             CollisionEnabled;                                  // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   BodyName;                                          // 0x0004(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIncludeChildren;                                  // 0x000C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetCollisionResponse;
-
-// Function GbxGame.GbxSkeletalMeshComponent.SetGravityOverride
-// 0x0028 (0x0028 - 0x0000)
-struct GbxSkeletalMeshComponent_SetGravityOverride final
-{
-public:
-	bool                                          bEnabled;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1[0x7];                                        // 0x0001(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVector                                Gravity;                                           // 0x0008(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Tag;                                               // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetGravityOverride;
-
-// Function GbxGame.GbxSkeletalMeshComponent.SetPrimarySimulationTag
-// 0x000C (0x000C - 0x0000)
-struct GbxSkeletalMeshComponent_SetPrimarySimulationTag final
-{
-public:
-	class FName                                   Tag;                                               // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bForceSet;                                         // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x3];                                        // 0x0009(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_SetPrimarySimulationTag;
-
-// Function GbxGame.GbxSkeletalMeshComponent.TeleportPrimarySimulation
+// Function GbxGame.GbxSequenceBlueprintLibrary.IsPlayingGbxSequence
 // 0x0018 (0x0018 - 0x0000)
-struct GbxSkeletalMeshComponent_TeleportPrimarySimulation final
+struct GbxSequenceBlueprintLibrary_IsPlayingGbxSequence final
 {
 public:
-	struct FVector                                NewLocation;                                       // 0x0000(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxSequence*                           GbxSequence;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_TeleportPrimarySimulation;
+DUMPER7_ASSERTS_GbxSequenceBlueprintLibrary_IsPlayingGbxSequence;
 
-// Function GbxGame.GbxSkeletalMeshComponent.GetAnimationFromTag
-// 0x0010 (0x0010 - 0x0000)
-struct GbxSkeletalMeshComponent_GetAnimationFromTag final
+// Function GbxGame.GbxSequenceBlueprintLibrary.PlayGbxSequence
+// 0x0020 (0x0020 - 0x0000)
+struct GbxSequenceBlueprintLibrary_PlayGbxSequence final
 {
 public:
-	struct FGameplayTag                           InKey;                                             // 0x0000(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UAnimSequenceBase*                      ReturnValue;                                       // 0x0008(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxSequence*                           GbxSequence;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxSequencePlaybackSettings           PlaybackSettings;                                  // 0x0010(0x0010)(Parm, NoDestructor, AdvancedDisplay, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxSkeletalMeshComponent_GetAnimationFromTag;
+DUMPER7_ASSERTS_GbxSequenceBlueprintLibrary_PlayGbxSequence;
+
+// Function GbxGame.GbxSequenceBlueprintLibrary.StopGbxSequence
+// 0x0008 (0x0008 - 0x0000)
+struct GbxSequenceBlueprintLibrary_StopGbxSequence final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSequenceBlueprintLibrary_StopGbxSequence;
+
+// Function GbxGame.GbxSkillActionExceptionHandler.BreakActionException
+// 0x0018 (0x0018 - 0x0000)
+struct GbxSkillActionExceptionHandler_BreakActionException final
+{
+public:
+	struct FGbxSkillActionException               InActionException;                                 // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	EGbxSkillActionExecType                       ExecType;                                          // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxSkillActionExceptionType                  ExceptionType;                                     // 0x0011(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_12[0x6];                                       // 0x0012(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_BreakActionException;
+
+// Function GbxGame.GbxSkillActionExceptionHandler.HandleException
+// 0x0010 (0x0010 - 0x0000)
+struct GbxSkillActionExceptionHandler_HandleException final
+{
+public:
+	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_HandleException;
+
+// Function GbxGame.GbxSkillActionExceptionHandler.IsSkillConditionEnabled
+// 0x0030 (0x0030 - 0x0000)
+struct GbxSkillActionExceptionHandler_IsSkillConditionEnabled final
+{
+public:
+	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           ConditionDef;                                      // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_IsSkillConditionEnabled;
+
+// Function GbxGame.GbxSkillActionExceptionHandler.IsSkillStateEnabled
+// 0x0030 (0x0030 - 0x0000)
+struct GbxSkillActionExceptionHandler_IsSkillStateEnabled final
+{
+public:
+	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           StateDef;                                          // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_IsSkillStateEnabled;
+
+// Function GbxGame.GbxSkillActionExceptionHandler.K2_SkillConditionBranch
+// 0x0030 (0x0030 - 0x0000)
+struct GbxSkillActionExceptionHandler_K2_SkillConditionBranch final
+{
+public:
+	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           ConditionDef;                                      // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ESkillStateScriptExec                         Result;                                            // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_K2_SkillConditionBranch;
+
+// Function GbxGame.GbxSkillActionExceptionHandler.K2_SkillStateBranch
+// 0x0030 (0x0030 - 0x0000)
+struct GbxSkillActionExceptionHandler_K2_SkillStateBranch final
+{
+public:
+	struct FGbxSkillActionException               Exception;                                         // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           StateDef;                                          // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ESkillStateScriptExec                         Result;                                            // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_K2_SkillStateBranch;
+
+// Function GbxGame.GbxSkillActionExceptionHandler.PlayActionGroup
+// 0x0018 (0x0018 - 0x0000)
+struct GbxSkillActionExceptionHandler_PlayActionGroup final
+{
+public:
+	struct FGbxSkillActionException               InActionException;                                 // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	class FName                                   GroupName;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSkillActionExceptionHandler_PlayActionGroup;
 
 // Function GbxGame.GbxSkillActionExecHandlerWriter_ControlledMove.WriteParams_ControlledMove
 // 0x0038 (0x0038 - 0x0000)
@@ -10962,110 +11043,41 @@ public:
 };
 DUMPER7_ASSERTS_GbxSkillBlueprintPrivate_SetSkillParam_vector;
 
-// Function GbxGame.GbxSkillComponentFunctions_AOE_Gps.SetQueryOwner
-// 0x0020 (0x0020 - 0x0000)
-struct GbxSkillComponentFunctions_AOE_Gps_SetQueryOwner final
+// Function GbxGame.GbxSkillLibraryStatics.GetLibraryEntryValue
+// 0x0078 (0x0078 - 0x0000)
+struct GbxSkillLibraryStatics_GetLibraryEntryValue final
 {
 public:
-	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class AActor*                                 QueryOwner;                                        // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           SkillDef;                                          // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           ComponentIdentifier;                               // 0x0020(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   EntryName;                                         // 0x0038(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxParam                              ReturnValue;                                       // 0x0040(0x0038)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_AOE_Gps_SetQueryOwner;
+DUMPER7_ASSERTS_GbxSkillLibraryStatics_GetLibraryEntryValue;
 
-// Function GbxGame.GbxSkillComponentFunctions_Library.GetEntryValue
-// 0x0058 (0x0058 - 0x0000)
-struct GbxSkillComponentFunctions_Library_GetEntryValue final
-{
-public:
-	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	class FName                                   EntryName;                                         // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxParam                              ReturnValue;                                       // 0x0020(0x0038)(Parm, OutParm, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_Library_GetEntryValue;
-
-// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.DrainPercentage
+// Function GbxGame.GbxSkillComponentFunctions_Material.InterpColor
 // 0x0038 (0x0038 - 0x0000)
-struct GbxSkillComponentFunctions_ResourcePool_DrainPercentage final
+struct GbxSkillComponentFunctions_Material_InterpColor final
 {
 public:
 	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Percentage;                                        // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         MinPercentage;                                     // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLinearColor                           Color;                                             // 0x0018(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGuid                                  MaterialID;                                        // 0x0028(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_DrainPercentage;
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_Material_InterpColor;
 
-// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.GetCurrentPercentage
-// 0x0038 (0x0038 - 0x0000)
-struct GbxSkillComponentFunctions_ResourcePool_GetCurrentPercentage final
+// Function GbxGame.GbxSkillComponentFunctions_Material.InterpScalar
+// 0x0030 (0x0030 - 0x0000)
+struct GbxSkillComponentFunctions_Material_InterpScalar final
 {
 public:
 	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0030(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	float                                         Scalar;                                            // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGuid                                  MaterialID;                                        // 0x001C(0x0010)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_GetCurrentPercentage;
-
-// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.GetCurrentValue
-// 0x0038 (0x0038 - 0x0000)
-struct GbxSkillComponentFunctions_ResourcePool_GetCurrentValue final
-{
-public:
-	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0030(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_GetCurrentValue;
-
-// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.GetMaxValue
-// 0x0038 (0x0038 - 0x0000)
-struct GbxSkillComponentFunctions_ResourcePool_GetMaxValue final
-{
-public:
-	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReturnValue;                                       // 0x0030(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_GetMaxValue;
-
-// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.RefillPercentage
-// 0x0038 (0x0038 - 0x0000)
-struct GbxSkillComponentFunctions_ResourcePool_RefillPercentage final
-{
-public:
-	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Percentage;                                        // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         MaxPercentage;                                     // 0x0034(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_RefillPercentage;
-
-// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.SetCurrentPercentage
-// 0x0038 (0x0038 - 0x0000)
-struct GbxSkillComponentFunctions_ResourcePool_SetCurrentPercentage final
-{
-public:
-	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         NewValue;                                          // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_SetCurrentPercentage;
-
-// Function GbxGame.GbxSkillComponentFunctions_ResourcePool.SetCurrentValue
-// 0x0038 (0x0038 - 0x0000)
-struct GbxSkillComponentFunctions_ResourcePool_SetCurrentValue final
-{
-public:
-	struct FGbxSkillComponentReference            ComponentReference;                                // 0x0000(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      ResourcePool;                                      // 0x0018(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         NewValue;                                          // 0x0030(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxSkillComponentFunctions_ResourcePool_SetCurrentValue;
+DUMPER7_ASSERTS_GbxSkillComponentFunctions_Material_InterpScalar;
 
 // Function GbxGame.GbxSkillComponentFunctions_TimerEx.AdjustTimer
 // 0x0030 (0x0030 - 0x0000)
@@ -11640,6 +11652,48 @@ public:
 };
 DUMPER7_ASSERTS_GbxSkillTargetResolutionStatics_GetTargetStrategyCount;
 
+// Function GbxGame.GbxSplineActor.GetClosestLocationOnSpline
+// 0x0030 (0x0030 - 0x0000)
+struct GbxSplineActor_GetClosestLocationOnSpline final
+{
+public:
+	struct FVector                                Location;                                          // 0x0000(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                ReturnValue;                                       // 0x0018(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSplineActor_GetClosestLocationOnSpline;
+
+// Function GbxGame.GbxSplineActor.GetClosestRotationOnSpline
+// 0x0030 (0x0030 - 0x0000)
+struct GbxSplineActor_GetClosestRotationOnSpline final
+{
+public:
+	struct FVector                                Location;                                          // 0x0000(0x0018)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               ReturnValue;                                       // 0x0018(0x0018)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSplineActor_GetClosestRotationOnSpline;
+
+// Function GbxGame.GbxSplineActor.GetTotalLength
+// 0x0004 (0x0004 - 0x0000)
+struct GbxSplineActor_GetTotalLength final
+{
+public:
+	float                                         ReturnValue;                                       // 0x0000(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSplineActor_GetTotalLength;
+
+// Function GbxGame.GbxSplineActor.GetTransformAtDistanceAlongSpline
+// 0x0070 (0x0070 - 0x0000)
+struct GbxSplineActor_GetTransformAtDistanceAlongSpline final
+{
+public:
+	float                                         Distance;                                          // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bWorldCoordinate;                                  // 0x0004(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseScale;                                         // 0x0005(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_6[0xA];                                        // 0x0006(0x000A)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FTransform                             ReturnValue;                                       // 0x0010(0x0060)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxSplineActor_GetTransformAtDistanceAlongSpline;
+
 // Function GbxGame.GbxSplineVolume.GenerateRandomPointsWithinVolume
 // 0x0018 (0x0018 - 0x0000)
 struct GbxSplineVolume_GenerateRandomPointsWithinVolume final
@@ -11692,45 +11746,64 @@ public:
 };
 DUMPER7_ASSERTS_GbxStandIn_GetLinkedPlayerState;
 
-// Function GbxGame.GbxStatusEffectScript_Const.OnBegin
-// 0x0018 (0x0018 - 0x0000)
-struct GbxStatusEffectScript_Const_OnBegin final
+// Function GbxGame.GbxStandInStatics.ClearStandIn
+// 0x0010 (0x0010 - 0x0000)
+struct GbxStandInStatics_ClearStandIn final
 {
 public:
-	struct FGbxStatusEffectScript_ExecContext     execContext;                                       // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class UObject*                                owner;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           StandInId;                                         // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxStatusEffectScript_Const_OnBegin;
+DUMPER7_ASSERTS_GbxStandInStatics_ClearStandIn;
 
-// Function GbxGame.GbxStatusEffectScript_Const.OnEnd
+// Function GbxGame.GbxStandInStatics.PlayStandInTrick
 // 0x0018 (0x0018 - 0x0000)
-struct GbxStatusEffectScript_Const_OnEnd final
+struct GbxStandInStatics_PlayStandInTrick final
 {
 public:
-	struct FGbxStatusEffectScript_ExecContext     execContext;                                       // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class UObject*                                owner;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           StandInId;                                         // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           TrickId;                                           // 0x0010(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxStatusEffectScript_Const_OnEnd;
+DUMPER7_ASSERTS_GbxStandInStatics_PlayStandInTrick;
 
-// Function GbxGame.GbxStatusEffectScript_Const.OnPushEvent
-// 0x0070 (0x0070 - 0x0000)
-struct GbxStatusEffectScript_Const_OnPushEvent final
+// Function GbxGame.GbxStandInStatics.RequestStandIn
+// 0x00C0 (0x00C0 - 0x0000)
+struct GbxStandInStatics_RequestStandIn final
 {
 public:
-	FGbxDefPtrProperty_                           EventDef;                                          // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxStatusEffectScript_ExecContext     execContext;                                       // 0x0018(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	const class UObject*                          PushOwner;                                         // 0x0030(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTagContainer                  tags;                                              // 0x0038(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	struct FGbxStatusEffectSpec_Params            params;                                            // 0x0058(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class UObject*                                owner;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           StandInId;                                         // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           StandInSettings;                                   // 0x0010(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FTransform                             SpawnTransform;                                    // 0x0030(0x0060)(Parm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           LinkedActorDef;                                    // 0x0090(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TDelegate<void(class AGbxStandIn* StandIn)>   OnStandInInitialized;                              // 0x00A8(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_B8[0x8];                                       // 0x00B8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxStatusEffectScript_Const_OnPushEvent;
+DUMPER7_ASSERTS_GbxStandInStatics_RequestStandIn;
 
-// Function GbxGame.GbxStatusEffectScript_Const.RequestShutdown
-// 0x0018 (0x0018 - 0x0000)
-struct GbxStatusEffectScript_Const_RequestShutdown final
+// Function GbxGame.GbxStandInStatics.ResetStandInBodySwitchesToDefaultState
+// 0x0010 (0x0010 - 0x0000)
+struct GbxStandInStatics_ResetStandInBodySwitchesToDefaultState final
 {
 public:
-	struct FGbxStatusEffectScript_ExecContext     execContext;                                       // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	class UObject*                                owner;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           StandInId;                                         // 0x0008(0x0008)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxStatusEffectScript_Const_RequestShutdown;
+DUMPER7_ASSERTS_GbxStandInStatics_ResetStandInBodySwitchesToDefaultState;
+
+// Function GbxGame.GbxStatusEffectSignatureParam_Duration.GetDuration
+// 0x0020 (0x0020 - 0x0000)
+struct GbxStatusEffectSignatureParam_Duration_GetDuration final
+{
+public:
+	struct FGbxStatusEffectSpec_Params            params;                                            // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	EGetStatusEffectParamResultPins               Outcome;                                           // 0x0018(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ReturnValue;                                       // 0x001C(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxStatusEffectSignatureParam_Duration_GetDuration;
 
 // Function GbxGame.GbxStatusEffectSignatureParam_DmgSource.GetDmgSource
 // 0x0028 (0x0028 - 0x0000)
@@ -11852,200 +11925,63 @@ public:
 };
 DUMPER7_ASSERTS_GbxStatusEffectSignatureParam_MutationBonus_GetMutBonus;
 
-// Function GbxGame.GbxStatusEffectsStatics.GetQueryResult_Float
-// 0x0028 (0x0028 - 0x0000)
-struct GbxStatusEffectsStatics_GetQueryResult_Float final
+// Function GbxGame.GbxTrickInterface.PlayTrick
+// 0x0010 (0x0010 - 0x0000)
+struct GbxTrickInterface_PlayTrick final
 {
 public:
-	struct FGbxStatusEffectQueryResult            Result;                                            // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	class FName                                   Name_0;                                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                Context;                                           // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	double                                        ReturnValue;                                       // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxTrick*                              Trick;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_GetQueryResult_Float;
+DUMPER7_ASSERTS_GbxTrickInterface_PlayTrick;
 
-// Function GbxGame.GbxStatusEffectsStatics.GetQueryResult_Int
-// 0x0028 (0x0028 - 0x0000)
-struct GbxStatusEffectsStatics_GetQueryResult_Int final
+// Function GbxGame.GbxTrickInterface.PlayTrickLocal
+// 0x0010 (0x0010 - 0x0000)
+struct GbxTrickInterface_PlayTrickLocal final
 {
 public:
-	struct FGbxStatusEffectQueryResult            Result;                                            // 0x0000(0x0010)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	class FName                                   Name_0;                                            // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                Context;                                           // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class UGbxTrick*                              Trick;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_GetQueryResult_Int;
+DUMPER7_ASSERTS_GbxTrickInterface_PlayTrickLocal;
 
-// Function GbxGame.GbxStatusEffectsStatics.GetStatusEffectInstanceCount
-// 0x0028 (0x0028 - 0x0000)
-struct GbxStatusEffectsStatics_GetStatusEffectInstanceCount final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	const class UGbxStatusEffectData*             StatusEffectData;                                  // 0x0008(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFilterByOwner;                                    // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class UObject*                                InOwner;                                           // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_GetStatusEffectInstanceCount;
-
-// Function GbxGame.GbxStatusEffectsStatics.HasStatusEffect
-// 0x0018 (0x0018 - 0x0000)
-struct GbxStatusEffectsStatics_HasStatusEffect final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	const class UGbxStatusEffectData*             StatusEffectData;                                  // 0x0008(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_HasStatusEffect;
-
-// Function GbxGame.GbxStatusEffectsStatics.PopAllFromEffect
-// 0x0018 (0x0018 - 0x0000)
-struct GbxStatusEffectsStatics_PopAllFromEffect final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	const class UGbxStatusEffectData*             StatusEffectData;                                  // 0x0008(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0010(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_PopAllFromEffect;
-
-// Function GbxGame.GbxStatusEffectsStatics.PopAllFromEffectSpec
-// 0x0020 (0x0020 - 0x0000)
-struct GbxStatusEffectsStatics_PopAllFromEffectSpec final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxStatusEffectPopAllFromEffectSpec   Spec;                                              // 0x0008(0x0010)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0018(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_PopAllFromEffectSpec;
-
-// Function GbxGame.GbxStatusEffectsStatics.PopAllSpec
-// 0x0060 (0x0060 - 0x0000)
-struct GbxStatusEffectsStatics_PopAllSpec final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxStatusEffectPopAllSpec             Spec;                                              // 0x0008(0x0050)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0058(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_5C[0x4];                                       // 0x005C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_PopAllSpec;
-
-// Function GbxGame.GbxStatusEffectsStatics.PopSpec
-// 0x0028 (0x0028 - 0x0000)
-struct GbxStatusEffectsStatics_PopSpec final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxStatusEffectPopSpec                Spec;                                              // 0x0008(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_PopSpec;
-
-// Function GbxGame.GbxStatusEffectsStatics.PushSpec
-// 0x0058 (0x0058 - 0x0000)
-struct GbxStatusEffectsStatics_PushSpec final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxStatusEffectPushSpec               Spec;                                              // 0x0008(0x0048)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0050(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_51[0x7];                                       // 0x0051(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_PushSpec;
-
-// Function GbxGame.GbxStatusEffectsStatics.Query
-// 0x0030 (0x0030 - 0x0000)
-struct GbxStatusEffectsStatics_Query final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxStatusEffectData*                   StatusEffect;                                      // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxStatusEffectQuerySpec*              Spec;                                              // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxStatusEffectQueryResult            Result;                                            // 0x0018(0x0010)(Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0028(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x7];                                       // 0x0029(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_Query;
-
-// Function GbxGame.GbxStatusEffectsStatics.Query_ByTag
-// 0x0070 (0x0070 - 0x0000)
-struct GbxStatusEffectsStatics_Query_ByTag final
-{
-public:
-	class UObject*                                target;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTagQuery                      TagQuery;                                          // 0x0008(0x0048)(Parm, NativeAccessSpecifierPublic)
-	class UGbxStatusEffectQuerySpec*              Spec;                                              // 0x0050(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxStatusEffectQueryResult            Result;                                            // 0x0058(0x0010)(Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0068(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_69[0x7];                                       // 0x0069(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_Query_ByTag;
-
-// Function GbxGame.GbxStatusEffectsStatics.RegisterListener
-// 0x0028 (0x0028 - 0x0000)
-struct GbxStatusEffectsStatics_RegisterListener final
-{
-public:
-	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxStatusEffectNotifyEvent*            Event;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                EventContext;                                      // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   EventName;                                         // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxStatusEffectNotifyEventType               EventType;                                         // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_RegisterListener;
-
-// Function GbxGame.GbxStatusEffectsStatics.UnRegisterListener
-// 0x0028 (0x0028 - 0x0000)
-struct GbxStatusEffectsStatics_UnRegisterListener final
-{
-public:
-	class UObject*                                Context;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UGbxStatusEffectNotifyEvent*            Event;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UObject*                                EventContext;                                      // 0x0010(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   EventName;                                         // 0x0018(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxStatusEffectNotifyEventType               EventType;                                         // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxStatusEffectsStatics_UnRegisterListener;
-
-// Function GbxGame.GbxTraceTrajectoryComponent.SetTrajectoryEnabled
-// 0x0001 (0x0001 - 0x0000)
-struct GbxTraceTrajectoryComponent_SetTrajectoryEnabled final
-{
-public:
-	bool                                          bEnabled;                                          // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_GbxTraceTrajectoryComponent_SetTrajectoryEnabled;
-
-// Function GbxGame.GbxTraceTrajectoryComponent.SetTrajectoryParticleComponent
+// Function GbxGame.GbxTrickInterface.StopTrick
 // 0x0008 (0x0008 - 0x0000)
-struct GbxTraceTrajectoryComponent_SetTrajectoryParticleComponent final
+struct GbxTrickInterface_StopTrick final
 {
 public:
-	class UFXSystemComponent*                     ParticleComponent;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UGbxTrick*                              Trick;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxTraceTrajectoryComponent_SetTrajectoryParticleComponent;
+DUMPER7_ASSERTS_GbxTrickInterface_StopTrick;
 
-// Function GbxGame.GbxTraceTrajectoryComponent.IsTrajectoryEnabled
+// Function GbxGame.GbxTrickInterface.StopTrickId
 // 0x0001 (0x0001 - 0x0000)
-struct GbxTraceTrajectoryComponent_IsTrajectoryEnabled final
+struct GbxTrickInterface_StopTrickId final
 {
 public:
-	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         ID;                                                // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_GbxTraceTrajectoryComponent_IsTrajectoryEnabled;
+DUMPER7_ASSERTS_GbxTrickInterface_StopTrickId;
+
+// Function GbxGame.GbxTrickInterface.StopTrickIdLocal
+// 0x0001 (0x0001 - 0x0000)
+struct GbxTrickInterface_StopTrickIdLocal final
+{
+public:
+	uint8                                         ID;                                                // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxTrickInterface_StopTrickIdLocal;
+
+// Function GbxGame.GbxTrickInterface.StopTrickLocal
+// 0x0008 (0x0008 - 0x0000)
+struct GbxTrickInterface_StopTrickLocal final
+{
+public:
+	class UGbxTrick*                              Trick;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxTrickInterface_StopTrickLocal;
 
 // Function GbxGame.GbxTrickStatics.GetGbxTrickMeshes
 // 0x0010 (0x0010 - 0x0000)
@@ -12228,6 +12164,26 @@ public:
 };
 DUMPER7_ASSERTS_GbxTrickStatics_StopGbxTrickPerchId;
 
+// Function GbxGame.GbxTrickScript_Loop.OnLoop_Mut
+// 0x0010 (0x0010 - 0x0000)
+struct GbxTrickScript_Loop_OnLoop_Mut final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         LoopCount;                                         // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_GbxTrickScript_Loop_OnLoop_Mut;
+
+// Function GbxGame.GbxTrickScript_Loop.OnLoopEnd_Mut
+// 0x0008 (0x0008 - 0x0000)
+struct GbxTrickScript_Loop_OnLoopEnd_Mut final
+{
+public:
+	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxTrickScript_Loop_OnLoopEnd_Mut;
+
 // Function GbxGame.GbxTriggerComponent.NotifyActorComponentEndOverlap
 // 0x0020 (0x0020 - 0x0000)
 struct GbxTriggerComponent_NotifyActorComponentEndOverlap final
@@ -12265,17 +12221,6 @@ public:
 };
 DUMPER7_ASSERTS_GbxTriggerComponent_SetTriggerEnabled;
 
-// Function GbxGame.GbxTriggerVolume.BindAndCallOnTouchedTrigger
-// 0x0014 (0x0014 - 0x0000)
-struct GbxTriggerVolume_BindAndCallOnTouchedTrigger final
-{
-public:
-	TDelegate<void(class AActor* InActor, bool bIsPlayer)> InEvent;                                  // 0x0000(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCallThisEventOnly;                                // 0x0010(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11[0x3];                                       // 0x0011(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_GbxTriggerVolume_BindAndCallOnTouchedTrigger;
-
 // Function GbxGame.GbxUseTrigger.K2_OnHoldUsedTrigger
 // 0x0008 (0x0008 - 0x0000)
 struct GbxUseTrigger_K2_OnHoldUsedTrigger final
@@ -12311,6 +12256,78 @@ public:
 	class AActor*                                 User;                                              // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_GbxUseTrigger_K2_OnUsedTrigger;
+
+// Function GbxGame.GoreLimb.OnHit
+// 0x0128 (0x0128 - 0x0000)
+struct GoreLimb_OnHit final
+{
+public:
+	class AActor*                                 SelfActor;                                         // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 OtherActor;                                        // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                NormalImpulse;                                     // 0x0010(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0028(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GoreLimb_OnHit;
+
+// Function GbxGame.HazardInteractionComponent.BeginInteraction
+// 0x0028 (0x0028 - 0x0000)
+struct HazardInteractionComponent_BeginInteraction final
+{
+public:
+	FGameDataHandleProperty_                      NewState;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIsSource;                                         // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         SourceDuration;                                    // 0x001C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 NewInstigator;                                     // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_HazardInteractionComponent_BeginInteraction;
+
+// Function GbxGame.HazardInteractionComponent.SetDamageInstigator
+// 0x0008 (0x0008 - 0x0000)
+struct HazardInteractionComponent_SetDamageInstigator final
+{
+public:
+	class AActor*                                 NewInstigator;                                     // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_HazardInteractionComponent_SetDamageInstigator;
+
+// Function GbxGame.HazardInteractionComponent.SetEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct HazardInteractionComponent_SetEnabled final
+{
+public:
+	bool                                          bNewEnabled;                                       // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_HazardInteractionComponent_SetEnabled;
+
+// Function GbxGame.HazardInteractionComponent.IsEnabled
+// 0x0001 (0x0001 - 0x0000)
+struct HazardInteractionComponent_IsEnabled final
+{
+public:
+	bool                                          ReturnValue;                                       // 0x0000(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_HazardInteractionComponent_IsEnabled;
+
+// Function GbxGame.GbxProgressGraphUser.GbxGetUnlockableGroupNames
+// 0x0028 (0x0028 - 0x0000)
+struct GbxProgressGraphUser_GbxGetUnlockableGroupNames final
+{
+public:
+	FGbxDefPtrProperty_                           InGraph;                                           // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class FName>                           OutNames;                                          // 0x0018(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgressGraphUser_GbxGetUnlockableGroupNames;
+
+// Function GbxGame.GbxProgressGraphUser.GbxGetUnlockableNodeNames
+// 0x0028 (0x0028 - 0x0000)
+struct GbxProgressGraphUser_GbxGetUnlockableNodeNames final
+{
+public:
+	FGbxDefPtrProperty_                           InGraph;                                           // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class FName>                           OutNames;                                          // 0x0018(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_GbxProgressGraphUser_GbxGetUnlockableNodeNames;
 
 // Function GbxGame.InventoryBodyAnimInstance.BlueprintSwitchedMode
 // 0x0004 (0x0004 - 0x0000)
@@ -12692,6 +12709,15 @@ public:
 };
 DUMPER7_ASSERTS_JunkSystemFunctionLibrary_RemoveOnlyPickupableByOwnerRestriction;
 
+// Function GbxGame.LightBeamManager.OnParticleSystemFinished
+// 0x0008 (0x0008 - 0x0000)
+struct LightBeamManager_OnParticleSystemFinished final
+{
+public:
+	class UFXSystemComponent*                     FinishedComponent;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightBeamManager_OnParticleSystemFinished;
+
 // Function GbxGame.LightBeam.LockOntoTarget
 // 0x0060 (0x0060 - 0x0000)
 struct LightBeam_LockOntoTarget final
@@ -12942,37 +12968,23 @@ public:
 };
 DUMPER7_ASSERTS_LightBeam_K2_GetDamageType;
 
-// Function GbxGame.LightBeamCollisionHandler.StartBeamImpact
-// 0x0110 (0x0110 - 0x0000)
-struct LightBeamCollisionHandler_StartBeamImpact final
+// Function GbxGame.LightBeamScript.OnBegin
+// 0x0008 (0x0008 - 0x0000)
+struct LightBeamScript_OnBegin final
 {
 public:
-	const class ULightBeam*                       Beam;                                              // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Impact;                                            // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	ELightBeamCollisionHandlerResult              ReturnValue;                                       // 0x0108(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_109[0x7];                                      // 0x0109(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class ULightBeam*                             Beam;                                              // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_LightBeamCollisionHandler_StartBeamImpact;
+DUMPER7_ASSERTS_LightBeamScript_OnBegin;
 
-// Function GbxGame.LightBeamCollisionHandler.StopBeamImpact
-// 0x0108 (0x0108 - 0x0000)
-struct LightBeamCollisionHandler_StopBeamImpact final
+// Function GbxGame.LightBeamScript.OnShutdown
+// 0x0008 (0x0008 - 0x0000)
+struct LightBeamScript_OnShutdown final
 {
 public:
-	const class ULightBeam*                       Beam;                                              // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             LastImpact;                                        // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	class ULightBeam*                             Beam;                                              // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_LightBeamCollisionHandler_StopBeamImpact;
-
-// Function GbxGame.LightBeamCollisionHandler.UpdateBeamImpact
-// 0x0108 (0x0108 - 0x0000)
-struct LightBeamCollisionHandler_UpdateBeamImpact final
-{
-public:
-	const class ULightBeam*                       Beam;                                              // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHitResult                             Impact;                                            // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightBeamCollisionHandler_UpdateBeamImpact;
+DUMPER7_ASSERTS_LightBeamScript_OnShutdown;
 
 // Function GbxGame.LightBeamStatics.ClearBeamFlag
 // 0x0228 (0x0228 - 0x0000)
@@ -13097,40 +13109,6 @@ public:
 	uint8                                         Pad_24C[0x4];                                      // 0x024C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_LightBeamStatics_SpawnLightBeamAsync;
-
-// Function GbxGame.LightProjectileManager.OnParticleSystemFinished
-// 0x0008 (0x0008 - 0x0000)
-struct LightProjectileManager_OnParticleSystemFinished final
-{
-public:
-	class UFXSystemComponent*                     FinishedComponent;                                 // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileManager_OnParticleSystemFinished;
-
-// Function GbxGame.LightProjectileManager.ServerSendDebugProjectileImpact
-// 0x0020 (0x0020 - 0x0000)
-struct LightProjectileManager_ServerSendDebugProjectileImpact final
-{
-public:
-	int32                                         ProjSyncID;                                        // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class AActor*                                 HitActor;                                          // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   BoneName;                                          // 0x0010(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint16                                        ProjFlags;                                         // 0x0018(0x0002)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1A[0x6];                                       // 0x001A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_LightProjectileManager_ServerSendDebugProjectileImpact;
-
-// Function GbxGame.LightProjectileManager.ServerSendDebugProjectilePath
-// 0x0020 (0x0020 - 0x0000)
-struct LightProjectileManager_ServerSendDebugProjectilePath final
-{
-public:
-	int32                                         ProjSyncID;                                        // 0x0000(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVector_NetQuantize                    Location;                                          // 0x0008(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_LightProjectileManager_ServerSendDebugProjectilePath;
 
 // Function GbxGame.LightProjectile.ApplyAreaDamage
 // 0x0128 (0x0128 - 0x0000)
@@ -13477,6 +13455,156 @@ public:
 };
 DUMPER7_ASSERTS_LightProjectile_K2_GetDamageType;
 
+// Function GbxGame.LightProjectileScript.OnAttached
+// 0x0010 (0x0010 - 0x0000)
+struct LightProjectileScript_OnAttached final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 AttachedActor;                                     // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnAttached;
+
+// Function GbxGame.LightProjectileScript.OnBegin
+// 0x0008 (0x0008 - 0x0000)
+struct LightProjectileScript_OnBegin final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnBegin;
+
+// Function GbxGame.LightProjectileScript.OnBounce
+// 0x0120 (0x0120 - 0x0000)
+struct LightProjectileScript_OnBounce final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	struct FVector                                ImpactVelocity;                                    // 0x0108(0x0018)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnBounce;
+
+// Function GbxGame.LightProjectileScript.OnDetached
+// 0x0008 (0x0008 - 0x0000)
+struct LightProjectileScript_OnDetached final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnDetached;
+
+// Function GbxGame.LightProjectileScript.OnDirectDamage
+// 0x0110 (0x0110 - 0x0000)
+struct LightProjectileScript_OnDirectDamage final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	bool                                          bCritical;                                         // 0x0108(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_109[0x7];                                      // 0x0109(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnDirectDamage;
+
+// Function GbxGame.LightProjectileScript.OnExplode
+// 0x0008 (0x0008 - 0x0000)
+struct LightProjectileScript_OnExplode final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnExplode;
+
+// Function GbxGame.LightProjectileScript.OnGameplayBounce
+// 0x0120 (0x0120 - 0x0000)
+struct LightProjectileScript_OnGameplayBounce final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	struct FVector                                ImpactVelocity;                                    // 0x0108(0x0018)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnGameplayBounce;
+
+// Function GbxGame.LightProjectileScript.OnHomingTargetLost
+// 0x0010 (0x0010 - 0x0000)
+struct LightProjectileScript_OnHomingTargetLost final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EHomingTargetLostReason                       reason;                                            // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnHomingTargetLost;
+
+// Function GbxGame.LightProjectileScript.OnHomingTargetReached
+// 0x0008 (0x0008 - 0x0000)
+struct LightProjectileScript_OnHomingTargetReached final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnHomingTargetReached;
+
+// Function GbxGame.LightProjectileScript.OnImpact
+// 0x0108 (0x0108 - 0x0000)
+struct LightProjectileScript_OnImpact final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnImpact;
+
+// Function GbxGame.LightProjectileScript.OnLastGameplayBounce
+// 0x0108 (0x0108 - 0x0000)
+struct LightProjectileScript_OnLastGameplayBounce final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnLastGameplayBounce;
+
+// Function GbxGame.LightProjectileScript.OnLifetimeExpired
+// 0x0008 (0x0008 - 0x0000)
+struct LightProjectileScript_OnLifetimeExpired final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnLifetimeExpired;
+
+// Function GbxGame.LightProjectileScript.OnNonGameplayBounce
+// 0x0120 (0x0120 - 0x0000)
+struct LightProjectileScript_OnNonGameplayBounce final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	struct FVector                                ImpactVelocity;                                    // 0x0108(0x0018)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnNonGameplayBounce;
+
+// Function GbxGame.LightProjectileScript.OnProxyImpact
+// 0x0108 (0x0108 - 0x0000)
+struct LightProjectileScript_OnProxyImpact final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHitResult                             Hit;                                               // 0x0008(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnProxyImpact;
+
+// Function GbxGame.LightProjectileScript.OnStopHomingDistanceReached
+// 0x0008 (0x0008 - 0x0000)
+struct LightProjectileScript_OnStopHomingDistanceReached final
+{
+public:
+	class ULightProjectile*                       projectile;                                        // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_LightProjectileScript_OnStopHomingDistanceReached;
+
 // Function GbxGame.LightProjectileStatics.BindDelegateOnLightProjectileHit
 // 0x0018 (0x0018 - 0x0000)
 struct LightProjectileStatics_BindDelegateOnLightProjectileHit final
@@ -13818,232 +13946,6 @@ public:
 };
 DUMPER7_ASSERTS_ManagedActorFunctionLibrary_RemoveManagedActor;
 
-// Function GbxGame.MissionBlueprintLibrary.GetOrCreateMissionInstanceForPlayer
-// 0x0028 (0x0028 - 0x0000)
-struct MissionBlueprintLibrary_GetOrCreateMissionInstanceForPlayer final
-{
-public:
-	struct FMissionInstanceHandle                 primarymission;                                    // 0x0000(0x000C)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	const class AActor*                           Actor;                                             // 0x0010(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0018(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_GetOrCreateMissionInstanceForPlayer;
-
-// Function GbxGame.MissionBlueprintLibrary.GetOrCreateMissionInstanceForPlayerGroup
-// 0x0028 (0x0028 - 0x0000)
-struct MissionBlueprintLibrary_GetOrCreateMissionInstanceForPlayerGroup final
-{
-public:
-	struct FMissionInstanceHandle                 primarymission;                                    // 0x0000(0x000C)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	const class AActor*                           Actor;                                             // 0x0010(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0018(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_GetOrCreateMissionInstanceForPlayerGroup;
-
-// Function GbxGame.MissionBlueprintLibrary.IsActorPartOfActiveMission
-// 0x0010 (0x0010 - 0x0000)
-struct MissionBlueprintLibrary_IsActorPartOfActiveMission final
-{
-public:
-	class AActor*                                 Actor;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0008(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_IsActorPartOfActiveMission;
-
-// Function GbxGame.MissionBlueprintLibrary.IsPlayerRelevantForMissionInstance
-// 0x0028 (0x0028 - 0x0000)
-struct MissionBlueprintLibrary_IsPlayerRelevantForMissionInstance final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMissionInstanceHandle                 MissionHandle;                                     // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class AActor*                                 Actor;                                             // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x0020(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_IsPlayerRelevantForMissionInstance;
-
-// Function GbxGame.MissionBlueprintLibrary.IsValid
-// 0x0010 (0x0010 - 0x0000)
-struct MissionBlueprintLibrary_IsValid final
-{
-public:
-	struct FMissionInstanceHandle                 MissionHandle;                                     // 0x0000(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
-	bool                                          ReturnValue;                                       // 0x000C(0x0001)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_IsValid;
-
-// Function GbxGame.MissionBlueprintLibrary.QueryPrimaryMissionInstance
-// 0x0030 (0x0030 - 0x0000)
-struct MissionBlueprintLibrary_QueryPrimaryMissionInstance final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           MissionDef;                                        // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMissionInstanceHandle                 OutMission;                                        // 0x0020(0x000C)(Parm, OutParm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_QueryPrimaryMissionInstance;
-
-// Function GbxGame.MissionBlueprintLibrary.QuerySubordinateMissionInstancesForPlayer
-// 0x0038 (0x0038 - 0x0000)
-struct MissionBlueprintLibrary_QuerySubordinateMissionInstancesForPlayer final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           MissionDef;                                        // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Actor;                                             // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FMissionInstanceHandle>         OutMissions;                                       // 0x0028(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_QuerySubordinateMissionInstancesForPlayer;
-
-// Function GbxGame.MissionBlueprintLibrary.ResetRepeatableMission
-// 0x0020 (0x0020 - 0x0000)
-struct MissionBlueprintLibrary_ResetRepeatableMission final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           mission;                                           // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_ResetRepeatableMission;
-
-// Function GbxGame.MissionBlueprintLibrary.SendMissionEvent
-// 0x0028 (0x0028 - 0x0000)
-struct MissionBlueprintLibrary_SendMissionEvent final
-{
-public:
-	class UObject*                                WorldContextObject;                                // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           mission;                                           // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   Event;                                             // 0x0020(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_SendMissionEvent;
-
-// Function GbxGame.MissionBlueprintLibrary.GetMissionIdent
-// 0x0020 (0x0020 - 0x0000)
-struct MissionBlueprintLibrary_GetMissionIdent final
-{
-public:
-	struct FMissionInstanceHandle                 MissionInstanceHandle;                             // 0x0000(0x000C)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class FString                                 ReturnValue;                                       // 0x0010(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_MissionBlueprintLibrary_GetMissionIdent;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.AddMissionSource
-// 0x0030 (0x0030 - 0x0000)
-struct MissionSourceBlueprintLibrary_AddMissionSource final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           MSDef;                                             // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                OutIndex;                                          // 0x0020(0x000C)(Parm, OutParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_AddMissionSource;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.GetBestMission
-// 0x0028 (0x0028 - 0x0000)
-struct MissionSourceBlueprintLibrary_GetBestMission final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         Count;                                             // 0x0014(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FMissionInstanceHandle>         ReturnValue;                                       // 0x0018(0x0010)(Parm, OutParm, ZeroConstructor, ReturnParm, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_GetBestMission;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.GetMissionSource
-// 0x0030 (0x0030 - 0x0000)
-struct MissionSourceBlueprintLibrary_GetMissionSource final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           MSDef;                                             // 0x0008(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                OutIndex;                                          // 0x0020(0x000C)(Parm, OutParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_GetMissionSource;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.GetMissionSourceRank
-// 0x0018 (0x0018 - 0x0000)
-struct MissionSourceBlueprintLibrary_GetMissionSourceRank final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OutRank;                                           // 0x0014(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_GetMissionSourceRank;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.GetMissionSourceTimerTimeRemaining
-// 0x0028 (0x0028 - 0x0000)
-struct MissionSourceBlueprintLibrary_GetMissionSourceTimerTimeRemaining final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                TimerLabel;                                        // 0x0014(0x000C)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OutRemainingTime;                                  // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_GetMissionSourceTimerTimeRemaining;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.SetMissionSourceRank
-// 0x0028 (0x0028 - 0x0000)
-struct MissionSourceBlueprintLibrary_SetMissionSourceRank final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FFactValue                             Rank;                                              // 0x0014(0x0010)(Parm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_SetMissionSourceRank;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.StartBestMission
-// 0x0020 (0x0020 - 0x0000)
-struct MissionSourceBlueprintLibrary_StartBestMission final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0014(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_StartBestMission;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.StartMissionSourceMission
-// 0x0030 (0x0030 - 0x0000)
-struct MissionSourceBlueprintLibrary_StartMissionSourceMission final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                MissionName;                                       // 0x0014(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FMissionInstanceHandle                 ReturnValue;                                       // 0x0020(0x000C)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_StartMissionSourceMission;
-
-// Function GbxGame.MissionSourceBlueprintLibrary.StartMissionSourceTimer
-// 0x0020 (0x0020 - 0x0000)
-struct MissionSourceBlueprintLibrary_StartMissionSourceTimer final
-{
-public:
-	class AActor*                                 Origin;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FSToken                                MSIndex;                                           // 0x0008(0x000C)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   TimerName;                                         // 0x0014(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OutRemainingTime;                                  // 0x001C(0x0004)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_MissionSourceBlueprintLibrary_StartMissionSourceTimer;
-
 // Function GbxGame.MissionTaskBlueprintLibrary.AssignTaskToGlobal
 // 0x0040 (0x0040 - 0x0000)
 struct MissionTaskBlueprintLibrary_AssignTaskToGlobal final
@@ -14103,6 +14005,132 @@ public:
 };
 DUMPER7_ASSERTS_MissionTaskBlueprintLibrary_QueryMissionTasks;
 
+// Function GbxGame.PuddleHazard.CleanUpPuddleById
+// 0x0010 (0x0010 - 0x0000)
+struct PuddleHazard_CleanUpPuddleById final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ID;                                                // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PuddleHazard_CleanUpPuddleById;
+
+// Function GbxGame.PuddleHazard.CleanUpPuddleByOwner
+// 0x0008 (0x0008 - 0x0000)
+struct PuddleHazard_CleanUpPuddleByOwner final
+{
+public:
+	class AActor*                                 PuddleOwner;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PuddleHazard_CleanUpPuddleByOwner;
+
+// Function GbxGame.PuddleHazard.ForEachPuddle_Owner
+// 0x0018 (0x0018 - 0x0000)
+struct PuddleHazard_ForEachPuddle_Owner final
+{
+public:
+	class AActor*                                 PuddleOwner;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TDelegate<void(class APuddleHazard* Puddle)>  Callback;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PuddleHazard_ForEachPuddle_Owner;
+
+// Function GbxGame.PuddleHazard.SpawnPuddleHazard
+// 0x00F0 (0x00F0 - 0x0000)
+struct PuddleHazard_SpawnPuddleHazard final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 PuddleOwner;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FTransform                             Transform;                                         // 0x0010(0x0060)(Parm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      definition;                                        // 0x0070(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FDamageSourceContainer                 DamageSource;                                      // 0x0088(0x0040)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	bool                                          bCanDamageOwner;                                   // 0x00C8(0x0001)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCanDamageFriendlies;                              // 0x00C9(0x0001)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_CA[0x2];                                       // 0x00CA(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         Radius;                                            // 0x00CC(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         lifespan_0;                                        // 0x00D0(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAdjustSpawnTransform;                             // 0x00D4(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D5[0x3];                                       // 0x00D5(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         DamageOverride;                                    // 0x00D8(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bLevelSyncDamage;                                  // 0x00DC(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_DD[0x3];                                       // 0x00DD(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         GroundPlacementRadius;                             // 0x00E0(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         ReturnValue;                                       // 0x00E4(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_E8[0x8];                                       // 0x00E8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PuddleHazard_SpawnPuddleHazard;
+
+// Function GbxGame.PuddleHazard.BeginInteraction
+// 0x0028 (0x0028 - 0x0000)
+struct PuddleHazard_BeginInteraction final
+{
+public:
+	FGameDataHandleProperty_                      NewState;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIsSource;                                         // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         SourceDuration;                                    // 0x001C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 NewInstigator;                                     // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PuddleHazard_BeginInteraction;
+
+// Function GbxGame.PuddleHazard.Convert
+// 0x0018 (0x0018 - 0x0000)
+struct PuddleHazard_Convert final
+{
+public:
+	FGameDataHandleProperty_                      NewDef;                                            // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_PuddleHazard_Convert;
+
+// Function GbxGame.NexusActorDataLayerHelper.OnDataLayerInstanceRuntimeStateChanged
+// 0x0010 (0x0010 - 0x0000)
+struct NexusActorDataLayerHelper_OnDataLayerInstanceRuntimeStateChanged final
+{
+public:
+	const class UDataLayerInstance*               InDataLayerInstance;                               // 0x0000(0x0008)(ConstParm, Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EDataLayerRuntimeState                        InEffectiveState;                                  // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_NexusActorDataLayerHelper_OnDataLayerInstanceRuntimeStateChanged;
+
+// Function GbxGame.NexusConfigStoreInventoryStats.GetInventoryStatNames
+// 0x0010 (0x0010 - 0x0000)
+struct NexusConfigStoreInventoryStats_GetInventoryStatNames final
+{
+public:
+	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_NexusConfigStoreInventoryStats_GetInventoryStatNames;
+
+// Function GbxGame.RadiateDamageAreaActor.OnActorBeginOverlap
+// 0x0120 (0x0120 - 0x0000)
+struct RadiateDamageAreaActor_OnActorBeginOverlap final
+{
+public:
+	class UPrimitiveComponent*                    OverlappedComp;                                    // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Other;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFromSweep;                                        // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FHitResult                             SweepResult;                                       // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_RadiateDamageAreaActor_OnActorBeginOverlap;
+
+// Function GbxGame.RadiateDamageAreaActor.OnActorEndOverlap
+// 0x0020 (0x0020 - 0x0000)
+struct RadiateDamageAreaActor_OnActorEndOverlap final
+{
+public:
+	class UPrimitiveComponent*                    OverlappedComp;                                    // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Other;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_RadiateDamageAreaActor_OnActorEndOverlap;
+
 // Function GbxGame.NexusConfigStoreItemPool.SpawnInventoryFromItemPool
 // 0x0080 (0x0080 - 0x0000)
 struct NexusConfigStoreItemPool_SpawnInventoryFromItemPool final
@@ -14117,14 +14145,322 @@ public:
 };
 DUMPER7_ASSERTS_NexusConfigStoreItemPool_SpawnInventoryFromItemPool;
 
-// Function GbxGame.Usable.BP_OnUsed
-// 0x0018 (0x0018 - 0x0000)
-struct Usable_BP_OnUsed final
+// Function GbxGame.PerchStatics.AIScriptedPerch
+// 0x0030 (0x0030 - 0x0000)
+struct PerchStatics_AIScriptedPerch final
 {
 public:
-	struct FUseEvent                              UseEvent;                                          // 0x0000(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	class AActor*                                 AIActor;                                           // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Perch;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxBrainExec                                 Exec;                                              // 0x0010(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FLatentActionInfo                      LatentInfo;                                        // 0x0018(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_Usable_BP_OnUsed;
+DUMPER7_ASSERTS_PerchStatics_AIScriptedPerch;
+
+// Function GbxGame.PerchStatics.SetPerchEnabled
+// 0x0010 (0x0010 - 0x0000)
+struct PerchStatics_SetPerchEnabled final
+{
+public:
+	class AActor*                                 Perch;                                             // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bEnabled;                                          // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_PerchStatics_SetPerchEnabled;
+
+// Function GbxGame.ProjectileStatics.GetProjectileDistanceOverTime
+// 0x0028 (0x0028 - 0x0000)
+struct ProjectileStatics_GetProjectileDistanceOverTime final
+{
+public:
+	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         time;                                              // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SpeedOverride;                                     // 0x001C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_ProjectileStatics_GetProjectileDistanceOverTime;
+
+// Function GbxGame.ProjectileStatics.GetProjectileTimeOverDistance
+// 0x0028 (0x0028 - 0x0000)
+struct ProjectileStatics_GetProjectileTimeOverDistance final
+{
+public:
+	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Distance;                                          // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SpeedOverride;                                     // 0x001C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReturnValue;                                       // 0x0020(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_24[0x4];                                       // 0x0024(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_ProjectileStatics_GetProjectileTimeOverDistance;
+
+// Function GbxGame.ProjectileStatics.GetSafeProjectileThrowTransform
+// 0x0100 (0x0100 - 0x0000)
+struct ProjectileStatics_GetSafeProjectileThrowTransform final
+{
+public:
+	class AActor*                                 Source;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0008(0x0060)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	TArray<class AActor*>                         IgnoreActors;                                      // 0x0068(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	ECollisionChannel                             TraceChannel;                                      // 0x0078(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0080(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FTransform                             ReturnValue;                                       // 0x00A0(0x0060)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_GetSafeProjectileThrowTransform;
+
+// Function GbxGame.ProjectileStatics.GetSafeProjectileThrowTransformFromLocation
+// 0x00A0 (0x00A0 - 0x0000)
+struct ProjectileStatics_GetSafeProjectileThrowTransformFromLocation final
+{
+public:
+	class AActor*                                 Source;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0008(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class AActor*>                         IgnoreActors;                                      // 0x0020(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NativeAccessSpecifierPublic)
+	ECollisionChannel                             TraceChannel;                                      // 0x0030(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseAnimatedCameraRotation;                        // 0x0031(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_32[0xE];                                       // 0x0032(0x000E)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FTransform                             ReturnValue;                                       // 0x0040(0x0060)(Parm, OutParm, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_GetSafeProjectileThrowTransformFromLocation;
+
+// Function GbxGame.ProjectileStatics.MakeViewRelativeLocation
+// 0x0038 (0x0038 - 0x0000)
+struct ProjectileStatics_MakeViewRelativeLocation final
+{
+public:
+	struct FVector                                Offset;                                            // 0x0000(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               ReturnValue;                                       // 0x0018(0x0020)(Parm, OutParm, ReturnParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_MakeViewRelativeLocation;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile
+// 0x0160 (0x0160 - 0x0000)
+struct ProjectileStatics_SpawnProjectile final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 owner;                                             // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOwnerIsInstigator;                                // 0x0048(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_49[0x7];                                       // 0x0049(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class APawn*                                  instigator;                                        // 0x0050(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0058(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Velocity;                                          // 0x0070(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         GravityScale;                                      // 0x0088(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_8C[0x4];                                       // 0x008C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0090(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_Const
+// 0x0138 (0x0138 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_Const final
+{
+public:
+	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 owner;                                             // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOwnerIsInstigator;                                // 0x0020(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class APawn*                                  instigator;                                        // 0x0028(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x0030(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector                                Velocity;                                          // 0x0048(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         GravityScale;                                      // 0x0060(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_64[0x4];                                       // 0x0064(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0068(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_Const;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_Source
+// 0x01E8 (0x01E8 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_Source final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Source;                                            // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0048(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x00A8(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         SpeedOverride;                                     // 0x00D8(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         GravityScale;                                      // 0x00DC(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x00E0(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x00F8(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x01C8(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_Source;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_Source_Const
+// 0x01C0 (0x01C0 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_Source_Const final
+{
+public:
+	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Source;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0020(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x0080(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         SpeedOverride;                                     // 0x00B0(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         GravityScale;                                      // 0x00B4(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x00B8(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x00D0(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x01A0(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_Source_Const;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtActor
+// 0x0290 (0x0290 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_ThrowAtActor final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Source;                                            // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0048(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x00A8(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class AActor*                                 target;                                            // 0x00D8(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   TargetOptions;                                     // 0x00E0(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x0140(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0188(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x01A0(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0270(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtActor;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtActor_Const
+// 0x0268 (0x0268 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_ThrowAtActor_Const final
+{
+public:
+	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Source;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0020(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x0080(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class AActor*                                 target;                                            // 0x00B0(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   TargetOptions;                                     // 0x00B8(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x0118(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0160(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0178(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0248(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtActor_Const;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtCrosshair
+// 0x0230 (0x0230 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_ThrowAtCrosshair final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Source;                                            // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0048(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x00A8(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x00D8(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         TraceDistance;                                     // 0x0120(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_124[0x4];                                      // 0x0124(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0128(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0140(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0210(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtCrosshair;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtCrosshair_Const
+// 0x0208 (0x0208 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_ThrowAtCrosshair_Const final
+{
+public:
+	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Source;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0020(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x0080(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x00B0(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         TraceDistance;                                     // 0x00F8(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_FC[0x4];                                       // 0x00FC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0100(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0118(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x01E8(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtCrosshair_Const;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtLocation
+// 0x0240 (0x0240 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_ThrowAtLocation final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	class Aprojectile*                            projectile;                                        // 0x0020(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      definition;                                        // 0x0028(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Source;                                            // 0x0040(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0048(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x00A8(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x00D8(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x00F0(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0138(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0150(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x0220(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtLocation;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectile_ThrowAtLocation_Const
+// 0x0218 (0x0218 - 0x0000)
+struct ProjectileStatics_SpawnProjectile_ThrowAtLocation_Const final
+{
+public:
+	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 Source;                                            // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   SourceOptions;                                     // 0x0020(0x0060)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   SourceRotation;                                    // 0x0080(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                Location;                                          // 0x00B0(0x0018)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FTrajectoryOptions                     TrajectoryOptions;                                 // 0x00C8(0x0048)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileOwnerOptions                OwnerOptions;                                      // 0x0110(0x0018)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0128(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxViewRelativeLocation               SourceViewOptions;                                 // 0x01F8(0x0020)(ConstParm, Parm, OutParm, ReferenceParm, NoDestructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectile_ThrowAtLocation_Const;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectiles_Query
+// 0x0348 (0x0348 - 0x0000)
+struct ProjectileStatics_SpawnProjectiles_Query final
+{
+public:
+	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLatentActionInfo                      LatentInfo;                                        // 0x0008(0x0018)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	ESpawnProjectileExec                          Exec;                                              // 0x0020(0x0001)(Parm, OutParm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_21[0x7];                                       // 0x0021(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class Aprojectile*>                    AllProjectiles;                                    // 0x0028(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
+	class Aprojectile*                            SpawnedProjectile;                                 // 0x0038(0x0008)(Parm, OutParm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      definition;                                        // 0x0040(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 owner;                                             // 0x0058(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGpsQueryRunData                       QueryData;                                         // 0x0060(0x01E0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   Rotation;                                          // 0x0240(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	int32                                         MaxResults;                                        // 0x0270(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         delay;                                             // 0x0274(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0278(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectiles_Query;
+
+// Function GbxGame.ProjectileStatics.SpawnProjectiles_Query_Const
+// 0x0308 (0x0308 - 0x0000)
+struct ProjectileStatics_SpawnProjectiles_Query_Const final
+{
+public:
+	FGameDataHandleProperty_                      definition;                                        // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class AActor*                                 owner;                                             // 0x0018(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGpsQueryRunData                       QueryData;                                         // 0x0020(0x01E0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+	struct FGbxRelativeRotation                   Rotation;                                          // 0x0200(0x0030)(Parm, NoDestructor, NativeAccessSpecifierPublic)
+	int32                                         MaxResults;                                        // 0x0230(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         delay;                                             // 0x0234(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FProjectileDamageOverrideData          DamageOverrides;                                   // 0x0238(0x00D0)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_ProjectileStatics_SpawnProjectiles_Query_Const;
 
 // Function GbxGame.ScreenParticleManagerComponent.HideScreenParticleForActor
 // 0x0020 (0x0020 - 0x0000)
@@ -14301,307 +14637,6 @@ public:
 	class FName                                   MaterialPropertyName;                              // 0x0030(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_ScreenParticleManagerComponent_ClientTrackParticleProperty;
-
-// Function GbxGame.NexusConfigStoreInventory.GetAspectMeshGestaltPartNames
-// 0x0038 (0x0038 - 0x0000)
-struct NexusConfigStoreInventory_GetAspectMeshGestaltPartNames final
-{
-public:
-	TSoftObjectPtr<class UObject>                 Mesh;                                              // 0x0000(0x0028)(Parm, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class FName>                           OutNames;                                          // 0x0028(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_NexusConfigStoreInventory_GetAspectMeshGestaltPartNames;
-
-// Function GbxGame.NexusConfigStoreInventory.GetCriterionDisplayNames
-// 0x0010 (0x0010 - 0x0000)
-struct NexusConfigStoreInventory_GetCriterionDisplayNames final
-{
-public:
-	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_NexusConfigStoreInventory_GetCriterionDisplayNames;
-
-// Function GbxGame.NexusConfigStoreInventory.GetCriterionNameFromDisplayName
-// 0x0018 (0x0018 - 0x0000)
-struct NexusConfigStoreInventory_GetCriterionNameFromDisplayName final
-{
-public:
-	class FString                                 DisplayName;                                       // 0x0000(0x0010)(Parm, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ReturnValue;                                       // 0x0010(0x0008)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_NexusConfigStoreInventory_GetCriterionNameFromDisplayName;
-
-// Function GbxGame.NexusConfigStoreInventory.GetCriterionNames
-// 0x0010 (0x0010 - 0x0000)
-struct NexusConfigStoreInventory_GetCriterionNames final
-{
-public:
-	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_NexusConfigStoreInventory_GetCriterionNames;
-
-// Function GbxGame.NexusConfigStoreInventory.GetCriterionTagNames
-// 0x0010 (0x0010 - 0x0000)
-struct NexusConfigStoreInventory_GetCriterionTagNames final
-{
-public:
-	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_NexusConfigStoreInventory_GetCriterionTagNames;
-
-// Function GbxGame.NexusConfigStoreInventory.GetStorePartTypeNames
-// 0x0010 (0x0010 - 0x0000)
-struct NexusConfigStoreInventory_GetStorePartTypeNames final
-{
-public:
-	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_NexusConfigStoreInventory_GetStorePartTypeNames;
-
-// Function GbxGame.NexusConfigStoreInventoryStats.GetInventoryStatNames
-// 0x0010 (0x0010 - 0x0000)
-struct NexusConfigStoreInventoryStats_GetInventoryStatNames final
-{
-public:
-	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_NexusConfigStoreInventoryStats_GetInventoryStatNames;
-
-// Function GbxGame.OxygenConsumptionStatics.RegisterOxygenConsumption
-// 0x0018 (0x0018 - 0x0000)
-struct OxygenConsumptionStatics_RegisterOxygenConsumption final
-{
-public:
-	class AGbxCharacter*                          TargetCharacter;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ConsumptionRate;                                   // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_RegisterOxygenConsumption;
-
-// Function GbxGame.OxygenConsumptionStatics.RegisterOxygenConsumptionForAllPlayers
-// 0x0018 (0x0018 - 0x0000)
-struct OxygenConsumptionStatics_RegisterOxygenConsumptionForAllPlayers final
-{
-public:
-	class AActor*                                 ContextActor;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ConsumptionRate;                                   // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_RegisterOxygenConsumptionForAllPlayers;
-
-// Function GbxGame.OxygenConsumptionStatics.RegisterOxygenRegeneration
-// 0x0018 (0x0018 - 0x0000)
-struct OxygenConsumptionStatics_RegisterOxygenRegeneration final
-{
-public:
-	class AGbxCharacter*                          TargetCharacter;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         RegenerationRate;                                  // 0x0010(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_RegisterOxygenRegeneration;
-
-// Function GbxGame.OxygenConsumptionStatics.SetSkipDefaultOxygenDepletedBehavior
-// 0x0010 (0x0010 - 0x0000)
-struct OxygenConsumptionStatics_SetSkipDefaultOxygenDepletedBehavior final
-{
-public:
-	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bShouldSkipDefaultOxygenDepletedBehavior;          // 0x0008(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_SetSkipDefaultOxygenDepletedBehavior;
-
-// Function GbxGame.OxygenConsumptionStatics.SubscribeToOxygenDepletedEvent
-// 0x0020 (0x0020 - 0x0000)
-struct OxygenConsumptionStatics_SubscribeToOxygenDepletedEvent final
-{
-public:
-	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(class AActor* OxygenConsumer)> Delegate;                                          // 0x0008(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOverrideDefaultBehavior;                          // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_SubscribeToOxygenDepletedEvent;
-
-// Function GbxGame.OxygenConsumptionStatics.SubscribeToOxygenNotDepletedEvent
-// 0x0018 (0x0018 - 0x0000)
-struct OxygenConsumptionStatics_SubscribeToOxygenNotDepletedEvent final
-{
-public:
-	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(class AActor* OxygenConsumer)> Delegate;                                          // 0x0008(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_SubscribeToOxygenNotDepletedEvent;
-
-// Function GbxGame.OxygenConsumptionStatics.UnregisterOxygenConsumption
-// 0x0010 (0x0010 - 0x0000)
-struct OxygenConsumptionStatics_UnregisterOxygenConsumption final
-{
-public:
-	class AGbxCharacter*                          TargetCharacter;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_UnregisterOxygenConsumption;
-
-// Function GbxGame.OxygenConsumptionStatics.UnregisterOxygenConsumptionForAllPlayers
-// 0x0010 (0x0010 - 0x0000)
-struct OxygenConsumptionStatics_UnregisterOxygenConsumptionForAllPlayers final
-{
-public:
-	class AActor*                                 ContextActor;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_UnregisterOxygenConsumptionForAllPlayers;
-
-// Function GbxGame.OxygenConsumptionStatics.UnregisterOxygenRegeneration
-// 0x0010 (0x0010 - 0x0000)
-struct OxygenConsumptionStatics_UnregisterOxygenRegeneration final
-{
-public:
-	class AGbxCharacter*                          TargetCharacter;                                   // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   reason;                                            // 0x0008(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_UnregisterOxygenRegeneration;
-
-// Function GbxGame.OxygenConsumptionStatics.UnsubscribeFromOxygenDepletedEvent
-// 0x0020 (0x0020 - 0x0000)
-struct OxygenConsumptionStatics_UnsubscribeFromOxygenDepletedEvent final
-{
-public:
-	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(class AActor* OxygenConsumer)> Delegate;                                          // 0x0008(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bRemoveDefaultBehaviorOverride;                    // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x7];                                       // 0x0019(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_UnsubscribeFromOxygenDepletedEvent;
-
-// Function GbxGame.OxygenConsumptionStatics.UnsubscribeFromOxygenNotDepletedEvent
-// 0x0018 (0x0018 - 0x0000)
-struct OxygenConsumptionStatics_UnsubscribeFromOxygenNotDepletedEvent final
-{
-public:
-	class UObject*                                OwnerContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(class AActor* OxygenConsumer)> Delegate;                                          // 0x0008(0x0010)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_OxygenConsumptionStatics_UnsubscribeFromOxygenNotDepletedEvent;
-
-// Function GbxGame.PuddleHazard.CleanUpPuddleById
-// 0x0010 (0x0010 - 0x0000)
-struct PuddleHazard_CleanUpPuddleById final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ID;                                                // 0x0008(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C[0x4];                                        // 0x000C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PuddleHazard_CleanUpPuddleById;
-
-// Function GbxGame.PuddleHazard.CleanUpPuddleByOwner
-// 0x0008 (0x0008 - 0x0000)
-struct PuddleHazard_CleanUpPuddleByOwner final
-{
-public:
-	class AActor*                                 PuddleOwner;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PuddleHazard_CleanUpPuddleByOwner;
-
-// Function GbxGame.PuddleHazard.ForEachPuddle_Owner
-// 0x0018 (0x0018 - 0x0000)
-struct PuddleHazard_ForEachPuddle_Owner final
-{
-public:
-	class AActor*                                 PuddleOwner;                                       // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TDelegate<void(class APuddleHazard* Puddle)>  Callback;                                          // 0x0008(0x0010)(ConstParm, Parm, OutParm, ZeroConstructor, ReferenceParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PuddleHazard_ForEachPuddle_Owner;
-
-// Function GbxGame.PuddleHazard.SpawnPuddleHazard
-// 0x00F0 (0x00F0 - 0x0000)
-struct PuddleHazard_SpawnPuddleHazard final
-{
-public:
-	class UObject*                                WorldContext;                                      // 0x0000(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 PuddleOwner;                                       // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FTransform                             Transform;                                         // 0x0010(0x0060)(Parm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      definition;                                        // 0x0070(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FDamageSourceContainer                 DamageSource;                                      // 0x0088(0x0040)(ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
-	bool                                          bCanDamageOwner;                                   // 0x00C8(0x0001)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCanDamageFriendlies;                              // 0x00C9(0x0001)(ConstParm, Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_CA[0x2];                                       // 0x00CA(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         Radius;                                            // 0x00CC(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         lifespan_0;                                        // 0x00D0(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAdjustSpawnTransform;                             // 0x00D4(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D5[0x3];                                       // 0x00D5(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         DamageOverride;                                    // 0x00D8(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bLevelSyncDamage;                                  // 0x00DC(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_DD[0x3];                                       // 0x00DD(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         GroundPlacementRadius;                             // 0x00E0(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         ReturnValue;                                       // 0x00E4(0x0004)(Parm, OutParm, ZeroConstructor, ReturnParm, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_E8[0x8];                                       // 0x00E8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_PuddleHazard_SpawnPuddleHazard;
-
-// Function GbxGame.PuddleHazard.BeginInteraction
-// 0x0028 (0x0028 - 0x0000)
-struct PuddleHazard_BeginInteraction final
-{
-public:
-	FGameDataHandleProperty_                      NewState;                                          // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIsSource;                                         // 0x0018(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         SourceDuration;                                    // 0x001C(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 NewInstigator;                                     // 0x0020(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PuddleHazard_BeginInteraction;
-
-// Function GbxGame.PuddleHazard.Convert
-// 0x0018 (0x0018 - 0x0000)
-struct PuddleHazard_Convert final
-{
-public:
-	FGameDataHandleProperty_                      NewDef;                                            // 0x0000(0x0018)(Parm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PuddleHazard_Convert;
-
-// Function GbxGame.PuddleHazardConfigurationData.GetParticleEmitterNames
-// 0x0010 (0x0010 - 0x0000)
-struct PuddleHazardConfigurationData_GetParticleEmitterNames final
-{
-public:
-	TArray<class FName>                           OutNames;                                          // 0x0000(0x0010)(Parm, OutParm, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_PuddleHazardConfigurationData_GetParticleEmitterNames;
-
-// Function GbxGame.RadiateDamageAreaActor.OnActorBeginOverlap
-// 0x0120 (0x0120 - 0x0000)
-struct RadiateDamageAreaActor_OnActorBeginOverlap final
-{
-public:
-	class UPrimitiveComponent*                    OverlappedComp;                                    // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Other;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFromSweep;                                        // 0x001C(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1D[0x3];                                       // 0x001D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FHitResult                             SweepResult;                                       // 0x0020(0x0100)(ConstParm, Parm, OutParm, ReferenceParm, IsPlainOldData, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_RadiateDamageAreaActor_OnActorBeginOverlap;
-
-// Function GbxGame.RadiateDamageAreaActor.OnActorEndOverlap
-// 0x0020 (0x0020 - 0x0000)
-struct RadiateDamageAreaActor_OnActorEndOverlap final
-{
-public:
-	class UPrimitiveComponent*                    OverlappedComp;                                    // 0x0000(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class AActor*                                 Other;                                             // 0x0008(0x0008)(Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPrimitiveComponent*                    OtherComp;                                         // 0x0010(0x0008)(Parm, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OtherBodyIndex;                                    // 0x0018(0x0004)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_RadiateDamageAreaActor_OnActorEndOverlap;
 
 // Function GbxGame.SpawnEncounterCondition_Volume.OnTouchedTrigger
 // 0x0010 (0x0010 - 0x0000)

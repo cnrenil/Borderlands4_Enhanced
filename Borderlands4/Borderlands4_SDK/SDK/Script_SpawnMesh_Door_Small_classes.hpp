@@ -10,11 +10,11 @@
 
 #include "Basic.hpp"
 
-#include "Enum_SpawnMesh_Door_Small_AnimStyle_structs.hpp"
 #include "GbxGame_classes.hpp"
-#include "Engine_structs.hpp"
 #include "Enum_SpawnMesh_CharacterAnimStyle_structs.hpp"
+#include "Engine_structs.hpp"
 #include "Enum_SpawnMesh_Door_Small_ArtStyle_structs.hpp"
+#include "Enum_SpawnMesh_Door_Small_AnimStyle_structs.hpp"
 
 
 namespace SDK

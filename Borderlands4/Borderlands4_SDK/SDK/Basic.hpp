@@ -33,24 +33,17 @@ using namespace UC;
 */
 namespace Offsets
 {
-	constexpr int32 GObjects          = 0x0C703988;
-	constexpr int32 AppendString      = 0x0017D7FC;
-	constexpr int32 GNames            = 0x0C61DCC0;
-	constexpr int32 GWorld            = 0x0C8AF840;
-	constexpr int32 ProcessEvent      = 0x000D49CE;
-	constexpr int32 InputKey          = 0x03B2116;
+	constexpr int32 GObjects          = 0x115F29B0;
+	constexpr int32 AppendString      = 0x011556A0;
+	constexpr int32 GNames            = 0x00000000;
+	constexpr int32 GWorld            = 0x00000000;
+	constexpr int32 ProcessEvent      = 0x014F9B20;
 	constexpr int32 ProcessEventIdx   = 0x00000049;
 }
 
 namespace InSDKUtils
 {
 	uintptr_t GetImageBase();
-	uintptr_t ResolveGObjectsAddress();
-	uintptr_t ResolveAppendStringAddress();
-	uintptr_t ResolveGNamesAddress();
-	uintptr_t ResolveGWorldAddress();
-	uintptr_t ResolveProcessEventAddress();
-	uintptr_t ResolveInputKeyAddress();
 
 	template<typename FuncType>
 	inline FuncType GetVirtualFunction(const void* ObjectInstance, int32 Index)
@@ -279,7 +272,7 @@ public:
 private:
 	inline void InitGObjects()
 	{
-		GObjectsAddress = reinterpret_cast<void*>(InSDKUtils::ResolveGObjectsAddress());
+		GObjectsAddress = reinterpret_cast<void*>(InSDKUtils::GetImageBase() + Offsets::GObjects);
 	}
 
 public:
@@ -352,7 +345,7 @@ public:
 
 	static void InitInternal()
 	{
-		AppendString = reinterpret_cast<void*>(InSDKUtils::ResolveAppendStringAddress());
+		AppendString = reinterpret_cast<void*>(InSDKUtils::GetImageBase() + Offsets::AppendString);
 	}
 
 	bool IsNone() const
@@ -476,35 +469,34 @@ DUMPER7_ASSERTS_FStructBaseChain;
 namespace FTextImpl
 {
 // Predefined struct FTextData
-// 0x0028 (0x0028 - 0x0000)
+// 0x0010 (0x0010 - 0x0000)
 class FTextData final
 {
 public:
-	uint8                                         Pad_0[0x18];                                       // 0x0000(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	class FString                                 TextSource;                                        // 0x0018(0x0010)(NOT AUTO-GENERATED PROPERTY)
+	class FString                                 TextSource;                                        // 0x0000(0x0010)(NOT AUTO-GENERATED PROPERTY)
 };
 DUMPER7_ASSERTS_FTextData;
 }
 
 // Predefined struct FText
-// 0x0010 (0x0010 - 0x0000)
+// 0x0000 (0x0000 - 0x0000)
 class FText final
 {
 public:
-	class FTextImpl::FTextData*                   TextData;                                          // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
-	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+    class FTextImpl::FTextData*                   TextData;                                          // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
+    uint8 Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	const class FString& GetStringRef() const
-	{
-		return TextData->TextSource;
-	}
-	std::string ToString() const
-	{
-		return TextData->TextSource.ToString();
-	}
+    const class FString& GetStringRef() const
+    {
+        return TextData->TextSource;
+    }
+    std::string ToString() const
+    {
+        return TextData->TextSource.ToString();
+    }
 };
-// DUMPER7_ASSERTS_FText;
+// DUMPER7_ASSERTS_FText; // Until this is fixed comment this out.
 
 // Predefined struct FWeakObjectPtr
 // 0x0008 (0x0008 - 0x0000)
@@ -1070,13 +1062,13 @@ UE_ENUM_OPERATORS(EPropertyFlags);
 class FFieldClass
 {
 public:
-	FName                                         Name;                                              // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
-	uint64                                        Id;                                                // 0x0008(0x0008)(NOT AUTO-GENERATED PROPERTY)
-	uint8                                         Pad_10[0x8];                                       // 0x0010(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	uint64                                        CastFlags;                                         // 0x0018(0x0008)(NOT AUTO-GENERATED PROPERTY)
-	// EClassFlags                                   ClassFlags;                                        // 0x0018(0x0004)(NOT AUTO-GENERATED PROPERTY)
-	// uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class FFieldClass*                            SuperClass;                                        // 0x0020(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	FName                                         Name;                          // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	uint64                                        Id;                            // 0x0008(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	uint8                                         Pad_10[0x8];                   // 0x0010(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	uint64                                        CastFlags;                     // 0x0018(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	//EClassFlags                                 ClassFlags;                    // 0x0018(0x0004)(NOT AUTO-GENERATED PROPERTY)
+	// uint8                                      Pad_1C[0x4];                   // 0x001C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class FFieldClass* SuperClass;                    // 0x0020(0x0008)(NOT AUTO-GENERATED PROPERTY)
 };
 // DUMPER7_ASSERTS_FFieldClass;
 
@@ -1280,3 +1272,4 @@ template<typename UnderlayingClassType, int32 Size, int32 Align = 0x8>
 using TActorBasedCycleFixup = CyclicDependencyFixupImpl::TCyclicClassFixup<UnderlayingClassType, Size, Align, class AActor>;
 
 }
+

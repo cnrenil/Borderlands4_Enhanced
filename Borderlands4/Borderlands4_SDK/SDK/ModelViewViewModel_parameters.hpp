@@ -12,8 +12,8 @@
 
 #include "UMG_structs.hpp"
 #include "ModelViewViewModel_structs.hpp"
-#include "CoreUObject_structs.hpp"
 #include "SlateCore_structs.hpp"
+#include "CoreUObject_structs.hpp"
 #include "FieldNotification_structs.hpp"
 
 

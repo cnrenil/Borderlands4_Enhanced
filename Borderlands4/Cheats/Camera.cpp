@@ -78,21 +78,13 @@ namespace
 	using NativeCameraModeCommitFn = __int64(__fastcall*)(__int64, __int64*, __int64*, __int64, int, char);
 	constexpr SignatureRegistry::Signature kNativeCameraUpdateSignature{
 		"NativeCameraUpdate",
-		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? "
-		"66 44 0F 29 BC 24 ? ? ? ? 66 44 0F 29 B4 24 ? ? ? ? "
-		"66 44 0F 29 AC 24 ? ? ? ? 66 44 0F 29 A4 24 ? ? ? ? "
-		"66 44 0F 29 9C 24 ? ? ? ? 66 44 0F 29 94 24 ? ? ? ? "
-		"66 44 0F 29 8C 24 ? ? ? ? 66 44 0F 29 84 24 ? ? ? ? "
-		"66 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 66 0F 28 F2",
+		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? 66 44 0F 29 BC 24 ? ? ? ? 66 44 0F 29 B4 24",
 		SignatureRegistry::HookTiming::InGameReady
 	};
 	constexpr size_t kNativeCameraUpdateHookLen = 19;
 	constexpr SignatureRegistry::Signature kNativeCameraModeCommitSignature{
 		"NativeCameraModeCommit",
-		"41 57 41 56 41 54 56 57 55 53 48 83 EC 50 "
-		"0F 29 74 24 40 0F 28 F3 4C 89 C7 49 89 D6 48 89 CE "
-		"48 8B 05 ? ? ? ? 48 31 E0 48 89 44 24 38 "
-		"48 8B 01 FF 90 D0 08 00 00",
+		"Signature for 1410702B0: 41 57 41 56 41 54 56 57 55 53 48 83 EC ? 0F 29 74 24 ? 44 89 C7",
 		SignatureRegistry::HookTiming::InGameReady
 	};
 	constexpr size_t kNativeCameraModeCommitHookLen = 19;

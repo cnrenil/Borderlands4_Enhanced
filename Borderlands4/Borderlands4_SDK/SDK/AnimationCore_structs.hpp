@@ -50,27 +50,6 @@ enum class EEulerRotationOrder : uint8
 	EEulerRotationOrder_MAX                  = 6,
 };
 
-// ScriptStruct AnimationCore.EulerTransform
-// 0x0048 (0x0048 - 0x0000)
-struct FEulerTransform final
-{
-public:
-	struct FVector                                Location;                                          // 0x0000(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FRotator                               Rotation;                                          // 0x0018(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                scale;                                             // 0x0030(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FEulerTransform;
-
-// ScriptStruct AnimationCore.NodeObject
-// 0x0010 (0x0010 - 0x0000)
-struct FNodeObject final
-{
-public:
-	class FName                                   Name;                                              // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ParentName;                                        // 0x0008(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FNodeObject;
-
 // ScriptStruct AnimationCore.Axis
 // 0x0020 (0x0020 - 0x0000)
 struct FAxis final
@@ -82,6 +61,17 @@ public:
 };
 DUMPER7_ASSERTS_FAxis;
 
+// ScriptStruct AnimationCore.EulerTransform
+// 0x0048 (0x0048 - 0x0000)
+struct FEulerTransform final
+{
+public:
+	struct FVector                                Location;                                          // 0x0000(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FRotator                               Rotation;                                          // 0x0018(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                scale;                                             // 0x0030(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FEulerTransform;
+
 // ScriptStruct AnimationCore.NodeChain
 // 0x0010 (0x0010 - 0x0000)
 struct FNodeChain final
@@ -90,6 +80,16 @@ public:
 	TArray<class FName>                           nodes;                                             // 0x0000(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FNodeChain;
+
+// ScriptStruct AnimationCore.NodeObject
+// 0x0010 (0x0010 - 0x0000)
+struct FNodeObject final
+{
+public:
+	class FName                                   Name;                                              // 0x0000(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ParentName;                                        // 0x0008(0x0008)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FNodeObject;
 
 // ScriptStruct AnimationCore.NodeHierarchyData
 // 0x0070 (0x0070 - 0x0000)

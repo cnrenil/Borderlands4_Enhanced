@@ -312,7 +312,7 @@ public:
 DUMPER7_ASSERTS_ATimeOfDayWeatherOverrideVolume;
 
 // Class GbxTimeOfDay.WorldTimeOfDayActor
-// 0x0198 (0x0528 - 0x0390)
+// 0x01A8 (0x0538 - 0x0390)
 class AWorldTimeOfDayActor final : public AActor
 {
 public:
@@ -357,12 +357,14 @@ public:
 	uint8                                         Pad_48E[0x2];                                      // 0x048E(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
 	TArray<struct FTimeOfDayStateSettings>        StateSettings;                                     // 0x0490(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
 	TMap<class FName, float>                      TimeOfDayBookmarks;                                // 0x04A0(0x0050)(Edit, NativeAccessSpecifierPublic)
-	int32                                         CycleCount;                                        // 0x04F0(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bTimeOfDayPaused;                                  // 0x04F4(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_4F5[0x3];                                      // 0x04F5(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FWorldTimeOfDayWeatherData>     WorldWeatherData;                                  // 0x04F8(0x0010)(Net, ZeroConstructor, Transient, RepNotify, NativeAccessSpecifierPrivate)
-	TArray<struct FWorldTimeOfDayBaseLayerOverride> WorldBaseLayerOverrides;                         // 0x0508(0x0010)(Net, ZeroConstructor, Transient, RepNotify, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_518[0x10];                                     // 0x0518(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	float                                         SkyLightEnvMapUpdateFrequency;                     // 0x04F0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         CycleCount;                                        // 0x04F4(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bTimeOfDayPaused;                                  // 0x04F8(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_4F9[0x7];                                      // 0x04F9(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FWorldTimeOfDayWeatherData>     WorldWeatherData;                                  // 0x0500(0x0010)(Net, ZeroConstructor, Transient, RepNotify, NativeAccessSpecifierPrivate)
+	TArray<struct FWorldTimeOfDayBaseLayerOverride> WorldBaseLayerOverrides;                         // 0x0510(0x0010)(Net, ZeroConstructor, Transient, RepNotify, NativeAccessSpecifierPrivate)
+	float                                         LastSkyLightEnvMapUpdateTime;                      // 0x0520(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_524[0x14];                                     // 0x0524(0x0014)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	void OnRep_CycleCount(int32 PreviousCycleCount);

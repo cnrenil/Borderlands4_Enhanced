@@ -643,7 +643,7 @@ DUMPER7_ASSERTS_NiagaraComponent_SetGpuComputeDebug;
 struct NiagaraComponent_SetLockDesiredAgeDeltaTimeToSeekDelta final
 {
 public:
-	bool                                          Block;                                             // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          block;                                             // 0x0000(0x0001)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_NiagaraComponent_SetLockDesiredAgeDeltaTimeToSeekDelta;
 

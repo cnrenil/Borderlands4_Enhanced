@@ -93,28 +93,36 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStore_GbxActivityAreaStampContext;
 
-// Class GbxGame.GbxMaterialParameterTemplateData
-// 0x0010 (0x0040 - 0x0030)
-class UGbxMaterialParameterTemplateData final : public UDataAsset
+// Class GbxGame.GbxManagedSkeletalMeshComponent
+// 0x00C0 (0x1240 - 0x1180)
+class UGbxManagedSkeletalMeshComponent : public USkeletalMeshComponent
 {
 public:
-	TArray<struct FGbxMaterialParameterInfo>      GbxMaterialParameterInfo;                          // 0x0030(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1178[0x20];                                    // 0x1178(0x0020)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxAnimUpdateRateParameters           UpdateRateParams;                                  // 0x1198(0x0018)(Edit, NativeAccessSpecifierPrivate)
+	FGbxDefPtrProperty_                           AnimUpdateRateParamsDef;                           // 0x11B0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bUseDefaultVisibilityBasedAnimTickOption;          // 0x11C8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bMinimalUpdateForCopyBones;                        // 0x11C9(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_11CA[0x76];                                    // 0x11CA(0x0076)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void NotifyAnimInitialized();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMaterialParameterTemplateData")
+		STATIC_CLASS_IMPL("GbxManagedSkeletalMeshComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMaterialParameterTemplateData")
+		STATIC_NAME_IMPL(L"GbxManagedSkeletalMeshComponent")
 	}
-	static class UGbxMaterialParameterTemplateData* GetDefaultObj()
+	static class UGbxManagedSkeletalMeshComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxMaterialParameterTemplateData>();
+		return GetDefaultObjImpl<UGbxManagedSkeletalMeshComponent>();
 	}
 };
-DUMPER7_ASSERTS_UGbxMaterialParameterTemplateData;
+DUMPER7_ASSERTS_UGbxManagedSkeletalMeshComponent;
 
 // Class GbxGame.projectile
 // 0x11B0 (0x1540 - 0x0390)
@@ -369,77 +377,54 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSkillManagedResourceType_Actor;
 
-// Class GbxGame.GbxMaterialParamInterpStatics
+// Class GbxGame.GbxMantleBlockingVolume
+// 0x0000 (0x03C8 - 0x03C8)
+class AGbxMantleBlockingVolume final : public AVolume
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxMantleBlockingVolume")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxMantleBlockingVolume")
+	}
+	static class AGbxMantleBlockingVolume* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxMantleBlockingVolume>();
+	}
+};
+DUMPER7_ASSERTS_AGbxMantleBlockingVolume;
+
+// Class GbxGame.GbxMovingPlatformLibrary
 // 0x0000 (0x0028 - 0x0028)
-class UGbxMaterialParamInterpStatics final : public UBlueprintFunctionLibrary
+class UGbxMovingPlatformLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	static void BreakGbxParamInterpOptions(const struct FGbxMaterialParamInterpOptions& InterpData, class FName* ParamName, float* InterpTime, class FName* MaterialSlot, EAlphaBlendOption* CurveOption, class UCurveFloat** CustomCurve);
-	static void InterpScalar(class UObject* Context, float NewValue, const struct FGbxMaterialParamInterpOptions& options);
-	static void InterpVector(class UObject* Context, const struct FLinearColor& NewValue, const struct FGbxMaterialParamInterpOptions& options);
-	static struct FGbxMaterialParamInterpOptions MakeGbxParamInterpOptions(class FName ParamName, float InterpTime, class FName MaterialSlot, EAlphaBlendOption CurveOption, class UCurveFloat* CustomCurve);
+	static void MovePlatformAlongSpline(class AActor* MovingPlatformActor, class AActor* SplineActor, float SpeedMultiplier);
+	static void MovePlatformToDestination(class AActor* MovingPlatformActor, int32 DestinationIndex, bool bTeleport);
+	static void SetMovingPlatformConfig(class AActor* MovingPlatformActor, const struct FGbxMovingPlatformConfig& InConfig);
+	static void SetMovingPlatformDestinationTransform(class AActor* MovingPlatformActor, int32 DestinationIndex, const struct FTransform& RelativeTransform);
+	static void SetMovingPlatformMoveCompleteCallback(class AActor* MovingPlatformActor, const TDelegate<void()>& Delegate);
+	static void SetMovingPlatformMoveSpeed(struct FGbxMovingPlatformConfig& Config, float InMoveSpeed);
+	static void SetMovingPlatformMoveTime(struct FGbxMovingPlatformConfig& Config, float InMoveTime);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMaterialParamInterpStatics")
+		STATIC_CLASS_IMPL("GbxMovingPlatformLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMaterialParamInterpStatics")
+		STATIC_NAME_IMPL(L"GbxMovingPlatformLibrary")
 	}
-	static class UGbxMaterialParamInterpStatics* GetDefaultObj()
+	static class UGbxMovingPlatformLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxMaterialParamInterpStatics>();
+		return GetDefaultObjImpl<UGbxMovingPlatformLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UGbxMaterialParamInterpStatics;
-
-// Class GbxGame.GbxWorldAudioSystemBase
-// 0x0010 (0x0038 - 0x0028)
-class UGbxWorldAudioSystemBase : public UObject
-{
-public:
-	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxWorldAudioSystemBase")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxWorldAudioSystemBase")
-	}
-	static class UGbxWorldAudioSystemBase* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxWorldAudioSystemBase>();
-	}
-};
-DUMPER7_ASSERTS_UGbxWorldAudioSystemBase;
-
-// Class GbxGame.GbxMusicSystem
-// 0x0088 (0x00C0 - 0x0038)
-class UGbxMusicSystem : public UGbxWorldAudioSystemBase
-{
-public:
-	uint8                                         Pad_38[0x88];                                      // 0x0038(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxMusicSystem")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxMusicSystem")
-	}
-	static class UGbxMusicSystem* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxMusicSystem>();
-	}
-};
-DUMPER7_ASSERTS_UGbxMusicSystem;
+DUMPER7_ASSERTS_UGbxMovingPlatformLibrary;
 
 // Class GbxGame.GbxBodyData
 // 0x0010 (0x0060 - 0x0050)
@@ -489,29 +474,28 @@ public:
 };
 DUMPER7_ASSERTS_UInteractiveObjectBodyData;
 
-// Class GbxGame.GbxSequenceClosedCaptionTrack
-// 0x0018 (0x0110 - 0x00F8)
-class UGbxSequenceClosedCaptionTrack final : public UMovieSceneNameableTrack
+// Class GbxGame.GbxSequenceCapsuleOffsetTrack
+// 0x0010 (0x0108 - 0x00F8)
+class UGbxSequenceCapsuleOffsetTrack final : public UMovieSceneNameableTrack
 {
 public:
 	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_108[0x8];                                      // 0x0108(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceClosedCaptionTrack")
+		STATIC_CLASS_IMPL("GbxSequenceCapsuleOffsetTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceClosedCaptionTrack")
+		STATIC_NAME_IMPL(L"GbxSequenceCapsuleOffsetTrack")
 	}
-	static class UGbxSequenceClosedCaptionTrack* GetDefaultObj()
+	static class UGbxSequenceCapsuleOffsetTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceClosedCaptionTrack>();
+		return GetDefaultObjImpl<UGbxSequenceCapsuleOffsetTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceClosedCaptionTrack;
+DUMPER7_ASSERTS_UGbxSequenceCapsuleOffsetTrack;
 
 // Class GbxGame.GbxAcousticsConfig
 // 0x0448 (0x0478 - 0x0030)
@@ -738,30 +722,85 @@ public:
 };
 DUMPER7_ASSERTS_IClimbableInterface;
 
-// Class GbxGame.GbxGameTestActor
-// 0x0110 (0x0510 - 0x0400)
-class AGbxGameTestActor : public AGbxEngineTestActor
+// Class GbxGame.GbxGameStateBase
+// 0x0070 (0x0480 - 0x0410)
+class AGbxGameStateBase : public AGameState
 {
 public:
-	uint8                                         Pad_400[0x38];                                     // 0x0400(0x0038)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FUsableActorState                      UsableActorState;                                  // 0x0438(0x00D0)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	class USphereComponent*                       TriggerComponent;                                  // 0x0508(0x0008)(Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_410[0x18];                                     // 0x0410(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	class FString                                 ServerIdentity;                                    // 0x0428(0x0010)(Net, ZeroConstructor, Transient, RepNotify, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 ServerModeDef;                                     // 0x0438(0x0010)(Net, ZeroConstructor, Transient, RepNotify, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FDefSelectorResolveStates              SelectorStates;                                    // 0x0448(0x0010)(Net, Transient, NativeAccessSpecifierPublic)
+	class AGbxGameplayDirector*                   GameplayDirector;                                  // 0x0458(0x0008)(Net, ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	TArray<class AGbxPlayerGroupState*>           PlayerGroupStateStableArray;                       // 0x0460(0x0010)(Net, ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
+	TArray<TWeakObjectPtr<class AGbxPlayerState>> PlayerStateStableArray;                            // 0x0470(0x0010)(Net, ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPublic)
+
+public:
+	void OnGroupAdded(class AGbxPlayerGroupState* PlayerGroup);
+	void OnGroupRemoved(class AGbxPlayerGroupState* PlayerGroup);
+	void OnPlayerAddedToGroup(class AGbxPlayerGroupState* PlayerGroupState, class AGbxPlayerState* PlayerState);
+	void OnPlayerRemovedFromGroup(class AGbxPlayerGroupState* PlayerGroupState, class AGbxPlayerState* PlayerState);
+	void OnRep_ServerIdentity();
+	void OnRep_ServerModeDef();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameTestActor")
+		STATIC_CLASS_IMPL("GbxGameStateBase")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameTestActor")
+		STATIC_NAME_IMPL(L"GbxGameStateBase")
 	}
-	static class AGbxGameTestActor* GetDefaultObj()
+	static class AGbxGameStateBase* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxGameTestActor>();
+		return GetDefaultObjImpl<AGbxGameStateBase>();
 	}
 };
-DUMPER7_ASSERTS_AGbxGameTestActor;
+DUMPER7_ASSERTS_AGbxGameStateBase;
+
+// Class GbxGame.GbxGameState
+// 0x00B0 (0x0530 - 0x0480)
+class AGbxGameState : public AGbxGameStateBase
+{
+public:
+	bool                                          bRepPlayersOnly;                                   // 0x0480(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_481[0x7];                                      // 0x0481(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class APlayerState*                           HostPlayerState;                                   // 0x0488(0x0008)(Net, ZeroConstructor, Transient, RepNotify, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	bool                                          bPartyCrossplayEnabled;                            // 0x0490(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_491[0x7];                                      // 0x0491(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FPlatformGameplaySessionInfo>   PlatformGameplaySessions;                          // 0x0498(0x0010)(Net, ZeroConstructor, Transient, RepNotify, Protected, NativeAccessSpecifierProtected)
+	struct FGuid                                  GameSessionEventGuid;                              // 0x04A8(0x0010)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	struct FGuid                                  GameSessionGuid;                                   // 0x04B8(0x0010)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_4C8[0x40];                                     // 0x04C8(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UGbxGameModeModuleConduit*>      ModuleConduits;                                    // 0x0508(0x0010)(Net, ZeroConstructor, Transient, RepNotify, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_518[0x18];                                     // 0x0518(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnRep_bPlayersOnly();
+	void OnRep_HostPlayerState();
+	void OnRep_ModuleConduits();
+	void OnRep_PlatformGameplaySessions();
+	void PlayMusicEvent(const struct FGameplayTag& MusicEvent);
+	void PlaySoundInWorldMulticast(class AActor* ActorInstigator, const struct FGbxAudioEmitterSource& EmitterSource, const struct FGbxAudioEvent& Event, const struct FWwiseSwitchDef& OptionalSwitch);
+	void PlaySoundOnActorMulticast(class AActor* ActorInstigator, const struct FGbxAudioEvent& Event, const class FName EmitterTag, const struct FWwiseSwitchDef& OptionalSwitch);
+	void PlaySoundOnActorSocketMulticast(class AActor* ActorInstigator, const struct FGbxAudioEvent& Event, const class FName& SocketName);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxGameState")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxGameState")
+	}
+	static class AGbxGameState* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxGameState>();
+	}
+};
+DUMPER7_ASSERTS_AGbxGameState;
 
 // Class GbxGame.GbxActivityArea
 // 0x01D0 (0x0560 - 0x0390)
@@ -804,35 +843,51 @@ public:
 };
 DUMPER7_ASSERTS_AGbxActivityArea;
 
-// Class GbxGame.GbxNavTest_NavMeshPath
-// 0x00A0 (0x05B0 - 0x0510)
-class AGbxNavTest_NavMeshPath final : public AGbxGameTestActor
+// Class GbxGame.GbxWorldAudioSystemBase
+// 0x0010 (0x0038 - 0x0028)
+class UGbxWorldAudioSystemBase : public UObject
 {
 public:
-	class ASpawner*                               Spawner;                                           // 0x0510(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<struct FGbxNavTestAgentData>           Agents;                                            // 0x0518(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	struct FGbxNavGoalModifiers                   Modifiers;                                         // 0x0528(0x0080)(Edit, NativeAccessSpecifierPrivate)
-	class ALevelSequenceActor*                    Sequence;                                          // 0x05A8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-
-public:
-	void SetGbxActorDef(const FGameDataHandleProperty_& NewGbxActorDef);
-	void SetStance(const FGameDataHandleProperty_& NewStance);
+	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxNavTest_NavMeshPath")
+		STATIC_CLASS_IMPL("GbxWorldAudioSystemBase")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxNavTest_NavMeshPath")
+		STATIC_NAME_IMPL(L"GbxWorldAudioSystemBase")
 	}
-	static class AGbxNavTest_NavMeshPath* GetDefaultObj()
+	static class UGbxWorldAudioSystemBase* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxNavTest_NavMeshPath>();
+		return GetDefaultObjImpl<UGbxWorldAudioSystemBase>();
 	}
 };
-DUMPER7_ASSERTS_AGbxNavTest_NavMeshPath;
+DUMPER7_ASSERTS_UGbxWorldAudioSystemBase;
+
+// Class GbxGame.GbxMusicSystem
+// 0x0088 (0x00C0 - 0x0038)
+class UGbxMusicSystem : public UGbxWorldAudioSystemBase
+{
+public:
+	uint8                                         Pad_38[0x88];                                      // 0x0038(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxMusicSystem")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxMusicSystem")
+	}
+	static class UGbxMusicSystem* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxMusicSystem>();
+	}
+};
+DUMPER7_ASSERTS_UGbxMusicSystem;
 
 // Class GbxGame.ActivityRequester
 // 0x0028 (0x00C8 - 0x00A0)
@@ -858,30 +913,34 @@ public:
 };
 DUMPER7_ASSERTS_UActivityRequester;
 
-// Class GbxGame.GpsContext_Projectile
-// 0x0008 (0x0030 - 0x0028)
-class UGpsContext_Projectile final : public UGpsContext
+// Class GbxGame.GoreableInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGoreableInterface final
 {
-public:
-	EProjectileGpsContextDataType                 data;                                              // 0x0028(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	ELightProjectileQueryActorType                ActorType;                                         // 0x0029(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_2A[0x6];                                       // 0x002A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GpsContext_Projectile")
+		STATIC_CLASS_IMPL("GoreableInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GpsContext_Projectile")
+		STATIC_NAME_IMPL(L"GoreableInterface")
 	}
-	static class UGpsContext_Projectile* GetDefaultObj()
+	static class IGoreableInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGpsContext_Projectile>();
+		return GetDefaultObjImpl<IGoreableInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGpsContext_Projectile;
+DUMPER7_ASSERTS_IGoreableInterface;
 
 // Class GbxGame.NexusConfigStoreActivityRequestSettings
 // 0x0000 (0x0380 - 0x0380)
@@ -903,59 +962,59 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreActivityRequestSettings;
 
-// Class GbxGame.GbxGameCover
-// 0x00E0 (0x04E8 - 0x0408)
-class AGbxGameCover final : public ACover
+// Class GbxGame.GbxGameAudioBlueprintFunctionLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UGbxGameAudioBlueprintFunctionLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	uint8                                         Pad_408[0x8];                                      // 0x0408(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FFactsConduit                          FactsConduit;                                      // 0x0410(0x00D8)(Edit, Net, DisableEditOnTemplate, RepNotify, Protected, NativeAccessSpecifierProtected)
-
-public:
-	void OnRep_FactsConduit();
+	static void PlayFoleyImpactOnActor(class AActor* Actor, const struct FFoleyImpactParams& FoleyImpactParams);
+	static void PostEventInWorldMulticast(class UObject* WorldContextObject, class AActor* ActorInstigator, const struct FGbxAudioEmitterSource& EmitterSource, const struct FGbxAudioEvent& Event, FGbxDefPtrProperty_ OptionalSwitch);
+	static void PostWwiseEventOnActorMulticast(class UObject* WorldContextObject, class AActor* ActorInstigator, const struct FGbxAudioEvent& Event, const class FName EmitterTag, FGbxDefPtrProperty_ OptionalSwitch);
+	static void TryGetGlobalWetnessForActor(class AActor* Actor, float* GlobalWetnessValue, bool* bIsValueValid);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameCover")
+		STATIC_CLASS_IMPL("GbxGameAudioBlueprintFunctionLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameCover")
+		STATIC_NAME_IMPL(L"GbxGameAudioBlueprintFunctionLibrary")
 	}
-	static class AGbxGameCover* GetDefaultObj()
+	static class UGbxGameAudioBlueprintFunctionLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxGameCover>();
+		return GetDefaultObjImpl<UGbxGameAudioBlueprintFunctionLibrary>();
 	}
 };
-DUMPER7_ASSERTS_AGbxGameCover;
+DUMPER7_ASSERTS_UGbxGameAudioBlueprintFunctionLibrary;
 
-// Class GbxGame.LightBeamScript
-// 0x0008 (0x0030 - 0x0028)
-class ULightBeamScript final : public UObject
+// Class GbxGame.LightBeamCollisionHandler
+// 0x0008 (0x00A8 - 0x00A0)
+class ULightBeamCollisionHandler final : public UGbxActorScript
 {
 public:
-	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_A0[0x8];                                       // 0x00A0(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void OnBegin(class ULightBeam* Beam) const;
-	void OnShutdown(class ULightBeam* Beam) const;
+	ELightBeamCollisionHandlerResult StartBeamImpact(const class ULightBeam* Beam, const struct FHitResult& Impact);
+	void StopBeamImpact(const class ULightBeam* Beam, const struct FHitResult& LastImpact);
+	void UpdateBeamImpact(const class ULightBeam* Beam, const struct FHitResult& Impact);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("LightBeamScript")
+		STATIC_CLASS_IMPL("LightBeamCollisionHandler")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"LightBeamScript")
+		STATIC_NAME_IMPL(L"LightBeamCollisionHandler")
 	}
-	static class ULightBeamScript* GetDefaultObj()
+	static class ULightBeamCollisionHandler* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<ULightBeamScript>();
+		return GetDefaultObjImpl<ULightBeamCollisionHandler>();
 	}
 };
-DUMPER7_ASSERTS_ULightBeamScript;
+DUMPER7_ASSERTS_ULightBeamCollisionHandler;
 
 // Class GbxGame.AIHeldExplosiveProjectile
 // 0x0000 (0x1540 - 0x1540)
@@ -976,30 +1035,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_AAIHeldExplosiveProjectile;
-
-// Class GbxGame.TextRenderActorFacts
-// 0x0040 (0x03D8 - 0x0398)
-class ATextRenderActorFacts final : public ATextRenderActor
-{
-public:
-	struct FFactAddress                           SourceFactForText;                                 // 0x0398(0x0038)(Edit, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_3D0[0x8];                                      // 0x03D0(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("TextRenderActorFacts")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"TextRenderActorFacts")
-	}
-	static class ATextRenderActorFacts* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<ATextRenderActorFacts>();
-	}
-};
-DUMPER7_ASSERTS_ATextRenderActorFacts;
 
 // Class GbxGame.GbxProfileProgressRole
 // 0x00D0 (0x00F8 - 0x0028)
@@ -1024,25 +1059,88 @@ public:
 };
 DUMPER7_ASSERTS_UGbxProfileProgressRole;
 
-// Class GbxGame.NexusConfigStoreDialogStyles
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreDialogStyles final : public UNexusConfigStoreBasicDefFlat
+// Class GbxGame.GbxProfileProgressRoleFiltered
+// 0x0008 (0x0100 - 0x00F8)
+class UGbxProfileProgressRoleFiltered : public UGbxProfileProgressRole
+{
+public:
+	uint8                                         Pad_F8[0x8];                                       // 0x00F8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxProfileProgressRoleFiltered")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxProfileProgressRoleFiltered")
+	}
+	static class UGbxProfileProgressRoleFiltered* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxProfileProgressRoleFiltered>();
+	}
+};
+DUMPER7_ASSERTS_UGbxProfileProgressRoleFiltered;
+
+// Class GbxGame.GbxProfileProgressRoleAllPlayers
+// 0x0000 (0x0100 - 0x0100)
+class UGbxProfileProgressRoleAllPlayers : public UGbxProfileProgressRoleFiltered
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreDialogStyles")
+		STATIC_CLASS_IMPL("GbxProfileProgressRoleAllPlayers")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreDialogStyles")
+		STATIC_NAME_IMPL(L"GbxProfileProgressRoleAllPlayers")
 	}
-	static class UNexusConfigStoreDialogStyles* GetDefaultObj()
+	static class UGbxProfileProgressRoleAllPlayers* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreDialogStyles>();
+		return GetDefaultObjImpl<UGbxProfileProgressRoleAllPlayers>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreDialogStyles;
+DUMPER7_ASSERTS_UGbxProfileProgressRoleAllPlayers;
+
+// Class GbxGame.StatStateCacheProgressRole
+// 0x0000 (0x0100 - 0x0100)
+class UStatStateCacheProgressRole final : public UGbxProfileProgressRoleAllPlayers
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("StatStateCacheProgressRole")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"StatStateCacheProgressRole")
+	}
+	static class UStatStateCacheProgressRole* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UStatStateCacheProgressRole>();
+	}
+};
+DUMPER7_ASSERTS_UStatStateCacheProgressRole;
+
+// Class GbxGame.NexusConfigStoreDialogQuietTimes
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreDialogQuietTimes final : public UNexusConfigStoreBasicDefFlat
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreDialogQuietTimes")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreDialogQuietTimes")
+	}
+	static class UNexusConfigStoreDialogQuietTimes* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreDialogQuietTimes>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreDialogQuietTimes;
 
 // Class GbxGame.AIHeldShieldProjectile
 // 0x0000 (0x1540 - 0x1540)
@@ -1184,28 +1282,28 @@ public:
 };
 DUMPER7_ASSERTS_UAimAssistStrategy;
 
-// Class GbxGame.GbxSymphonicAmbientAudioSystem
-// 0x0048 (0x0080 - 0x0038)
-class UGbxSymphonicAmbientAudioSystem : public UGbxWorldAudioSystemBase
+// Class GbxGame.GbxSubtitleManager
+// 0x0060 (0x0088 - 0x0028)
+class UGbxSubtitleManager : public UObject
 {
 public:
-	uint8                                         Pad_38[0x48];                                      // 0x0038(0x0048)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_28[0x60];                                      // 0x0028(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSymphonicAmbientAudioSystem")
+		STATIC_CLASS_IMPL("GbxSubtitleManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSymphonicAmbientAudioSystem")
+		STATIC_NAME_IMPL(L"GbxSubtitleManager")
 	}
-	static class UGbxSymphonicAmbientAudioSystem* GetDefaultObj()
+	static class UGbxSubtitleManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSymphonicAmbientAudioSystem>();
+		return GetDefaultObjImpl<UGbxSubtitleManager>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSymphonicAmbientAudioSystem;
+DUMPER7_ASSERTS_UGbxSubtitleManager;
 
 // Class GbxGame.AnimNotifyState_BoneVisibility
 // 0x0010 (0x0040 - 0x0030)
@@ -1260,41 +1358,39 @@ public:
 };
 DUMPER7_ASSERTS_UAnimNotifyState_Feedback;
 
-// Class GbxGame.GbxGameplayDirector
-// 0x0018 (0x03A8 - 0x0390)
-class AGbxGameplayDirector final : public AInfo
+// Class GbxGame.GbxGameModeStatics
+// 0x0000 (0x0028 - 0x0028)
+class UGbxGameModeStatics final : public UBlueprintFunctionLibrary
 {
 public:
-	uint8                                         Pad_390[0x18];                                     // 0x0390(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnActiveMissionsChanged(const struct FSToken& mission, bool IsActive);
-	void ReceiveMissionStatusChanged(EMissionStatus status, const struct FMissionInstanceHandle& MissionHandle);
-	void ReceivePlayerGroupAdded(class AGbxPlayerGroupState* PlayerGroupState);
-	void ReceivePlayerGroupPlayerAdded(class AGbxPlayerGroupState* PlayerGroupState, class AGbxPlayerState* PlayerState);
-	void ReceivePlayerGroupPlayerRemoved(class AGbxPlayerGroupState* PlayerGroupState, class AGbxPlayerState* PlayerState);
-	void ReceivePlayerGroupRemoved(class AGbxPlayerGroupState* PlayerGroupState);
-	void ReceivePlayerLogout(class AController* Exiting);
-	void ReceivePlayerPostLogin(class APlayerController* NewPlayer);
-
-	struct FMissionInstanceHandle InstantiateGeneratedMissionForGroup(FGameDataHandleProperty_ MissionDef, const class AActor* Actor) const;
-	struct FMissionInstanceHandle InstantiateGeneratedMissionForPlayer(FGameDataHandleProperty_ MissionDef, const class AActor* Actor) const;
+	static void ChangePlayerTeam(class UObject* WorldContext, class APlayerController* PlayerController, FGbxDefPtrProperty_ TeamDef, int32 TeamIndex);
+	static void EnableModulesWithTags(class UObject* WorldContext, const struct FGbxGameModeModuleTags& tags, ENexusBitSetOperator Op, bool bEnable, bool bOnlyEnableFirstModule);
+	static void EnableModulesWithType(class UObject* WorldContext, TSubclassOf<class UGbxGameModeModuleHost> type, bool bEnable, bool bOnlyEnableFirstModule);
+	static void EnableModuleWithName(class UObject* WorldContext, class FName ModuleName, bool bEnable);
+	static struct FGbxParam GetGameModeModuleParameter(class UObject* WorldContext, class FName ParameterName);
+	static FGbxDefPtrProperty_ GetGameModePhase(class UObject* WorldContext);
+	static bool HasGameModeTag(class UObject* WorldContext, const struct FGbxGameModeTags& tags, ENexusBitSetOperator Op);
+	static void SendEventToModules(class UObject* WorldContext, FGbxDefPtrProperty_ EventDef, const struct FGbxGameModeModuleEventParams& params);
+	static void SendEventToModulesWithTags(class UObject* WorldContext, FGbxDefPtrProperty_ EventDef, const struct FGbxGameModeModuleEventParams& params, const struct FGbxGameModeModuleTags& tags, ENexusBitSetOperator Op);
+	static void SendEventToModulesWithType(class UObject* WorldContext, FGbxDefPtrProperty_ EventDef, const struct FGbxGameModeModuleEventParams& params, TSubclassOf<class UGbxGameModeModuleHost> type);
+	static void SendEventToModuleWithName(class UObject* WorldContext, FGbxDefPtrProperty_ EventDef, const struct FGbxGameModeModuleEventParams& params, class FName ModuleName);
+	static void SetGameModePhase(class UObject* WorldContext, FGbxDefPtrProperty_ GameModePhase);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameplayDirector")
+		STATIC_CLASS_IMPL("GbxGameModeStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameplayDirector")
+		STATIC_NAME_IMPL(L"GbxGameModeStatics")
 	}
-	static class AGbxGameplayDirector* GetDefaultObj()
+	static class UGbxGameModeStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxGameplayDirector>();
+		return GetDefaultObjImpl<UGbxGameModeStatics>();
 	}
 };
-DUMPER7_ASSERTS_AGbxGameplayDirector;
+DUMPER7_ASSERTS_UGbxGameModeStatics;
 
 // Class GbxGame.GbxActivityAreaStamp
 // 0x0218 (0x0650 - 0x0438)
@@ -1391,66 +1487,29 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActivityLogger;
 
-// Class GbxGame.GbxGameAudioGlobals
-// 0x0268 (0x0420 - 0x01B8)
-class UGbxGameAudioGlobals : public UGbxAudioGlobals
+// Class GbxGame.GbxGameAssetManager
+// 0x0020 (0x0628 - 0x0608)
+class UGbxGameAssetManager : public UGbxAssetManager
 {
 public:
-	float                                         BulletByCooldownInSeconds;                         // 0x01B8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BulletByMinShooterDistance;                        // 0x01BC(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BulletByMaxPathProximity;                          // 0x01C0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAlwaysScheduleBulletBy;                           // 0x01C4(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EBulletByDeterminant                          BulletByDeterminant;                               // 0x01C5(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1C6[0x2];                                      // 0x01C6(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	TSubclassOf<class UGbxMusicSystem>            MusicSystemClass;                                  // 0x01C8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         MusicSystemTickRate;                               // 0x01D0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1D4[0x4];                                      // 0x01D4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	TSubclassOf<class UGbxAudioVolumeAmbientSystem> AudioVolumeAmbientSystemClass;                   // 0x01D8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      AudioVolumeAudioProviderDef;                       // 0x01E0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           ExteriorAttenuationGameParameter;                  // 0x01F8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TSubclassOf<class UGbxSymphonicAmbientAudioSystem> SymphonicAmbienceSystemClass;                 // 0x0210(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SymphonicAmbienceTickRate;                         // 0x0218(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         OpportunisticAudioTickRate;                        // 0x021C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      OpportunisticAudioProviderDef;                     // 0x0220(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           HeadgearGameParameter;                             // 0x0238(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMap<struct FGameplayTag, int32>              HeadgearValueMap;                                  // 0x0250(0x0050)(Edit, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           ImpactVelocityGameParameter;                       // 0x02A0(0x0018)(Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           ImpactMassGameParameter;                           // 0x02B8(0x0018)(Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TSubclassOf<class UGbxAcousticSystem>         AcousticsSystemClass;                              // 0x02D0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         AcousticsTickRate;                                 // 0x02D8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2DC[0x4];                                      // 0x02DC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxAcousticsConfig*                    AcousticsConfig;                                   // 0x02E0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	FGbxDefPtrProperty_                           CharacterWetnessRTPC;                              // 0x02E8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           CharacterIsInAirRTPC;                              // 0x0300(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMap<TSoftObjectPtr<class UPhysicalMaterial>, FGbxDefPtrProperty_> MaterialToAudioEventList;     // 0x0318(0x0050)(Edit, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           DefaultCollisionAudioEvent;                        // 0x0368(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           DestructionVelocityRTPC;                           // 0x0380(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           DestructionMassRTPC;                               // 0x0398(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         WallaSystemTickRate;                               // 0x03B0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3B4[0x4];                                      // 0x03B4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	FGbxDefPtrProperty_                           TownSizeRTPC;                                      // 0x03B8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           IsSubmergedRTPC;                                   // 0x03D0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           WadingPercentageRTPC;                              // 0x03E8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         RadioSystemTickRate;                               // 0x0400(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_404[0x4];                                      // 0x0404(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxRadioConfig*                        RadioConfig;                                       // 0x0408(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	TArray<struct FGbxAudioWeatherState>          WeatherStates;                                     // 0x0410(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	class FString                                 DefaultCookingBuildTagPresets;                     // 0x0608(0x0010)(ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 DefaultCookingContentTagPresets;                   // 0x0618(0x0010)(ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameAudioGlobals")
+		STATIC_CLASS_IMPL("GbxGameAssetManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameAudioGlobals")
+		STATIC_NAME_IMPL(L"GbxGameAssetManager")
 	}
-	static class UGbxGameAudioGlobals* GetDefaultObj()
+	static class UGbxGameAssetManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameAudioGlobals>();
+		return GetDefaultObjImpl<UGbxGameAssetManager>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameAudioGlobals;
+DUMPER7_ASSERTS_UGbxGameAssetManager;
 
 // Class GbxGame.AnimNotify_DialogEvent
 // 0x0080 (0x00B8 - 0x0038)
@@ -1490,7 +1549,7 @@ public:
 	bool                                          bIgnoreNotifiesAfterEnd;                           // 0x0058(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_59[0x7];                                       // 0x0059(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
 	class UGbxTrickOptions*                       options;                                           // 0x0060(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, NoClear, NoDestructor, PersistentInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	struct FGbxTrickScriptData                    script;                                            // 0x0068(0x0028)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
+	struct FGbxTrickScriptData                    Script;                                            // 0x0068(0x0028)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
@@ -1508,46 +1567,67 @@ public:
 };
 DUMPER7_ASSERTS_UGbxTrick;
 
-// Class GbxGame.GbxTrick_Ragdoll
-// 0x0570 (0x0600 - 0x0090)
-class UGbxTrick_Ragdoll final : public UGbxTrick
+// Class GbxGame.GbxTrick_AnimBase
+// 0x0040 (0x00D0 - 0x0090)
+class UGbxTrick_AnimBase : public UGbxTrick
 {
 public:
-	ERagdollBehaviorCategoryType                  RagdollBehaviorCategory;                           // 0x0090(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bUseOverride;                                      // 0x0094(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_95[0x3];                                       // 0x0095(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ForcedKinematicTimeScale[0x4];                     // 0x0098(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	EGbxSlotAnimEnd                               AnimDirectionsEnd;                                 // 0x00A8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bAlwaysPickClosestValidAnimDirection;              // 0x00A9(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_AA[0x6];                                       // 0x00AA(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxTrickAnimData                      AnimDirections[0x4];                               // 0x00B0(0x0150)(Edit, NativeAccessSpecifierPrivate)
-	bool                                          bCanRecover;                                       // 0x05F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bRigidifyOnSimulate;                               // 0x05F1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bWeldInitialWorldCollision;                        // 0x05F2(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bOverrideFriction;                                 // 0x05F3(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         FrictionCoefficient;                               // 0x05F4(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bOverrideRestitution;                              // 0x05F8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_5F9[0x3];                                      // 0x05F9(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         RestitutionCoefficient;                            // 0x05FC(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-
-public:
-	void ComponentHitCallback(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, const struct FVector& NormalImpulse, const struct FHitResult& Hit);
+	bool                                          bRandomlyMirrorAnims;                              // 0x0090(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bSkipOwner;                                        // 0x0091(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_92[0x2];                                       // 0x0092(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	EGbxTrickBlendSpaceSource                     BlendSpaceSource;                                  // 0x0094(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	class FName                                   TrickParameterName;                                // 0x0098(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	FGameDataHandleProperty_                      BlendSpaceInput;                                   // 0x00A0(0x0018)(Edit, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	struct FGbxBlackboardEntryRef                 BlendSpaceBlackboardInput;                         // 0x00B8(0x000C)(Edit, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	EGbxTrickBlendSpaceType                       BlendSpaceType;                                    // 0x00C4(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bContinuouslyUpdateBlendSpaceInput;                // 0x00C8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_C9[0x7];                                       // 0x00C9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrick_Ragdoll")
+		STATIC_CLASS_IMPL("GbxTrick_AnimBase")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrick_Ragdoll")
+		STATIC_NAME_IMPL(L"GbxTrick_AnimBase")
 	}
-	static class UGbxTrick_Ragdoll* GetDefaultObj()
+	static class UGbxTrick_AnimBase* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrick_Ragdoll>();
+		return GetDefaultObjImpl<UGbxTrick_AnimBase>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrick_Ragdoll;
+DUMPER7_ASSERTS_UGbxTrick_AnimBase;
+
+// Class GbxGame.GbxTrick_Perch
+// 0x02C0 (0x0390 - 0x00D0)
+class UGbxTrick_Perch final : public UGbxTrick_AnimBase
+{
+public:
+	struct FGbxTrickAnimData                      Enter;                                             // 0x00D0(0x0150)(Edit, NativeAccessSpecifierPrivate)
+	TArray<struct FPerchIdleAnim>                 Idles;                                             // 0x0220(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	struct FGbxTrickAnimData                      Exit;                                              // 0x0230(0x0150)(Edit, NativeAccessSpecifierPrivate)
+	bool                                          bCanInterruptIdle;                                 // 0x0380(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_381[0x3];                                      // 0x0381(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ExitDistanceExitPoseThreshold;                     // 0x0384(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         EndMotionTime;                                     // 0x0388(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_38C[0x4];                                      // 0x038C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrick_Perch")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrick_Perch")
+	}
+	static class UGbxTrick_Perch* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrick_Perch>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrick_Perch;
 
 // Class GbxGame.AnimNotify_Feedback
 // 0x00A0 (0x00D8 - 0x0038)
@@ -1607,28 +1687,34 @@ public:
 };
 DUMPER7_ASSERTS_UAnimNotify_FoleyImpact;
 
-// Class GbxGame.GbxLevelSequencePlayerAssociatedStandInObject
-// 0x0010 (0x0038 - 0x0028)
-class UGbxLevelSequencePlayerAssociatedStandInObject : public UObject
+// Class GbxGame.GbxLevelSequenceParticipant
+// 0x0000 (0x0000 - 0x0000)
+class IGbxLevelSequenceParticipant final
 {
-public:
-	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequencePlayerAssociatedStandInObject")
+		STATIC_CLASS_IMPL("GbxLevelSequenceParticipant")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequencePlayerAssociatedStandInObject")
+		STATIC_NAME_IMPL(L"GbxLevelSequenceParticipant")
 	}
-	static class UGbxLevelSequencePlayerAssociatedStandInObject* GetDefaultObj()
+	static class IGbxLevelSequenceParticipant* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLevelSequencePlayerAssociatedStandInObject>();
+		return GetDefaultObjImpl<IGbxLevelSequenceParticipant>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGbxLevelSequencePlayerAssociatedStandInObject;
+DUMPER7_ASSERTS_IGbxLevelSequenceParticipant;
 
 // Class GbxGame.GbxActorDefBasedAnimUser
 // 0x0000 (0x0000 - 0x0000)
@@ -1679,85 +1765,45 @@ public:
 };
 DUMPER7_ASSERTS_UAnimNotify_AbstractFootstep;
 
-// Class GbxGame.GbxLevelSequenceBase
-// 0x0010 (0x00B0 - 0x00A0)
-class UGbxLevelSequenceBase : public ULevelSequence
+// Class GbxGame.NexusConfigLevelSubType
+// 0x0000 (0x0040 - 0x0040)
+class UNexusConfigLevelSubType : public UNexusConfigSubType
 {
-public:
-	bool                                          bDisableAnimUpdateOptimizations;                   // 0x00A0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bForceMaxLOD;                                      // 0x00A1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bDisableVirtualTextureThrottling;                  // 0x00A2(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A3[0x1];                                       // 0x00A3(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxDialogNameTagQualifier             DialogNameTagQualifier;                            // 0x00A4(0x0008)(Edit, NoDestructor, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_AC[0x4];                                       // 0x00AC(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequenceBase")
+		STATIC_CLASS_IMPL("NexusConfigLevelSubType")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequenceBase")
+		STATIC_NAME_IMPL(L"NexusConfigLevelSubType")
 	}
-	static class UGbxLevelSequenceBase* GetDefaultObj()
+	static class UNexusConfigLevelSubType* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLevelSequenceBase>();
+		return GetDefaultObjImpl<UNexusConfigLevelSubType>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLevelSequenceBase;
+DUMPER7_ASSERTS_UNexusConfigLevelSubType;
 
-// Class GbxGame.GbxLevelSequence
-// 0x00F0 (0x01A0 - 0x00B0)
-class UGbxLevelSequence : public UGbxLevelSequenceBase
+// Class GbxGame.NexusConfigSubType_RoadConnector
+// 0x0000 (0x0040 - 0x0040)
+class UNexusConfigSubType_RoadConnector final : public UNexusConfigLevelSubType
 {
-public:
-	uint8                                         Pad_B0[0x8];                                       // 0x00B0(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bHasTransformOrigin;                               // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_B9[0x7];                                       // 0x00B9(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxLevelSequenceOrigin                TransformOrigin;                                   // 0x00C0(0x0070)(Edit, NativeAccessSpecifierPrivate)
-	struct FGbxInlineStruct                       actorstateschema;                                  // 0x0130(0x0018)(Edit, Transient, EditConst, NativeAccessSpecifierPrivate)
-	TMap<struct FGuid, struct FGbxLevelSequenceEnterExitData> CachedEnterExitData;                   // 0x0148(0x0050)(NativeAccessSpecifierPrivate)
-	uint8                                         Pad_198[0x8];                                      // 0x0198(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequence")
+		STATIC_CLASS_IMPL("NexusConfigSubType_RoadConnector")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequence")
+		STATIC_NAME_IMPL(L"NexusConfigSubType_RoadConnector")
 	}
-	static class UGbxLevelSequence* GetDefaultObj()
+	static class UNexusConfigSubType_RoadConnector* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLevelSequence>();
+		return GetDefaultObjImpl<UNexusConfigSubType_RoadConnector>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLevelSequence;
-
-// Class GbxGame.GbxProfileProgressRoleFiltered
-// 0x0008 (0x0100 - 0x00F8)
-class UGbxProfileProgressRoleFiltered : public UGbxProfileProgressRole
-{
-public:
-	uint8                                         Pad_F8[0x8];                                       // 0x00F8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxProfileProgressRoleFiltered")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxProfileProgressRoleFiltered")
-	}
-	static class UGbxProfileProgressRoleFiltered* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxProfileProgressRoleFiltered>();
-	}
-};
-DUMPER7_ASSERTS_UGbxProfileProgressRoleFiltered;
+DUMPER7_ASSERTS_UNexusConfigSubType_RoadConnector;
 
 // Class GbxGame.GbxProfileProgressRoleHostPlayer
 // 0x0000 (0x0100 - 0x0100)
@@ -1914,25 +1960,30 @@ public:
 };
 DUMPER7_ASSERTS_UAnimNotify_InterruptDialog;
 
-// Class GbxGame.NexusConfigStore_GbxProgressionCommandListDef
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_GbxProgressionCommandListDef final : public UNexusConfigStoreBasic
+// Class GbxGame.GbxPlayerUtilsBlueprintLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UGbxPlayerUtilsBlueprintLibrary final : public UBlueprintFunctionLibrary
 {
+public:
+	static class APlayerController* GetPlayerController(class AActor* Actor);
+	static class APlayerState* GetPlayerState(const class AActor* Actor);
+	static bool IsPlayerControlled(const class AActor* Actor);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GbxProgressionCommandListDef")
+		STATIC_CLASS_IMPL("GbxPlayerUtilsBlueprintLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GbxProgressionCommandListDef")
+		STATIC_NAME_IMPL(L"GbxPlayerUtilsBlueprintLibrary")
 	}
-	static class UNexusConfigStore_GbxProgressionCommandListDef* GetDefaultObj()
+	static class UGbxPlayerUtilsBlueprintLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStore_GbxProgressionCommandListDef>();
+		return GetDefaultObjImpl<UGbxPlayerUtilsBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStore_GbxProgressionCommandListDef;
+DUMPER7_ASSERTS_UGbxPlayerUtilsBlueprintLibrary;
 
 // Class GbxGame.GbxGameSpawnPointComponent
 // 0x0110 (0x0950 - 0x0840)
@@ -2099,54 +2150,93 @@ public:
 };
 DUMPER7_ASSERTS_AAvatarDummy;
 
-// Class GbxGame.NexusConfigStoreProfileDefaults
-// 0x0000 (0x02D0 - 0x02D0)
-class UNexusConfigStoreProfileDefaults final : public UNexusConfigStoreFlat
+// Class GbxGame.NexusConfigStoreMissionSource
+// 0x0000 (0x0340 - 0x0340)
+class UNexusConfigStoreMissionSource final : public UNexusConfigStorePath
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreProfileDefaults")
+		STATIC_CLASS_IMPL("NexusConfigStoreMissionSource")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreProfileDefaults")
+		STATIC_NAME_IMPL(L"NexusConfigStoreMissionSource")
 	}
-	static class UNexusConfigStoreProfileDefaults* GetDefaultObj()
+	static class UNexusConfigStoreMissionSource* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreProfileDefaults>();
+		return GetDefaultObjImpl<UNexusConfigStoreMissionSource>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreProfileDefaults;
+DUMPER7_ASSERTS_UNexusConfigStoreMissionSource;
 
-// Class GbxGame.SequencerStreamableContentProvider
-// 0x0000 (0x0000 - 0x0000)
-class ISequencerStreamableContentProvider final
+// Class GbxGame.InventoryBase
+// 0x0190 (0x0520 - 0x0390)
+class AInventoryBase : public AActor
 {
+public:
+	uint8                                         Pad_390[0x40];                                     // 0x0390(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
+	class UInventoryBodyData*                     BodyData;                                          // 0x03D0(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_3D8[0x10];                                     // 0x03D8(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxItem                               item;                                              // 0x03E8(0x00F8)(Net, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_4E0[0x38];                                     // 0x04E0(0x0038)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxBrainTaskData*                      BrainTaskData;                                     // 0x0518(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+
+public:
+	const struct FInventoryIdentity GetIdentity() const;
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("SequencerStreamableContentProvider")
+		STATIC_CLASS_IMPL("InventoryBase")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"SequencerStreamableContentProvider")
+		STATIC_NAME_IMPL(L"InventoryBase")
 	}
-	static class ISequencerStreamableContentProvider* GetDefaultObj()
+	static class AInventoryBase* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<ISequencerStreamableContentProvider>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<AInventoryBase>();
 	}
 };
-DUMPER7_ASSERTS_ISequencerStreamableContentProvider;
+DUMPER7_ASSERTS_AInventoryBase;
+
+// Class GbxGame.InventoryPickup
+// 0x04A0 (0x09C0 - 0x0520)
+class alignas(0x10) AInventoryPickup final : public AInventoryBase
+{
+public:
+	uint8                                         Pad_520[0x190];                                    // 0x0520(0x0190)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FUsableActorState                      UsableActorState;                                  // 0x06B0(0x00D0)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_780[0x8];                                      // 0x0780(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class UPrimitiveComponent*                    RootPrimitiveComponent;                            // 0x0788(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UFXSystemComponent*                     AttractEffectComponent;                            // 0x0790(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_798[0x98];                                     // 0x0798(0x0098)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxActorData                          GbxActorData;                                      // 0x0830(0x0108)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_938[0x88];                                     // 0x0938(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnActorOverlap(class AActor* OverlappedActor, class AActor* OtherActor);
+	void OnHit(class AActor* SelfActor, class AActor* OtherActor, const struct FVector& NormalImpulse, const struct FHitResult& Hit);
+	void OnPhysicsSleep(class UPrimitiveComponent* Component, class FName BoneName);
+	void OnPhysicsWake(class UPrimitiveComponent* Component, class FName BoneName);
+	void OnPickupHit_CheckImpactEffect(class UPrimitiveComponent* HitComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, const struct FVector& NormalImpulse, const struct FHitResult& Hit);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("InventoryPickup")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"InventoryPickup")
+	}
+	static class AInventoryPickup* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AInventoryPickup>();
+	}
+};
+DUMPER7_ASSERTS_AInventoryPickup;
 
 // Class GbxGame.DialogFunctionImplementation
 // 0x0000 (0x0028 - 0x0028)
@@ -2224,62 +2314,62 @@ public:
 };
 DUMPER7_ASSERTS_IAvatarAppearanceService;
 
-// Class GbxGame.GbxInventorySettings
-// 0x0000 (0x0038 - 0x0038)
-class UGbxInventorySettings final : public UDeveloperSettings
+// Class GbxGame.GbxInventoryAugmentScript
+// 0x0000 (0x00A0 - 0x00A0)
+class UGbxInventoryAugmentScript final : public UGbxActorScript
 {
 public:
-	static void GetInventoryEffectTypes(TArray<class FName>* OutNames);
+	void OnInventoryAugmentCausedDamageConditionMet(class AActor* DamagedActor, const struct FCausedDamageDetails& Details);
+	void OnInventoryAugmentConditionMet(class AActor* EnemyActor);
+	void OnInventoryAugmentEquipped();
+	void OnInventoryAugmentReceivedDamageConditionMet(const struct FReceivedDamageDetails& Details);
+	void OnInventoryAugmentRemovalConditionMet();
+	void OnInventoryAugmentUnequipped();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxInventorySettings")
+		STATIC_CLASS_IMPL("GbxInventoryAugmentScript")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxInventorySettings")
+		STATIC_NAME_IMPL(L"GbxInventoryAugmentScript")
 	}
-	static class UGbxInventorySettings* GetDefaultObj()
+	static class UGbxInventoryAugmentScript* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxInventorySettings>();
+		return GetDefaultObjImpl<UGbxInventoryAugmentScript>();
 	}
 };
-DUMPER7_ASSERTS_UGbxInventorySettings;
+DUMPER7_ASSERTS_UGbxInventoryAugmentScript;
 
-// Class GbxGame.LightBeamManager
-// 0x0120 (0x04B0 - 0x0390)
-class ALightBeamManager final : public AActor
+// Class GbxGame.JunkSystemNotificationReceiver
+// 0x0000 (0x0000 - 0x0000)
+class IJunkSystemNotificationReceiver final
 {
-public:
-	TArray<class ULightBeam*>                     ActiveBeams;                                       // 0x0390(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_3A0[0x18];                                     // 0x03A0(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class ULightBeam*>                     BeamsWaitingBatch;                                 // 0x03B8(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class ULightBeam*>                     BeamPool;                                          // 0x03C8(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class UFXSystemComponent*>             ActiveParticles;                                   // 0x03D8(0x0010)(ExportObject, ZeroConstructor, Transient, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<struct FLightBeamParticlePoolData>     ParticlesPool;                                     // 0x03E8(0x0010)(ZeroConstructor, Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_3F8[0x44];                                     // 0x03F8(0x0044)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         MaxAsyncSpawnTime;                                 // 0x043C(0x0004)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_440[0x70];                                     // 0x0440(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnParticleSystemFinished(class UFXSystemComponent* FinishedComponent);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("LightBeamManager")
+		STATIC_CLASS_IMPL("JunkSystemNotificationReceiver")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"LightBeamManager")
+		STATIC_NAME_IMPL(L"JunkSystemNotificationReceiver")
 	}
-	static class ALightBeamManager* GetDefaultObj()
+	static class IJunkSystemNotificationReceiver* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<ALightBeamManager>();
+		return GetDefaultObjImpl<IJunkSystemNotificationReceiver>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_ALightBeamManager;
+DUMPER7_ASSERTS_IJunkSystemNotificationReceiver;
 
 // Class GbxGame.AvatarStatics
 // 0x0000 (0x0028 - 0x0028)
@@ -2338,25 +2428,25 @@ public:
 };
 DUMPER7_ASSERTS_IDamageTypeInterface;
 
-// Class GbxGame.NexusConfigStoreDialogEvents
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreDialogEvents final : public UNexusConfigStoreBasicDefFlat
+// Class GbxGame.NexusConfigStoreDamageFilter
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreDamageFilter final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreDialogEvents")
+		STATIC_CLASS_IMPL("NexusConfigStoreDamageFilter")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreDialogEvents")
+		STATIC_NAME_IMPL(L"NexusConfigStoreDamageFilter")
 	}
-	static class UNexusConfigStoreDialogEvents* GetDefaultObj()
+	static class UNexusConfigStoreDamageFilter* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreDialogEvents>();
+		return GetDefaultObjImpl<UNexusConfigStoreDamageFilter>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreDialogEvents;
+DUMPER7_ASSERTS_UNexusConfigStoreDamageFilter;
 
 // Class GbxGame.BalanceBlueprintLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -2410,93 +2500,107 @@ public:
 };
 DUMPER7_ASSERTS_IBalancedActor;
 
-// Class GbxGame.GbxInventoryAugmentScript
-// 0x0000 (0x00A0 - 0x00A0)
-class UGbxInventoryAugmentScript final : public UGbxActorScript
-{
-public:
-	void OnInventoryAugmentCausedDamageConditionMet(class AActor* DamagedActor, const struct FCausedDamageDetails& Details);
-	void OnInventoryAugmentConditionMet(class AActor* EnemyActor);
-	void OnInventoryAugmentEquipped();
-	void OnInventoryAugmentReceivedDamageConditionMet(const struct FReceivedDamageDetails& Details);
-	void OnInventoryAugmentRemovalConditionMet();
-	void OnInventoryAugmentUnequipped();
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxInventoryAugmentScript")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxInventoryAugmentScript")
-	}
-	static class UGbxInventoryAugmentScript* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxInventoryAugmentScript>();
-	}
-};
-DUMPER7_ASSERTS_UGbxInventoryAugmentScript;
-
-// Class GbxGame.GbxProfileProgressRoleAllPlayers
+// Class GbxGame.GbxProfileProgressRoleClientLocal
 // 0x0000 (0x0100 - 0x0100)
-class UGbxProfileProgressRoleAllPlayers : public UGbxProfileProgressRoleFiltered
+class UGbxProfileProgressRoleClientLocal : public UGbxProfileProgressRoleFiltered
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxProfileProgressRoleAllPlayers")
+		STATIC_CLASS_IMPL("GbxProfileProgressRoleClientLocal")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxProfileProgressRoleAllPlayers")
+		STATIC_NAME_IMPL(L"GbxProfileProgressRoleClientLocal")
 	}
-	static class UGbxProfileProgressRoleAllPlayers* GetDefaultObj()
+	static class UGbxProfileProgressRoleClientLocal* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxProfileProgressRoleAllPlayers>();
+		return GetDefaultObjImpl<UGbxProfileProgressRoleClientLocal>();
 	}
 };
-DUMPER7_ASSERTS_UGbxProfileProgressRoleAllPlayers;
+DUMPER7_ASSERTS_UGbxProfileProgressRoleClientLocal;
 
-// Class GbxGame.StatStateCacheProgressRole
-// 0x0000 (0x0100 - 0x0100)
-class UStatStateCacheProgressRole final : public UGbxProfileProgressRoleAllPlayers
+// Class GbxGame.GbxInputProgressRole
+// 0x0050 (0x0150 - 0x0100)
+class UGbxInputProgressRole final : public UGbxProfileProgressRoleClientLocal
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("StatStateCacheProgressRole")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"StatStateCacheProgressRole")
-	}
-	static class UStatStateCacheProgressRole* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UStatStateCacheProgressRole>();
-	}
-};
-DUMPER7_ASSERTS_UStatStateCacheProgressRole;
+	uint8                                         Pad_100[0x50];                                     // 0x0100(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
-// Class GbxGame.NexusConfigStoreInventoryCriteriaPreset
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreInventoryCriteriaPreset final : public UNexusConfigStoreBasic
-{
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreInventoryCriteriaPreset")
+		STATIC_CLASS_IMPL("GbxInputProgressRole")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryCriteriaPreset")
+		STATIC_NAME_IMPL(L"GbxInputProgressRole")
 	}
-	static class UNexusConfigStoreInventoryCriteriaPreset* GetDefaultObj()
+	static class UGbxInputProgressRole* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreInventoryCriteriaPreset>();
+		return GetDefaultObjImpl<UGbxInputProgressRole>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreInventoryCriteriaPreset;
+DUMPER7_ASSERTS_UGbxInputProgressRole;
+
+// Class GbxGame.SpawnEncounterEvent_Transfer
+// 0x0020 (0x0050 - 0x0030)
+class USpawnEncounterEvent_Transfer final : public USpawnEncounterEvent
+{
+public:
+	TArray<class ASpawnEncounter*>                SourceEncounters;                                  // 0x0030(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	class ASpawner*                               TargetSpawner;                                     // 0x0040(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	bool                                          bSpecifyTargetSpawner;                             // 0x0048(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_49[0x7];                                       // 0x0049(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("SpawnEncounterEvent_Transfer")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"SpawnEncounterEvent_Transfer")
+	}
+	static class USpawnEncounterEvent_Transfer* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<USpawnEncounterEvent_Transfer>();
+	}
+};
+DUMPER7_ASSERTS_USpawnEncounterEvent_Transfer;
+
+// Class GbxGame.NexusConfigStoreInventory
+// 0x00E8 (0x0428 - 0x0340)
+class UNexusConfigStoreInventory final : public UNexusConfigStorePath
+{
+public:
+	uint8                                         Pad_340[0xC8];                                     // 0x0340(0x00C8)(Fixing Size After Last Property [ Dumper-7 ])
+	class FString                                 DefsAccumFilters;                                  // 0x0408(0x0010)(ZeroConstructor, Config, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_418[0x10];                                     // 0x0418(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static void GetAspectMeshGestaltPartNames(TSoftObjectPtr<class UObject> Mesh, TArray<class FName>* OutNames);
+	static void GetCriterionDisplayNames(TArray<class FName>* OutNames);
+	static class FName GetCriterionNameFromDisplayName(const class FString& DisplayName);
+	static void GetCriterionNames(TArray<class FName>* OutNames);
+	static void GetCriterionTagNames(TArray<class FName>* OutNames);
+	static void GetStorePartTypeNames(TArray<class FName>* OutNames);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreInventory")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreInventory")
+	}
+	static class UNexusConfigStoreInventory* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreInventory>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreInventory;
 
 // Class GbxGame.GbxActorPartStaticMeshComponent
 // 0x0000 (0x0720 - 0x0720)
@@ -2545,52 +2649,45 @@ public:
 };
 DUMPER7_ASSERTS_UBodyActionAnimData;
 
-// Class GbxGame.GbxPlayerGroup
-// 0x0058 (0x03E8 - 0x0390)
-class AGbxPlayerGroup final : public AInfo
-{
-public:
-	TSubclassOf<class AGbxPlayerGroupState>       PlayerGroupStateClass;                             // 0x0390(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, NoClear, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_398[0x50];                                     // 0x0398(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	TArray<class AGbxPlayerState*> GetPlayerStateArray() const;
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxPlayerGroup")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxPlayerGroup")
-	}
-	static class AGbxPlayerGroup* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<AGbxPlayerGroup>();
-	}
-};
-DUMPER7_ASSERTS_AGbxPlayerGroup;
-
-// Class GbxGame.NexusConfigStoreGoreRegion
+// Class GbxGame.NexusConfigStore_GbxPlayerBot
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGoreRegion final : public UNexusConfigStoreBasic
+class UNexusConfigStore_GbxPlayerBot final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGoreRegion")
+		STATIC_CLASS_IMPL("NexusConfigStore_GbxPlayerBot")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGoreRegion")
+		STATIC_NAME_IMPL(L"NexusConfigStore_GbxPlayerBot")
 	}
-	static class UNexusConfigStoreGoreRegion* GetDefaultObj()
+	static class UNexusConfigStore_GbxPlayerBot* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGoreRegion>();
+		return GetDefaultObjImpl<UNexusConfigStore_GbxPlayerBot>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGoreRegion;
+DUMPER7_ASSERTS_UNexusConfigStore_GbxPlayerBot;
+
+// Class GbxGame.NexusConfigStoreGimme
+// 0x0000 (0x0340 - 0x0340)
+class UNexusConfigStoreGimme final : public UNexusConfigStorePath
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreGimme")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreGimme")
+	}
+	static class UNexusConfigStoreGimme* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreGimme>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreGimme;
 
 // Class GbxGame.BodyActionTagMap
 // 0x0060 (0x0090 - 0x0030)
@@ -2615,6 +2712,34 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UBodyActionTagMap;
+
+// Class GbxGame.GbxLevelSequenceBase
+// 0x0010 (0x00B0 - 0x00A0)
+class UGbxLevelSequenceBase : public ULevelSequence
+{
+public:
+	bool                                          bDisableAnimUpdateOptimizations;                   // 0x00A0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bForceMaxLOD;                                      // 0x00A1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bDisableVirtualTextureThrottling;                  // 0x00A2(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_A3[0x1];                                       // 0x00A3(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxDialogNameTagQualifier             DialogNameTagQualifier;                            // 0x00A4(0x0008)(Edit, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_AC[0x4];                                       // 0x00AC(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxLevelSequenceBase")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxLevelSequenceBase")
+	}
+	static class UGbxLevelSequenceBase* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxLevelSequenceBase>();
+	}
+};
+DUMPER7_ASSERTS_UGbxLevelSequenceBase;
 
 // Class GbxGame.GbxSequence
 // 0x0038 (0x00E8 - 0x00B0)
@@ -2712,26 +2837,6 @@ public:
 };
 DUMPER7_ASSERTS_IBodyActionAnimOwner;
 
-// Class GbxGame.NexusConfigLevelSubType
-// 0x0000 (0x0040 - 0x0040)
-class UNexusConfigLevelSubType : public UNexusConfigSubType
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigLevelSubType")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigLevelSubType")
-	}
-	static class UNexusConfigLevelSubType* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigLevelSubType>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigLevelSubType;
-
 // Class GbxGame.GbxActorScriptDelegateBinding
 // 0x0010 (0x0038 - 0x0028)
 class UGbxActorScriptDelegateBinding final : public UDynamicBlueprintBinding
@@ -2755,34 +2860,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActorScriptDelegateBinding;
 
-// Class GbxGame.GbxFlyToActorManagerInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxFlyToActorManagerInterface final
+// Class GbxGame.NexusConfigStoreGbxFlyToActorConfigDef
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxFlyToActorConfigDef final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxFlyToActorManagerInterface")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxFlyToActorConfigDef")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxFlyToActorManagerInterface")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxFlyToActorConfigDef")
 	}
-	static class IGbxFlyToActorManagerInterface* GetDefaultObj()
+	static class UNexusConfigStoreGbxFlyToActorConfigDef* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxFlyToActorManagerInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UNexusConfigStoreGbxFlyToActorConfigDef>();
 	}
 };
-DUMPER7_ASSERTS_IGbxFlyToActorManagerInterface;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxFlyToActorConfigDef;
 
 // Class GbxGame.NexusConfigSubType_Breadcrumb
 // 0x0000 (0x0040 - 0x0040)
@@ -2804,28 +2900,34 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigSubType_Breadcrumb;
 
-// Class GbxGame.InventoryPickupSpawnManager
-// 0x0030 (0x0060 - 0x0030)
-class UInventoryPickupSpawnManager final : public UGameInstanceSubsystem
+// Class GbxGame.InventoryOwner
+// 0x0000 (0x0000 - 0x0000)
+class IInventoryOwner final
 {
-public:
-	uint8                                         Pad_30[0x30];                                      // 0x0030(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("InventoryPickupSpawnManager")
+		STATIC_CLASS_IMPL("InventoryOwner")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"InventoryPickupSpawnManager")
+		STATIC_NAME_IMPL(L"InventoryOwner")
 	}
-	static class UInventoryPickupSpawnManager* GetDefaultObj()
+	static class IInventoryOwner* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UInventoryPickupSpawnManager>();
+		return GetDefaultObjImpl<IInventoryOwner>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UInventoryPickupSpawnManager;
+DUMPER7_ASSERTS_IInventoryOwner;
 
 // Class GbxGame.BreadcrumbEditorGraph
 // 0x00C0 (0x0450 - 0x0390)
@@ -2890,28 +2992,47 @@ public:
 };
 DUMPER7_ASSERTS_ABreadcrumbGroupVolumeActor;
 
-// Class GbxGame.GbxLevelSequenceInstanceData
-// 0x0050 (0x00F0 - 0x00A0)
-class UGbxLevelSequenceInstanceData final : public UDefaultLevelSequenceInstanceData
+// Class GbxGame.GbxLevelSequenceActor
+// 0x0358 (0x0790 - 0x0438)
+class AGbxLevelSequenceActor : public ALevelSequenceActor
 {
 public:
-	TMap<TSoftObjectPtr<class UGbxLevelSequence>, struct FGbxShotOriginActorRef> ShotOriginMap;      // 0x00A0(0x0050)(Edit, NativeAccessSpecifierPublic)
+	uint8                                         Pad_438[0x28];                                     // 0x0438(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
+	FGameDataHandleProperty_                      CinematicMode;                                     // 0x0460(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxActivityActorData                  ActivityData;                                      // 0x0478(0x0058)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
+	bool                                          bIsPersistent;                                     // 0x04D0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_4D1[0x7];                                      // 0x04D1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FFactsConduit                          FactsConduit;                                      // 0x04D8(0x00D8)(Edit, DisableEditOnTemplate, Protected, NativeAccessSpecifierProtected)
+	struct FGbxActorState                         ActorState;                                        // 0x05B0(0x0070)(Edit, EditConst, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_620[0x8];                                      // 0x0620(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class UMinimalLevelSequenceInstanceData*      PassthroughInstanceData;                           // 0x0628(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UMovieSceneBindingOverrides*            TransientBindingOverrides;                         // 0x0630(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_638[0x8];                                      // 0x0638(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxLevelSequenceActorSettings         ReplicatedSettings;                                // 0x0640(0x00D0)(Net, Transient, RepNotify, Protected, NativeAccessSpecifierProtected)
+	TArray<struct FGbxLevelSequenceActorBinding>  ReplicatedTransientBindings;                       // 0x0710(0x0010)(Net, ZeroConstructor, Transient, RepNotify, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_720[0x68];                                     // 0x0720(0x0068)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bAttachPlayerBodyComponents;                       // 0x0788(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_789[0x7];                                      // 0x0789(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnRep_ReplicatedSettings();
+	void OnRep_ReplicatedTransientBindings();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequenceInstanceData")
+		STATIC_CLASS_IMPL("GbxLevelSequenceActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequenceInstanceData")
+		STATIC_NAME_IMPL(L"GbxLevelSequenceActor")
 	}
-	static class UGbxLevelSequenceInstanceData* GetDefaultObj()
+	static class AGbxLevelSequenceActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLevelSequenceInstanceData>();
+		return GetDefaultObjImpl<AGbxLevelSequenceActor>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLevelSequenceInstanceData;
+DUMPER7_ASSERTS_AGbxLevelSequenceActor;
 
 // Class GbxGame.GbxActorPartSelectionProvider
 // 0x0000 (0x0000 - 0x0000)
@@ -2973,38 +3094,31 @@ public:
 };
 DUMPER7_ASSERTS_ABreadcrumbFactVolumeActivator;
 
-// Class GbxGame.GbxPlayerCustomization
-// 0x0000 (0x0000 - 0x0000)
-class IGbxPlayerCustomization final
+// Class GbxGame.GbxPlayerBotBlueprintLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UGbxPlayerBotBlueprintLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	void ApplyPlayerCustomization(FGbxDefPtrProperty_ NewCustomization);
-	void PrintCustomizationString();
+	static bool IsPlayerBot(class AActor* Actor);
+	static void RemovePlayerBot(class AActor* Actor);
+	static void RemovePlayerBots(class UObject* WorldContext);
+	static class AGbxCharacter* SpawnPlayerBot(class UObject* WorldContext, class AActor* SpawnAt, FGameDataHandleProperty_ CharacterDef, const struct FTransform& Transform, bool bEnableSplitscreen);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxPlayerCustomization")
+		STATIC_CLASS_IMPL("GbxPlayerBotBlueprintLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxPlayerCustomization")
+		STATIC_NAME_IMPL(L"GbxPlayerBotBlueprintLibrary")
 	}
-	static class IGbxPlayerCustomization* GetDefaultObj()
+	static class UGbxPlayerBotBlueprintLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxPlayerCustomization>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxPlayerBotBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_IGbxPlayerCustomization;
+DUMPER7_ASSERTS_UGbxPlayerBotBlueprintLibrary;
 
 // Class GbxGame.BreadcrumbRenderingComponent
 // 0x0010 (0x0630 - 0x0620)
@@ -3029,60 +3143,49 @@ public:
 };
 DUMPER7_ASSERTS_UBreadcrumbRenderingComponent;
 
-// Class GbxGame.GbxDestructibleGeometryCollectionScriptedData
-// 0x01F0 (0x04B0 - 0x02C0)
-class UGbxDestructibleGeometryCollectionScriptedData final : public UGbxDestructibleGeometryCollectionData
+// Class GbxGame.GbxGameWorldSettings
+// 0x0008 (0x0668 - 0x0660)
+class AGbxGameWorldSettings : public AGbxNavWorldSettings
 {
 public:
-	TArray<struct FDamageModifierDef>             DamageDefsToPass;                                  // 0x02C0(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	TSubclassOf<class UGbxGeometryCollectionScript> script;                                          // 0x02D0(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxDestructibleCollisionEventSettings CollisionEventSettings;                            // 0x02D8(0x0040)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	bool                                          bOnCollisionChunkTurnIntoParticles;                // 0x0318(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_319[0x3];                                      // 0x0319(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ChunkTurnIntoParticlesMinVolume;                   // 0x031C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxDestructibleFractureEffectsSettings OnCollisionChunkTurnIntoParticlesSettings;        // 0x0320(0x00C0)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxDestructibleFractureEffectsSettings FractureEffectsSettings;                          // 0x03E0(0x00C0)(Edit, NativeAccessSpecifierPublic)
-	float                                         NavPainterBoundsOffset;                            // 0x04A0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4A4[0xC];                                      // 0x04A4(0x000C)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	bool                                          bDisableSpawnBudget;                               // 0x0660(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_661[0x7];                                      // 0x0661(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxDestructibleGeometryCollectionScriptedData")
+		STATIC_CLASS_IMPL("GbxGameWorldSettings")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxDestructibleGeometryCollectionScriptedData")
+		STATIC_NAME_IMPL(L"GbxGameWorldSettings")
 	}
-	static class UGbxDestructibleGeometryCollectionScriptedData* GetDefaultObj()
+	static class AGbxGameWorldSettings* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxDestructibleGeometryCollectionScriptedData>();
+		return GetDefaultObjImpl<AGbxGameWorldSettings>();
 	}
 };
-DUMPER7_ASSERTS_UGbxDestructibleGeometryCollectionScriptedData;
+DUMPER7_ASSERTS_AGbxGameWorldSettings;
 
-// Class GbxGame.MovieSceneCoordinatedMaterialSection
-// 0x0018 (0x0110 - 0x00F8)
-class UMovieSceneCoordinatedMaterialSection final : public UMovieSceneSection
+// Class GbxGame.MovieSceneCoordinatedComponentMaterialParameterSection
+// 0x0000 (0x0120 - 0x0120)
+class UMovieSceneCoordinatedComponentMaterialParameterSection final : public UMovieSceneComponentMaterialParameterSection
 {
-public:
-	struct FGbxInlineStruct                       settings;                                          // 0x00F8(0x0018)(Edit, NoClear, NativeAccessSpecifierPublic)
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("MovieSceneCoordinatedMaterialSection")
+		STATIC_CLASS_IMPL("MovieSceneCoordinatedComponentMaterialParameterSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"MovieSceneCoordinatedMaterialSection")
+		STATIC_NAME_IMPL(L"MovieSceneCoordinatedComponentMaterialParameterSection")
 	}
-	static class UMovieSceneCoordinatedMaterialSection* GetDefaultObj()
+	static class UMovieSceneCoordinatedComponentMaterialParameterSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UMovieSceneCoordinatedMaterialSection>();
+		return GetDefaultObjImpl<UMovieSceneCoordinatedComponentMaterialParameterSection>();
 	}
 };
-DUMPER7_ASSERTS_UMovieSceneCoordinatedMaterialSection;
+DUMPER7_ASSERTS_UMovieSceneCoordinatedComponentMaterialParameterSection;
 
 // Class GbxGame.BreadcrumbRouteActor
 // 0x0018 (0x03A8 - 0x0390)
@@ -3149,25 +3252,25 @@ public:
 };
 DUMPER7_ASSERTS_AGbxAINode;
 
-// Class GbxGame.NexusConfigStoreGbxSkillStateMachine
-// 0x0000 (0x0340 - 0x0340)
-class UNexusConfigStoreGbxSkillStateMachine final : public UNexusConfigStorePath
+// Class GbxGame.NexusConfigStoreGbxSkillState
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxSkillState final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxSkillStateMachine")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxSkillState")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSkillStateMachine")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSkillState")
 	}
-	static class UNexusConfigStoreGbxSkillStateMachine* GetDefaultObj()
+	static class UNexusConfigStoreGbxSkillState* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxSkillStateMachine>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxSkillState>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillStateMachine;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillState;
 
 // Class GbxGame.BreadcrumbRouteComponent
 // 0x0020 (0x02D0 - 0x02B0)
@@ -3296,29 +3399,30 @@ public:
 };
 DUMPER7_ASSERTS_UBlueprintableCameraModeBehavior;
 
-// Class GbxGame.GbxTrick_Sequencer
-// 0x0018 (0x00A8 - 0x0090)
-class UGbxTrick_Sequencer : public UGbxTrick
+// Class GbxGame.GbxTrick_AnimRandom
+// 0x0018 (0x00E8 - 0x00D0)
+class UGbxTrick_AnimRandom final : public UGbxTrick_AnimBase
 {
 public:
-	class UGbxSequence*                           Sequence;                                          // 0x0090(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	struct FGbxSequencePlaybackSettings           settings;                                          // 0x0098(0x0010)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
+	bool                                          bPreventSameAnimChosenConsecutively;               // 0x00D0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_D1[0x7];                                       // 0x00D1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxTrickAnimRandomData>        RandomAnims;                                       // 0x00D8(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrick_Sequencer")
+		STATIC_CLASS_IMPL("GbxTrick_AnimRandom")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrick_Sequencer")
+		STATIC_NAME_IMPL(L"GbxTrick_AnimRandom")
 	}
-	static class UGbxTrick_Sequencer* GetDefaultObj()
+	static class UGbxTrick_AnimRandom* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrick_Sequencer>();
+		return GetDefaultObjImpl<UGbxTrick_AnimRandom>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrick_Sequencer;
+DUMPER7_ASSERTS_UGbxTrick_AnimRandom;
 
 // Class GbxGame.CameraModeInputs
 // 0x0A28 (0x0A50 - 0x0028)
@@ -3431,28 +3535,25 @@ public:
 };
 DUMPER7_ASSERTS_UCameraModeState;
 
-// Class GbxGame.GbxLegIKBlueprintLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxLegIKBlueprintLibrary final : public UBlueprintFunctionLibrary
+// Class GbxGame.NexusConfigStoreGbxItemFilter
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxItemFilter final : public UNexusConfigStoreBasic
 {
-public:
-	static void SetLegIKEnabled(class AActor* Actor, bool bNewEnabled, const class FString& reason);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLegIKBlueprintLibrary")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxItemFilter")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLegIKBlueprintLibrary")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxItemFilter")
 	}
-	static class UGbxLegIKBlueprintLibrary* GetDefaultObj()
+	static class UNexusConfigStoreGbxItemFilter* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLegIKBlueprintLibrary>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxItemFilter>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLegIKBlueprintLibrary;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxItemFilter;
 
 // Class GbxGame.GbxActorScript_DeliverySpawnPoint
 // 0x0078 (0x0118 - 0x00A0)
@@ -3516,28 +3617,25 @@ public:
 };
 DUMPER7_ASSERTS_UClimbablePresentationSetAsset;
 
-// Class GbxGame.GbxMusicBlueprintFunctions
-// 0x0000 (0x0028 - 0x0028)
-class UGbxMusicBlueprintFunctions final : public UBlueprintFunctionLibrary
+// Class GbxGame.NexusConfigStoreGbxMusic
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxMusic final : public UNexusConfigStoreBasic
 {
-public:
-	static void PostMusicEvent(class UObject* WorldContextObject, const struct FGameplayTag& MusicEventTag);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMusicBlueprintFunctions")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxMusic")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMusicBlueprintFunctions")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxMusic")
 	}
-	static class UGbxMusicBlueprintFunctions* GetDefaultObj()
+	static class UNexusConfigStoreGbxMusic* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxMusicBlueprintFunctions>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxMusic>();
 	}
 };
-DUMPER7_ASSERTS_UGbxMusicBlueprintFunctions;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxMusic;
 
 // Class GbxGame.CameraModeViewTarget
 // 0x0000 (0x0000 - 0x0000)
@@ -3588,32 +3686,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAIHeldMeleeComponent;
 
-// Class GbxGame.GbxGeometryCollectionScript
-// 0x0010 (0x00B0 - 0x00A0)
-class UGbxGeometryCollectionScript final : public UGbxActorScript
+// Class GbxGame.GbxGameViewportClient
+// 0x0020 (0x0430 - 0x0410)
+class UGbxGameViewportClient : public UCommonGameViewportClient
 {
 public:
-	uint8                                         Pad_A0[0x10];                                      // 0x00A0(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnApplyCollision(class UGbxGeometryCollectionScriptedComponent* Destructible, const struct FHitResult& HitResult, float CollisionSpeed) const;
-	void OnApplyHit(class UGbxGeometryCollectionScriptedComponent* Destructible, const struct FDestructionHitProperties& Properties) const;
+	uint8                                         Pad_410[0x20];                                     // 0x0410(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGeometryCollectionScript")
+		STATIC_CLASS_IMPL("GbxGameViewportClient")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGeometryCollectionScript")
+		STATIC_NAME_IMPL(L"GbxGameViewportClient")
 	}
-	static class UGbxGeometryCollectionScript* GetDefaultObj()
+	static class UGbxGameViewportClient* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGeometryCollectionScript>();
+		return GetDefaultObjImpl<UGbxGameViewportClient>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGeometryCollectionScript;
+DUMPER7_ASSERTS_UGbxGameViewportClient;
 
 // Class GbxGame.CameraModifier_GbxCameraShake
 // 0x0020 (0x0068 - 0x0048)
@@ -3640,28 +3734,28 @@ public:
 };
 DUMPER7_ASSERTS_UCameraModifier_GbxCameraShake;
 
-// Class GbxGame.GbxSequenceClosedCaptionSection
-// 0x00F8 (0x0208 - 0x0110)
-class UGbxSequenceClosedCaptionSection final : public UMovieSceneHookSection
+// Class GbxGame.GbxSequenceCapsuleOffsetSystem
+// 0x0050 (0x0090 - 0x0040)
+class UGbxSequenceCapsuleOffsetSystem final : public UMovieSceneEntitySystem
 {
 public:
-	struct FGbxSequenceClosedCaptionChannel       channel;                                           // 0x0110(0x00F8)(Edit, AssetRegistrySearchable, NativeAccessSpecifierPublic)
+	uint8                                         Pad_40[0x50];                                      // 0x0040(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceClosedCaptionSection")
+		STATIC_CLASS_IMPL("GbxSequenceCapsuleOffsetSystem")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceClosedCaptionSection")
+		STATIC_NAME_IMPL(L"GbxSequenceCapsuleOffsetSystem")
 	}
-	static class UGbxSequenceClosedCaptionSection* GetDefaultObj()
+	static class UGbxSequenceCapsuleOffsetSystem* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceClosedCaptionSection>();
+		return GetDefaultObjImpl<UGbxSequenceCapsuleOffsetSystem>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceClosedCaptionSection;
+DUMPER7_ASSERTS_UGbxSequenceCapsuleOffsetSystem;
 
 // Class GbxGame.ClimbableBodyData
 // 0x0000 (0x0060 - 0x0060)
@@ -3683,40 +3777,29 @@ public:
 };
 DUMPER7_ASSERTS_UClimbableBodyData;
 
-// Class GbxGame.HazardInteractionInterface
-// 0x0000 (0x0000 - 0x0000)
-class IHazardInteractionInterface final
+// Class GbxGame.GpsSpawnPointComponent
+// 0x0210 (0x0B60 - 0x0950)
+class UGpsSpawnPointComponent final : public UGbxGameSpawnPointComponent
 {
 public:
-	void OnBeginHazardDamageOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const struct FHitResult& SweepResult);
-	void OnBeginHazardInteractionOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const struct FHitResult& SweepResult);
-	void OnEndHazardDamageOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	void OnEndHazardInteractionOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	struct FGpsQueryRunData                       QueryData;                                         // 0x0950(0x01E0)(Edit, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_B30[0x30];                                     // 0x0B30(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("HazardInteractionInterface")
+		STATIC_CLASS_IMPL("GpsSpawnPointComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"HazardInteractionInterface")
+		STATIC_NAME_IMPL(L"GpsSpawnPointComponent")
 	}
-	static class IHazardInteractionInterface* GetDefaultObj()
+	static class UGpsSpawnPointComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IHazardInteractionInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGpsSpawnPointComponent>();
 	}
 };
-DUMPER7_ASSERTS_IHazardInteractionInterface;
+DUMPER7_ASSERTS_UGpsSpawnPointComponent;
 
 // Class GbxGame.CameraPreferencesInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -3767,25 +3850,60 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStore_CharacterSoundDef;
 
-// Class GbxGame.GbxOpportunisticAmbientAudioProceduralActor
-// 0x0000 (0x0390 - 0x0390)
-class AGbxOpportunisticAmbientAudioProceduralActor final : public APartitionActor
+// Class GbxGame.GbxGameTestActor
+// 0x0110 (0x0510 - 0x0400)
+class AGbxGameTestActor : public AGbxEngineTestActor
 {
+public:
+	uint8                                         Pad_400[0x38];                                     // 0x0400(0x0038)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FUsableActorState                      UsableActorState;                                  // 0x0438(0x00D0)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	class USphereComponent*                       TriggerComponent;                                  // 0x0508(0x0008)(Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxOpportunisticAmbientAudioProceduralActor")
+		STATIC_CLASS_IMPL("GbxGameTestActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxOpportunisticAmbientAudioProceduralActor")
+		STATIC_NAME_IMPL(L"GbxGameTestActor")
 	}
-	static class AGbxOpportunisticAmbientAudioProceduralActor* GetDefaultObj()
+	static class AGbxGameTestActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxOpportunisticAmbientAudioProceduralActor>();
+		return GetDefaultObjImpl<AGbxGameTestActor>();
 	}
 };
-DUMPER7_ASSERTS_AGbxOpportunisticAmbientAudioProceduralActor;
+DUMPER7_ASSERTS_AGbxGameTestActor;
+
+// Class GbxGame.GbxNavTest_NavMeshPath
+// 0x00A0 (0x05B0 - 0x0510)
+class AGbxNavTest_NavMeshPath final : public AGbxGameTestActor
+{
+public:
+	class ASpawner*                               Spawner;                                           // 0x0510(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<struct FGbxNavTestAgentData>           Agents;                                            // 0x0518(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	struct FGbxNavGoalModifiers                   Modifiers;                                         // 0x0528(0x0080)(Edit, NativeAccessSpecifierPrivate)
+	class ALevelSequenceActor*                    Sequence;                                          // 0x05A8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+
+public:
+	void SetGbxActorDef(const FGameDataHandleProperty_& NewGbxActorDef);
+	void SetStance(const FGameDataHandleProperty_& NewStance);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxNavTest_NavMeshPath")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxNavTest_NavMeshPath")
+	}
+	static class AGbxNavTest_NavMeshPath* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxNavTest_NavMeshPath>();
+	}
+};
+DUMPER7_ASSERTS_AGbxNavTest_NavMeshPath;
 
 // Class GbxGame.GbxAnimNotifyState_RootMotionType
 // 0x0008 (0x0038 - 0x0030)
@@ -3841,37 +3959,55 @@ public:
 };
 DUMPER7_ASSERTS_ICharacterSoundInterface;
 
-// Class GbxGame.GbxMovingPlatformKillVolume
-// 0x0068 (0x0430 - 0x03C8)
-class AGbxMovingPlatformKillVolume final : public AVolume
+// Class GbxGame.GbxMovingPlatformControllerActor
+// 0x0150 (0x04E0 - 0x0390)
+class AGbxMovingPlatformControllerActor : public AActor
 {
 public:
-	float                                         TimeToKill;                                        // 0x03C8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bMustBeWithinMovingPlatformBounds;                 // 0x03CC(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_3CD[0x3];                                      // 0x03CD(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              OnlyKillByThisMovingPlatform;                      // 0x03D0(0x0038)(Edit, Protected, NativeAccessSpecifierProtected)
-	TArray<class FName>                           OnlyKillAtTheseDestinations;                       // 0x0408(0x0010)(Edit, ZeroConstructor, Protected, NativeAccessSpecifierProtected)
-	bool                                          bMustBeFullyAtDestinationToKill;                   // 0x0418(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_419[0x17];                                     // 0x0419(0x0017)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	TWeakObjectPtr<class AActor>                  ControlledActor;                                   // 0x0390(0x0008)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_398[0x8];                                      // 0x0398(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	TWeakObjectPtr<class AActor>                  SplineTrackActor;                                  // 0x03A0(0x0008)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_3A8[0x138];                                    // 0x03A8(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void GetAvailablePlatformStates(TArray<class FName>* OptionList);
+	void OnRep_ControlledActor();
+	void OnRep_SplineTrackActor();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformKillVolume")
+		STATIC_CLASS_IMPL("GbxMovingPlatformControllerActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformKillVolume")
+		STATIC_NAME_IMPL(L"GbxMovingPlatformControllerActor")
 	}
-	static class AGbxMovingPlatformKillVolume* GetDefaultObj()
+	static class AGbxMovingPlatformControllerActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxMovingPlatformKillVolume>();
+		return GetDefaultObjImpl<AGbxMovingPlatformControllerActor>();
 	}
 };
-DUMPER7_ASSERTS_AGbxMovingPlatformKillVolume;
+DUMPER7_ASSERTS_AGbxMovingPlatformControllerActor;
+
+// Class GbxGame.GbxMovingPlatformControllerActor_MovementReplication
+// 0x0000 (0x04E0 - 0x04E0)
+class AGbxMovingPlatformControllerActor_MovementReplication final : public AGbxMovingPlatformControllerActor
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxMovingPlatformControllerActor_MovementReplication")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxMovingPlatformControllerActor_MovementReplication")
+	}
+	static class AGbxMovingPlatformControllerActor_MovementReplication* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxMovingPlatformControllerActor_MovementReplication>();
+	}
+};
+DUMPER7_ASSERTS_AGbxMovingPlatformControllerActor_MovementReplication;
 
 // Class GbxGame.NexusConfigStoreAINodeFollowSettings
 // 0x0000 (0x0390 - 0x0390)
@@ -3916,61 +4052,73 @@ public:
 };
 DUMPER7_ASSERTS_UCharacterSoundLogicComponent;
 
-// Class GbxGame.GbxGameSpawnEncounter
-// 0x0178 (0x0618 - 0x04A0)
-class AGbxGameSpawnEncounter : public ASpawnEncounter
+// Class GbxGame.GbxGameplayStatics
+// 0x0000 (0x0028 - 0x0028)
+class UGbxGameplayStatics final : public UGameplayStatics
 {
 public:
-	uint8                                         Pad_4A0[0x10];                                     // 0x04A0(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxActivityActorData                  ActivityData;                                      // 0x04B0(0x0058)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_508[0x18];                                     // 0x0508(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FFactsConduit                          FactsConduit;                                      // 0x0520(0x00D8)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_5F8[0x8];                                      // 0x05F8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<TSoftClassPtr<class UClass>>           ActorClassesToCluster;                             // 0x0600(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	bool                                          bIgnoredTeamLinkingErrors;                         // 0x0610(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_611[0x7];                                      // 0x0611(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	static bool AreAllPlayersOverlappingActor(class UObject* WorldContextObject, class AActor* Actor);
+	static bool AreAllPlayersOverlappingActors(class UObject* WorldContextObject, const TArray<class AActor*>& Actors);
+	static bool AreAnyPlayersOverlappingActor(class UObject* WorldContextObject, class AActor* Actor);
+	static bool AreAnyPlayersOverlappingActors(class UObject* WorldContextObject, const TArray<class AActor*>& Actors);
+	static void BranchOnAreAllPlayersOverlappingActor(class UObject* WorldContextObject, class AActor* Actor, EPlayersOverlappingActorOutput* Branches);
+	static void BranchOnAreAllPlayersOverlappingActors(class UObject* WorldContextObject, const TArray<class AActor*>& Actors, EPlayersOverlappingActorOutput* Branches);
+	static void BranchOnAreAnyPlayersOverlappingActor(class UObject* WorldContextObject, class AActor* Actor, EPlayersOverlappingActorOutput* Branches);
+	static void BranchOnAreAnyPlayersOverlappingActors(class UObject* WorldContextObject, const TArray<class AActor*>& Actors, EPlayersOverlappingActorOutput* Branches);
+	static struct FVector CalculateConeVector(float Fraction, const struct FVector& Origin, const struct FVector& Direction, float AngleWidth, float AngleHeight);
+	static TArray<struct FTransform> GeneratePointsOnCone(const struct FVector& Origin, const struct FVector& Direction, int32 SampleCount, float SpreadAngle, float RotateAngle, float OriginOffset);
+	static TArray<struct FTransform> GeneratePointsOnFan(const struct FVector& Origin, const struct FVector& Direction, int32 SampleCount, float SpreadAngle, float RotateAngle, float OriginOffset);
+	static class AGbxCharacter* GetAssociatedPrimaryCharacter(class AActor* Actor);
+	static class AGbxGameplayDirector* GetGameplayDirector(const class UObject* WorldContextObject);
+	static struct FVector GetViewRelativeSpawnLocation(class AActor* Source, const struct FGbxRelativeLocation& RelativeLocation, const struct FVector& ViewRelativeOffset);
+	static bool SetCanCharacterStepUpOn(class AActor* Actor, ECanBeCharacterBase CanCharacterStepUpOn);
+	static void SpawnEmitterAtActorSocketMulticast(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, class AActor* Actor, class FName socket, bool bAutoDestroy, bool bAutoActivateSystem);
+	static void SpawnEmitterAtComponentSocketMulticast(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, class USceneComponent* Component, class FName socket, bool bAutoDestroy, bool bAutoActivateSystem);
+	static class UFXSystemComponent* SpawnEmitterAtLocation_Generic(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, const TArray<struct FGbxParticleParameter>& EmitterParameters, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, bool bAutoDestroy, EPSCPoolMethod PoolingMethod, bool bAutoActivateSystem, EGameplayEffectVisibility Visibility, EGameplayEffectReplication Replication);
+	static class UFXSystemComponent* SpawnEmitterAtLocation_GenericConst(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, const TArray<struct FGbxParticleParameter>& EmitterParameters, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, bool bAutoDestroy, EPSCPoolMethod PoolingMethod, bool bAutoActivateSystem, EGameplayEffectVisibility Visibility, EGameplayEffectReplication Replication);
+	static void SpawnEmitterAtLocationMulticast(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, bool bAutoDestroy, bool bAutoActivateSystem);
+	static void SpawnEmitterAttached_Body(class UFXSystemAsset* EmitterTemplate, const TArray<struct FGbxParticleParameter>& EmitterParameters, class AActor* AttachToActor, class FName AttachPointName, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, EAttachLocation LocationType, bool bAutoDestroy, EPSCPoolMethod PoolingMethod, bool bAutoActivate, EGameplayEffectBodyVisibility Visibility, EGameplayEffectReplication Replication);
+	static class UFXSystemComponent* SpawnEmitterAttached_Generic(class UFXSystemAsset* EmitterTemplate, const TArray<struct FGbxParticleParameter>& EmitterParameters, class USceneComponent* AttachToComponent, class FName AttachPointName, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, EAttachLocation LocationType, bool bAutoDestroy, EPSCPoolMethod PoolingMethod, bool bAutoActivate, EGameplayEffectVisibility Visibility, EGameplayEffectReplication Replication);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameSpawnEncounter")
+		STATIC_CLASS_IMPL("GbxGameplayStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameSpawnEncounter")
+		STATIC_NAME_IMPL(L"GbxGameplayStatics")
 	}
-	static class AGbxGameSpawnEncounter* GetDefaultObj()
+	static class UGbxGameplayStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxGameSpawnEncounter>();
+		return GetDefaultObjImpl<UGbxGameplayStatics>();
 	}
 };
-DUMPER7_ASSERTS_AGbxGameSpawnEncounter;
+DUMPER7_ASSERTS_UGbxGameplayStatics;
 
-// Class GbxGame.NexusActorDataLayerHelper
-// 0x0118 (0x0140 - 0x0028)
-class UNexusActorDataLayerHelper final : public UObject
+// Class GbxGame.MovieSceneCoordinatedParticleSection
+// 0x00A8 (0x01A0 - 0x00F8)
+class UMovieSceneCoordinatedParticleSection final : public UMovieSceneSection
 {
 public:
-	uint8                                         Pad_28[0x118];                                     // 0x0028(0x0118)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnDataLayerInstanceRuntimeStateChanged(const class UDataLayerInstance* InDataLayerInstance, EDataLayerRuntimeState InEffectiveState);
+	uint8                                         Pad_F8[0x8];                                       // 0x00F8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FCoordinatedParticleSettings           settings;                                          // 0x0100(0x00A0)(Edit, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusActorDataLayerHelper")
+		STATIC_CLASS_IMPL("MovieSceneCoordinatedParticleSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusActorDataLayerHelper")
+		STATIC_NAME_IMPL(L"MovieSceneCoordinatedParticleSection")
 	}
-	static class UNexusActorDataLayerHelper* GetDefaultObj()
+	static class UMovieSceneCoordinatedParticleSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusActorDataLayerHelper>();
+		return GetDefaultObjImpl<UMovieSceneCoordinatedParticleSection>();
 	}
 };
-DUMPER7_ASSERTS_UNexusActorDataLayerHelper;
+DUMPER7_ASSERTS_UMovieSceneCoordinatedParticleSection;
 
 // Class GbxGame.InteractiveObject
 // 0x16C8 (0x1A58 - 0x0390)
@@ -4141,25 +4289,38 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStore_CharacterSoundTagDef;
 
-// Class GbxGame.MissionProgressRole
-// 0x0000 (0x0100 - 0x0100)
-class UMissionProgressRole final : public UGbxProfileProgressRoleFiltered
+// Class GbxGame.MissionBlueprintLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UMissionBlueprintLibrary final : public UBlueprintFunctionLibrary
 {
+public:
+	static struct FMissionInstanceHandle GetOrCreateMissionInstanceForPlayer(const struct FMissionInstanceHandle& primarymission, const class AActor* Actor);
+	static struct FMissionInstanceHandle GetOrCreateMissionInstanceForPlayerGroup(const struct FMissionInstanceHandle& primarymission, const class AActor* Actor);
+	static bool IsActorPartOfActiveMission(class AActor* Actor);
+	static bool IsPlayerRelevantForMissionInstance(class UObject* WorldContextObject, const struct FMissionInstanceHandle& MissionHandle, class AActor* Actor);
+	static bool IsValid(const struct FMissionInstanceHandle& MissionHandle);
+	static void QueryPrimaryMissionInstance(class UObject* WorldContextObject, FGbxDefPtrProperty_ MissionDef, struct FMissionInstanceHandle* OutMission);
+	static void QuerySubordinateMissionInstancesForPlayer(class UObject* WorldContextObject, FGbxDefPtrProperty_ MissionDef, class AActor* Actor, TArray<struct FMissionInstanceHandle>* OutMissions);
+	static void ResetRepeatableMission(class UObject* WorldContextObject, FGbxDefPtrProperty_ mission);
+	static void SendMissionEvent(class UObject* WorldContextObject, FGbxDefPtrProperty_ mission, class FName Event);
+
+	class FString GetMissionIdent(const struct FMissionInstanceHandle& MissionInstanceHandle);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("MissionProgressRole")
+		STATIC_CLASS_IMPL("MissionBlueprintLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"MissionProgressRole")
+		STATIC_NAME_IMPL(L"MissionBlueprintLibrary")
 	}
-	static class UMissionProgressRole* GetDefaultObj()
+	static class UMissionBlueprintLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UMissionProgressRole>();
+		return GetDefaultObjImpl<UMissionBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UMissionProgressRole;
+DUMPER7_ASSERTS_UMissionBlueprintLibrary;
 
 // Class GbxGame.ClimbableInteractData
 // 0x0000 (0x0030 - 0x0030)
@@ -4201,28 +4362,29 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreClimbableInteract;
 
-// Class GbxGame.GbxSequenceAnimSetPickerSection
-// 0x0008 (0x0118 - 0x0110)
-class UGbxSequenceAnimSetPickerSection final : public UMovieSceneHookSection
+// Class GbxGame.GbxSequenceActorStateTrack
+// 0x0018 (0x0110 - 0x00F8)
+class UGbxSequenceActorStateTrack final : public UMovieSceneTrack
 {
 public:
-	class UGbxAnimSetPicker*                      AnimSetPicker;                                     // 0x0110(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UGbxSequenceActorStateSection*          PrimarySection;                                    // 0x00F8(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_100[0x10];                                     // 0x0100(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceAnimSetPickerSection")
+		STATIC_CLASS_IMPL("GbxSequenceActorStateTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceAnimSetPickerSection")
+		STATIC_NAME_IMPL(L"GbxSequenceActorStateTrack")
 	}
-	static class UGbxSequenceAnimSetPickerSection* GetDefaultObj()
+	static class UGbxSequenceActorStateTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceAnimSetPickerSection>();
+		return GetDefaultObjImpl<UGbxSequenceActorStateTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceAnimSetPickerSection;
+DUMPER7_ASSERTS_UGbxSequenceActorStateTrack;
 
 // Class GbxGame.ClimbableVolume
 // 0x0040 (0x0408 - 0x03C8)
@@ -4260,48 +4422,45 @@ public:
 };
 DUMPER7_ASSERTS_AClimbableVolume;
 
-// Class GbxGame.GbxGamePhysicsBlueprintLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxGamePhysicsBlueprintLibrary final : public UBlueprintFunctionLibrary
-{
-public:
-	static class AGbxCharacter* GrabIt_Crosshair(class APlayerController* ControllerToUse, const struct FGrabItParams& params);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxGamePhysicsBlueprintLibrary")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxGamePhysicsBlueprintLibrary")
-	}
-	static class UGbxGamePhysicsBlueprintLibrary* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxGamePhysicsBlueprintLibrary>();
-	}
-};
-DUMPER7_ASSERTS_UGbxGamePhysicsBlueprintLibrary;
-
-// Class GbxGame.MissionDependencyConditionObjectiveHelper
-// 0x0000 (0x0028 - 0x0028)
-class UMissionDependencyConditionObjectiveHelper final : public UObject
+// Class GbxGame.NexusConfigStoreGbxGameModePhaseDef
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxGameModePhaseDef final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("MissionDependencyConditionObjectiveHelper")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxGameModePhaseDef")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"MissionDependencyConditionObjectiveHelper")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxGameModePhaseDef")
 	}
-	static class UMissionDependencyConditionObjectiveHelper* GetDefaultObj()
+	static class UNexusConfigStoreGbxGameModePhaseDef* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UMissionDependencyConditionObjectiveHelper>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxGameModePhaseDef>();
 	}
 };
-DUMPER7_ASSERTS_UMissionDependencyConditionObjectiveHelper;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxGameModePhaseDef;
+
+// Class GbxGame.NexusConfigStoreMissionArchetype
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreMissionArchetype final : public UNexusConfigStoreBasic
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreMissionArchetype")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreMissionArchetype")
+	}
+	static class UNexusConfigStoreMissionArchetype* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreMissionArchetype>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreMissionArchetype;
 
 // Class GbxGame.GbxTrickScript
 // 0x0018 (0x0040 - 0x0028)
@@ -4401,99 +4560,139 @@ public:
 };
 DUMPER7_ASSERTS_UGbxTrickScript_ControlledMove;
 
-// Class GbxGame.GbxGameModeModuleConduit
-// 0x0008 (0x0030 - 0x0028)
-class UGbxGameModeModuleConduit : public UObject
+// Class GbxGame.GbxGameModeModule
+// 0x0020 (0x0048 - 0x0028)
+class UGbxGameModeModule : public UGbxScript
 {
 public:
-	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_28[0x20];                                      // 0x0028(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnInitBP();
+
+	const class FName GetModuleName() const;
+	const struct FGbxGameModeModuleTags GetTags() const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameModeModuleConduit")
+		STATIC_CLASS_IMPL("GbxGameModeModule")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameModeModuleConduit")
+		STATIC_NAME_IMPL(L"GbxGameModeModule")
 	}
-	static class UGbxGameModeModuleConduit* GetDefaultObj()
+	static class UGbxGameModeModule* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameModeModuleConduit>();
+		return GetDefaultObjImpl<UGbxGameModeModule>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameModeModuleConduit;
+DUMPER7_ASSERTS_UGbxGameModeModule;
 
-// Class GbxGame.GbxGameModeModuleConduit_Timer
-// 0x00D8 (0x0108 - 0x0030)
-class UGbxGameModeModuleConduit_Timer final : public UGbxGameModeModuleConduit
-{
-public:
-	uint8                                         Pad_30[0x8];                                       // 0x0030(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FGbxGameModeModuleConduitData_Timer> timers;                                       // 0x0038(0x0010)(Net, ZeroConstructor, RepNotify, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_48[0xC0];                                      // 0x0048(0x00C0)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnRep_Timers();
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxGameModeModuleConduit_Timer")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxGameModeModuleConduit_Timer")
-	}
-	static class UGbxGameModeModuleConduit_Timer* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxGameModeModuleConduit_Timer>();
-	}
-};
-DUMPER7_ASSERTS_UGbxGameModeModuleConduit_Timer;
-
-// Class GbxGame.GbxMantleBlockingVolume
-// 0x0000 (0x03C8 - 0x03C8)
-class AGbxMantleBlockingVolume final : public AVolume
+// Class GbxGame.GbxGameModeModuleClient
+// 0x0000 (0x0048 - 0x0048)
+class UGbxGameModeModuleClient final : public UGbxGameModeModule
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMantleBlockingVolume")
+		STATIC_CLASS_IMPL("GbxGameModeModuleClient")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMantleBlockingVolume")
+		STATIC_NAME_IMPL(L"GbxGameModeModuleClient")
 	}
-	static class AGbxMantleBlockingVolume* GetDefaultObj()
+	static class UGbxGameModeModuleClient* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxMantleBlockingVolume>();
+		return GetDefaultObjImpl<UGbxGameModeModuleClient>();
 	}
 };
-DUMPER7_ASSERTS_AGbxMantleBlockingVolume;
+DUMPER7_ASSERTS_UGbxGameModeModuleClient;
 
-// Class GbxGame.UsableFunctionLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UUsableFunctionLibrary final : public UBlueprintFunctionLibrary
+// Class GbxGame.GbxLocalPlayer
+// 0x0028 (0x02E0 - 0x02B8)
+class UGbxLocalPlayer : public ULocalPlayer
 {
 public:
-	static void LockUsableInteractability(class AActor* Actor, class FName reason, bool Block);
+	uint8                                         Pad_2B8[0x8];                                      // 0x02B8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         OverallVolume;                                     // 0x02C0(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	float                                         MusicVolume;                                       // 0x02C4(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	float                                         SFXVolume;                                         // 0x02C8(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	float                                         DialogVolume;                                      // 0x02CC(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          PlayInBackground;                                  // 0x02D0(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          MuteHitNotifies;                                   // 0x02D1(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bRumbleEnabled;                                    // 0x02D2(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_2D3[0x1];                                      // 0x02D3(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         CameraShakeIntensity;                              // 0x02D4(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bReactiveTriggersEnabled;                          // 0x02D8(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bMouseSmoothingEnabled;                            // 0x02D9(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_2DA[0x6];                                      // 0x02DA(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void SetCameraShakeIntensity(float InCameraShakeIntensity);
+	void SetDialogVolume(float NewDialogVolume);
+	void SetMouseSmoothingEnabled(bool bInMouseSmoothingEnabled);
+	void SetMusicVolume(float NewMusicVolume);
+	void SetMuteHitNotifies(bool NewMHN);
+	void SetOverallVolume(float NewOverallVolume);
+	void SetPlayInBackground(bool NewPIB);
+	void SetReactiveTriggersEnabled(bool bInReactiveTriggersEnabled);
+	void SetRumbleEnabled(bool bInRumbleEnabled);
+	void SetSFXVolume(float NewSFXVolume);
+
+	float GetCameraShakeIntensity() const;
+	bool GetMouseSmoothingEnabled() const;
+	bool GetMuteHitNotifies() const;
+	bool GetReactiveTriggersEnabled() const;
+	bool GetRumbleEnabled() const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("UsableFunctionLibrary")
+		STATIC_CLASS_IMPL("GbxLocalPlayer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"UsableFunctionLibrary")
+		STATIC_NAME_IMPL(L"GbxLocalPlayer")
 	}
-	static class UUsableFunctionLibrary* GetDefaultObj()
+	static class UGbxLocalPlayer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UUsableFunctionLibrary>();
+		return GetDefaultObjImpl<UGbxLocalPlayer>();
 	}
 };
-DUMPER7_ASSERTS_UUsableFunctionLibrary;
+DUMPER7_ASSERTS_UGbxLocalPlayer;
+
+// Class GbxGame.Usable
+// 0x0000 (0x0000 - 0x0000)
+class IUsable final
+{
+public:
+	void BP_OnUsed(const struct FUseEvent& UseEvent);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("Usable")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"Usable")
+	}
+	static class IUsable* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IUsable>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IUsable;
 
 // Class GbxGame.ControlledMove
 // 0x0BF8 (0x0C88 - 0x0090)
@@ -4653,25 +4852,25 @@ public:
 };
 DUMPER7_ASSERTS_UControlledMove;
 
-// Class GbxGame.NexusConfigSubType_RefreshArea
+// Class GbxGame.NexusConfigSubType_ActivityAreaStamp
 // 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_RefreshArea final : public UNexusConfigLevelSubType
+class UNexusConfigSubType_ActivityAreaStamp final : public UNexusConfigLevelSubType
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_RefreshArea")
+		STATIC_CLASS_IMPL("NexusConfigSubType_ActivityAreaStamp")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_RefreshArea")
+		STATIC_NAME_IMPL(L"NexusConfigSubType_ActivityAreaStamp")
 	}
-	static class UNexusConfigSubType_RefreshArea* GetDefaultObj()
+	static class UNexusConfigSubType_ActivityAreaStamp* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigSubType_RefreshArea>();
+		return GetDefaultObjImpl<UNexusConfigSubType_ActivityAreaStamp>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigSubType_RefreshArea;
+DUMPER7_ASSERTS_UNexusConfigSubType_ActivityAreaStamp;
 
 // Class GbxGame.ControlledMoveFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -4728,25 +4927,25 @@ public:
 };
 DUMPER7_ASSERTS_ICorpseInterface;
 
-// Class GbxGame.NexusConfigStoreUIDisplayData
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreUIDisplayData final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreSpawnPattern
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreSpawnPattern final : public UNexusConfigStoreBasicDefFlat
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreUIDisplayData")
+		STATIC_CLASS_IMPL("NexusConfigStoreSpawnPattern")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreUIDisplayData")
+		STATIC_NAME_IMPL(L"NexusConfigStoreSpawnPattern")
 	}
-	static class UNexusConfigStoreUIDisplayData* GetDefaultObj()
+	static class UNexusConfigStoreSpawnPattern* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreUIDisplayData>();
+		return GetDefaultObjImpl<UNexusConfigStoreSpawnPattern>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreUIDisplayData;
+DUMPER7_ASSERTS_UNexusConfigStoreSpawnPattern;
 
 // Class GbxGame.CorpseFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -4794,25 +4993,25 @@ public:
 };
 DUMPER7_ASSERTS_UCosmeticReplicationChannel;
 
-// Class GbxGame.NexusConfigStore_GlobalActivities
+// Class GbxGame.NexusConfigStore_GbxActivity
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_GlobalActivities final : public UNexusConfigStoreBasic
+class UNexusConfigStore_GbxActivity final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GlobalActivities")
+		STATIC_CLASS_IMPL("NexusConfigStore_GbxActivity")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GlobalActivities")
+		STATIC_NAME_IMPL(L"NexusConfigStore_GbxActivity")
 	}
-	static class UNexusConfigStore_GlobalActivities* GetDefaultObj()
+	static class UNexusConfigStore_GbxActivity* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStore_GlobalActivities>();
+		return GetDefaultObjImpl<UNexusConfigStore_GbxActivity>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStore_GlobalActivities;
+DUMPER7_ASSERTS_UNexusConfigStore_GbxActivity;
 
 // Class GbxGame.DamageableEventBinding
 // 0x0010 (0x0038 - 0x0028)
@@ -4898,51 +5097,58 @@ public:
 };
 DUMPER7_ASSERTS_IDamageAreaInterface;
 
-// Class GbxGame.GbxGameAudioBlueprintFunctionLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxGameAudioBlueprintFunctionLibrary final : public UBlueprintFunctionLibrary
+// Class GbxGame.GbxForcedSlidingVolume
+// 0x0028 (0x03F0 - 0x03C8)
+class AGbxForcedSlidingVolume final : public AVolume
 {
 public:
-	static void PlayFoleyImpactOnActor(class AActor* Actor, const struct FFoleyImpactParams& FoleyImpactParams);
-	static void PostEventInWorldMulticast(class UObject* WorldContextObject, class AActor* ActorInstigator, const struct FGbxAudioEmitterSource& EmitterSource, const struct FGbxAudioEvent& Event, FGbxDefPtrProperty_ OptionalSwitch);
-	static void PostWwiseEventOnActorMulticast(class UObject* WorldContextObject, class AActor* ActorInstigator, const struct FGbxAudioEvent& Event, const class FName EmitterTag, FGbxDefPtrProperty_ OptionalSwitch);
-	static void TryGetGlobalWetnessForActor(class AActor* Actor, float* GlobalWetnessValue, bool* bIsValueValid);
+	FGameDataHandleProperty_                      OverrideSlidingDef;                                // 0x03C8(0x0018)(Edit, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_3E0[0x10];                                     // 0x03E0(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameAudioBlueprintFunctionLibrary")
+		STATIC_CLASS_IMPL("GbxForcedSlidingVolume")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameAudioBlueprintFunctionLibrary")
+		STATIC_NAME_IMPL(L"GbxForcedSlidingVolume")
 	}
-	static class UGbxGameAudioBlueprintFunctionLibrary* GetDefaultObj()
+	static class AGbxForcedSlidingVolume* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameAudioBlueprintFunctionLibrary>();
+		return GetDefaultObjImpl<AGbxForcedSlidingVolume>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameAudioBlueprintFunctionLibrary;
+DUMPER7_ASSERTS_AGbxForcedSlidingVolume;
 
-// Class GbxGame.NexusConfigStoreMissionSource
-// 0x0000 (0x0340 - 0x0340)
-class UNexusConfigStoreMissionSource final : public UNexusConfigStorePath
+// Class GbxGame.NexusConfigStoreMissions
+// 0x0238 (0x0578 - 0x0340)
+class UNexusConfigStoreMissions final : public UNexusConfigStorePath
 {
+public:
+	uint8                                         Pad_340[0x90];                                     // 0x0340(0x0090)(Fixing Size After Last Property [ Dumper-7 ])
+	TSoftObjectPtr<class UScriptStruct>           MissionDefType;                                    // 0x03D0(0x0028)(Config, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TSoftObjectPtr<class UScriptStruct>           ObjectiveDefType;                                  // 0x03F8(0x0028)(Config, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TSoftObjectPtr<class UScriptStruct>           WaypointDefType;                                   // 0x0420(0x0028)(Config, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TSoftObjectPtr<class UScriptStruct>           MissionChoiceOptionDefType;                        // 0x0448(0x0028)(Config, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<class FString>                         DevMissionContentPaths;                            // 0x0470(0x0010)(ZeroConstructor, Config, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_480[0xF8];                                     // 0x0480(0x00F8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreMissionSource")
+		STATIC_CLASS_IMPL("NexusConfigStoreMissions")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreMissionSource")
+		STATIC_NAME_IMPL(L"NexusConfigStoreMissions")
 	}
-	static class UNexusConfigStoreMissionSource* GetDefaultObj()
+	static class UNexusConfigStoreMissions* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreMissionSource>();
+		return GetDefaultObjImpl<UNexusConfigStoreMissions>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreMissionSource;
+DUMPER7_ASSERTS_UNexusConfigStoreMissions;
 
 // Class GbxGame.DamageCauserInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -4973,34 +5179,25 @@ public:
 };
 DUMPER7_ASSERTS_IDamageCauserInterface;
 
-// Class GbxGame.GbxRotationInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxRotationInterface final
+// Class GbxGame.GbxRotationData
+// 0x0000 (0x0050 - 0x0050)
+class UGbxRotationData final : public UGbxGraphAsset
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxRotationInterface")
+		STATIC_CLASS_IMPL("GbxRotationData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxRotationInterface")
+		STATIC_NAME_IMPL(L"GbxRotationData")
 	}
-	static class IGbxRotationInterface* GetDefaultObj()
+	static class UGbxRotationData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxRotationInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxRotationData>();
 	}
 };
-DUMPER7_ASSERTS_IGbxRotationInterface;
+DUMPER7_ASSERTS_UGbxRotationData;
 
 // Class GbxGame.DamageModifierInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -5031,119 +5228,48 @@ public:
 };
 DUMPER7_ASSERTS_IDamageModifierInterface;
 
-// Class GbxGame.GbxProjectileMovementComponent
-// 0x0240 (0x0520 - 0x02E0)
-class UGbxProjectileMovementComponent : public UProjectileMovementComponent
+// Class GbxGame.UsableFunctionLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UUsableFunctionLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	TMulticastInlineDelegate<void(const struct FHitResult& ImpactResult, const struct FVector& ImpactVelocity)> OnGameplayBounce; // 0x02E0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const struct FHitResult& ImpactResult, const struct FVector& ImpactVelocity)> OnNonGameplayBounce; // 0x02F0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const struct FHitResult& ImpactResult)> OnLastGameplayBounce;      // 0x0300(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void()>              OnReachZeroVelocity;                               // 0x0310(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	uint8                                         Pad_320[0x30];                                     // 0x0320(0x0030)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ProjectileAcceleration;                            // 0x0350(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         decelerateminspeed;                                // 0x0354(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         bDisablePhysicsWhenAttached : 1;                   // 0x0358(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         bSmoothedRotationFollowsVelocity : 1;              // 0x0358(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         Pad_359[0x3];                                      // 0x0359(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         SmoothedRotationSpeed;                             // 0x035C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         bDontStopSimulatingAfterHittingAnotherProjectile : 1; // 0x0360(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         Pad_361[0x3];                                      // 0x0361(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         MaxNumGameplayBounces;                             // 0x0364(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         EnemyBouncinessScale;                              // 0x0368(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         bBounceParallelToHitNormal : 1;                    // 0x036C(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         bRotate : 1;                                       // 0x036C(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         Pad_36D[0x3];                                      // 0x036D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FRotator                               RotationRate;                                      // 0x0370(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
-	struct FVector                                RotationPivotOffset;                               // 0x0388(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FProjectileHomingState                 HomingState;                                       // 0x03A0(0x0070)(Transient, NativeAccessSpecifierPublic)
-	struct FProjectileDrunkenMovementState        DrunkenMovementState;                              // 0x0410(0x00A0)(Transient, NoDestructor, NativeAccessSpecifierPublic)
-	TArray<struct FGbxInlineStruct>               MovementModifiers;                                 // 0x04B0(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4C0[0x8];                                      // 0x04C0(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class Aprojectile*                            OwningProjectile;                                  // 0x04C8(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	int32                                         NumGameplayBounces;                                // 0x04D0(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_4D4[0x4C];                                     // 0x04D4(0x004C)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void AIDodgeNotify();
-	void ScaleVelocity(float InScale);
+	static void LockUsableInteractability(class AActor* Actor, class FName reason, bool block);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxProjectileMovementComponent")
+		STATIC_CLASS_IMPL("UsableFunctionLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxProjectileMovementComponent")
+		STATIC_NAME_IMPL(L"UsableFunctionLibrary")
 	}
-	static class UGbxProjectileMovementComponent* GetDefaultObj()
+	static class UUsableFunctionLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxProjectileMovementComponent>();
+		return GetDefaultObjImpl<UUsableFunctionLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UGbxProjectileMovementComponent;
+DUMPER7_ASSERTS_UUsableFunctionLibrary;
 
-// Class GbxGame.WalkingProjectileMovementComponent
-// 0x00B0 (0x05D0 - 0x0520)
-class UWalkingProjectileMovementComponent final : public UGbxProjectileMovementComponent
-{
-public:
-	bool                                          bGravityAffectsSlopeWalking;                       // 0x0520(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_521[0x3];                                      // 0x0521(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         WalkingSpeed;                                      // 0x0524(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         MaxWalkAngle;                                      // 0x0528(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFallOffLedges;                                    // 0x052C(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_52D[0x3];                                      // 0x052D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         MaxStepUpHeight;                                   // 0x0530(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ExplodeOnAirborneTime;                             // 0x0534(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bStopExplodeOnAirborneTimerOnLand;                 // 0x0538(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_539[0x3];                                      // 0x0539(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         MovementFrozenMaxTime;                             // 0x053C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_540[0x58];                                     // 0x0540(0x0058)(Fixing Size After Last Property [ Dumper-7 ])
-	TMulticastInlineDelegate<void(const struct FHitResult& ImpactResult)> OnHitUnwalkableSurface;    // 0x0598(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
-	TMulticastInlineDelegate<void()>              OnBecomeAirborne;                                  // 0x05A8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
-	TMulticastInlineDelegate<void()>              OnLanded;                                          // 0x05B8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_5C8[0x8];                                      // 0x05C8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void ExplodeOnAirborne();
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("WalkingProjectileMovementComponent")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"WalkingProjectileMovementComponent")
-	}
-	static class UWalkingProjectileMovementComponent* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UWalkingProjectileMovementComponent>();
-	}
-};
-DUMPER7_ASSERTS_UWalkingProjectileMovementComponent;
-
-// Class GbxGame.NexusConfigStoreDialogQuietTimes
+// Class GbxGame.NexusConfigStoreDialogEvents
 // 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreDialogQuietTimes final : public UNexusConfigStoreBasicDefFlat
+class UNexusConfigStoreDialogEvents final : public UNexusConfigStoreBasicDefFlat
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreDialogQuietTimes")
+		STATIC_CLASS_IMPL("NexusConfigStoreDialogEvents")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreDialogQuietTimes")
+		STATIC_NAME_IMPL(L"NexusConfigStoreDialogEvents")
 	}
-	static class UNexusConfigStoreDialogQuietTimes* GetDefaultObj()
+	static class UNexusConfigStoreDialogEvents* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreDialogQuietTimes>();
+		return GetDefaultObjImpl<UNexusConfigStoreDialogEvents>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreDialogQuietTimes;
+DUMPER7_ASSERTS_UNexusConfigStoreDialogEvents;
 
 // Class GbxGame.DamageScript
 // 0x0000 (0x0028 - 0x0028)
@@ -5172,29 +5298,34 @@ public:
 };
 DUMPER7_ASSERTS_UDamageScript;
 
-// Class GbxGame.GbxSkillDef_Editor
-// 0x0130 (0x0170 - 0x0040)
-class UGbxSkillDef_Editor final : public UNexusEditorObject
+// Class GbxGame.GbxSkillComponentFunctions_ResourcePool
+// 0x0000 (0x0028 - 0x0028)
+class UGbxSkillComponentFunctions_ResourcePool final : public UObject
 {
 public:
-	uint8                                         Pad_40[0x8];                                       // 0x0040(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxSkillDef                           EditorDef;                                         // 0x0048(0x0128)(Edit, NativeAccessSpecifierPrivate)
+	static void DrainPercentage(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool, float Percentage, float MinPercentage);
+	static float GetCurrentPercentage(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool);
+	static float GetCurrentValue(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool);
+	static float GetMaxValue(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool);
+	static void RefillPercentage(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool, float Percentage, float MaxPercentage);
+	static void SetCurrentPercentage(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool, float NewValue);
+	static void SetCurrentValue(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool, float NewValue);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkillDef_Editor")
+		STATIC_CLASS_IMPL("GbxSkillComponentFunctions_ResourcePool")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkillDef_Editor")
+		STATIC_NAME_IMPL(L"GbxSkillComponentFunctions_ResourcePool")
 	}
-	static class UGbxSkillDef_Editor* GetDefaultObj()
+	static class UGbxSkillComponentFunctions_ResourcePool* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkillDef_Editor>();
+		return GetDefaultObjImpl<UGbxSkillComponentFunctions_ResourcePool>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkillDef_Editor;
+DUMPER7_ASSERTS_UGbxSkillComponentFunctions_ResourcePool;
 
 // Class GbxGame.DamageStatics
 // 0x0000 (0x0028 - 0x0028)
@@ -5227,14 +5358,15 @@ public:
 	static bool IsActorDamageable(class AActor* Actor, bool bImplementsInterfaceOnly);
 	static bool IsInGodMode(class UObject* OwnerContext);
 	static bool IsInGodOrDemigodMode(const class UObject* OwnerContext);
-	static void LockDemigod(class AActor* Actor, class FName reason, bool Block);
-	static void LockGod(class AActor* Actor, class FName reason, bool Block);
+	static void LockDemigod(class AActor* Actor, class FName reason, bool block);
+	static void LockGod(class AActor* Actor, class FName reason, bool block);
 	static struct FDamageTags MakeDamageTags(const struct FDamageTags& tags);
 	static struct FDamageTags MakeDamageTagsFromTag(class FName SingleTag);
 	static struct FPipelineDamageInput MakePipelineDamageInput(class AActor* DamageCauser, class AActor* DamageReceiver, FGameDataHandleProperty_ DamageType, const struct FDamageSourceContainer& DamageSource, const struct FHitResult& HitInfo, const struct FVector& HitLocation, const struct FVector& HitDirection, const struct FVector& HitForceDirection, const struct FForceSelection& HitForceMagnitude, const struct FDamageTags& DamageTags);
 	static bool NotEqual_DamageSourceContainer(const struct FDamageSourceContainer& A, const struct FDamageSourceContainer& B);
 	static bool NotEqual_DamageSourceContainerDamageSource(const struct FDamageSourceContainer& A, const FGameDataHandleProperty_& B);
 	static void RefillHealthPercent(class AActor* Context, FGameDataHandleProperty_ HealthType, float Percent, float MaxPercent);
+	static int32 RefillHealthPercentOvertime(class AActor* Context, FGameDataHandleProperty_ HealthType, float Percent, float MaxPercent, float Duration, float TickRate);
 	static void RefillHitRegionHealth(class AActor* Context, class FName Name_0, FGameDataHandleProperty_ def, float Percent, float MaxPercent);
 	static void RegisterDamageableModifier(class AActor* Damageable, FGameDataHandleProperty_ Modifier, class UObject* owner, class UObject* ContextOverride);
 	static void RegisterDamageCauserModifier(class AActor* DamageCauser, FGameDataHandleProperty_ Modifier, class UObject* owner, class UObject* ContextOverride);
@@ -5300,28 +5432,59 @@ public:
 };
 DUMPER7_ASSERTS_UDangerWarningFunctionLibrary;
 
-// Class GbxGame.ProjectileBounceStatics
-// 0x0000 (0x0028 - 0x0028)
-class UProjectileBounceStatics final : public UBlueprintFunctionLibrary
+// Class GbxGame.PlayerCameraModeManager
+// 0x0C80 (0x3B10 - 0x2E90)
+class APlayerCameraModeManager : public APlayerCameraManager
 {
 public:
-	static EProjectileGameplayBounceSurfaceType GetGameplayBounceSurfaceType(const struct FHitResult& Impact);
+	uint8                                         Pad_2E90[0x50];                                    // 0x2E90(0x0050)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ViewTargetClippingRadius;                          // 0x2EE0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2EE4[0x4];                                     // 0x2EE4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class AActor*                                 LastViewTarget;                                    // 0x2EE8(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_2EF0[0xAE0];                                   // 0x2EF0(0x0AE0)(Fixing Size After Last Property [ Dumper-7 ])
+	class UCameraModeInputs*                      CameraModeInputs;                                  // 0x39D0(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UCameraModeState*                       CameraModeState;                                   // 0x39D8(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UCameraModifier_GbxCameraShake*         CachedGbxCameraShakeMod;                           // 0x39E0(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_39E8[0xC0];                                    // 0x39E8(0x00C0)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FSoftClassPath                         CameraStateClassName;                              // 0x3AA8(0x0020)(ZeroConstructor, Config, GlobalConfig, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FSoftClassPath                         CameraInputsClassName;                             // 0x3AC8(0x0020)(ZeroConstructor, Config, GlobalConfig, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	class FName                                   InitialDefaultCameraModeName;                      // 0x3AE8(0x0008)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<class FName>                           DebugCameraModeNames;                              // 0x3AF0(0x0010)(ZeroConstructor, Config, GlobalConfig, NativeAccessSpecifierPrivate)
+	bool                                          bInheritUserSettingsBaseFOV;                       // 0x3B00(0x0001)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_3B01[0xF];                                     // 0x3B01(0x000F)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static void ApplyActorCameraRotation(class AActor* Actor, const struct FRotator& DeltaRotation);
+	static class FName GetActorCameraMode(class AActor* Actor);
+	static class FName GetActorDefaultCameraMode(class AActor* Actor);
+	static void PopActorCameraMode(class AActor* Actor, class FName ModeName, class FName OptionalTransitionName, float BlendTimeOverride, bool bTeleport);
+	static void PopActorCameraModeDef(class AActor* Actor, FGbxDefPtrProperty_ CameraModeDef, FGbxDefPtrProperty_ CameraTransitionDef, float BlendTimeOverride, bool bTeleport);
+	static void PushActorCameraMode(class AActor* Actor, class FName ModeName, class FName OptionalTransitionName, float BlendTimeOverride, bool bTeleport);
+	static void PushActorCameraModeDef(class AActor* Actor, FGbxDefPtrProperty_ CameraModeDef, FGbxDefPtrProperty_ CameraTransitionDef, float BlendTimeOverride, bool bTeleport);
+	static void ResetActorCameraRotation(class AActor* Actor, const struct FRotator& NewRotation);
+	static void SetActorCameraMode(class AActor* Actor, class FName ModeName, class FName OptionalTransitionName, float BlendTimeOverride, bool bTeleport, bool bForceResetMode);
+	static void SetActorCameraModeDef(class AActor* Actor, FGbxDefPtrProperty_ CameraModeDef, FGbxDefPtrProperty_ CameraTransitionDef, float BlendTimeOverride, bool bTeleport, bool bForceResetMode);
+
+	void OnBaseFOVChanged(float NewBaseFOV);
+	void PlayGbxCameraShake(const FGameDataHandleProperty_& ShakeAsset, float scale, ECameraShakePlaySpace PlaySpace, const struct FRotator& UserPlaySpaceRot, bool bLoopingShake);
+	void StopAllGbxCameraShakes(bool bImmediately);
+	void StopAllInstancesOfGbxCameraShake(const FGameDataHandleProperty_& Shake, bool bImmediately);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("ProjectileBounceStatics")
+		STATIC_CLASS_IMPL("PlayerCameraModeManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"ProjectileBounceStatics")
+		STATIC_NAME_IMPL(L"PlayerCameraModeManager")
 	}
-	static class UProjectileBounceStatics* GetDefaultObj()
+	static class APlayerCameraModeManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UProjectileBounceStatics>();
+		return GetDefaultObjImpl<APlayerCameraModeManager>();
 	}
 };
-DUMPER7_ASSERTS_UProjectileBounceStatics;
+DUMPER7_ASSERTS_APlayerCameraModeManager;
 
 // Class GbxGame.DeliverySpawnPointComponent
 // 0x00B0 (0x0A00 - 0x0950)
@@ -5354,29 +5517,34 @@ public:
 };
 DUMPER7_ASSERTS_UDeliverySpawnPointComponent;
 
-// Class GbxGame.GbxGameAssetManager
-// 0x0020 (0x0668 - 0x0648)
-class UGbxGameAssetManager : public UGbxAssetManager
+// Class GbxGame.GbxFlyToActorManagerInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxFlyToActorManagerInterface final
 {
-public:
-	class FString                                 DefaultCookingBuildTagPresets;                     // 0x0648(0x0010)(ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 DefaultCookingContentTagPresets;                   // 0x0658(0x0010)(ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameAssetManager")
+		STATIC_CLASS_IMPL("GbxFlyToActorManagerInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameAssetManager")
+		STATIC_NAME_IMPL(L"GbxFlyToActorManagerInterface")
 	}
-	static class UGbxGameAssetManager* GetDefaultObj()
+	static class IGbxFlyToActorManagerInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameAssetManager>();
+		return GetDefaultObjImpl<IGbxFlyToActorManagerInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGbxGameAssetManager;
+DUMPER7_ASSERTS_IGbxFlyToActorManagerInterface;
 
 // Class GbxGame.DeliverySpawnPointPreviewComponent
 // 0x0000 (0x02B0 - 0x02B0)
@@ -5398,55 +5566,60 @@ public:
 };
 DUMPER7_ASSERTS_UDeliverySpawnPointPreviewComponent;
 
-// Class GbxGame.GbxLevelSequencePlayer
-// 0x01A0 (0x0A20 - 0x0880)
-class UGbxLevelSequencePlayer final : public UGbxLevelSequencePlayerBase
+// Class GbxGame.GbxLevelSequenceManager
+// 0x0438 (0x07C8 - 0x0390)
+class AGbxLevelSequenceManager final : public AInfo
 {
 public:
-	uint8                                         Pad_880[0x28];                                     // 0x0880(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
-	FGameDataHandleProperty_                      CinematicMode;                                     // 0x08A8(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_8C0[0x160];                                    // 0x08C0(0x0160)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxLevelSequenceStreamingSourceData> StreamingSourceRepData;                      // 0x0390(0x0010)(Net, ZeroConstructor, Transient, RepNotify, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_3A0[0x68];                                     // 0x03A0(0x0068)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxLevelSequencePlaybackRequestArray  PlaybackRequests;                                  // 0x0408(0x0120)(Net, Transient, RepNotify, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_528[0x198];                                    // 0x0528(0x0198)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ReadyFailsafeTime;                                 // 0x06C0(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_6C4[0x4];                                      // 0x06C4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FSName>                         PreloadRequests;                                   // 0x06C8(0x0010)(Net, ZeroConstructor, Transient, RepNotify, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_6D8[0xF0];                                     // 0x06D8(0x00F0)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	static class UGbxLevelSequencePlayer* CreateGbxLevelSequencePlayer(class UObject* WorldContextObject, class UGbxLevelSequence* LevelSequence, const struct FMovieSceneSequencePlaybackSettings& settings, FGameDataHandleProperty_ CinematicMode_0, const TMap<class FName, class AActor*>& GbxBindingOverrides, class AGbxLevelSequenceActor** OutActor);
-
-	void Multicast_StartLoadingAssets();
+	void OnRep_PlaybackRequests();
+	void OnRep_PreloadRequests();
+	void OnRep_StreamingSourceData();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequencePlayer")
+		STATIC_CLASS_IMPL("GbxLevelSequenceManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequencePlayer")
+		STATIC_NAME_IMPL(L"GbxLevelSequenceManager")
 	}
-	static class UGbxLevelSequencePlayer* GetDefaultObj()
+	static class AGbxLevelSequenceManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLevelSequencePlayer>();
+		return GetDefaultObjImpl<AGbxLevelSequenceManager>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLevelSequencePlayer;
+DUMPER7_ASSERTS_AGbxLevelSequenceManager;
 
-// Class GbxGame.NexusConfigStoreGbxInputFeel
+// Class GbxGame.NexusConfigStoreGbxInputActionGroup
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxInputFeel final : public UNexusConfigStoreBasic
+class UNexusConfigStoreGbxInputActionGroup final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxInputFeel")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxInputActionGroup")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxInputFeel")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxInputActionGroup")
 	}
-	static class UNexusConfigStoreGbxInputFeel* GetDefaultObj()
+	static class UNexusConfigStoreGbxInputActionGroup* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxInputFeel>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxInputActionGroup>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxInputFeel;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxInputActionGroup;
 
 // Class GbxGame.DialogFunction_AreActorsFriendly
 // 0x0030 (0x0058 - 0x0028)
@@ -5472,45 +5645,59 @@ public:
 };
 DUMPER7_ASSERTS_UDialogFunction_AreActorsFriendly;
 
-// Class GbxGame.GbxRotationData
-// 0x0000 (0x0050 - 0x0050)
-class UGbxRotationData final : public UGbxGraphAsset
+// Class GbxGame.GbxRewards_BlueprintFunctions
+// 0x0000 (0x0028 - 0x0028)
+class UGbxRewards_BlueprintFunctions final : public UBlueprintFunctionLibrary
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxRotationData")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxRotationData")
-	}
-	static class UGbxRotationData* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxRotationData>();
-	}
-};
-DUMPER7_ASSERTS_UGbxRotationData;
+	static void GiveReward(FGbxDefPtrProperty_ RewardDef, class UObject* OwnerContext);
+	static void GiveRewardAllPlayers(FGbxDefPtrProperty_ RewardDef, class UObject* WorldContextObject);
+	static void GiveRewardPackage(FGbxDefPtrProperty_ RewardDef, class UObject* OwnerContext);
+	static void GiveRewardPackageAllPlayers(FGbxDefPtrProperty_ RewardDef, class UObject* WorldContextObject);
+	static bool HasReward(const struct FGbxRewardRef& RewardRef, class UObject* OwnerContext);
+	static struct FGbxRewardRef MakeGbxRewardRef(const struct FGbxRewardRef& RewardRef);
 
-// Class GbxGame.NexusConfigStoreGbxFlyToActorConfigDef
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxFlyToActorConfigDef final : public UNexusConfigStoreBasic
-{
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxFlyToActorConfigDef")
+		STATIC_CLASS_IMPL("GbxRewards_BlueprintFunctions")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxFlyToActorConfigDef")
+		STATIC_NAME_IMPL(L"GbxRewards_BlueprintFunctions")
 	}
-	static class UNexusConfigStoreGbxFlyToActorConfigDef* GetDefaultObj()
+	static class UGbxRewards_BlueprintFunctions* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxFlyToActorConfigDef>();
+		return GetDefaultObjImpl<UGbxRewards_BlueprintFunctions>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxFlyToActorConfigDef;
+DUMPER7_ASSERTS_UGbxRewards_BlueprintFunctions;
+
+// Class GbxGame.GbxFeedbackBlueprintLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UGbxFeedbackBlueprintLibrary final : public UBlueprintFunctionLibrary
+{
+public:
+	static void PlayGbxFeedback2D(class UObject* WorldContext, const FGameDataHandleProperty_ data, TScriptInterface<class IGbxFeedbackObserver> Observer, bool bIgnoreObserver, int32 PlayFlags, bool bLoop, float scale, class UObject* SourceContext);
+	static void PlayGbxFeedback3D(class UObject* WorldContext, const FGameDataHandleProperty_ data, TScriptInterface<class IGbxFeedbackObserver> Observer, bool bIgnoreObserver, int32 PlayFlags, bool bLoop, float scale, class UObject* SourceContext, const struct FVector& SourceLocation, float EffectFalloffMinDistance, float EffectFalloffMaxDistance);
+	static void ResetGbxFeedbackPlayTime(class UObject* WorldContext, const FGameDataHandleProperty_ data, TScriptInterface<class IGbxFeedbackObserver> Observer, bool bIgnoreObserver);
+	static void StopGbxFeedback(class UObject* WorldContext, const FGameDataHandleProperty_ data, TScriptInterface<class IGbxFeedbackObserver> Observer, bool bIgnoreObserver);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxFeedbackBlueprintLibrary")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxFeedbackBlueprintLibrary")
+	}
+	static class UGbxFeedbackBlueprintLibrary* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxFeedbackBlueprintLibrary>();
+	}
+};
+DUMPER7_ASSERTS_UGbxFeedbackBlueprintLibrary;
 
 // Class GbxGame.DialogFunction_CheckActorsDistance
 // 0x0048 (0x0070 - 0x0028)
@@ -5537,45 +5724,54 @@ public:
 };
 DUMPER7_ASSERTS_UDialogFunction_CheckActorsDistance;
 
-// Class GbxGame.NexusConfigSubType_GbxLevelSequenceActor
-// 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_GbxLevelSequenceActor final : public UNexusConfigLevelSubType
+// Class GbxGame.GbxLevelSequence
+// 0x00F0 (0x01A0 - 0x00B0)
+class UGbxLevelSequence : public UGbxLevelSequenceBase
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_GbxLevelSequenceActor")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_GbxLevelSequenceActor")
-	}
-	static class UNexusConfigSubType_GbxLevelSequenceActor* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigSubType_GbxLevelSequenceActor>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigSubType_GbxLevelSequenceActor;
+	uint8                                         Pad_B0[0x8];                                       // 0x00B0(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bHasTransformOrigin;                               // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_B9[0x7];                                       // 0x00B9(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxLevelSequenceOrigin                TransformOrigin;                                   // 0x00C0(0x0070)(Edit, NativeAccessSpecifierPrivate)
+	struct FGbxInlineStruct                       actorstateschema;                                  // 0x0130(0x0018)(Edit, Transient, EditConst, NativeAccessSpecifierPrivate)
+	TMap<struct FGuid, struct FGbxLevelSequenceEnterExitData> CachedEnterExitData;                   // 0x0148(0x0050)(NativeAccessSpecifierPrivate)
+	uint8                                         Pad_198[0x8];                                      // 0x0198(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
-// Class GbxGame.NexusConfigStoreDamage
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxLevelSequence")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxLevelSequence")
+	}
+	static class UGbxLevelSequence* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxLevelSequence>();
+	}
+};
+DUMPER7_ASSERTS_UGbxLevelSequence;
+
+// Class GbxGame.NexusConfigStoreDamageSource
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreDamage final : public UNexusConfigStoreBasic
+class UNexusConfigStoreDamageSource final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreDamage")
+		STATIC_CLASS_IMPL("NexusConfigStoreDamageSource")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreDamage")
+		STATIC_NAME_IMPL(L"NexusConfigStoreDamageSource")
 	}
-	static class UNexusConfigStoreDamage* GetDefaultObj()
+	static class UNexusConfigStoreDamageSource* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreDamage>();
+		return GetDefaultObjImpl<UNexusConfigStoreDamageSource>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreDamage;
+DUMPER7_ASSERTS_UNexusConfigStoreDamageSource;
 
 // Class GbxGame.DialogFunction_CheckBooleanFact
 // 0x0018 (0x0040 - 0x0028)
@@ -5600,54 +5796,52 @@ public:
 };
 DUMPER7_ASSERTS_UDialogFunction_CheckBooleanFact;
 
-// Class GbxGame.NexusConfigStoreMissions
-// 0x0238 (0x0578 - 0x0340)
-class UNexusConfigStoreMissions final : public UNexusConfigStorePath
+// Class GbxGame.NexusConfigStoreManufacturer
+// 0x0008 (0x0398 - 0x0390)
+class UNexusConfigStoreManufacturer final : public UNexusConfigStoreBasic
 {
 public:
-	uint8                                         Pad_340[0x90];                                     // 0x0340(0x0090)(Fixing Size After Last Property [ Dumper-7 ])
-	TSoftObjectPtr<class UScriptStruct>           MissionDefType;                                    // 0x03D0(0x0028)(Config, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TSoftObjectPtr<class UScriptStruct>           ObjectiveDefType;                                  // 0x03F8(0x0028)(Config, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TSoftObjectPtr<class UScriptStruct>           WaypointDefType;                                   // 0x0420(0x0028)(Config, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TSoftObjectPtr<class UScriptStruct>           MissionChoiceOptionDefType;                        // 0x0448(0x0028)(Config, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<class FString>                         DevMissionContentPaths;                            // 0x0470(0x0010)(ZeroConstructor, Config, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_480[0xF8];                                     // 0x0480(0x00F8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	bool                                          bAddToDamageTags;                                  // 0x0390(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_391[0x7];                                      // 0x0391(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreMissions")
+		STATIC_CLASS_IMPL("NexusConfigStoreManufacturer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreMissions")
+		STATIC_NAME_IMPL(L"NexusConfigStoreManufacturer")
 	}
-	static class UNexusConfigStoreMissions* GetDefaultObj()
+	static class UNexusConfigStoreManufacturer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreMissions>();
+		return GetDefaultObjImpl<UNexusConfigStoreManufacturer>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreMissions;
+DUMPER7_ASSERTS_UNexusConfigStoreManufacturer;
 
-// Class GbxGame.NexusConfigStoreCameraTransition
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreCameraTransition final : public UNexusConfigStoreBasicDefFlat
+// Class GbxGame.NexusConfigStoreCameraModeTransition
+// 0x0028 (0x02F8 - 0x02D0)
+class UNexusConfigStoreCameraModeTransition final : public UNexusConfigStoreFlat
 {
+public:
+	uint8                                         Pad_2D0[0x28];                                     // 0x02D0(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreCameraTransition")
+		STATIC_CLASS_IMPL("NexusConfigStoreCameraModeTransition")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreCameraTransition")
+		STATIC_NAME_IMPL(L"NexusConfigStoreCameraModeTransition")
 	}
-	static class UNexusConfigStoreCameraTransition* GetDefaultObj()
+	static class UNexusConfigStoreCameraModeTransition* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreCameraTransition>();
+		return GetDefaultObjImpl<UNexusConfigStoreCameraModeTransition>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreCameraTransition;
+DUMPER7_ASSERTS_UNexusConfigStoreCameraModeTransition;
 
 // Class GbxGame.DialogFunction_CheckMissionState
 // 0x0018 (0x0040 - 0x0028)
@@ -5696,28 +5890,34 @@ public:
 };
 DUMPER7_ASSERTS_UDialogFunction_CheckNumberFact;
 
-// Class GbxGame.GbxSequenceRotationTargetTrack
-// 0x0010 (0x0108 - 0x00F8)
-class UGbxSequenceRotationTargetTrack final : public UMovieSceneNameableTrack
+// Class GbxGame.GbxSequenceQueryInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxSequenceQueryInterface final
 {
-public:
-	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceRotationTargetTrack")
+		STATIC_CLASS_IMPL("GbxSequenceQueryInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceRotationTargetTrack")
+		STATIC_NAME_IMPL(L"GbxSequenceQueryInterface")
 	}
-	static class UGbxSequenceRotationTargetTrack* GetDefaultObj()
+	static class IGbxSequenceQueryInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceRotationTargetTrack>();
+		return GetDefaultObjImpl<IGbxSequenceQueryInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceRotationTargetTrack;
+DUMPER7_ASSERTS_IGbxSequenceQueryInterface;
 
 // Class GbxGame.DialogFunction_CheckPlayerAwareness
 // 0x0030 (0x0058 - 0x0028)
@@ -5743,25 +5943,37 @@ public:
 };
 DUMPER7_ASSERTS_UDialogFunction_CheckPlayerAwareness;
 
-// Class GbxGame.NexusConfigStore_UIRewardType
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_UIRewardType final : public UNexusConfigStoreBasic
+// Class GbxGame.GbxTriggerVolume
+// 0x0250 (0x0618 - 0x03C8)
+class AGbxTriggerVolume : public ATriggerVolume
 {
+public:
+	uint8                                         Pad_3C8[0x38];                                     // 0x03C8(0x0038)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxTriggerData                        TriggerData;                                       // 0x0400(0x00B8)(Edit, NativeAccessSpecifierPublic)
+	struct FFactsConduit                          FactsConduit;                                      // 0x04B8(0x00D8)(Edit, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(class AActor* TouchingActor, bool bIsPlayer)> OnTouchedTrigger;    // 0x0590(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(class AActor* LeavingActor, bool bIsPlayer)> OnUntouchedTrigger;   // 0x05A0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void()>              OnAllPlayersTouching;                              // 0x05B0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	struct FGbxActivityActorData                  ActivityData;                                      // 0x05C0(0x0058)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
+
+public:
+	void BindAndCallOnTouchedTrigger(TDelegate<void(class AActor* InActor, bool bIsPlayer)> InEvent, bool bCallThisEventOnly);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStore_UIRewardType")
+		STATIC_CLASS_IMPL("GbxTriggerVolume")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_UIRewardType")
+		STATIC_NAME_IMPL(L"GbxTriggerVolume")
 	}
-	static class UNexusConfigStore_UIRewardType* GetDefaultObj()
+	static class AGbxTriggerVolume* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStore_UIRewardType>();
+		return GetDefaultObjImpl<AGbxTriggerVolume>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStore_UIRewardType;
+DUMPER7_ASSERTS_AGbxTriggerVolume;
 
 // Class GbxGame.DialogFunction_CompareNametags
 // 0x0030 (0x0058 - 0x0028)
@@ -5834,29 +6046,35 @@ public:
 };
 DUMPER7_ASSERTS_UDialogFunction_IsActorSpeaking;
 
-// Class GbxGame.GbxFlyToActorFunctionLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxFlyToActorFunctionLibrary final : public UBlueprintFunctionLibrary
+// Class GbxGame.GbxFirstPersonData
+// 0x0050 (0x0080 - 0x0030)
+class UGbxFirstPersonData final : public UDataAsset
 {
 public:
-	static void EndActorFlight(class AActor* FlightActor);
-	static void FlyActorToActor(FGbxDefPtrProperty_ FlightConfig, class AActor* FlightActor, class AActor* TargetActor);
+	uint8                                         Pad_30[0x8];                                       // 0x0030(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class USkeletalMesh*                          ArmsMesh;                                          // 0x0038(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	TSubclassOf<class UAnimInstance>              ArmsBlueprint;                                     // 0x0040(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FBoneReference                         CameraBone;                                        // 0x0048(0x0010)(Deprecated, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FBoneReference                         PivotBone;                                         // 0x0058(0x0010)(Deprecated, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   CameraBoneName;                                    // 0x0068(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   PivotBoneName;                                     // 0x0070(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class USkeletalMesh*                          LegsMesh;                                          // 0x0078(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxFlyToActorFunctionLibrary")
+		STATIC_CLASS_IMPL("GbxFirstPersonData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxFlyToActorFunctionLibrary")
+		STATIC_NAME_IMPL(L"GbxFirstPersonData")
 	}
-	static class UGbxFlyToActorFunctionLibrary* GetDefaultObj()
+	static class UGbxFirstPersonData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxFlyToActorFunctionLibrary>();
+		return GetDefaultObjImpl<UGbxFirstPersonData>();
 	}
 };
-DUMPER7_ASSERTS_UGbxFlyToActorFunctionLibrary;
+DUMPER7_ASSERTS_UGbxFirstPersonData;
 
 // Class GbxGame.DialogFunction_IsAnyFriendlyNear
 // 0x0018 (0x0040 - 0x0028)
@@ -5881,45 +6099,57 @@ public:
 };
 DUMPER7_ASSERTS_UDialogFunction_IsAnyFriendlyNear;
 
-// Class GbxGame.GbxLadder
-// 0x0000 (0x1E60 - 0x1E60)
-class AGbxLadder final : public AClimbableInteractiveObject
+// Class GbxGame.GbxItemContainerOwner
+// 0x0000 (0x0000 - 0x0000)
+class IGbxItemContainerOwner final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLadder")
+		STATIC_CLASS_IMPL("GbxItemContainerOwner")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLadder")
+		STATIC_NAME_IMPL(L"GbxItemContainerOwner")
 	}
-	static class AGbxLadder* GetDefaultObj()
+	static class IGbxItemContainerOwner* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxLadder>();
+		return GetDefaultObjImpl<IGbxItemContainerOwner>();
 	}
-};
-DUMPER7_ASSERTS_AGbxLadder;
 
-// Class GbxGame.NexusConfigStoreCameraMode
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreCameraMode final : public UNexusConfigStoreBasicDefFlat
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IGbxItemContainerOwner;
+
+// Class GbxGame.NexusConfigStoreCameraModeBehavior
+// 0x0028 (0x02F8 - 0x02D0)
+class UNexusConfigStoreCameraModeBehavior final : public UNexusConfigStoreFlat
 {
+public:
+	uint8                                         Pad_2D0[0x28];                                     // 0x02D0(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreCameraMode")
+		STATIC_CLASS_IMPL("NexusConfigStoreCameraModeBehavior")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreCameraMode")
+		STATIC_NAME_IMPL(L"NexusConfigStoreCameraModeBehavior")
 	}
-	static class UNexusConfigStoreCameraMode* GetDefaultObj()
+	static class UNexusConfigStoreCameraModeBehavior* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreCameraMode>();
+		return GetDefaultObjImpl<UNexusConfigStoreCameraModeBehavior>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreCameraMode;
+DUMPER7_ASSERTS_UNexusConfigStoreCameraModeBehavior;
 
 // Class GbxGame.DialogFunction_IsInFrenzy
 // 0x0018 (0x0040 - 0x0028)
@@ -5967,29 +6197,25 @@ public:
 };
 DUMPER7_ASSERTS_UDialogFunction_IsMissionAvailable;
 
-// Class GbxGame.GbxInputDeviceSubsystem
-// 0x0008 (0x0038 - 0x0030)
-class UGbxInputDeviceSubsystem final : public UGameInstanceSubsystem
+// Class GbxGame.NexusConfigStoreIngredients
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreIngredients final : public UNexusConfigStoreBasic
 {
-public:
-	bool                                          bHandleInputDeviceConnectionChanges;               // 0x0030(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_31[0x7];                                       // 0x0031(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxInputDeviceSubsystem")
+		STATIC_CLASS_IMPL("NexusConfigStoreIngredients")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxInputDeviceSubsystem")
+		STATIC_NAME_IMPL(L"NexusConfigStoreIngredients")
 	}
-	static class UGbxInputDeviceSubsystem* GetDefaultObj()
+	static class UNexusConfigStoreIngredients* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxInputDeviceSubsystem>();
+		return GetDefaultObjImpl<UNexusConfigStoreIngredients>();
 	}
 };
-DUMPER7_ASSERTS_UGbxInputDeviceSubsystem;
+DUMPER7_ASSERTS_UNexusConfigStoreIngredients;
 
 // Class GbxGame.NexusConfigStoreDialogParameters
 // 0x0000 (0x0380 - 0x0380)
@@ -6011,25 +6237,25 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreDialogParameters;
 
-// Class GbxGame.NexusConfigStore_GbxPlayerBot
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_GbxPlayerBot final : public UNexusConfigStoreBasic
+// Class GbxGame.GbxPerCharacterStateRole
+// 0x0000 (0x0100 - 0x0100)
+class UGbxPerCharacterStateRole final : public UGbxProfileProgressRoleAllPlayers
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GbxPlayerBot")
+		STATIC_CLASS_IMPL("GbxPerCharacterStateRole")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GbxPlayerBot")
+		STATIC_NAME_IMPL(L"GbxPerCharacterStateRole")
 	}
-	static class UNexusConfigStore_GbxPlayerBot* GetDefaultObj()
+	static class UGbxPerCharacterStateRole* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStore_GbxPlayerBot>();
+		return GetDefaultObjImpl<UGbxPerCharacterStateRole>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStore_GbxPlayerBot;
+DUMPER7_ASSERTS_UGbxPerCharacterStateRole;
 
 // Class GbxGame.GbxDialogSubsystem
 // 0x01A8 (0x01E8 - 0x0040)
@@ -6118,34 +6344,25 @@ public:
 };
 DUMPER7_ASSERTS_UAIDodgeData;
 
-// Class GbxGame.PingableInterface
-// 0x0000 (0x0000 - 0x0000)
-class IPingableInterface final
+// Class GbxGame.NexusConfigStore_PerchUser
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStore_PerchUser final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PingableInterface")
+		STATIC_CLASS_IMPL("NexusConfigStore_PerchUser")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PingableInterface")
+		STATIC_NAME_IMPL(L"NexusConfigStore_PerchUser")
 	}
-	static class IPingableInterface* GetDefaultObj()
+	static class UNexusConfigStore_PerchUser* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IPingableInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UNexusConfigStore_PerchUser>();
 	}
 };
-DUMPER7_ASSERTS_IPingableInterface;
+DUMPER7_ASSERTS_UNexusConfigStore_PerchUser;
 
 // Class GbxGame.AIDodger
 // 0x0000 (0x0000 - 0x0000)
@@ -6199,34 +6416,64 @@ public:
 };
 DUMPER7_ASSERTS_UAIDodgeTriggerZoneComponent;
 
-// Class GbxGame.NexusConfigStoreRadialBlur
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreRadialBlur final : public UNexusConfigStoreBasicDefFlat
+// Class GbxGame.PuddleHazardConfigurationData
+// 0x0110 (0x0140 - 0x0030)
+class UPuddleHazardConfigurationData final : public UDataAsset
 {
+public:
+	float                                         EffectSizeScale;                                   // 0x0030(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	TMap<FGameDataHandleProperty_, struct FPuddleHazardTransitionConfigurationData> InteractionTransitionConfigurations; // 0x0038(0x0050)(Edit, DisableEditOnInstance, NativeAccessSpecifierPublic)
+	class UMaterialInterface*                     PuddleDecalMaterial;                               // 0x0088(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UMaterialInterface*                     PuddleDecalMaterial_Ripples;                       // 0x0090(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UMaterialInterface*                     PuddleMeshMaterial;                                // 0x0098(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UMaterialInterface*                     PuddleMeshMaterial_Ripples;                        // 0x00A0(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UMaterialInterface*                     GroundingDecalMaterial;                            // 0x00A8(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	bool                                          bMaskEdges;                                        // 0x00B0(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_B1[0x3];                                       // 0x00B1(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         MaskEdgeScale;                                     // 0x00B4(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLinearColor                           Color;                                             // 0x00B8(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FLinearColor                           ColorHighlights;                                   // 0x00C8(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         NormalStrength;                                    // 0x00D8(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         MovementSpeed;                                     // 0x00DC(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         DepthFade;                                         // 0x00E0(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_E4[0x4];                                       // 0x00E4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class UFXSystemAsset*                         ParticleSystem;                                    // 0x00E8(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	TArray<struct FGbxParticleParameter>          ParticleSystemParameters;                          // 0x00F0(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, NativeAccessSpecifierPublic)
+	class FName                                   ParticleSystemSurfaceAreaParameterName;            // 0x0100(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ParticleSystemSurfaceAreaScalar;                   // 0x0108(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_10C[0x4];                                      // 0x010C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class FName>                           NaturalStateEmitterNames;                          // 0x0110(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           NaturalStateAudioLoop;                             // 0x0120(0x0018)(Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class UPhysicalMaterial*                      NaturalStatePhysMat;                               // 0x0138(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+
+public:
+	void GetParticleEmitterNames(TArray<class FName>* OutNames);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreRadialBlur")
+		STATIC_CLASS_IMPL("PuddleHazardConfigurationData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreRadialBlur")
+		STATIC_NAME_IMPL(L"PuddleHazardConfigurationData")
 	}
-	static class UNexusConfigStoreRadialBlur* GetDefaultObj()
+	static class UPuddleHazardConfigurationData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreRadialBlur>();
+		return GetDefaultObjImpl<UPuddleHazardConfigurationData>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreRadialBlur;
+DUMPER7_ASSERTS_UPuddleHazardConfigurationData;
 
 // Class GbxGame.DodgingFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
 class UDodgingFunctionLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	static void AIDodgeOverride(class AActor* AIActor, class FName reason, bool Block, const class UAIDodgeData* DodgeData);
+	static void AIDodgeOverride(class AActor* AIActor, class FName reason, bool block, const class UAIDodgeData* DodgeData);
 	static void AIScriptedDodge(class AActor* AIActor, EAIDodgeType DodgeType, float LocalDirection, bool bSkipConditions);
-	static void LockDodging(class AActor* Actor, class FName reason, bool Block);
+	static void LockDodging(class AActor* Actor, class FName reason, bool block);
 	static void TriggerBulletDodge(class UObject* WorldContextObject, const struct FVector& MuzzleLoc, const struct FVector& BulletVel, class AActor* instigator);
 	static void TriggerGrenadeDodge(class UObject* WorldContextObject, const struct FVector& GrenadeLoc, class AActor* instigator, float ExtraDelay);
 	static void TriggerZoneDodge(class UObject* WorldContextObject, class AActor* TargetActor, const struct FVector& ZoneLoc, const struct FVector& ZoneVel, class AActor* ActorRef);
@@ -6301,49 +6548,128 @@ public:
 };
 DUMPER7_ASSERTS_IEditorViewportClientStateProviderInterface;
 
-// Class GbxGame.GbxGameWorldSettings
-// 0x0008 (0x0668 - 0x0660)
-class AGbxGameWorldSettings : public AGbxNavWorldSettings
+// Class GbxGame.GbxGameUserSettings
+// 0x0118 (0x0260 - 0x0148)
+class UGbxGameUserSettings : public UGameUserSettings
 {
 public:
-	bool                                          bDisableSpawnBudget;                               // 0x0660(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_661[0x7];                                      // 0x0661(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class UDeviceProfileManager*                  DeviceProfileManager;                              // 0x0148(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class FName                                   ActiveGraphicsPreset;                              // 0x0150(0x0008)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	float                                         BlackLevel;                                        // 0x0158(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	float                                         BaseFOV;                                           // 0x015C(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	float                                         MotionBlurAmount;                                  // 0x0160(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          IsFrameGenerationEnabled;                          // 0x0164(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_165[0x3];                                      // 0x0165(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         FramesToGenerate;                                  // 0x0168(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	EShowFPSMode                                  ShowFPSMode;                                       // 0x016C(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_16D[0x1B];                                     // 0x016D(0x001B)(Fixing Size After Last Property [ Dumper-7 ])
+	TMap<class FName, class FName>                GraphicsSettings;                                  // 0x0188(0x0050)(Config, Protected, NativeAccessSpecifierProtected)
+	EGbxNvidiaReflexMode                          ReflexMode;                                        // 0x01D8(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_1D9[0x4F];                                     // 0x01D9(0x004F)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          HWRayTracingEnabled;                               // 0x0228(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_229[0x37];                                     // 0x0229(0x0037)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void ApplyNewVSyncValue(bool NewValue);
+	class FName GetActiveGraphicsPreset();
+	TArray<class FName> GetAvailableGraphicsPresets();
+	class FName GetDefaultGraphicsPreset();
+	bool GetFrameGenerationState();
+	int32 GetMaxFrameGenerationGeneratedFrames();
+	float GetMotionblurAmout();
+	bool IsFrameGenerationSupported();
+	bool IsNvidiaReflexSupported();
+	void RevertGraphicsSetting(class FName GraphicsSetting);
+	void RevertGraphicsSettings();
+	void SetBaseFOV(float InBaseFOV);
+	void SetBlackLevel(float NewBlackLevel);
+	void SetFrameGenerationState(bool NewState);
+	void SetFramesToGenerate(int32 FramesToGenerate_0);
+	void SetGraphicsPreset(class FName newPreset);
+	void SetGraphicsPresetToDefault();
+	void SetGraphicsSettingOption(class FName GraphicsSetting, class FName Option);
+	void SetHDRBrightness(float NewHDRBrightness);
+	void SetLumenHardwareRayTracing(bool NewValue);
+	void SetMotionblurAmount(float NewValue);
+	void SetNvidiaStreamlineMode(EGbxNvidiaReflexMode ReflexMode_0);
+	void SetShowFPSMode(EShowFPSMode ShowFPSMode_0);
+	void ToggleHDR(bool Activate);
+
+	class FName GetActiveGraphicsSettingOption(class FName GraphicsSetting) const;
+	TArray<class FName> GetAvailableGraphicsSettingOptions(class FName GraphicsSetting) const;
+	TArray<class FName> GetAvailableGraphicsSettings() const;
+	float GetBaseFOV() const;
+	int32 GetFramesToGenerate() const;
+	float GetHDRBrightness() const;
+	EGbxNvidiaReflexMode GetNvidiaReflexMode() const;
+	EShowFPSMode GetShowFPSMode() const;
+	bool HasOverridenGraphicsSettings() const;
+	bool IsLumenHardwareRayTracingEnabled() const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameWorldSettings")
+		STATIC_CLASS_IMPL("GbxGameUserSettings")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameWorldSettings")
+		STATIC_NAME_IMPL(L"GbxGameUserSettings")
 	}
-	static class AGbxGameWorldSettings* GetDefaultObj()
+	static class UGbxGameUserSettings* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxGameWorldSettings>();
+		return GetDefaultObjImpl<UGbxGameUserSettings>();
 	}
 };
-DUMPER7_ASSERTS_AGbxGameWorldSettings;
+DUMPER7_ASSERTS_UGbxGameUserSettings;
 
-// Class GbxGame.PerchPreviewComponent
-// 0x0000 (0x02B0 - 0x02B0)
-class UPerchPreviewComponent final : public UGbxPreviewComponent
+// Class GbxGame.PerchComponent
+// 0x00C0 (0x06E0 - 0x0620)
+class UPerchComponent final : public UPrimitiveComponent
 {
+public:
+	uint8                                         Pad_620[0x10];                                     // 0x0620(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bPerchEnabled;                                     // 0x0630(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bHiddenFromSearch;                                 // 0x0631(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_632[0x6];                                      // 0x0632(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
+	class UPerchData*                             PerchData;                                         // 0x0638(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class UGbxTrick*                              PerchObjectTrick;                                  // 0x0640(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	struct FGameplayTagContainer                  OverridePearchSearchTags;                          // 0x0648(0x0020)(Edit, NativeAccessSpecifierPrivate)
+	bool                                          bOverridePearchSearchTags;                         // 0x0668(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bCombatInterruptsPerch;                            // 0x0669(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bOverrideCombatInterrupts;                         // 0x066A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bCombatInterruptsSkipExitAnim;                     // 0x066B(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FNumericRange                          cooldown;                                          // 0x066C(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
+	bool                                          bOverrideCooldown;                                 // 0x0674(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	EIdleTimeBehavior                             IdleTimeBehavior;                                  // 0x0675(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_676[0x2];                                      // 0x0676(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FNumericRange                          IdleTime;                                          // 0x0678(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
+	bool                                          bOverrideWaitForLoop;                              // 0x0680(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bUseOverrideWaitForLoop;                           // 0x0681(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bApproachFromAnyDirection;                         // 0x0682(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bOverrideApproachFromAnyDirection;                 // 0x0683(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         AlignmentTime;                                     // 0x0684(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bOverrideAlignmentTime;                            // 0x0688(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_689[0x7];                                      // 0x0689(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class AActor*                                 CurrentUser;                                       // 0x0690(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	TScriptInterface<class IGbxTrickInterface>    UserInterface;                                     // 0x0698(0x0010)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	class UGbxTrick_Perch*                        CurrentUserTrick;                                  // 0x06A8(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_6B0[0x30];                                     // 0x06B0(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PerchPreviewComponent")
+		STATIC_CLASS_IMPL("PerchComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PerchPreviewComponent")
+		STATIC_NAME_IMPL(L"PerchComponent")
 	}
-	static class UPerchPreviewComponent* GetDefaultObj()
+	static class UPerchComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UPerchPreviewComponent>();
+		return GetDefaultObjImpl<UPerchComponent>();
 	}
 };
-DUMPER7_ASSERTS_UPerchPreviewComponent;
+DUMPER7_ASSERTS_UPerchComponent;
 
 // Class GbxGame.NexusConfigStoreEffectCollection
 // 0x0000 (0x0390 - 0x0390)
@@ -6365,25 +6691,28 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreEffectCollection;
 
-// Class GbxGame.GbxSequenceMomentEventTrack
-// 0x0000 (0x0120 - 0x0120)
-class UGbxSequenceMomentEventTrack final : public UMovieSceneEventTrack
+// Class GbxGame.GbxSequenceLoopTrack
+// 0x0010 (0x0108 - 0x00F8)
+class UGbxSequenceLoopTrack final : public UMovieSceneNameableTrack
 {
+public:
+	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceMomentEventTrack")
+		STATIC_CLASS_IMPL("GbxSequenceLoopTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceMomentEventTrack")
+		STATIC_NAME_IMPL(L"GbxSequenceLoopTrack")
 	}
-	static class UGbxSequenceMomentEventTrack* GetDefaultObj()
+	static class UGbxSequenceLoopTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceMomentEventTrack>();
+		return GetDefaultObjImpl<UGbxSequenceLoopTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceMomentEventTrack;
+DUMPER7_ASSERTS_UGbxSequenceLoopTrack;
 
 // Class GbxGame.ExternalGestaltPartInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -6414,25 +6743,28 @@ public:
 };
 DUMPER7_ASSERTS_IExternalGestaltPartInterface;
 
-// Class GbxGame.NexusConfigStoreGbxSkillState
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxSkillState final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreGbxSkillLibrary
+// 0x0018 (0x03A8 - 0x0390)
+class UNexusConfigStoreGbxSkillLibrary final : public UNexusConfigStoreBasic
 {
+public:
+	uint8                                         Pad_390[0x18];                                     // 0x0390(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxSkillState")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxSkillLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSkillState")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSkillLibrary")
 	}
-	static class UNexusConfigStoreGbxSkillState* GetDefaultObj()
+	static class UNexusConfigStoreGbxSkillLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxSkillState>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxSkillLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillState;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillLibrary;
 
 // Class GbxGame.FactHandle
 // 0x0078 (0x00A0 - 0x0028)
@@ -6481,25 +6813,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxStatusEffectModifierType;
 
-// Class GbxGame.GbxStatusEffectModifierType_MutationChance
+// Class GbxGame.GbxStatusEffectModifierType_Duration
 // 0x0000 (0x0030 - 0x0030)
-class UGbxStatusEffectModifierType_MutationChance final : public UGbxStatusEffectModifierType
+class UGbxStatusEffectModifierType_Duration final : public UGbxStatusEffectModifierType
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectModifierType_MutationChance")
+		STATIC_CLASS_IMPL("GbxStatusEffectModifierType_Duration")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectModifierType_MutationChance")
+		STATIC_NAME_IMPL(L"GbxStatusEffectModifierType_Duration")
 	}
-	static class UGbxStatusEffectModifierType_MutationChance* GetDefaultObj()
+	static class UGbxStatusEffectModifierType_Duration* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectModifierType_MutationChance>();
+		return GetDefaultObjImpl<UGbxStatusEffectModifierType_Duration>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectModifierType_MutationChance;
+DUMPER7_ASSERTS_UGbxStatusEffectModifierType_Duration;
 
 // Class GbxGame.FactAddressPickerContext
 // 0x0000 (0x0000 - 0x0000)
@@ -6530,25 +6862,25 @@ public:
 };
 DUMPER7_ASSERTS_IFactAddressPickerContext;
 
-// Class GbxGame.NexusConfigStoreWorldRegion
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreWorldRegion final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreUsableConsumer
+// 0x0000 (0x02D0 - 0x02D0)
+class UNexusConfigStoreUsableConsumer final : public UNexusConfigStoreGeneric
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreWorldRegion")
+		STATIC_CLASS_IMPL("NexusConfigStoreUsableConsumer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreWorldRegion")
+		STATIC_NAME_IMPL(L"NexusConfigStoreUsableConsumer")
 	}
-	static class UNexusConfigStoreWorldRegion* GetDefaultObj()
+	static class UNexusConfigStoreUsableConsumer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreWorldRegion>();
+		return GetDefaultObjImpl<UNexusConfigStoreUsableConsumer>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreWorldRegion;
+DUMPER7_ASSERTS_UNexusConfigStoreUsableConsumer;
 
 // Class GbxGame.FactsBlueprintLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -6677,29 +7009,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreFiringPattern;
 
-// Class GbxGame.GbxGameViewportClient
-// 0x0020 (0x0430 - 0x0410)
-class UGbxGameViewportClient : public UCommonGameViewportClient
-{
-public:
-	uint8                                         Pad_410[0x20];                                     // 0x0410(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxGameViewportClient")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxGameViewportClient")
-	}
-	static class UGbxGameViewportClient* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxGameViewportClient>();
-	}
-};
-DUMPER7_ASSERTS_UGbxGameViewportClient;
-
 // Class GbxGame.FoleyImpactDataAsset
 // 0x0048 (0x0078 - 0x0030)
 class UFoleyImpactDataAsset final : public UDataAsset
@@ -6725,48 +7034,48 @@ public:
 };
 DUMPER7_ASSERTS_UFoleyImpactDataAsset;
 
-// Class GbxGame.GbxOpportunisticAmbientAudioActor
-// 0x0008 (0x0398 - 0x0390)
-class AGbxOpportunisticAmbientAudioActor final : public AActor
+// Class GbxGame.GbxMusicBlueprintFunctions
+// 0x0000 (0x0028 - 0x0028)
+class UGbxMusicBlueprintFunctions final : public UBlueprintFunctionLibrary
 {
 public:
-	class UGbxOpportunisticAmbientAudioComponent* OpportunisticAmbientAudioComponent;                // 0x0390(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	static void PostMusicEvent(class UObject* WorldContextObject, const struct FGameplayTag& MusicEventTag);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxOpportunisticAmbientAudioActor")
+		STATIC_CLASS_IMPL("GbxMusicBlueprintFunctions")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxOpportunisticAmbientAudioActor")
+		STATIC_NAME_IMPL(L"GbxMusicBlueprintFunctions")
 	}
-	static class AGbxOpportunisticAmbientAudioActor* GetDefaultObj()
+	static class UGbxMusicBlueprintFunctions* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxOpportunisticAmbientAudioActor>();
+		return GetDefaultObjImpl<UGbxMusicBlueprintFunctions>();
 	}
 };
-DUMPER7_ASSERTS_AGbxOpportunisticAmbientAudioActor;
+DUMPER7_ASSERTS_UGbxMusicBlueprintFunctions;
 
-// Class GbxGame.NexusConfigStoreHitRegion
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreHitRegion final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreHazardInteractionState
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreHazardInteractionState final : public UNexusConfigStoreBasicDefFlat
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreHitRegion")
+		STATIC_CLASS_IMPL("NexusConfigStoreHazardInteractionState")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreHitRegion")
+		STATIC_NAME_IMPL(L"NexusConfigStoreHazardInteractionState")
 	}
-	static class UNexusConfigStoreHitRegion* GetDefaultObj()
+	static class UNexusConfigStoreHazardInteractionState* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreHitRegion>();
+		return GetDefaultObjImpl<UNexusConfigStoreHazardInteractionState>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreHitRegion;
+DUMPER7_ASSERTS_UNexusConfigStoreHazardInteractionState;
 
 // Class GbxGame.GameDialogSystemCustomizationInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -6797,49 +7106,56 @@ public:
 };
 DUMPER7_ASSERTS_IGameDialogSystemCustomizationInterface;
 
-// Class GbxGame.PerchStatics
+// Class GbxGame.PerchPreviewComponent
+// 0x0000 (0x02B0 - 0x02B0)
+class UPerchPreviewComponent final : public UGbxPreviewComponent
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("PerchPreviewComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"PerchPreviewComponent")
+	}
+	static class UPerchPreviewComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UPerchPreviewComponent>();
+	}
+};
+DUMPER7_ASSERTS_UPerchPreviewComponent;
+
+// Class GbxGame.MissionSourceBlueprintLibrary
 // 0x0000 (0x0028 - 0x0028)
-class UPerchStatics final : public UBlueprintFunctionLibrary
+class UMissionSourceBlueprintLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	static void AIScriptedPerch(class AActor* AIActor, class AActor* Perch, EGbxBrainExec* Exec, const struct FLatentActionInfo& LatentInfo);
-	static void SetPerchEnabled(class AActor* Perch, bool bEnabled);
+	static void AddMissionSource(class AActor* Origin, FGbxDefPtrProperty_ MSDef, struct FSToken* OutIndex);
+	static TArray<struct FMissionInstanceHandle> GetBestMission(class AActor* Origin, const struct FSToken& MSIndex, int32 Count);
+	static void GetMissionSource(class AActor* Origin, FGbxDefPtrProperty_ MSDef, struct FSToken* OutIndex);
+	static void GetMissionSourceRank(class AActor* Origin, const struct FSToken& MSIndex, int32* OutRank);
+	static void GetMissionSourceTimerTimeRemaining(class AActor* Origin, const struct FSToken& MSIndex, const struct FSToken& TimerLabel, float* OutRemainingTime);
+	static void SetMissionSourceRank(class AActor* Origin, const struct FSToken& MSIndex, const struct FFactValue& Rank);
+	static struct FMissionInstanceHandle StartBestMission(class AActor* Origin, const struct FSToken& MSIndex);
+	static struct FMissionInstanceHandle StartMissionSourceMission(class AActor* Origin, const struct FSToken& MSIndex, const struct FSToken& MissionName);
+	static void StartMissionSourceTimer(class AActor* Origin, const struct FSToken& MSIndex, class FName TimerName, float* OutRemainingTime);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PerchStatics")
+		STATIC_CLASS_IMPL("MissionSourceBlueprintLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PerchStatics")
+		STATIC_NAME_IMPL(L"MissionSourceBlueprintLibrary")
 	}
-	static class UPerchStatics* GetDefaultObj()
+	static class UMissionSourceBlueprintLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UPerchStatics>();
+		return GetDefaultObjImpl<UMissionSourceBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UPerchStatics;
-
-// Class GbxGame.MissionSourceStateRole
-// 0x0000 (0x0100 - 0x0100)
-class UMissionSourceStateRole final : public UGbxProfileProgressRoleAllPlayers
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("MissionSourceStateRole")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"MissionSourceStateRole")
-	}
-	static class UMissionSourceStateRole* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UMissionSourceStateRole>();
-	}
-};
-DUMPER7_ASSERTS_UMissionSourceStateRole;
+DUMPER7_ASSERTS_UMissionSourceBlueprintLibrary;
 
 // Class GbxGame.GameResourcePoolFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -6910,51 +7226,49 @@ public:
 };
 DUMPER7_ASSERTS_IGameResourcePoolOwnerInterface;
 
-// Class GbxGame.GbxSequenceLoopTrack
-// 0x0010 (0x0108 - 0x00F8)
-class UGbxSequenceLoopTrack final : public UMovieSceneNameableTrack
+// Class GbxGame.GbxSequenceLoopSection
+// 0x0030 (0x0128 - 0x00F8)
+class UGbxSequenceLoopSection final : public UMovieSceneSection
 {
 public:
-	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_F8[0x8];                                       // 0x00F8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxSequenceLoopParams                 params;                                            // 0x0100(0x0028)(Edit, NoDestructor, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceLoopTrack")
+		STATIC_CLASS_IMPL("GbxSequenceLoopSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceLoopTrack")
+		STATIC_NAME_IMPL(L"GbxSequenceLoopSection")
 	}
-	static class UGbxSequenceLoopTrack* GetDefaultObj()
+	static class UGbxSequenceLoopSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceLoopTrack>();
+		return GetDefaultObjImpl<UGbxSequenceLoopSection>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceLoopTrack;
+DUMPER7_ASSERTS_UGbxSequenceLoopSection;
 
-// Class GbxGame.NexusConfigStoreGbxProgressGraph
-// 0x0068 (0x03F8 - 0x0390)
-class UNexusConfigStoreGbxProgressGraph final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreGbxInputSchema
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxInputSchema final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_390[0x68];                                     // 0x0390(0x0068)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxProgressGraph")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxInputSchema")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxProgressGraph")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxInputSchema")
 	}
-	static class UNexusConfigStoreGbxProgressGraph* GetDefaultObj()
+	static class UNexusConfigStoreGbxInputSchema* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxProgressGraph>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxInputSchema>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxProgressGraph;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxInputSchema;
 
 // Class GbxGame.GbxAcousticSystem
 // 0x0368 (0x03A0 - 0x0038)
@@ -7008,26 +7322,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSkillSignatureData;
 
-// Class GbxGame.GbxSkillQuestionData
-// 0x0000 (0x0060 - 0x0060)
-class UGbxSkillQuestionData final : public UGbxSkillSignatureData
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSkillQuestionData")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSkillQuestionData")
-	}
-	static class UGbxSkillQuestionData* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSkillQuestionData>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSkillQuestionData;
-
 // Class GbxGame.GbxProfileProgressVault
 // 0x02A0 (0x02C8 - 0x0028)
 class UGbxProfileProgressVault : public UObject
@@ -7062,38 +7356,32 @@ public:
 };
 DUMPER7_ASSERTS_UGbxProfileProgressVault;
 
-// Class GbxGame.GbxGameSpawner
-// 0x0088 (0x04A0 - 0x0418)
-class AGbxGameSpawner : public AGbxNavSpawner
+// Class GbxGame.GbxGameSingletons
+// 0x0058 (0x0080 - 0x0028)
+class UGbxGameSingletons : public UObject
 {
 public:
-	uint8                                         Pad_418[0x18];                                     // 0x0418(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	class AActor*                                 TerritoryOverrideActor;                            // 0x0430(0x0008)(Edit, ZeroConstructor, DisableEditOnTemplate, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UGbxTerritoryComponent*                 TerritoryComponent;                                // 0x0438(0x0008)(Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UGbxTerritoryComponent*                 CurrentTerritory;                                  // 0x0440(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	struct FGbxActivityActorData                  ActivityData;                                      // 0x0448(0x0058)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
-
-public:
-	void ResetTerritoryToDefault();
-	void SetTerritory(TScriptInterface<class IGbxTerritoryProvider> TerritoryProvider);
-
-	class UGbxTerritoryComponent* GetTerritory() const;
+	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxProfileProgressVault*               ProfileVault;                                      // 0x0030(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UGbxShard*                              Shard;                                             // 0x0038(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	TArray<class UGbxShard*>                      Shards;                                            // 0x0040(0x0010)(ZeroConstructor, Transient, Protected, UObjectWrapper, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_50[0x30];                                      // 0x0050(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameSpawner")
+		STATIC_CLASS_IMPL("GbxGameSingletons")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameSpawner")
+		STATIC_NAME_IMPL(L"GbxGameSingletons")
 	}
-	static class AGbxGameSpawner* GetDefaultObj()
+	static class UGbxGameSingletons* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxGameSpawner>();
+		return GetDefaultObjImpl<UGbxGameSingletons>();
 	}
 };
-DUMPER7_ASSERTS_AGbxGameSpawner;
+DUMPER7_ASSERTS_UGbxGameSingletons;
 
 // Class GbxGame.GbxActiveProfile
 // 0x0160 (0x0188 - 0x0028)
@@ -7118,75 +7406,51 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActiveProfile;
 
-// Class GbxGame.GbxMovingPlatformControllerActor
-// 0x0150 (0x04E0 - 0x0390)
-class AGbxMovingPlatformControllerActor : public AActor
+// Class GbxGame.GbxMovingPlatformControllerActor_DestinationReplication
+// 0x00F0 (0x05D0 - 0x04E0)
+class AGbxMovingPlatformControllerActor_DestinationReplication final : public AGbxMovingPlatformControllerActor
 {
 public:
-	TWeakObjectPtr<class AActor>                  ControlledActor;                                   // 0x0390(0x0008)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_398[0x8];                                      // 0x0398(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	TWeakObjectPtr<class AActor>                  SplineTrackActor;                                  // 0x03A0(0x0008)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_3A8[0x138];                                    // 0x03A8(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxMovingPlatformMoveState            ReplicatedMoveState;                               // 0x04E0(0x00F0)(Net, Transient, RepNotify, NoDestructor, Protected, NativeAccessSpecifierProtected)
 
 public:
-	void OnRep_ControlledActor();
-	void OnRep_SplineTrackActor();
+	void OnRep_MoveState();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformControllerActor")
+		STATIC_CLASS_IMPL("GbxMovingPlatformControllerActor_DestinationReplication")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformControllerActor")
+		STATIC_NAME_IMPL(L"GbxMovingPlatformControllerActor_DestinationReplication")
 	}
-	static class AGbxMovingPlatformControllerActor* GetDefaultObj()
+	static class AGbxMovingPlatformControllerActor_DestinationReplication* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxMovingPlatformControllerActor>();
+		return GetDefaultObjImpl<AGbxMovingPlatformControllerActor_DestinationReplication>();
 	}
 };
-DUMPER7_ASSERTS_AGbxMovingPlatformControllerActor;
+DUMPER7_ASSERTS_AGbxMovingPlatformControllerActor_DestinationReplication;
 
-// Class GbxGame.GbxMovingPlatformControllerActor_MovementReplication
-// 0x0000 (0x04E0 - 0x04E0)
-class AGbxMovingPlatformControllerActor_MovementReplication final : public AGbxMovingPlatformControllerActor
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformControllerActor_MovementReplication")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformControllerActor_MovementReplication")
-	}
-	static class AGbxMovingPlatformControllerActor_MovementReplication* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<AGbxMovingPlatformControllerActor_MovementReplication>();
-	}
-};
-DUMPER7_ASSERTS_AGbxMovingPlatformControllerActor_MovementReplication;
-
-// Class GbxGame.NexusConfigStoreGbxStatusEffectSeverityChannel
+// Class GbxGame.NexusConfigStoreGbxStatusEffectPushEvent
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxStatusEffectSeverityChannel final : public UNexusConfigStoreBasic
+class UNexusConfigStoreGbxStatusEffectPushEvent final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxStatusEffectSeverityChannel")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxStatusEffectPushEvent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxStatusEffectSeverityChannel")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxStatusEffectPushEvent")
 	}
-	static class UNexusConfigStoreGbxStatusEffectSeverityChannel* GetDefaultObj()
+	static class UNexusConfigStoreGbxStatusEffectPushEvent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxStatusEffectSeverityChannel>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxStatusEffectPushEvent>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxStatusEffectSeverityChannel;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxStatusEffectPushEvent;
 
 // Class GbxGame.GbxActivityActor
 // 0x0000 (0x0000 - 0x0000)
@@ -7242,77 +7506,74 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActivityAreaDrawComponent;
 
-// Class GbxGame.GbxSequenceDialogSection
+// Class GbxGame.GbxSequenceClosedCaptionSection
 // 0x00F8 (0x0208 - 0x0110)
-class UGbxSequenceDialogSection final : public UMovieSceneHookSection
+class UGbxSequenceClosedCaptionSection final : public UMovieSceneHookSection
 {
 public:
-	struct FGbxSequenceDialogChannel              channel;                                           // 0x0110(0x00F8)(Edit, AssetRegistrySearchable, NativeAccessSpecifierPublic)
+	struct FGbxSequenceClosedCaptionChannel       channel;                                           // 0x0110(0x00F8)(Edit, AssetRegistrySearchable, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceDialogSection")
+		STATIC_CLASS_IMPL("GbxSequenceClosedCaptionSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceDialogSection")
+		STATIC_NAME_IMPL(L"GbxSequenceClosedCaptionSection")
 	}
-	static class UGbxSequenceDialogSection* GetDefaultObj()
+	static class UGbxSequenceClosedCaptionSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceDialogSection>();
+		return GetDefaultObjImpl<UGbxSequenceClosedCaptionSection>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceDialogSection;
+DUMPER7_ASSERTS_UGbxSequenceClosedCaptionSection;
 
-// Class GbxGame.GbxMovingPlatformAdherent
-// 0x0000 (0x0000 - 0x0000)
-class IGbxMovingPlatformAdherent final
+// Class GbxGame.GbxMovingPlatformInstanceConfigComponent
+// 0x0318 (0x0428 - 0x0110)
+class UGbxMovingPlatformInstanceConfigComponent final : public UActorComponent
 {
+public:
+	struct FGbxMovingPlatformConfig               MovingPlatformConfig;                              // 0x0110(0x0120)(Deprecated, Protected, NativeAccessSpecifierProtected)
+	struct FGbxMovingPlatformConfig               BodyNodeConfig;                                    // 0x0230(0x0120)(Edit, Transient, EditConst, Protected, NativeAccessSpecifierProtected)
+	struct FGbxMovingPlatformInstanceConfig       MovingPlatformInstanceConfig;                      // 0x0350(0x00D0)(Edit, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_420[0x8];                                      // 0x0420(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformAdherent")
+		STATIC_CLASS_IMPL("GbxMovingPlatformInstanceConfigComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformAdherent")
+		STATIC_NAME_IMPL(L"GbxMovingPlatformInstanceConfigComponent")
 	}
-	static class IGbxMovingPlatformAdherent* GetDefaultObj()
+	static class UGbxMovingPlatformInstanceConfigComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxMovingPlatformAdherent>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxMovingPlatformInstanceConfigComponent>();
 	}
 };
-DUMPER7_ASSERTS_IGbxMovingPlatformAdherent;
+DUMPER7_ASSERTS_UGbxMovingPlatformInstanceConfigComponent;
 
-// Class GbxGame.NexusConfigStoreGbxMaterialParameter
+// Class GbxGame.NexusConfigStoreGbxInputRebindContext
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxMaterialParameter final : public UNexusConfigStoreBasic
+class UNexusConfigStoreGbxInputRebindContext final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxMaterialParameter")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxInputRebindContext")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxMaterialParameter")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxInputRebindContext")
 	}
-	static class UNexusConfigStoreGbxMaterialParameter* GetDefaultObj()
+	static class UNexusConfigStoreGbxInputRebindContext* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxMaterialParameter>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxInputRebindContext>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxMaterialParameter;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxInputRebindContext;
 
 // Class GbxGame.StampBase
 // 0x0000 (0x0438 - 0x0438)
@@ -7360,31 +7621,54 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActivityAreaStampDrawComponent;
 
-// Class GbxGame.GbxSceneViewer
-// 0x00A8 (0x0438 - 0x0390)
-class AGbxSceneViewer : public AActor
+// Class GbxGame.GbxRotationInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxRotationInterface final
 {
-public:
-	uint8                                         Pad_390[0x28];                                     // 0x0390(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
-	class USceneComponent*                        RootSceneComponent;                                // 0x03B8(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UGbxSceneViewerSceneCaptureComponent*   ViewSceneCaptureComponent;                         // 0x03C0(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_3C8[0x70];                                     // 0x03C8(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSceneViewer")
+		STATIC_CLASS_IMPL("GbxRotationInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSceneViewer")
+		STATIC_NAME_IMPL(L"GbxRotationInterface")
 	}
-	static class AGbxSceneViewer* GetDefaultObj()
+	static class IGbxRotationInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxSceneViewer>();
+		return GetDefaultObjImpl<IGbxRotationInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_AGbxSceneViewer;
+DUMPER7_ASSERTS_IGbxRotationInterface;
+
+// Class GbxGame.GbxSequenceFadeTrack
+// 0x0000 (0x0128 - 0x0128)
+class UGbxSequenceFadeTrack final : public UMovieSceneFloatTrack
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSequenceFadeTrack")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSequenceFadeTrack")
+	}
+	static class UGbxSequenceFadeTrack* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSequenceFadeTrack>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSequenceFadeTrack;
 
 // Class GbxGame.NexusConfigStore_GbxActivityAreaStampGroupLayout
 // 0x0000 (0x0380 - 0x0380)
@@ -7406,25 +7690,48 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStore_GbxActivityAreaStampGroupLayout;
 
-// Class GbxGame.NexusConfigStoreUsabilityPrompt
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreUsabilityPrompt final : public UNexusConfigStoreBasicDefFlat
+// Class GbxGame.UnlockablesProgressRole
+// 0x0008 (0x0108 - 0x0100)
+class UUnlockablesProgressRole : public UGbxProfileProgressRoleAllPlayers
+{
+public:
+	uint8                                         Pad_100[0x8];                                      // 0x0100(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("UnlockablesProgressRole")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"UnlockablesProgressRole")
+	}
+	static class UUnlockablesProgressRole* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UUnlockablesProgressRole>();
+	}
+};
+DUMPER7_ASSERTS_UUnlockablesProgressRole;
+
+// Class GbxGame.UnlockablesProgressRolePerCharacter
+// 0x0000 (0x0108 - 0x0108)
+class UUnlockablesProgressRolePerCharacter final : public UUnlockablesProgressRole
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreUsabilityPrompt")
+		STATIC_CLASS_IMPL("UnlockablesProgressRolePerCharacter")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreUsabilityPrompt")
+		STATIC_NAME_IMPL(L"UnlockablesProgressRolePerCharacter")
 	}
-	static class UNexusConfigStoreUsabilityPrompt* GetDefaultObj()
+	static class UUnlockablesProgressRolePerCharacter* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreUsabilityPrompt>();
+		return GetDefaultObjImpl<UUnlockablesProgressRolePerCharacter>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreUsabilityPrompt;
+DUMPER7_ASSERTS_UUnlockablesProgressRolePerCharacter;
 
 // Class GbxGame.GbxTrickAnimNotify
 // 0x0010 (0x0038 - 0x0028)
@@ -7450,28 +7757,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxTrickAnimNotify;
 
-// Class GbxGame.GbxTrickAnimNotify_StateMachineAction
-// 0x0018 (0x0050 - 0x0038)
-class UGbxTrickAnimNotify_StateMachineAction : public UGbxTrickAnimNotify
+// Class GbxGame.GbxTrickAnimNotify_Gib
+// 0x0000 (0x0038 - 0x0038)
+class UGbxTrickAnimNotify_Gib final : public UGbxTrickAnimNotify
 {
-public:
-	FGbxDefPtrProperty_                           SkillDef;                                          // 0x0038(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrickAnimNotify_StateMachineAction")
+		STATIC_CLASS_IMPL("GbxTrickAnimNotify_Gib")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_StateMachineAction")
+		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_Gib")
 	}
-	static class UGbxTrickAnimNotify_StateMachineAction* GetDefaultObj()
+	static class UGbxTrickAnimNotify_Gib* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrickAnimNotify_StateMachineAction>();
+		return GetDefaultObjImpl<UGbxTrickAnimNotify_Gib>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrickAnimNotify_StateMachineAction;
+DUMPER7_ASSERTS_UGbxTrickAnimNotify_Gib;
 
 // Class GbxGame.GbxActivityAreaTable_GameInstanceSubSystem
 // 0x0028 (0x0058 - 0x0030)
@@ -7496,34 +7800,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActivityAreaTable_GameInstanceSubSystem;
 
-// Class GbxGame.ZoomHandler
-// 0x0000 (0x0000 - 0x0000)
-class IZoomHandler final
+// Class GbxGame.WorldStateProgressRole
+// 0x0000 (0x0100 - 0x0100)
+class UWorldStateProgressRole final : public UGbxProfileProgressRoleHostPlayer
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("ZoomHandler")
+		STATIC_CLASS_IMPL("WorldStateProgressRole")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"ZoomHandler")
+		STATIC_NAME_IMPL(L"WorldStateProgressRole")
 	}
-	static class IZoomHandler* GetDefaultObj()
+	static class UWorldStateProgressRole* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IZoomHandler>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UWorldStateProgressRole>();
 	}
 };
-DUMPER7_ASSERTS_IZoomHandler;
+DUMPER7_ASSERTS_UWorldStateProgressRole;
 
 // Class GbxGame.GbxActivityLandscapeBlueprintBrushBase
 // 0x00C0 (0x0470 - 0x03B0)
@@ -7574,48 +7869,55 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStore_GbxActivityMapInitialization;
 
-// Class GbxGame.GbxLevelSequenceSettings
-// 0x0018 (0x0050 - 0x0038)
-class UGbxLevelSequenceSettings final : public UDeveloperSettings
+// Class GbxGame.GbxLevelSequencePlayer
+// 0x01A0 (0x0A20 - 0x0880)
+class UGbxLevelSequencePlayer final : public UGbxLevelSequencePlayerBase
 {
 public:
-	FGbxDefPtrProperty_                           DefaultStandInDef;                                 // 0x0038(0x0018)(Edit, Config, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_880[0x28];                                     // 0x0880(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
+	FGameDataHandleProperty_                      CinematicMode;                                     // 0x08A8(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_8C0[0x160];                                    // 0x08C0(0x0160)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UGbxLevelSequencePlayer* CreateGbxLevelSequencePlayer(class UObject* WorldContextObject, class UGbxLevelSequence* LevelSequence, const struct FMovieSceneSequencePlaybackSettings& settings, FGameDataHandleProperty_ CinematicMode_0, const TMap<class FName, class AActor*>& GbxBindingOverrides, class AGbxLevelSequenceActor** OutActor);
+
+	void Multicast_StartLoadingAssets();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequenceSettings")
+		STATIC_CLASS_IMPL("GbxLevelSequencePlayer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequenceSettings")
+		STATIC_NAME_IMPL(L"GbxLevelSequencePlayer")
 	}
-	static class UGbxLevelSequenceSettings* GetDefaultObj()
+	static class UGbxLevelSequencePlayer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLevelSequenceSettings>();
+		return GetDefaultObjImpl<UGbxLevelSequencePlayer>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLevelSequenceSettings;
+DUMPER7_ASSERTS_UGbxLevelSequencePlayer;
 
-// Class GbxGame.NexusConfigStoreMelee
+// Class GbxGame.NexusConfigStoreLootConfig
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreMelee final : public UNexusConfigStoreBasic
+class UNexusConfigStoreLootConfig final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreMelee")
+		STATIC_CLASS_IMPL("NexusConfigStoreLootConfig")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreMelee")
+		STATIC_NAME_IMPL(L"NexusConfigStoreLootConfig")
 	}
-	static class UNexusConfigStoreMelee* GetDefaultObj()
+	static class UNexusConfigStoreLootConfig* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreMelee>();
+		return GetDefaultObjImpl<UNexusConfigStoreLootConfig>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreMelee;
+DUMPER7_ASSERTS_UNexusConfigStoreLootConfig;
 
 // Class GbxGame.GbxActivityProgressRole
 // 0x0000 (0x0100 - 0x0100)
@@ -7668,25 +7970,25 @@ public:
 };
 DUMPER7_ASSERTS_AGbxActivityRequester;
 
-// Class GbxGame.NexusConfigStoreUnlockables
-// 0x0000 (0x0340 - 0x0340)
-class UNexusConfigStoreUnlockables final : public UNexusConfigStorePath
+// Class GbxGame.NexusConfigStoreUIDisplayData
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreUIDisplayData final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreUnlockables")
+		STATIC_CLASS_IMPL("NexusConfigStoreUIDisplayData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreUnlockables")
+		STATIC_NAME_IMPL(L"NexusConfigStoreUIDisplayData")
 	}
-	static class UNexusConfigStoreUnlockables* GetDefaultObj()
+	static class UNexusConfigStoreUIDisplayData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreUnlockables>();
+		return GetDefaultObjImpl<UNexusConfigStoreUIDisplayData>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreUnlockables;
+DUMPER7_ASSERTS_UNexusConfigStoreUIDisplayData;
 
 // Class GbxGame.GbxActivityRequesterInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -7773,28 +8075,25 @@ public:
 };
 DUMPER7_ASSERTS_AGbxActivityStampAlwaysLoadedActorRuntime;
 
-// Class GbxGame.NexusConfigStoreRecipes
-// 0x0070 (0x0400 - 0x0390)
-class UNexusConfigStoreRecipes final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStore_GbxRadioStation
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStore_GbxRadioStation final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_390[0x70];                                     // 0x0390(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreRecipes")
+		STATIC_CLASS_IMPL("NexusConfigStore_GbxRadioStation")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreRecipes")
+		STATIC_NAME_IMPL(L"NexusConfigStore_GbxRadioStation")
 	}
-	static class UNexusConfigStoreRecipes* GetDefaultObj()
+	static class UNexusConfigStore_GbxRadioStation* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreRecipes>();
+		return GetDefaultObjImpl<UNexusConfigStore_GbxRadioStation>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreRecipes;
+DUMPER7_ASSERTS_UNexusConfigStore_GbxRadioStation;
 
 // Class GbxGame.GbxActorDrawComponent
 // 0x00C0 (0x06E0 - 0x0620)
@@ -7819,48 +8118,49 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActorDrawComponent;
 
-// Class GbxGame.UnlockablesProgressRole
-// 0x0008 (0x0108 - 0x0100)
-class UUnlockablesProgressRole : public UGbxProfileProgressRoleAllPlayers
+// Class GbxGame.TextRenderActorFacts
+// 0x0040 (0x03D8 - 0x0398)
+class ATextRenderActorFacts final : public ATextRenderActor
 {
 public:
-	uint8                                         Pad_100[0x8];                                      // 0x0100(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FFactAddress                           SourceFactForText;                                 // 0x0398(0x0038)(Edit, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_3D0[0x8];                                      // 0x03D0(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("UnlockablesProgressRole")
+		STATIC_CLASS_IMPL("TextRenderActorFacts")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"UnlockablesProgressRole")
+		STATIC_NAME_IMPL(L"TextRenderActorFacts")
 	}
-	static class UUnlockablesProgressRole* GetDefaultObj()
+	static class ATextRenderActorFacts* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UUnlockablesProgressRole>();
+		return GetDefaultObjImpl<ATextRenderActorFacts>();
 	}
 };
-DUMPER7_ASSERTS_UUnlockablesProgressRole;
+DUMPER7_ASSERTS_ATextRenderActorFacts;
 
-// Class GbxGame.NexusConfigStoreDamageType
+// Class GbxGame.NexusConfigStoreCoordinatedEffectFilter
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreDamageType final : public UNexusConfigStoreBasic
+class UNexusConfigStoreCoordinatedEffectFilter final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreDamageType")
+		STATIC_CLASS_IMPL("NexusConfigStoreCoordinatedEffectFilter")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreDamageType")
+		STATIC_NAME_IMPL(L"NexusConfigStoreCoordinatedEffectFilter")
 	}
-	static class UNexusConfigStoreDamageType* GetDefaultObj()
+	static class UNexusConfigStoreCoordinatedEffectFilter* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreDamageType>();
+		return GetDefaultObjImpl<UNexusConfigStoreCoordinatedEffectFilter>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreDamageType;
+DUMPER7_ASSERTS_UNexusConfigStoreCoordinatedEffectFilter;
 
 // Class GbxGame.GbxActorPartNiagaraComponent
 // 0x0000 (0x08E0 - 0x08E0)
@@ -7885,33 +8185,30 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActorPartNiagaraComponent;
 
-// Class GbxGame.GbxSkillComponentDelegateBinding
-// 0x0060 (0x0088 - 0x0028)
-class UGbxSkillComponentDelegateBinding final : public UDynamicBlueprintBinding
+// Class GbxGame.GbxSkillChannel
+// 0x0080 (0x00E8 - 0x0068)
+class UGbxSkillChannel final : public Uchannel
 {
 public:
-	TArray<struct FGbxSkillComponentBinding>      ComponentBindings;                                 // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
-	TArray<struct FGbxSkillStateBinding>          StateBindings;                                     // 0x0038(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
-	TArray<struct FGbxSkillEffectBinding>         EffectBindings;                                    // 0x0048(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
-	TArray<struct FGbxSkillMessageBinding>        MessageBindings;                                   // 0x0058(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
-	TArray<struct FGbxSkillParamBinding>          ParamBindings;                                     // 0x0068(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
-	TArray<struct FGbxSkillActionBinding>         ActionBindings;                                    // 0x0078(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_68[0x10];                                      // 0x0068(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxSkill*                              Skill;                                             // 0x0078(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_80[0x68];                                      // 0x0080(0x0068)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkillComponentDelegateBinding")
+		STATIC_CLASS_IMPL("GbxSkillChannel")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkillComponentDelegateBinding")
+		STATIC_NAME_IMPL(L"GbxSkillChannel")
 	}
-	static class UGbxSkillComponentDelegateBinding* GetDefaultObj()
+	static class UGbxSkillChannel* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkillComponentDelegateBinding>();
+		return GetDefaultObjImpl<UGbxSkillChannel>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkillComponentDelegateBinding;
+DUMPER7_ASSERTS_UGbxSkillChannel;
 
 // Class GbxGame.GbxActorPartOwner
 // 0x0000 (0x0000 - 0x0000)
@@ -7942,31 +8239,25 @@ public:
 };
 DUMPER7_ASSERTS_IGbxActorPartOwner;
 
-// Class GbxGame.GbxRadioConfig
-// 0x0068 (0x0098 - 0x0030)
-class UGbxRadioConfig : public UDataAsset
+// Class GbxGame.NexusConfigStore_GbxProgressPointPoolDef
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStore_GbxProgressPointPoolDef final : public UNexusConfigStoreBasic
 {
-public:
-	TMap<FGbxDefPtrProperty_, FGbxDefPtrProperty_> RadioStations;                                    // 0x0030(0x0050)(Edit, NativeAccessSpecifierPublic)
-	TArray<ERadioScriptType>                      RadioScriptSequence;                               // 0x0080(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	int32                                         InactiveQueueSize;                                 // 0x0090(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_94[0x4];                                       // 0x0094(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxRadioConfig")
+		STATIC_CLASS_IMPL("NexusConfigStore_GbxProgressPointPoolDef")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxRadioConfig")
+		STATIC_NAME_IMPL(L"NexusConfigStore_GbxProgressPointPoolDef")
 	}
-	static class UGbxRadioConfig* GetDefaultObj()
+	static class UNexusConfigStore_GbxProgressPointPoolDef* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxRadioConfig>();
+		return GetDefaultObjImpl<UNexusConfigStore_GbxProgressPointPoolDef>();
 	}
 };
-DUMPER7_ASSERTS_UGbxRadioConfig;
+DUMPER7_ASSERTS_UNexusConfigStore_GbxProgressPointPoolDef;
 
 // Class GbxGame.GbxActorPartSerialNumberProvider
 // 0x0000 (0x0000 - 0x0000)
@@ -7997,48 +8288,34 @@ public:
 };
 DUMPER7_ASSERTS_IGbxActorPartSerialNumberProvider;
 
-// Class GbxGame.GbxStatusEffectNotifyDelegateBinding
-// 0x0010 (0x0038 - 0x0028)
-class UGbxStatusEffectNotifyDelegateBinding : public UDynamicBlueprintBinding
-{
-public:
-	TArray<struct FGbxStatusEffectNotifyEventBind> EventBinds;                                       // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxStatusEffectNotifyDelegateBinding")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectNotifyDelegateBinding")
-	}
-	static class UGbxStatusEffectNotifyDelegateBinding* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxStatusEffectNotifyDelegateBinding>();
-	}
-};
-DUMPER7_ASSERTS_UGbxStatusEffectNotifyDelegateBinding;
-
-// Class GbxGame.GbxStatusEffectNotifyDelegateBinding_ActorScript
-// 0x0000 (0x0038 - 0x0038)
-class UGbxStatusEffectNotifyDelegateBinding_ActorScript final : public UGbxStatusEffectNotifyDelegateBinding
+// Class GbxGame.GbxStatusEffectModifierProvider
+// 0x0000 (0x0000 - 0x0000)
+class IGbxStatusEffectModifierProvider final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectNotifyDelegateBinding_ActorScript")
+		STATIC_CLASS_IMPL("GbxStatusEffectModifierProvider")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectNotifyDelegateBinding_ActorScript")
+		STATIC_NAME_IMPL(L"GbxStatusEffectModifierProvider")
 	}
-	static class UGbxStatusEffectNotifyDelegateBinding_ActorScript* GetDefaultObj()
+	static class IGbxStatusEffectModifierProvider* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectNotifyDelegateBinding_ActorScript>();
+		return GetDefaultObjImpl<IGbxStatusEffectModifierProvider>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectNotifyDelegateBinding_ActorScript;
+DUMPER7_ASSERTS_IGbxStatusEffectModifierProvider;
 
 // Class GbxGame.GbxActorPartStatics
 // 0x0000 (0x0028 - 0x0028)
@@ -8064,25 +8341,22 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActorPartStatics;
 
-// Class GbxGame.ScreenParticleStateManager
+// Class GbxGame.GbxCameraShakeStateManager
 // 0x0000 (0x0000 - 0x0000)
-class IScreenParticleStateManager final
+class IGbxCameraShakeStateManager final
 {
-public:
-	void OnScreenParticleFinished(class UFXSystemComponent* Component);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("ScreenParticleStateManager")
+		STATIC_CLASS_IMPL("GbxCameraShakeStateManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"ScreenParticleStateManager")
+		STATIC_NAME_IMPL(L"GbxCameraShakeStateManager")
 	}
-	static class IScreenParticleStateManager* GetDefaultObj()
+	static class IGbxCameraShakeStateManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IScreenParticleStateManager>();
+		return GetDefaultObjImpl<IGbxCameraShakeStateManager>();
 	}
 
 	class UObject* AsUObject()
@@ -8094,47 +8368,47 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IScreenParticleStateManager;
+DUMPER7_ASSERTS_IGbxCameraShakeStateManager;
 
-// Class GbxGame.LightProjectileScript
-// 0x0008 (0x0030 - 0x0028)
-class ULightProjectileScript final : public UObject
+// Class GbxGame.LightProjectileManager
+// 0x01D8 (0x0568 - 0x0390)
+class ALightProjectileManager final : public AActor
 {
 public:
-	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_390[0x18];                                     // 0x0390(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class ULightProjectile*>               ActiveProjectiles;                                 // 0x03A8(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_3B8[0x18];                                     // 0x03B8(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class ULightProjectile*>               ProjectilesWaitingBatch;                           // 0x03D0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class ULightProjectile*>               ProjectilePool;                                    // 0x03E0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class UFXSystemComponent*>             ActiveParticles;                                   // 0x03F0(0x0010)(ExportObject, ZeroConstructor, Transient, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<struct FLightProjectileParticlePoolData> ParticlesPool;                                   // 0x0400(0x0010)(ZeroConstructor, Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	TArray<struct FLightProjectileMeshPoolData>   MeshesPool;                                        // 0x0410(0x0010)(ZeroConstructor, Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_420[0xAC];                                     // 0x0420(0x00AC)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         MaxAsyncSpawnTime;                                 // 0x04CC(0x0004)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_4D0[0x80];                                     // 0x04D0(0x0080)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class ULightProjectile*>               DamageableProjectiles;                             // 0x0550(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_560[0x8];                                      // 0x0560(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void OnAttached(class ULightProjectile* projectile, class AActor* AttachedActor) const;
-	void OnBegin(class ULightProjectile* projectile) const;
-	void OnBounce(class ULightProjectile* projectile, const struct FHitResult& Hit, const struct FVector& ImpactVelocity) const;
-	void OnDetached(class ULightProjectile* projectile) const;
-	void OnDirectDamage(class ULightProjectile* projectile, const struct FHitResult& Hit, bool bCritical) const;
-	void OnExplode(class ULightProjectile* projectile) const;
-	void OnGameplayBounce(class ULightProjectile* projectile, const struct FHitResult& Hit, const struct FVector& ImpactVelocity) const;
-	void OnHomingTargetLost(class ULightProjectile* projectile, EHomingTargetLostReason reason) const;
-	void OnHomingTargetReached(class ULightProjectile* projectile) const;
-	void OnImpact(class ULightProjectile* projectile, const struct FHitResult& Hit) const;
-	void OnLastGameplayBounce(class ULightProjectile* projectile, const struct FHitResult& Hit) const;
-	void OnLifetimeExpired(class ULightProjectile* projectile) const;
-	void OnNonGameplayBounce(class ULightProjectile* projectile, const struct FHitResult& Hit, const struct FVector& ImpactVelocity) const;
-	void OnProxyImpact(class ULightProjectile* projectile, const struct FHitResult& Hit) const;
-	void OnStopHomingDistanceReached(class ULightProjectile* projectile) const;
+	void OnParticleSystemFinished(class UFXSystemComponent* FinishedComponent);
+	void ServerSendDebugProjectileImpact(int32 ProjSyncID, class AActor* HitActor, class FName BoneName, uint16 ProjFlags);
+	void ServerSendDebugProjectilePath(int32 ProjSyncID, const struct FVector_NetQuantize& Location);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("LightProjectileScript")
+		STATIC_CLASS_IMPL("LightProjectileManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"LightProjectileScript")
+		STATIC_NAME_IMPL(L"LightProjectileManager")
 	}
-	static class ULightProjectileScript* GetDefaultObj()
+	static class ALightProjectileManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<ULightProjectileScript>();
+		return GetDefaultObjImpl<ALightProjectileManager>();
 	}
 };
-DUMPER7_ASSERTS_ULightProjectileScript;
+DUMPER7_ASSERTS_ALightProjectileManager;
 
 // Class GbxGame.GbxActorScriptClass
 // 0x0030 (0x03E0 - 0x03B0)
@@ -8195,88 +8469,69 @@ public:
 };
 DUMPER7_ASSERTS_IGbxActorScriptInterface;
 
-// Class GbxGame.GbxLevelSequenceManager
-// 0x0438 (0x07C8 - 0x0390)
-class AGbxLevelSequenceManager final : public AInfo
+// Class GbxGame.NexusConfigSubType_GbxLevelSequenceActor
+// 0x0000 (0x0040 - 0x0040)
+class UNexusConfigSubType_GbxLevelSequenceActor final : public UNexusConfigLevelSubType
 {
 public:
-	TArray<struct FGbxLevelSequenceStreamingSourceData> StreamingSourceRepData;                      // 0x0390(0x0010)(Net, ZeroConstructor, Transient, RepNotify, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_3A0[0x68];                                     // 0x03A0(0x0068)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxLevelSequencePlaybackRequestArray  PlaybackRequests;                                  // 0x0408(0x0120)(Net, Transient, RepNotify, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_528[0x198];                                    // 0x0528(0x0198)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ReadyFailsafeTime;                                 // 0x06C0(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_6C4[0x4];                                      // 0x06C4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FSName>                         PreloadRequests;                                   // 0x06C8(0x0010)(Net, ZeroConstructor, Transient, RepNotify, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_6D8[0xF0];                                     // 0x06D8(0x00F0)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigSubType_GbxLevelSequenceActor")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigSubType_GbxLevelSequenceActor")
+	}
+	static class UNexusConfigSubType_GbxLevelSequenceActor* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigSubType_GbxLevelSequenceActor>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigSubType_GbxLevelSequenceActor;
 
+// Class GbxGame.GbxPlayerSharedStateRole
+// 0x0000 (0x0100 - 0x0100)
+class UGbxPlayerSharedStateRole final : public UGbxProfileProgressRoleAllPlayers
+{
 public:
-	void OnRep_PlaybackRequests();
-	void OnRep_PreloadRequests();
-	void OnRep_StreamingSourceData();
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxPlayerSharedStateRole")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxPlayerSharedStateRole")
+	}
+	static class UGbxPlayerSharedStateRole* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxPlayerSharedStateRole>();
+	}
+};
+DUMPER7_ASSERTS_UGbxPlayerSharedStateRole;
+
+// Class GbxGame.NexusConfigStoreImpactEffect
+// 0x0068 (0x03F8 - 0x0390)
+class UNexusConfigStoreImpactEffect final : public UNexusConfigStoreBasic
+{
+public:
+	bool                                          bLoadAssetsForAllPhysicalMaterials;                // 0x0390(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_391[0x67];                                     // 0x0391(0x0067)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequenceManager")
+		STATIC_CLASS_IMPL("NexusConfigStoreImpactEffect")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequenceManager")
+		STATIC_NAME_IMPL(L"NexusConfigStoreImpactEffect")
 	}
-	static class AGbxLevelSequenceManager* GetDefaultObj()
+	static class UNexusConfigStoreImpactEffect* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxLevelSequenceManager>();
+		return GetDefaultObjImpl<UNexusConfigStoreImpactEffect>();
 	}
 };
-DUMPER7_ASSERTS_AGbxLevelSequenceManager;
-
-// Class GbxGame.GbxPlayerUtilsBlueprintLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxPlayerUtilsBlueprintLibrary final : public UBlueprintFunctionLibrary
-{
-public:
-	static class APlayerController* GetPlayerController(class AActor* Actor);
-	static class APlayerState* GetPlayerState(const class AActor* Actor);
-	static bool IsPlayerControlled(const class AActor* Actor);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxPlayerUtilsBlueprintLibrary")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxPlayerUtilsBlueprintLibrary")
-	}
-	static class UGbxPlayerUtilsBlueprintLibrary* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxPlayerUtilsBlueprintLibrary>();
-	}
-};
-DUMPER7_ASSERTS_UGbxPlayerUtilsBlueprintLibrary;
-
-// Class GbxGame.NexusConfigStoreInventoryAspect
-// 0x0030 (0x0300 - 0x02D0)
-class UNexusConfigStoreInventoryAspect final : public UNexusConfigStoreFlat
-{
-public:
-	uint8                                         Pad_2D0[0x30];                                     // 0x02D0(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreInventoryAspect")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryAspect")
-	}
-	static class UNexusConfigStoreInventoryAspect* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreInventoryAspect>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreInventoryAspect;
+DUMPER7_ASSERTS_UNexusConfigStoreImpactEffect;
 
 // Class GbxGame.GbxActorScript_SpawnPoint
 // 0x0008 (0x00A8 - 0x00A0)
@@ -8301,45 +8556,45 @@ public:
 };
 DUMPER7_ASSERTS_UGbxActorScript_SpawnPoint;
 
-// Class GbxGame.GbxSequenceNotifySectionBase
-// 0x0000 (0x0110 - 0x0110)
-class UGbxSequenceNotifySectionBase : public UMovieSceneHookSection
+// Class GbxGame.GbxSequenceMomentEventTrack
+// 0x0000 (0x0120 - 0x0120)
+class UGbxSequenceMomentEventTrack final : public UMovieSceneEventTrack
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceNotifySectionBase")
+		STATIC_CLASS_IMPL("GbxSequenceMomentEventTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceNotifySectionBase")
+		STATIC_NAME_IMPL(L"GbxSequenceMomentEventTrack")
 	}
-	static class UGbxSequenceNotifySectionBase* GetDefaultObj()
+	static class UGbxSequenceMomentEventTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceNotifySectionBase>();
+		return GetDefaultObjImpl<UGbxSequenceMomentEventTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceNotifySectionBase;
+DUMPER7_ASSERTS_UGbxSequenceMomentEventTrack;
 
-// Class GbxGame.NexusConfigStoreInventoryRarity
+// Class GbxGame.NexusConfigStoreInventoryNameStrategy
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreInventoryRarity final : public UNexusConfigStoreBasic
+class UNexusConfigStoreInventoryNameStrategy final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreInventoryRarity")
+		STATIC_CLASS_IMPL("NexusConfigStoreInventoryNameStrategy")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryRarity")
+		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryNameStrategy")
 	}
-	static class UNexusConfigStoreInventoryRarity* GetDefaultObj()
+	static class UNexusConfigStoreInventoryNameStrategy* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreInventoryRarity>();
+		return GetDefaultObjImpl<UNexusConfigStoreInventoryNameStrategy>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreInventoryRarity;
+DUMPER7_ASSERTS_UNexusConfigStoreInventoryNameStrategy;
 
 // Class GbxGame.GbxActorStateSequencePlayer
 // 0x0060 (0x0900 - 0x08A0)
@@ -8407,25 +8662,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAIHeldShieldComponent;
 
-// Class GbxGame.GbxOpportunisticPartitionDebugDrawComponent
-// 0x0000 (0x0670 - 0x0670)
-class UGbxOpportunisticPartitionDebugDrawComponent final : public UDebugDrawComponent
+// Class GbxGame.GbxOpportunisticAmbientAudioActor
+// 0x0008 (0x0398 - 0x0390)
+class AGbxOpportunisticAmbientAudioActor final : public AActor
 {
+public:
+	class UGbxOpportunisticAmbientAudioComponent* OpportunisticAmbientAudioComponent;                // 0x0390(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxOpportunisticPartitionDebugDrawComponent")
+		STATIC_CLASS_IMPL("GbxOpportunisticAmbientAudioActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxOpportunisticPartitionDebugDrawComponent")
+		STATIC_NAME_IMPL(L"GbxOpportunisticAmbientAudioActor")
 	}
-	static class UGbxOpportunisticPartitionDebugDrawComponent* GetDefaultObj()
+	static class AGbxOpportunisticAmbientAudioActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxOpportunisticPartitionDebugDrawComponent>();
+		return GetDefaultObjImpl<AGbxOpportunisticAmbientAudioActor>();
 	}
 };
-DUMPER7_ASSERTS_UGbxOpportunisticPartitionDebugDrawComponent;
+DUMPER7_ASSERTS_AGbxOpportunisticAmbientAudioActor;
 
 // Class GbxGame.GbxAINodeComponent
 // 0x0A40 (0x10D0 - 0x0690)
@@ -8537,33 +8795,38 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAINodeComponent;
 
-// Class GbxGame.Perch
-// 0x00F0 (0x0480 - 0x0390)
-class APerch : public AActor
+// Class GbxGame.OxygenConsumptionStatics
+// 0x0000 (0x0028 - 0x0028)
+class UOxygenConsumptionStatics final : public UBlueprintFunctionLibrary
 {
 public:
-	uint8                                         Pad_390[0x10];                                     // 0x0390(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FFactsConduit                          FactsConduit;                                      // 0x03A0(0x00D8)(Edit, DisableEditOnTemplate, Protected, NativeAccessSpecifierProtected)
-	class UPerchComponent*                        PerchComponent;                                    // 0x0478(0x0008)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, ZeroConstructor, EditConst, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-
-public:
-	class UPerchComponent* K2_GetPerchComponent() const;
+	static void RegisterOxygenConsumption(class AGbxCharacter* TargetCharacter, class FName reason, float ConsumptionRate);
+	static void RegisterOxygenConsumptionForAllPlayers(class AActor* ContextActor, class FName reason, float ConsumptionRate);
+	static void RegisterOxygenRegeneration(class AGbxCharacter* TargetCharacter, class FName reason, float RegenerationRate);
+	static void SetSkipDefaultOxygenDepletedBehavior(class UObject* OwnerContext, bool bShouldSkipDefaultOxygenDepletedBehavior);
+	static void SubscribeToOxygenDepletedEvent(class UObject* OwnerContext, TDelegate<void(class AActor* OxygenConsumer)> Delegate, bool bOverrideDefaultBehavior);
+	static void SubscribeToOxygenNotDepletedEvent(class UObject* OwnerContext, TDelegate<void(class AActor* OxygenConsumer)> Delegate);
+	static void UnregisterOxygenConsumption(class AGbxCharacter* TargetCharacter, class FName reason);
+	static void UnregisterOxygenConsumptionForAllPlayers(class AActor* ContextActor, class FName reason);
+	static void UnregisterOxygenRegeneration(class AGbxCharacter* TargetCharacter, class FName reason);
+	static void UnsubscribeFromOxygenDepletedEvent(class UObject* OwnerContext, TDelegate<void(class AActor* OxygenConsumer)> Delegate, bool bRemoveDefaultBehaviorOverride);
+	static void UnsubscribeFromOxygenNotDepletedEvent(class UObject* OwnerContext, TDelegate<void(class AActor* OxygenConsumer)> Delegate);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("Perch")
+		STATIC_CLASS_IMPL("OxygenConsumptionStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"Perch")
+		STATIC_NAME_IMPL(L"OxygenConsumptionStatics")
 	}
-	static class APerch* GetDefaultObj()
+	static class UOxygenConsumptionStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<APerch>();
+		return GetDefaultObjImpl<UOxygenConsumptionStatics>();
 	}
 };
-DUMPER7_ASSERTS_APerch;
+DUMPER7_ASSERTS_UOxygenConsumptionStatics;
 
 // Class GbxGame.NexusConfigStoreAINodeLeadSettings
 // 0x0000 (0x0390 - 0x0390)
@@ -8585,28 +8848,99 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreAINodeLeadSettings;
 
-// Class GbxGame.WaypointReplicationChannel
-// 0x0030 (0x0098 - 0x0068)
-class UWaypointReplicationChannel final : public Uchannel
+// Class GbxGame.GbxProjectileMovementComponent
+// 0x0240 (0x0520 - 0x02E0)
+class UGbxProjectileMovementComponent : public UProjectileMovementComponent
 {
 public:
-	uint8                                         Pad_68[0x30];                                      // 0x0068(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	TMulticastInlineDelegate<void(const struct FHitResult& ImpactResult, const struct FVector& ImpactVelocity)> OnGameplayBounce; // 0x02E0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const struct FHitResult& ImpactResult, const struct FVector& ImpactVelocity)> OnNonGameplayBounce; // 0x02F0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const struct FHitResult& ImpactResult)> OnLastGameplayBounce;      // 0x0300(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void()>              OnReachZeroVelocity;                               // 0x0310(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	uint8                                         Pad_320[0x30];                                     // 0x0320(0x0030)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ProjectileAcceleration;                            // 0x0350(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         decelerateminspeed;                                // 0x0354(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         bDisablePhysicsWhenAttached : 1;                   // 0x0358(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         bSmoothedRotationFollowsVelocity : 1;              // 0x0358(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         Pad_359[0x3];                                      // 0x0359(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         SmoothedRotationSpeed;                             // 0x035C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         bDontStopSimulatingAfterHittingAnotherProjectile : 1; // 0x0360(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         Pad_361[0x3];                                      // 0x0361(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         MaxNumGameplayBounces;                             // 0x0364(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         EnemyBouncinessScale;                              // 0x0368(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         bBounceParallelToHitNormal : 1;                    // 0x036C(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         bRotate : 1;                                       // 0x036C(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         Pad_36D[0x3];                                      // 0x036D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FRotator                               RotationRate;                                      // 0x0370(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
+	struct FVector                                RotationPivotOffset;                               // 0x0388(0x0018)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FProjectileHomingState                 HomingState;                                       // 0x03A0(0x0070)(Transient, NativeAccessSpecifierPublic)
+	struct FProjectileDrunkenMovementState        DrunkenMovementState;                              // 0x0410(0x00A0)(Transient, NoDestructor, NativeAccessSpecifierPublic)
+	TArray<struct FGbxInlineStruct>               MovementModifiers;                                 // 0x04B0(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4C0[0x8];                                      // 0x04C0(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class Aprojectile*                            OwningProjectile;                                  // 0x04C8(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	int32                                         NumGameplayBounces;                                // 0x04D0(0x0004)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_4D4[0x4C];                                     // 0x04D4(0x004C)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void AIDodgeNotify();
+	void ScaleVelocity(float InScale);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("WaypointReplicationChannel")
+		STATIC_CLASS_IMPL("GbxProjectileMovementComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"WaypointReplicationChannel")
+		STATIC_NAME_IMPL(L"GbxProjectileMovementComponent")
 	}
-	static class UWaypointReplicationChannel* GetDefaultObj()
+	static class UGbxProjectileMovementComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UWaypointReplicationChannel>();
+		return GetDefaultObjImpl<UGbxProjectileMovementComponent>();
 	}
 };
-DUMPER7_ASSERTS_UWaypointReplicationChannel;
+DUMPER7_ASSERTS_UGbxProjectileMovementComponent;
+
+// Class GbxGame.WalkingProjectileMovementComponent
+// 0x00B0 (0x05D0 - 0x0520)
+class UWalkingProjectileMovementComponent final : public UGbxProjectileMovementComponent
+{
+public:
+	bool                                          bGravityAffectsSlopeWalking;                       // 0x0520(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_521[0x3];                                      // 0x0521(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         WalkingSpeed;                                      // 0x0524(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         MaxWalkAngle;                                      // 0x0528(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFallOffLedges;                                    // 0x052C(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_52D[0x3];                                      // 0x052D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         MaxStepUpHeight;                                   // 0x0530(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ExplodeOnAirborneTime;                             // 0x0534(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bStopExplodeOnAirborneTimerOnLand;                 // 0x0538(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_539[0x3];                                      // 0x0539(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         MovementFrozenMaxTime;                             // 0x053C(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_540[0x58];                                     // 0x0540(0x0058)(Fixing Size After Last Property [ Dumper-7 ])
+	TMulticastInlineDelegate<void(const struct FHitResult& ImpactResult)> OnHitUnwalkableSurface;    // 0x0598(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
+	TMulticastInlineDelegate<void()>              OnBecomeAirborne;                                  // 0x05A8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
+	TMulticastInlineDelegate<void()>              OnLanded;                                          // 0x05B8(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_5C8[0x8];                                      // 0x05C8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void ExplodeOnAirborne();
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("WalkingProjectileMovementComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"WalkingProjectileMovementComponent")
+	}
+	static class UWalkingProjectileMovementComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UWalkingProjectileMovementComponent>();
+	}
+};
+DUMPER7_ASSERTS_UWalkingProjectileMovementComponent;
 
 // Class GbxGame.GbxAINodePreviewComponent
 // 0x0000 (0x02B0 - 0x02B0)
@@ -8628,59 +8962,34 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAINodePreviewComponent;
 
-// Class GbxGame.PlayerCameraModeManager
-// 0x0C80 (0x3B10 - 0x2E90)
-class APlayerCameraModeManager : public APlayerCameraManager
+// Class GbxGame.PingableInterface
+// 0x0000 (0x0000 - 0x0000)
+class IPingableInterface final
 {
-public:
-	uint8                                         Pad_2E90[0x50];                                    // 0x2E90(0x0050)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ViewTargetClippingRadius;                          // 0x2EE0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2EE4[0x4];                                     // 0x2EE4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class AActor*                                 LastViewTarget;                                    // 0x2EE8(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_2EF0[0xAE0];                                   // 0x2EF0(0x0AE0)(Fixing Size After Last Property [ Dumper-7 ])
-	class UCameraModeInputs*                      CameraModeInputs;                                  // 0x39D0(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UCameraModeState*                       CameraModeState;                                   // 0x39D8(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UCameraModifier_GbxCameraShake*         CachedGbxCameraShakeMod;                           // 0x39E0(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_39E8[0xC0];                                    // 0x39E8(0x00C0)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FSoftClassPath                         CameraStateClassName;                              // 0x3AA8(0x0020)(ZeroConstructor, Config, GlobalConfig, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FSoftClassPath                         CameraInputsClassName;                             // 0x3AC8(0x0020)(ZeroConstructor, Config, GlobalConfig, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	class FName                                   InitialDefaultCameraModeName;                      // 0x3AE8(0x0008)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<class FName>                           DebugCameraModeNames;                              // 0x3AF0(0x0010)(ZeroConstructor, Config, GlobalConfig, NativeAccessSpecifierPrivate)
-	bool                                          bInheritUserSettingsBaseFOV;                       // 0x3B00(0x0001)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_3B01[0xF];                                     // 0x3B01(0x000F)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static void ApplyActorCameraRotation(class AActor* Actor, const struct FRotator& DeltaRotation);
-	static class FName GetActorCameraMode(class AActor* Actor);
-	static class FName GetActorDefaultCameraMode(class AActor* Actor);
-	static void PopActorCameraMode(class AActor* Actor, class FName ModeName, class FName OptionalTransitionName, float BlendTimeOverride, bool bTeleport);
-	static void PopActorCameraModeDef(class AActor* Actor, FGbxDefPtrProperty_ CameraModeDef, FGbxDefPtrProperty_ CameraTransitionDef, float BlendTimeOverride, bool bTeleport);
-	static void PushActorCameraMode(class AActor* Actor, class FName ModeName, class FName OptionalTransitionName, float BlendTimeOverride, bool bTeleport);
-	static void PushActorCameraModeDef(class AActor* Actor, FGbxDefPtrProperty_ CameraModeDef, FGbxDefPtrProperty_ CameraTransitionDef, float BlendTimeOverride, bool bTeleport);
-	static void ResetActorCameraRotation(class AActor* Actor, const struct FRotator& NewRotation);
-	static void SetActorCameraMode(class AActor* Actor, class FName ModeName, class FName OptionalTransitionName, float BlendTimeOverride, bool bTeleport, bool bForceResetMode);
-	static void SetActorCameraModeDef(class AActor* Actor, FGbxDefPtrProperty_ CameraModeDef, FGbxDefPtrProperty_ CameraTransitionDef, float BlendTimeOverride, bool bTeleport, bool bForceResetMode);
-
-	void OnBaseFOVChanged(float NewBaseFOV);
-	void PlayGbxCameraShake(const FGameDataHandleProperty_& ShakeAsset, float scale, ECameraShakePlaySpace PlaySpace, const struct FRotator& UserPlaySpaceRot, bool bLoopingShake);
-	void StopAllGbxCameraShakes(bool bImmediately);
-	void StopAllInstancesOfGbxCameraShake(const FGameDataHandleProperty_& Shake, bool bImmediately);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PlayerCameraModeManager")
+		STATIC_CLASS_IMPL("PingableInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PlayerCameraModeManager")
+		STATIC_NAME_IMPL(L"PingableInterface")
 	}
-	static class APlayerCameraModeManager* GetDefaultObj()
+	static class IPingableInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<APlayerCameraModeManager>();
+		return GetDefaultObjImpl<IPingableInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_APlayerCameraModeManager;
+DUMPER7_ASSERTS_IPingableInterface;
 
 // Class GbxGame.GbxIdentityResolver
 // 0x0000 (0x0028 - 0x0028)
@@ -8722,25 +9031,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnalyticsContextResolverIdentity;
 
-// Class GbxGame.NexusConfigStoreUsabilityResponse
-// 0x0000 (0x02D0 - 0x02D0)
-class UNexusConfigStoreUsabilityResponse final : public UNexusConfigStoreFlat
+// Class GbxGame.NexusConfigStoreUnlockables
+// 0x0000 (0x0340 - 0x0340)
+class UNexusConfigStoreUnlockables final : public UNexusConfigStorePath
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreUsabilityResponse")
+		STATIC_CLASS_IMPL("NexusConfigStoreUnlockables")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreUsabilityResponse")
+		STATIC_NAME_IMPL(L"NexusConfigStoreUnlockables")
 	}
-	static class UNexusConfigStoreUsabilityResponse* GetDefaultObj()
+	static class UNexusConfigStoreUnlockables* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreUsabilityResponse>();
+		return GetDefaultObjImpl<UNexusConfigStoreUnlockables>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreUsabilityResponse;
+DUMPER7_ASSERTS_UNexusConfigStoreUnlockables;
 
 // Class GbxGame.GbxAnimBlueprintLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -8765,25 +9074,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimBlueprintLibrary;
 
-// Class GbxGame.GbxSequenceFadeColorSystem
-// 0x0000 (0x0040 - 0x0040)
-class UGbxSequenceFadeColorSystem final : public UMovieSceneEntitySystem
+// Class GbxGame.GbxSequenceDialogSection
+// 0x00F8 (0x0208 - 0x0110)
+class UGbxSequenceDialogSection final : public UMovieSceneHookSection
 {
+public:
+	struct FGbxSequenceDialogChannel              channel;                                           // 0x0110(0x00F8)(Edit, AssetRegistrySearchable, NativeAccessSpecifierPublic)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceFadeColorSystem")
+		STATIC_CLASS_IMPL("GbxSequenceDialogSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceFadeColorSystem")
+		STATIC_NAME_IMPL(L"GbxSequenceDialogSection")
 	}
-	static class UGbxSequenceFadeColorSystem* GetDefaultObj()
+	static class UGbxSequenceDialogSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceFadeColorSystem>();
+		return GetDefaultObjImpl<UGbxSequenceDialogSection>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceFadeColorSystem;
+DUMPER7_ASSERTS_UGbxSequenceDialogSection;
 
 // Class GbxGame.GbxAnimNotifyState_RotationTarget
 // 0x00B0 (0x00E0 - 0x0030)
@@ -8815,25 +9127,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimNotifyState_RotationTarget;
 
-// Class GbxGame.NexusConfigStoreGbxSkillActionExecFilter
+// Class GbxGame.NexusConfigStoreGbxProgression
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxSkillActionExecFilter final : public UNexusConfigStoreBasic
+class UNexusConfigStoreGbxProgression final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxSkillActionExecFilter")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxProgression")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSkillActionExecFilter")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxProgression")
 	}
-	static class UNexusConfigStoreGbxSkillActionExecFilter* GetDefaultObj()
+	static class UNexusConfigStoreGbxProgression* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxSkillActionExecFilter>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxProgression>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillActionExecFilter;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxProgression;
 
 // Class GbxGame.GbxAnimNotifyState_TimedNiagaraEffectWithParams
 // 0x0140 (0x01B8 - 0x0078)
@@ -8861,31 +9173,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimNotifyState_TimedNiagaraEffectWithParams;
 
-// Class GbxGame.GbxStandInStatics
-// 0x0000 (0x0028 - 0x0028)
-class UGbxStandInStatics final : public UBlueprintFunctionLibrary
+// Class GbxGame.GbxStandInLoadingContext
+// 0x0020 (0x0048 - 0x0028)
+class UGbxStandInLoadingContext final : public UObject
 {
 public:
-	static void ClearStandIn(class UObject* owner, const struct FGameplayTag& StandInId);
-	static void PlayStandInTrick(class UObject* owner, const struct FGameplayTag& StandInId, const struct FGameplayTag& TrickId);
-	static void RequestStandIn(class UObject* owner, const struct FGameplayTag& StandInId, FGbxDefPtrProperty_ StandInSettings, const struct FTransform& SpawnTransform, FGbxDefPtrProperty_ LinkedActorDef, TDelegate<void(class AGbxStandIn* StandIn)> OnStandInInitialized);
-	static void ResetStandInBodySwitchesToDefaultState(class UObject* owner, const struct FGameplayTag& StandInId);
+	uint8                                         Pad_28[0x20];                                      // 0x0028(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStandInStatics")
+		STATIC_CLASS_IMPL("GbxStandInLoadingContext")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStandInStatics")
+		STATIC_NAME_IMPL(L"GbxStandInLoadingContext")
 	}
-	static class UGbxStandInStatics* GetDefaultObj()
+	static class UGbxStandInLoadingContext* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStandInStatics>();
+		return GetDefaultObjImpl<UGbxStandInLoadingContext>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStandInStatics;
+DUMPER7_ASSERTS_UGbxStandInLoadingContext;
 
 // Class GbxGame.GbxAnimNotifyState_TimedParticleEffect
 // 0x0048 (0x0078 - 0x0030)
@@ -8915,6 +9224,31 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimNotifyState_TimedParticleEffect;
 
+// Class GbxGame.AnimNotify_Trick
+// 0x0018 (0x0050 - 0x0038)
+class UAnimNotify_Trick final : public UAnimNotify
+{
+public:
+	class FName                                   TrickEventName;                                    // 0x0038(0x0008)(BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           TrickEventTag;                                     // 0x0040(0x0008)(Edit, BlueprintReadOnly, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_48[0x8];                                       // 0x0048(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("AnimNotify_Trick")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"AnimNotify_Trick")
+	}
+	static class UAnimNotify_Trick* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UAnimNotify_Trick>();
+	}
+};
+DUMPER7_ASSERTS_UAnimNotify_Trick;
+
 // Class GbxGame.GbxAnimNotify_ClothCollision
 // 0x0008 (0x0040 - 0x0038)
 class UGbxAnimNotify_ClothCollision final : public UAnimNotify
@@ -8939,41 +9273,33 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimNotify_ClothCollision;
 
-// Class GbxGame.PerchData
-// 0x0090 (0x00C0 - 0x0030)
-class UPerchData final : public UDataAsset
+// Class GbxGame.Perch
+// 0x00F0 (0x0480 - 0x0390)
+class APerch : public AActor
 {
 public:
-	struct FGameplayTag                           PerchTag;                                          // 0x0030(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTagContainer                  PerchSearchTags;                                   // 0x0038(0x0020)(Edit, NativeAccessSpecifierPublic)
-	struct FGameplayTagContainer                  PerchFilterTags;                                   // 0x0058(0x0020)(Edit, NativeAccessSpecifierPublic)
-	struct FNumericRange                          cooldown;                                          // 0x0078(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	struct FNumericRange                          IdleTime;                                          // 0x0080(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	bool                                          bApproachFromAnyDirection;                         // 0x0088(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIgnoreApproachOffsetZ;                            // 0x0089(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bWaitForUserToStopMoving;                          // 0x008A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EPerchAlignment                               Alignment;                                         // 0x008B(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         AlignmentTime;                                     // 0x008C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bEnableArmIK;                                      // 0x0090(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCombatInterruptsPerch;                            // 0x0091(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_92[0x26];                                      // 0x0092(0x0026)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGameplayTag                           PerchSearchTag;                                    // 0x00B8(0x0008)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_390[0x10];                                     // 0x0390(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FFactsConduit                          FactsConduit;                                      // 0x03A0(0x00D8)(Edit, DisableEditOnTemplate, Protected, NativeAccessSpecifierProtected)
+	class UPerchComponent*                        PerchComponent;                                    // 0x0478(0x0008)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, ZeroConstructor, EditConst, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+
+public:
+	class UPerchComponent* K2_GetPerchComponent() const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PerchData")
+		STATIC_CLASS_IMPL("Perch")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PerchData")
+		STATIC_NAME_IMPL(L"Perch")
 	}
-	static class UPerchData* GetDefaultObj()
+	static class APerch* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UPerchData>();
+		return GetDefaultObjImpl<APerch>();
 	}
 };
-DUMPER7_ASSERTS_UPerchData;
+DUMPER7_ASSERTS_APerch;
 
 // Class GbxGame.GbxAnimNotify_HideActor
 // 0x0008 (0x0040 - 0x0038)
@@ -9025,25 +9351,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimNotify_PlayNiagaraEffectWithParams;
 
-// Class GbxGame.NexusConfigStoreMissionTask
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreMissionTask final : public UNexusConfigStoreBasicDefFlat
+// Class GbxGame.NexusConfigStoreMissionSets
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreMissionSets final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreMissionTask")
+		STATIC_CLASS_IMPL("NexusConfigStoreMissionSets")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreMissionTask")
+		STATIC_NAME_IMPL(L"NexusConfigStoreMissionSets")
 	}
-	static class UNexusConfigStoreMissionTask* GetDefaultObj()
+	static class UNexusConfigStoreMissionSets* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreMissionTask>();
+		return GetDefaultObjImpl<UNexusConfigStoreMissionSets>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreMissionTask;
+DUMPER7_ASSERTS_UNexusConfigStoreMissionSets;
 
 // Class GbxGame.GbxAnimNotify_PlayParticleEffect
 // 0x0088 (0x00C0 - 0x0038)
@@ -9076,30 +9402,32 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimNotify_PlayParticleEffect;
 
-// Class GbxGame.GbxMovingPlatformInfluenceVolume
-// 0x0028 (0x03F0 - 0x03C8)
-class AGbxMovingPlatformInfluenceVolume final : public AVolume
+// Class GbxGame.GbxMovingPlatformControllerActor_FullReplicating
+// 0x0080 (0x0560 - 0x04E0)
+class AGbxMovingPlatformControllerActor_FullReplicating final : public AGbxMovingPlatformControllerActor
 {
 public:
-	uint8                                         Pad_3C8[0x20];                                     // 0x03C8(0x0020)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bDelayCollisionToAccountForSpawnedOverlaps;        // 0x03E8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_3E9[0x7];                                      // 0x03E9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxMovingPlatformReplicatedMoveState_FullReplicating ReplicatedMoveState;                // 0x04E0(0x0070)(Net, Transient, RepNotify, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_550[0x10];                                     // 0x0550(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnRep_MoveState();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformInfluenceVolume")
+		STATIC_CLASS_IMPL("GbxMovingPlatformControllerActor_FullReplicating")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformInfluenceVolume")
+		STATIC_NAME_IMPL(L"GbxMovingPlatformControllerActor_FullReplicating")
 	}
-	static class AGbxMovingPlatformInfluenceVolume* GetDefaultObj()
+	static class AGbxMovingPlatformControllerActor_FullReplicating* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxMovingPlatformInfluenceVolume>();
+		return GetDefaultObjImpl<AGbxMovingPlatformControllerActor_FullReplicating>();
 	}
 };
-DUMPER7_ASSERTS_AGbxMovingPlatformInfluenceVolume;
+DUMPER7_ASSERTS_AGbxMovingPlatformControllerActor_FullReplicating;
 
 // Class GbxGame.GbxAnimNotify_TeleportClothingSimulation
 // 0x0000 (0x0038 - 0x0038)
@@ -9121,30 +9449,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimNotify_TeleportClothingSimulation;
 
-// Class GbxGame.GbxSequenceBlueprintLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxSequenceBlueprintLibrary final : public UBlueprintFunctionLibrary
+// Class GbxGame.GbxSequenceAnimSetPickerTrack
+// 0x0010 (0x0108 - 0x00F8)
+class UGbxSequenceAnimSetPickerTrack final : public UMovieSceneNameableTrack
 {
 public:
-	static bool IsPlayingGbxSequence(class AActor* Actor, class UGbxSequence* GbxSequence);
-	static void PlayGbxSequence(class AActor* Actor, class UGbxSequence* GbxSequence, const struct FGbxSequencePlaybackSettings& PlaybackSettings);
-	static void StopGbxSequence(class AActor* Actor);
+	TArray<class UMovieSceneSection*>             PickerSections;                                    // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceBlueprintLibrary")
+		STATIC_CLASS_IMPL("GbxSequenceAnimSetPickerTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceBlueprintLibrary")
+		STATIC_NAME_IMPL(L"GbxSequenceAnimSetPickerTrack")
 	}
-	static class UGbxSequenceBlueprintLibrary* GetDefaultObj()
+	static class UGbxSequenceAnimSetPickerTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceBlueprintLibrary>();
+		return GetDefaultObjImpl<UGbxSequenceAnimSetPickerTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceBlueprintLibrary;
+DUMPER7_ASSERTS_UGbxSequenceAnimSetPickerTrack;
 
 // Class GbxGame.GbxAnimNotify_TeleportDynamics
 // 0x0000 (0x0038 - 0x0038)
@@ -9195,9 +9521,9 @@ public:
 };
 DUMPER7_ASSERTS_IGbxAnimOptimizationInterface;
 
-// Class GbxGame.GbxSequenceDialogTrack
+// Class GbxGame.GbxSequenceClosedCaptionTrack
 // 0x0018 (0x0110 - 0x00F8)
-class UGbxSequenceDialogTrack final : public UMovieSceneNameableTrack
+class UGbxSequenceClosedCaptionTrack final : public UMovieSceneNameableTrack
 {
 public:
 	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
@@ -9206,51 +9532,51 @@ public:
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceDialogTrack")
+		STATIC_CLASS_IMPL("GbxSequenceClosedCaptionTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceDialogTrack")
+		STATIC_NAME_IMPL(L"GbxSequenceClosedCaptionTrack")
 	}
-	static class UGbxSequenceDialogTrack* GetDefaultObj()
+	static class UGbxSequenceClosedCaptionTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceDialogTrack>();
+		return GetDefaultObjImpl<UGbxSequenceClosedCaptionTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceDialogTrack;
+DUMPER7_ASSERTS_UGbxSequenceClosedCaptionTrack;
 
-// Class GbxGame.GbxSplineActor
-// 0x0008 (0x0398 - 0x0390)
-class AGbxSplineActor : public AActor
+// Class GbxGame.GbxSlopeWarpingInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxSlopeWarpingInterface final
 {
-public:
-	class USplineComponent*                       SplineComponent;                                   // 0x0390(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-
-public:
-	struct FVector GetClosestLocationOnSpline(const struct FVector& Location) const;
-	struct FRotator GetClosestRotationOnSpline(const struct FVector& Location) const;
-	float GetTotalLength() const;
-	struct FTransform GetTransformAtDistanceAlongSpline(float Distance, bool bWorldCoordinate, bool bUseScale) const;
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSplineActor")
+		STATIC_CLASS_IMPL("GbxSlopeWarpingInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSplineActor")
+		STATIC_NAME_IMPL(L"GbxSlopeWarpingInterface")
 	}
-	static class AGbxSplineActor* GetDefaultObj()
+	static class IGbxSlopeWarpingInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxSplineActor>();
+		return GetDefaultObjImpl<IGbxSlopeWarpingInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_AGbxSplineActor;
+DUMPER7_ASSERTS_IGbxSlopeWarpingInterface;
 
 // Class GbxGame.GbxAnimSetPicker
 // 0x0010 (0x0040 - 0x0030)
-class UGbxAnimSetPicker final : public UGbxAnimSetPickerBase
+class UGbxAnimSetPicker : public UGbxAnimSetPickerBase
 {
 public:
 	TArray<struct FGbxAnimSetOption>              options;                                           // 0x0030(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
@@ -9270,6 +9596,35 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxAnimSetPicker;
+
+// Class GbxGame.GbxMovingPlatformActorInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxMovingPlatformActorInterface final
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxMovingPlatformActorInterface")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxMovingPlatformActorInterface")
+	}
+	static class IGbxMovingPlatformActorInterface* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IGbxMovingPlatformActorInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IGbxMovingPlatformActorInterface;
 
 // Class GbxGame.GbxAnimSettings
 // 0x0008 (0x0040 - 0x0038)
@@ -9295,25 +9650,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAnimSettings;
 
-// Class GbxGame.GbxSequenceAnimSetSystem
-// 0x0000 (0x0040 - 0x0040)
-class UGbxSequenceAnimSetSystem final : public UMovieSceneEntitySystem
+// Class GbxGame.GbxSequenceAnimSetPickerSection
+// 0x0008 (0x0118 - 0x0110)
+class UGbxSequenceAnimSetPickerSection final : public UMovieSceneHookSection
 {
+public:
+	class UGbxAnimSetPicker*                      AnimSetPicker;                                     // 0x0110(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceAnimSetSystem")
+		STATIC_CLASS_IMPL("GbxSequenceAnimSetPickerSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceAnimSetSystem")
+		STATIC_NAME_IMPL(L"GbxSequenceAnimSetPickerSection")
 	}
-	static class UGbxSequenceAnimSetSystem* GetDefaultObj()
+	static class UGbxSequenceAnimSetPickerSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceAnimSetSystem>();
+		return GetDefaultObjImpl<UGbxSequenceAnimSetPickerSection>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceAnimSetSystem;
+DUMPER7_ASSERTS_UGbxSequenceAnimSetPickerSection;
 
 // Class GbxGame.NexusConfigStore_AnimUpdateRateParametersDef
 // 0x0000 (0x0390 - 0x0390)
@@ -9368,48 +9726,48 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAOEComponent;
 
-// Class GbxGame.NexusConfigStoreGbxSceneViewerDef
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxSceneViewerDef final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreGbxRumbleDef
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreGbxRumbleDef final : public UNexusConfigStoreBasicDefFlat
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxSceneViewerDef")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxRumbleDef")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSceneViewerDef")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxRumbleDef")
 	}
-	static class UNexusConfigStoreGbxSceneViewerDef* GetDefaultObj()
+	static class UNexusConfigStoreGbxRumbleDef* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxSceneViewerDef>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxRumbleDef>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxSceneViewerDef;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxRumbleDef;
 
-// Class GbxGame.GbxSkillLibraryStatics
+// Class GbxGame.GbxSkillComponentFunctions_AOE_Gps
 // 0x0000 (0x0028 - 0x0028)
-class UGbxSkillLibraryStatics final : public UBlueprintFunctionLibrary
+class UGbxSkillComponentFunctions_AOE_Gps final : public UObject
 {
 public:
-	static struct FGbxParam GetLibraryEntryValue(class UObject* Context, FGbxDefPtrProperty_ SkillDef, FGbxDefPtrProperty_ ComponentIdentifier, class FName EntryName);
+	void SetQueryOwner(const struct FGbxSkillComponentReference& ComponentReference, class AActor* QueryOwner);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkillLibraryStatics")
+		STATIC_CLASS_IMPL("GbxSkillComponentFunctions_AOE_Gps")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkillLibraryStatics")
+		STATIC_NAME_IMPL(L"GbxSkillComponentFunctions_AOE_Gps")
 	}
-	static class UGbxSkillLibraryStatics* GetDefaultObj()
+	static class UGbxSkillComponentFunctions_AOE_Gps* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkillLibraryStatics>();
+		return GetDefaultObjImpl<UGbxSkillComponentFunctions_AOE_Gps>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkillLibraryStatics;
+DUMPER7_ASSERTS_UGbxSkillComponentFunctions_AOE_Gps;
 
 // Class GbxGame.GbxAreaComponent
 // 0x0070 (0x0690 - 0x0620)
@@ -9510,57 +9868,76 @@ public:
 };
 DUMPER7_ASSERTS_AGbxAudioVolume;
 
-// Class GbxGame.GbxGameSingletons
-// 0x0058 (0x0080 - 0x0028)
-class UGbxGameSingletons : public UObject
+// Class GbxGame.GbxGameplayDirector
+// 0x0018 (0x03A8 - 0x0390)
+class AGbxGameplayDirector final : public AInfo
 {
 public:
-	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxProfileProgressVault*               ProfileVault;                                      // 0x0030(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UGbxShard*                              Shard;                                             // 0x0038(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	TArray<class UGbxShard*>                      Shards;                                            // 0x0040(0x0010)(ZeroConstructor, Transient, Protected, UObjectWrapper, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_50[0x30];                                      // 0x0050(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_390[0x18];                                     // 0x0390(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnActiveMissionsChanged(const struct FSToken& mission, bool IsActive);
+	void ReceiveMissionStatusChanged(EMissionStatus status, const struct FMissionInstanceHandle& MissionHandle);
+	void ReceivePlayerGroupAdded(class AGbxPlayerGroupState* PlayerGroupState);
+	void ReceivePlayerGroupPlayerAdded(class AGbxPlayerGroupState* PlayerGroupState, class AGbxPlayerState* PlayerState);
+	void ReceivePlayerGroupPlayerRemoved(class AGbxPlayerGroupState* PlayerGroupState, class AGbxPlayerState* PlayerState);
+	void ReceivePlayerGroupRemoved(class AGbxPlayerGroupState* PlayerGroupState);
+	void ReceivePlayerLogout(class AController* Exiting);
+	void ReceivePlayerPostLogin(class APlayerController* NewPlayer);
+
+	struct FMissionInstanceHandle InstantiateGeneratedMissionForGroup(FGameDataHandleProperty_ MissionDef, const class AActor* Actor) const;
+	struct FMissionInstanceHandle InstantiateGeneratedMissionForPlayer(FGameDataHandleProperty_ MissionDef, const class AActor* Actor) const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameSingletons")
+		STATIC_CLASS_IMPL("GbxGameplayDirector")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameSingletons")
+		STATIC_NAME_IMPL(L"GbxGameplayDirector")
 	}
-	static class UGbxGameSingletons* GetDefaultObj()
+	static class AGbxGameplayDirector* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameSingletons>();
+		return GetDefaultObjImpl<AGbxGameplayDirector>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameSingletons;
+DUMPER7_ASSERTS_AGbxGameplayDirector;
 
-// Class GbxGame.HazardVolume
-// 0x00E8 (0x04C0 - 0x03D8)
-class AHazardVolume final : public APhysicsVolume
+// Class GbxGame.HazardInteractionInterface
+// 0x0000 (0x0000 - 0x0000)
+class IHazardInteractionInterface final
 {
 public:
-	uint8                                         Pad_3D8[0x8];                                      // 0x03D8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class UHazardInteractionComponent*            HazardInteractionComponent;                        // 0x03E0(0x0008)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, ZeroConstructor, EditConst, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	struct FFactsConduit                          FactsConduit;                                      // 0x03E8(0x00D8)(Edit, DisableEditOnTemplate, Protected, NativeAccessSpecifierProtected)
+	void OnBeginHazardDamageOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const struct FHitResult& SweepResult);
+	void OnBeginHazardInteractionOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const struct FHitResult& SweepResult);
+	void OnEndHazardDamageOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void OnEndHazardInteractionOverlap(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("HazardVolume")
+		STATIC_CLASS_IMPL("HazardInteractionInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"HazardVolume")
+		STATIC_NAME_IMPL(L"HazardInteractionInterface")
 	}
-	static class AHazardVolume* GetDefaultObj()
+	static class IHazardInteractionInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AHazardVolume>();
+		return GetDefaultObjImpl<IHazardInteractionInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_AHazardVolume;
+DUMPER7_ASSERTS_IHazardInteractionInterface;
 
 // Class GbxGame.GbxAudioVolumeAmbientSystem
 // 0x0080 (0x00B8 - 0x0038)
@@ -9585,79 +9962,56 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAudioVolumeAmbientSystem;
 
-// Class GbxGame.GbxGameModeModule
-// 0x0020 (0x0048 - 0x0028)
-class UGbxGameModeModule : public UGbxScript
+// Class GbxGame.GbxGameModeModuleConduit
+// 0x0008 (0x0030 - 0x0028)
+class UGbxGameModeModuleConduit : public UObject
 {
 public:
-	uint8                                         Pad_28[0x20];                                      // 0x0028(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnInitBP();
-
-	const class FName GetModuleName() const;
-	const struct FGbxGameModeModuleTags GetTags() const;
+	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameModeModule")
+		STATIC_CLASS_IMPL("GbxGameModeModuleConduit")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameModeModule")
+		STATIC_NAME_IMPL(L"GbxGameModeModuleConduit")
 	}
-	static class UGbxGameModeModule* GetDefaultObj()
+	static class UGbxGameModeModuleConduit* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameModeModule>();
+		return GetDefaultObjImpl<UGbxGameModeModuleConduit>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameModeModule;
+DUMPER7_ASSERTS_UGbxGameModeModuleConduit;
 
-// Class GbxGame.GbxGameModeModuleHost
-// 0x0088 (0x00D0 - 0x0048)
-class UGbxGameModeModuleHost : public UGbxGameModeModule
+// Class GbxGame.GbxGameModeModuleConduit_Timer
+// 0x00D8 (0x0108 - 0x0030)
+class UGbxGameModeModuleConduit_Timer final : public UGbxGameModeModuleConduit
 {
 public:
-	uint8                                         Pad_48[0x88];                                      // 0x0048(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_30[0x8];                                       // 0x0030(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxGameModeModuleConduitData_Timer> timers;                                       // 0x0038(0x0010)(Net, ZeroConstructor, RepNotify, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_48[0xC0];                                      // 0x0048(0x00C0)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void EnableBP(bool bEnable);
-	class UGbxGameModeModuleConduit* GetModuleConduit(TSubclassOf<class UGbxGameModeModuleConduit> ConduitType, EGbxGameModeModuleHostConduitExecs* Exec);
-	void OnDisabledBP();
-	void OnEnabledBP();
-	void OnGameModePhaseChangedBP(FGbxDefPtrProperty_ PhaseDef);
-	void OnLogoutBP(class AController* ExitingController);
-	void OnMatchAbortedBP();
-	void OnMatchEndedBP();
-	void OnMatchStartedBP();
-	void OnPostLoginBP(class APlayerController* NewPlayer);
-	void OnPostMatchBP();
-	void OnPreMatchBP();
-	void UnwatchAllEvents();
-	void UnwatchEvent(FGbxDefPtrProperty_ EventDef);
-	void WatchEvent(FGbxDefPtrProperty_ EventDef, TDelegate<void(const struct FGbxGameModeModuleEventParams& params)> Delegate);
-
-	class AGbxGameMode* GetGameMode() const;
-	struct FGbxParam GetModuleParameter(class FName ParamName) const;
-	bool IsEnabled() const;
-	void SetModuleParameter(class FName ParamName, const struct FGbxParam& Value) const;
+	void OnRep_Timers();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameModeModuleHost")
+		STATIC_CLASS_IMPL("GbxGameModeModuleConduit_Timer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameModeModuleHost")
+		STATIC_NAME_IMPL(L"GbxGameModeModuleConduit_Timer")
 	}
-	static class UGbxGameModeModuleHost* GetDefaultObj()
+	static class UGbxGameModeModuleConduit_Timer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameModeModuleHost>();
+		return GetDefaultObjImpl<UGbxGameModeModuleConduit_Timer>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameModeModuleHost;
+DUMPER7_ASSERTS_UGbxGameModeModuleConduit_Timer;
 
 // Class GbxGame.GbxAudioVolumeComponent
 // 0x0180 (0x07A0 - 0x0620)
@@ -9759,29 +10113,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAudioVolumeUserSettings;
 
-// Class GbxGame.GbxLevelSequenceSubsystem
-// 0x0020 (0x0050 - 0x0030)
-class UGbxLevelSequenceSubsystem final : public UWorldSubsystem
+// Class GbxGame.GbxLevelSequencePlayerAssociatedStandInObject
+// 0x0010 (0x0038 - 0x0028)
+class UGbxLevelSequencePlayerAssociatedStandInObject : public UObject
 {
 public:
-	uint8                                         Pad_30[0x18];                                      // 0x0030(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	class AGbxLevelSequenceManager*               CachedManager;                                     // 0x0048(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequenceSubsystem")
+		STATIC_CLASS_IMPL("GbxLevelSequencePlayerAssociatedStandInObject")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequenceSubsystem")
+		STATIC_NAME_IMPL(L"GbxLevelSequencePlayerAssociatedStandInObject")
 	}
-	static class UGbxLevelSequenceSubsystem* GetDefaultObj()
+	static class UGbxLevelSequencePlayerAssociatedStandInObject* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLevelSequenceSubsystem>();
+		return GetDefaultObjImpl<UGbxLevelSequencePlayerAssociatedStandInObject>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLevelSequenceSubsystem;
+DUMPER7_ASSERTS_UGbxLevelSequencePlayerAssociatedStandInObject;
 
 // Class GbxGame.GbxAudioVolumeShapeBase
 // 0x0068 (0x0090 - 0x0028)
@@ -9807,25 +10160,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAudioVolumeShapeBase;
 
-// Class GbxGame.NexusConfigStore_GbxRewardsDef
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_GbxRewardsDef final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreRecipes
+// 0x0070 (0x0400 - 0x0390)
+class UNexusConfigStoreRecipes final : public UNexusConfigStoreBasic
 {
+public:
+	uint8                                         Pad_390[0x70];                                     // 0x0390(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GbxRewardsDef")
+		STATIC_CLASS_IMPL("NexusConfigStoreRecipes")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GbxRewardsDef")
+		STATIC_NAME_IMPL(L"NexusConfigStoreRecipes")
 	}
-	static class UNexusConfigStore_GbxRewardsDef* GetDefaultObj()
+	static class UNexusConfigStoreRecipes* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStore_GbxRewardsDef>();
+		return GetDefaultObjImpl<UNexusConfigStoreRecipes>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStore_GbxRewardsDef;
+DUMPER7_ASSERTS_UNexusConfigStoreRecipes;
 
 // Class GbxGame.GbxAudioVolumeShapeCustom
 // 0x0060 (0x00F0 - 0x0090)
@@ -9855,28 +10211,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAudioVolumeShapeCustom;
 
-// Class GbxGame.NexusConfigStoreWaypoints
-// 0x0050 (0x03E0 - 0x0390)
-class UNexusConfigStoreWaypoints final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreUsabilityResponse
+// 0x0000 (0x02D0 - 0x02D0)
+class UNexusConfigStoreUsabilityResponse final : public UNexusConfigStoreFlat
 {
-public:
-	uint8                                         Pad_390[0x50];                                     // 0x0390(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreWaypoints")
+		STATIC_CLASS_IMPL("NexusConfigStoreUsabilityResponse")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreWaypoints")
+		STATIC_NAME_IMPL(L"NexusConfigStoreUsabilityResponse")
 	}
-	static class UNexusConfigStoreWaypoints* GetDefaultObj()
+	static class UNexusConfigStoreUsabilityResponse* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreWaypoints>();
+		return GetDefaultObjImpl<UNexusConfigStoreUsabilityResponse>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreWaypoints;
+DUMPER7_ASSERTS_UNexusConfigStoreUsabilityResponse;
 
 // Class GbxGame.GbxAudioVolumeShapeBox
 // 0x0040 (0x00D0 - 0x0090)
@@ -9927,25 +10280,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxAudioVolumeShapeSphere;
 
-// Class GbxGame.SpawnPointBodyData
-// 0x0000 (0x0060 - 0x0060)
-class USpawnPointBodyData : public UGbxBodyData
+// Class GbxGame.SpawnEncounterEvent_Mission
+// 0x0008 (0x0038 - 0x0030)
+class USpawnEncounterEvent_Mission final : public USpawnEncounterEvent
 {
+public:
+	class FName                                   EventName;                                         // 0x0030(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("SpawnPointBodyData")
+		STATIC_CLASS_IMPL("SpawnEncounterEvent_Mission")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"SpawnPointBodyData")
+		STATIC_NAME_IMPL(L"SpawnEncounterEvent_Mission")
 	}
-	static class USpawnPointBodyData* GetDefaultObj()
+	static class USpawnEncounterEvent_Mission* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<USpawnPointBodyData>();
+		return GetDefaultObjImpl<USpawnEncounterEvent_Mission>();
 	}
 };
-DUMPER7_ASSERTS_USpawnPointBodyData;
+DUMPER7_ASSERTS_USpawnEncounterEvent_Mission;
 
 // Class GbxGame.GbxAudioVolumeShapeHollowSphere
 // 0x0000 (0x00A0 - 0x00A0)
@@ -9995,34 +10351,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxBodyFunctionLibrary;
 
-// Class GbxGame.UsableConsumer
-// 0x0000 (0x0000 - 0x0000)
-class IUsableConsumer final
+// Class GbxGame.NexusConfigStoreUsabilityPrompt
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreUsabilityPrompt final : public UNexusConfigStoreBasicDefFlat
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("UsableConsumer")
+		STATIC_CLASS_IMPL("NexusConfigStoreUsabilityPrompt")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"UsableConsumer")
+		STATIC_NAME_IMPL(L"NexusConfigStoreUsabilityPrompt")
 	}
-	static class IUsableConsumer* GetDefaultObj()
+	static class UNexusConfigStoreUsabilityPrompt* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IUsableConsumer>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UNexusConfigStoreUsabilityPrompt>();
 	}
 };
-DUMPER7_ASSERTS_IUsableConsumer;
+DUMPER7_ASSERTS_UNexusConfigStoreUsabilityPrompt;
 
 // Class GbxGame.GbxFirstPersonStateOwner
 // 0x0000 (0x0000 - 0x0000)
@@ -10082,31 +10429,34 @@ public:
 };
 DUMPER7_ASSERTS_IGbxBodyOwner;
 
-// Class GbxGame.GbxFeedbackBlueprintLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxFeedbackBlueprintLibrary final : public UBlueprintFunctionLibrary
+// Class GbxGame.ScreenParticleObserver
+// 0x0000 (0x0000 - 0x0000)
+class IScreenParticleObserver final
 {
-public:
-	static void PlayGbxFeedback2D(class UObject* WorldContext, const FGameDataHandleProperty_ data, TScriptInterface<class IGbxFeedbackObserver> Observer, bool bIgnoreObserver, int32 PlayFlags, bool bLoop, float scale, class UObject* SourceContext);
-	static void PlayGbxFeedback3D(class UObject* WorldContext, const FGameDataHandleProperty_ data, TScriptInterface<class IGbxFeedbackObserver> Observer, bool bIgnoreObserver, int32 PlayFlags, bool bLoop, float scale, class UObject* SourceContext, const struct FVector& SourceLocation, float EffectFalloffMinDistance, float EffectFalloffMaxDistance);
-	static void ResetGbxFeedbackPlayTime(class UObject* WorldContext, const FGameDataHandleProperty_ data, TScriptInterface<class IGbxFeedbackObserver> Observer, bool bIgnoreObserver);
-	static void StopGbxFeedback(class UObject* WorldContext, const FGameDataHandleProperty_ data, TScriptInterface<class IGbxFeedbackObserver> Observer, bool bIgnoreObserver);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxFeedbackBlueprintLibrary")
+		STATIC_CLASS_IMPL("ScreenParticleObserver")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxFeedbackBlueprintLibrary")
+		STATIC_NAME_IMPL(L"ScreenParticleObserver")
 	}
-	static class UGbxFeedbackBlueprintLibrary* GetDefaultObj()
+	static class IScreenParticleObserver* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxFeedbackBlueprintLibrary>();
+		return GetDefaultObjImpl<IScreenParticleObserver>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGbxFeedbackBlueprintLibrary;
+DUMPER7_ASSERTS_IScreenParticleObserver;
 
 // Class GbxGame.GbxStatusEffectSignatureParam
 // 0x0020 (0x0048 - 0x0028)
@@ -10136,48 +10486,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam;
 
-// Class GbxGame.GbxStatusEffectSignatureParam_Float
+// Class GbxGame.GbxStatusEffectSignatureParam_Actor
 // 0x0000 (0x0048 - 0x0048)
-class UGbxStatusEffectSignatureParam_Float : public UGbxStatusEffectSignatureParam
+class UGbxStatusEffectSignatureParam_Actor : public UGbxStatusEffectSignatureParam
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectSignatureParam_Float")
+		STATIC_CLASS_IMPL("GbxStatusEffectSignatureParam_Actor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectSignatureParam_Float")
+		STATIC_NAME_IMPL(L"GbxStatusEffectSignatureParam_Actor")
 	}
-	static class UGbxStatusEffectSignatureParam_Float* GetDefaultObj()
+	static class UGbxStatusEffectSignatureParam_Actor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectSignatureParam_Float>();
+		return GetDefaultObjImpl<UGbxStatusEffectSignatureParam_Actor>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam_Float;
-
-// Class GbxGame.GbxStatusEffectSignatureParam_Duration
-// 0x0000 (0x0048 - 0x0048)
-class UGbxStatusEffectSignatureParam_Duration final : public UGbxStatusEffectSignatureParam_Float
-{
-public:
-	static float GetDuration(const struct FGbxStatusEffectSpec_Params& params, EGetStatusEffectParamResultPins* Outcome);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxStatusEffectSignatureParam_Duration")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectSignatureParam_Duration")
-	}
-	static class UGbxStatusEffectSignatureParam_Duration* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxStatusEffectSignatureParam_Duration>();
-	}
-};
-DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam_Duration;
+DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam_Actor;
 
 // Class GbxGame.GbxBodySettingsProvider
 // 0x0000 (0x0000 - 0x0000)
@@ -10208,56 +10535,74 @@ public:
 };
 DUMPER7_ASSERTS_IGbxBodySettingsProvider;
 
-// Class GbxGame.GbxReplicatedNiagaraActor
-// 0x0020 (0x03B0 - 0x0390)
-class AGbxReplicatedNiagaraActor final : public AActor
+// Class GbxGame.GbxRadioSystem
+// 0x0050 (0x0088 - 0x0038)
+class UGbxRadioSystem final : public UGbxWorldAudioSystemBase
 {
 public:
-	class UNiagaraComponent*                      NiagaraComponent;                                  // 0x0390(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	class UNiagaraSystem*                         NiagaraAsset;                                      // 0x0398(0x0008)(Net, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<struct FGbxParticleParameter>          Parameters;                                        // 0x03A0(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
-
-public:
-	void OnSystemFinished(class UNiagaraComponent* Component);
+	uint8                                         Pad_38[0x50];                                      // 0x0038(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxReplicatedNiagaraActor")
+		STATIC_CLASS_IMPL("GbxRadioSystem")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxReplicatedNiagaraActor")
+		STATIC_NAME_IMPL(L"GbxRadioSystem")
 	}
-	static class AGbxReplicatedNiagaraActor* GetDefaultObj()
+	static class UGbxRadioSystem* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxReplicatedNiagaraActor>();
+		return GetDefaultObjImpl<UGbxRadioSystem>();
 	}
 };
-DUMPER7_ASSERTS_AGbxReplicatedNiagaraActor;
+DUMPER7_ASSERTS_UGbxRadioSystem;
 
-// Class GbxGame.GbxStatusEffectScriptClass
-// 0x0010 (0x03C0 - 0x03B0)
-class UGbxStatusEffectScriptClass final : public UBlueprintGeneratedClass
+// Class GbxGame.GbxStatusEffectScript
+// 0x0000 (0x0028 - 0x0028)
+class UGbxStatusEffectScript : public UGbxScript
 {
 public:
-	TArray<struct FGbxStatusEffectScriptPushEventData> PushEvents;                                   // 0x03B0(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxStatusEffectScript")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxStatusEffectScript")
+	}
+	static class UGbxStatusEffectScript* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxStatusEffectScript>();
+	}
+};
+DUMPER7_ASSERTS_UGbxStatusEffectScript;
+
+// Class GbxGame.GbxStatusEffectScript_Const
+// 0x0000 (0x0028 - 0x0028)
+class UGbxStatusEffectScript_Const : public UGbxStatusEffectScript
+{
+public:
+	void OnBegin(const struct FGbxStatusEffectScript_ExecContext& execContext) const;
+	void OnEnd(const struct FGbxStatusEffectScript_ExecContext& execContext) const;
+	void OnPushEvent(const FGbxDefPtrProperty_& EventDef, const struct FGbxStatusEffectScript_ExecContext& execContext, const class UObject* PushOwner, const struct FGameplayTagContainer& tags, const struct FGbxStatusEffectSpec_Params& params) const;
+	void RequestShutdown(const struct FGbxStatusEffectScript_ExecContext& execContext) const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectScriptClass")
+		STATIC_CLASS_IMPL("GbxStatusEffectScript_Const")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectScriptClass")
+		STATIC_NAME_IMPL(L"GbxStatusEffectScript_Const")
 	}
-	static class UGbxStatusEffectScriptClass* GetDefaultObj()
+	static class UGbxStatusEffectScript_Const* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectScriptClass>();
+		return GetDefaultObjImpl<UGbxStatusEffectScript_Const>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectScriptClass;
+DUMPER7_ASSERTS_UGbxStatusEffectScript_Const;
 
 // Class GbxGame.GbxBodyStandinActor
 // 0x00A0 (0x0430 - 0x0390)
@@ -10335,25 +10680,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCameraShakeProjectSettings;
 
-// Class GbxGame.NexusConfigStoreItemPoolPreferredParts
+// Class GbxGame.NexusConfigStoreInventoryRarity
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreItemPoolPreferredParts final : public UNexusConfigStoreBasic
+class UNexusConfigStoreInventoryRarity final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreItemPoolPreferredParts")
+		STATIC_CLASS_IMPL("NexusConfigStoreInventoryRarity")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreItemPoolPreferredParts")
+		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryRarity")
 	}
-	static class UNexusConfigStoreItemPoolPreferredParts* GetDefaultObj()
+	static class UNexusConfigStoreInventoryRarity* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreItemPoolPreferredParts>();
+		return GetDefaultObjImpl<UNexusConfigStoreInventoryRarity>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreItemPoolPreferredParts;
+DUMPER7_ASSERTS_UNexusConfigStoreInventoryRarity;
 
 // Class GbxGame.NexusConfigStoreGbxCameraShake
 // 0x0000 (0x0390 - 0x0390)
@@ -10375,92 +10720,61 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxCameraShake;
 
-// Class GbxGame.NexusConfigStore_GbxRadioScript
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_GbxRadioScript final : public UNexusConfigStoreBasic
+// Class GbxGame.GbxProximityProcessingActor
+// 0x00E0 (0x0470 - 0x0390)
+class alignas(0x10) AGbxProximityProcessingActor final : public AActor
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GbxRadioScript")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GbxRadioScript")
-	}
-	static class UNexusConfigStore_GbxRadioScript* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStore_GbxRadioScript>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStore_GbxRadioScript;
+	class USphereComponent*                       ProximityZone;                                     // 0x0390(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_398[0xD8];                                     // 0x0398(0x00D8)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
-// Class GbxGame.GbxTrick_AnimBase
-// 0x0040 (0x00D0 - 0x0090)
-class UGbxTrick_AnimBase : public UGbxTrick
-{
 public:
-	bool                                          bRandomlyMirrorAnims;                              // 0x0090(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bSkipOwner;                                        // 0x0091(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_92[0x2];                                       // 0x0092(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	EGbxTrickBlendSpaceSource                     BlendSpaceSource;                                  // 0x0094(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	class FName                                   TrickParameterName;                                // 0x0098(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	FGameDataHandleProperty_                      BlendSpaceInput;                                   // 0x00A0(0x0018)(Edit, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	struct FGbxBlackboardEntryRef                 BlendSpaceBlackboardInput;                         // 0x00B8(0x000C)(Edit, NoDestructor, Protected, NativeAccessSpecifierProtected)
-	EGbxTrickBlendSpaceType                       BlendSpaceType;                                    // 0x00C4(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bContinuouslyUpdateBlendSpaceInput;                // 0x00C8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_C9[0x7];                                       // 0x00C9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	void OnEnteringProximityZone(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const struct FHitResult& SweepResult);
+	void OnExitingProximityZone(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrick_AnimBase")
+		STATIC_CLASS_IMPL("GbxProximityProcessingActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrick_AnimBase")
+		STATIC_NAME_IMPL(L"GbxProximityProcessingActor")
 	}
-	static class UGbxTrick_AnimBase* GetDefaultObj()
+	static class AGbxProximityProcessingActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrick_AnimBase>();
+		return GetDefaultObjImpl<AGbxProximityProcessingActor>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrick_AnimBase;
+DUMPER7_ASSERTS_AGbxProximityProcessingActor;
 
-// Class GbxGame.GbxTrick_Loop
-// 0x0368 (0x0438 - 0x00D0)
-class UGbxTrick_Loop : public UGbxTrick_AnimBase
+// Class GbxGame.GbxTrick_Leap
+// 0x03F8 (0x04C8 - 0x00D0)
+class UGbxTrick_Leap : public UGbxTrick_AnimBase
 {
 public:
-	struct FGbxTrickAnimData                      Start;                                             // 0x00D0(0x0150)(Edit, Protected, NativeAccessSpecifierProtected)
-	TArray<struct FTrickLoopAnim>                 Loops;                                             // 0x0220(0x0010)(Edit, ZeroConstructor, Protected, NativeAccessSpecifierProtected)
-	struct FGbxTrickAnimData                      Stop;                                              // 0x0230(0x0150)(Edit, Protected, NativeAccessSpecifierProtected)
-	float                                         InterruptStartPercent;                             // 0x0380(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bCanInterruptLoop;                                 // 0x0384(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	ETrickLoopType                                LoopType;                                          // 0x0385(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_386[0x2];                                      // 0x0386(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              LoopTime;                                          // 0x0388(0x0038)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxParam                              LoopCount;                                         // 0x03C0(0x0038)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxParam                              LoopCondition;                                     // 0x03F8(0x0038)(Edit, Protected, NativeAccessSpecifierProtected)
-	ETrickLoopCondition                           LoopConditionType;                                 // 0x0430(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bIncludeLoopInDurationTime;                        // 0x0431(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_432[0x6];                                      // 0x0432(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxTrickAnimData                      Enter;                                             // 0x00D0(0x0150)(Edit, NativeAccessSpecifierPrivate)
+	struct FGbxTrickAnimData                      Idle;                                              // 0x0220(0x0150)(Edit, NativeAccessSpecifierPrivate)
+	struct FGbxTrickAnimData                      Exit;                                              // 0x0370(0x0150)(Edit, NativeAccessSpecifierPrivate)
+	float                                         ExitInAirTime;                                     // 0x04C0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bSetLocalGoalDirAsBlendSpaceInput;                 // 0x04C4(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_4C5[0x3];                                      // 0x04C5(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrick_Loop")
+		STATIC_CLASS_IMPL("GbxTrick_Leap")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrick_Loop")
+		STATIC_NAME_IMPL(L"GbxTrick_Leap")
 	}
-	static class UGbxTrick_Loop* GetDefaultObj()
+	static class UGbxTrick_Leap* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrick_Loop>();
+		return GetDefaultObjImpl<UGbxTrick_Leap>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrick_Loop;
+DUMPER7_ASSERTS_UGbxTrick_Leap;
 
 // Class GbxGame.GbxCharacter
 // 0x2960 (0x3950 - 0x0FF0)
@@ -10522,7 +10836,7 @@ public:
 	void OnRep_GbxDialogSpeaker();
 	void OnRep_GestaltMeshParts();
 	void OnRep_NetAttachableBodies();
-	void OnRep_ReplicateForwardDynamicsUpdate();
+	void OnRep_ReplicateForwardDynamicsUpdate(const struct FForwardDynamicsRepData& PrevForwardDynamicsState);
 	void OnRep_RotationState();
 	void OnRep_VisibilityPhaseState();
 	void SetTerritory(class UGbxTerritoryComponent* NewTerritory);
@@ -10552,36 +10866,84 @@ public:
 };
 DUMPER7_ASSERTS_AGbxCharacter;
 
-// Class GbxGame.GbxSkill
-// 0x0228 (0x0250 - 0x0028)
-class UGbxSkill final : public UObject
+// Class GbxGame.GbxSkeletalMeshComponent
+// 0x0780 (0x19C0 - 0x1240)
+class UGbxSkeletalMeshComponent final : public UGbxManagedSkeletalMeshComponent
 {
 public:
-	uint8                                         Pad_28[0x18];                                      // 0x0028(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	class AActor*                                 SkillOwner;                                        // 0x0040(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_48[0x40];                                      // 0x0048(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
-	TScriptInterface<class IGbxSkillOwner>        OwnerInterface;                                    // 0x0088(0x0010)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<class UGbxSkillScript*>                SkillScripts;                                      // 0x0098(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_A8[0x1A8];                                     // 0x00A8(0x01A8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_1240[0x40];                                    // 0x1240(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxAnimSetState                       AnimSetState;                                      // 0x1280(0x01A8)(Edit, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1428[0x50];                                    // 0x1428(0x0050)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FForwardDynamics                       ForwardDynamics;                                   // 0x1478(0x0060)(Edit, NativeAccessSpecifierPrivate)
+	class UDGeneratedSimulationData*              GeneratedSimulations;                              // 0x14D8(0x0008)(Edit, ZeroConstructor, Transient, EditConst, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_14E0[0xA0];                                    // 0x14E0(0x00A0)(Fixing Size After Last Property [ Dumper-7 ])
+	FGbxDefPtrProperty_                           DefaultImpactEffect;                               // 0x1580(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMap<struct FDBodyReference, FGbxDefPtrProperty_> ImpactEffectBodyOverrides;                     // 0x1598(0x0050)(Edit, NativeAccessSpecifierPublic)
+	TArray<float>                                 ImpactTimes;                                       // 0x15E8(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPublic)
+	TArray<struct FCharacterGestaltRenderStateData> CharacterGestaltRenderStateData;                 // 0x15F8(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1608[0x18];                                    // 0x1608(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGestaltPartListData*                   GestaltPartList;                                   // 0x1620(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class USkeletalMesh*                          BackupGestaltSkeletalMesh;                         // 0x1628(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class USkeleton*                              TargetPrimarySkeleton;                             // 0x1630(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class USkeletalMesh*>                  ResolvedPartListMeshParts;                         // 0x1638(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class USkeletalMesh*>                  GestaltMeshParts;                                  // 0x1648(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class USkeletalMesh*>                  ThirdPersonOnlyMeshParts;                          // 0x1658(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	int32                                         GestaltSeed;                                       // 0x1668(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	int32                                         CachedMaxGestaltLOD;                               // 0x166C(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	class UPhysicsAsset*                          GestaltPhysicsAsset;                               // 0x1670(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class USkeletalMesh*>                  ExternalGestaltMeshes;                             // 0x1678(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TMap<class USkeletalMesh*, struct FMaterialArray> ExternalGestaltMaterialOverrides;              // 0x1688(0x0050)(Transient, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxExternalPhysicsAssetData>   ExternalPhysicsAssets;                             // 0x16D8(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPrivate)
+	TMap<int32, struct FCharacterGestaltLODInfo>  CharacterGestaltLODInfo;                           // 0x16E8(0x0050)(Transient, NativeAccessSpecifierPrivate)
+	TMap<class USkeletalMesh*, int32>             MeshToMaterialOffsetMap;                           // 0x1738(0x0050)(Transient, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_1788[0x70];                                    // 0x1788(0x0070)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UMaterialInterface*>             GestaltCustomMaskMaterials;                        // 0x17F8(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class UMaterialInterface*>             GestaltCustomGlowMaterials;                        // 0x1808(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_1818[0x68];                                    // 0x1818(0x0068)(Fixing Size After Last Property [ Dumper-7 ])
+	class UMaterialInterface*                     MaskMaterial;                                      // 0x1880(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	struct FGameplayTag                           PartsViewTarget;                                   // 0x1888(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<class USkeletalMesh*>                  GbxActorParts_Meshes;                              // 0x1890(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class UMaterialInterface*>             GbxActorParts_Materials;                           // 0x18A0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TMap<struct FGameplayTag, struct FGbxAnimSetValue> GbxActorParts_Anims;                          // 0x18B0(0x0050)(Transient, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_1900[0x58];                                    // 0x1900(0x0058)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   AvatarViewTarget;                                  // 0x1958(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_1960[0x60];                                    // 0x1960(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	class AActor* GetActor() const;
+	void AddExternalGestaltMeshes_BP(const TArray<class USkeletalMesh*>& InGestaltMeshes);
+	void ForceDisableSimulatePhysics();
+	struct FVector GetForwardDynamicAngularVelocity(class FName BodyName, class FName Tag);
+	struct FVector GetForwardDynamicLinearVelocity(class FName BodyName, class FName Tag);
+	struct FTransform GetForwardDynamicTransform(class FName BodyName, class FName Tag);
+	void RemoveBodyAndChildren(const class FName& BoneName);
+	void RemoveBodyTarget(class FName BodyName, class FName Tag);
+	void RemoveExternalGestaltMeshes_BP(const TArray<class USkeletalMesh*>& InGestaltMeshes);
+	void ResetPrimarySimulationTag();
+	void SetBodyTarget(class FName BodyName, const struct FVector& Pose, double Radius, double Stiffness, double TargetSpeed, class FName Tag);
+	void SetBodyTargetDirection(class FName BodyName, const struct FVector& Direction, double TargetSpeed, class FName Tag);
+	void SetBodyTargetParams(class FName BodyName, const struct FDBodyTargetParams& params, class FName Tag);
+	void SetCollisionResponse(ECollisionEnabled CollisionEnabled, class FName BodyName, bool bIncludeChildren);
+	void SetGravityOverride(bool bEnabled, const struct FVector& Gravity, class FName Tag);
+	void SetPrimarySimulationTag(class FName Tag, bool bForceSet);
+	void TeleportPrimarySimulation(const struct FVector& NewLocation);
+
+	class UAnimSequenceBase* GetAnimationFromTag(const struct FGameplayTag& InKey) const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkill")
+		STATIC_CLASS_IMPL("GbxSkeletalMeshComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkill")
+		STATIC_NAME_IMPL(L"GbxSkeletalMeshComponent")
 	}
-	static class UGbxSkill* GetDefaultObj()
+	static class UGbxSkeletalMeshComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkill>();
+		return GetDefaultObjImpl<UGbxSkeletalMeshComponent>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkill;
+DUMPER7_ASSERTS_UGbxSkeletalMeshComponent;
 
 // Class GbxGame.GbxGameAnimInstance
 // 0x00C0 (0x0630 - 0x0570)
@@ -10690,34 +11052,41 @@ public:
 #pragma pack(pop)
 DUMPER7_ASSERTS_UGbxCharacterAnimInstance;
 
-// Class GbxGame.PerchProvider
-// 0x0000 (0x0000 - 0x0000)
-class IPerchProvider final
+// Class GbxGame.PerchData
+// 0x0090 (0x00C0 - 0x0030)
+class UPerchData final : public UDataAsset
 {
+public:
+	struct FGameplayTag                           PerchTag;                                          // 0x0030(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTagContainer                  PerchSearchTags;                                   // 0x0038(0x0020)(Edit, NativeAccessSpecifierPublic)
+	struct FGameplayTagContainer                  PerchFilterTags;                                   // 0x0058(0x0020)(Edit, NativeAccessSpecifierPublic)
+	struct FNumericRange                          cooldown;                                          // 0x0078(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	struct FNumericRange                          IdleTime;                                          // 0x0080(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	bool                                          bApproachFromAnyDirection;                         // 0x0088(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIgnoreApproachOffsetZ;                            // 0x0089(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bWaitForUserToStopMoving;                          // 0x008A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EPerchAlignment                               Alignment;                                         // 0x008B(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         AlignmentTime;                                     // 0x008C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bEnableArmIK;                                      // 0x0090(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCombatInterruptsPerch;                            // 0x0091(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_92[0x26];                                      // 0x0092(0x0026)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGameplayTag                           PerchSearchTag;                                    // 0x00B8(0x0008)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PerchProvider")
+		STATIC_CLASS_IMPL("PerchData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PerchProvider")
+		STATIC_NAME_IMPL(L"PerchData")
 	}
-	static class IPerchProvider* GetDefaultObj()
+	static class UPerchData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IPerchProvider>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UPerchData>();
 	}
 };
-DUMPER7_ASSERTS_IPerchProvider;
+DUMPER7_ASSERTS_UPerchData;
 
 // Class GbxGame.GbxCharacterBodyData
 // 0x0000 (0x0060 - 0x0060)
@@ -10739,22 +11108,22 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCharacterBodyData;
 
-// Class GbxGame.ScreenParticleObserver
+// Class GbxGame.RadialBlurStateManager
 // 0x0000 (0x0000 - 0x0000)
-class IScreenParticleObserver final
+class IRadialBlurStateManager final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("ScreenParticleObserver")
+		STATIC_CLASS_IMPL("RadialBlurStateManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"ScreenParticleObserver")
+		STATIC_NAME_IMPL(L"RadialBlurStateManager")
 	}
-	static class IScreenParticleObserver* GetDefaultObj()
+	static class IRadialBlurStateManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IScreenParticleObserver>();
+		return GetDefaultObjImpl<IRadialBlurStateManager>();
 	}
 
 	class UObject* AsUObject()
@@ -10766,7 +11135,7 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IScreenParticleObserver;
+DUMPER7_ASSERTS_IRadialBlurStateManager;
 
 // Class GbxGame.GbxCharacterFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -10794,45 +11163,59 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCharacterFunctionLibrary;
 
-// Class GbxGame.NexusConfigSubType_RoadConnector
-// 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_RoadConnector final : public UNexusConfigLevelSubType
+// Class GbxGame.GbxLevelRoadAreaComponent
+// 0x0040 (0x0660 - 0x0620)
+class UGbxLevelRoadAreaComponent final : public UPrimitiveComponent
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_RoadConnector")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_RoadConnector")
-	}
-	static class UNexusConfigSubType_RoadConnector* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigSubType_RoadConnector>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigSubType_RoadConnector;
+	EGbxLevelRoadAreaShape                        Shape;                                             // 0x0620(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         CylinderRadius;                                    // 0x0624(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         CylinderHalfHeight;                                // 0x0628(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_62C[0x4];                                      // 0x062C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVector                                BoxExtent;                                         // 0x0630(0x0018)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FColor                                 DrawColor;                                         // 0x0648(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FColor                                 DrawLinkColor;                                     // 0x064C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bDrawSolid;                                        // 0x0650(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_651[0xF];                                      // 0x0651(0x000F)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
-// Class GbxGame.NexusConfigStoreGameResourcePool
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGameResourcePool final : public UNexusConfigStoreBasic
-{
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGameResourcePool")
+		STATIC_CLASS_IMPL("GbxLevelRoadAreaComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGameResourcePool")
+		STATIC_NAME_IMPL(L"GbxLevelRoadAreaComponent")
 	}
-	static class UNexusConfigStoreGameResourcePool* GetDefaultObj()
+	static class UGbxLevelRoadAreaComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGameResourcePool>();
+		return GetDefaultObjImpl<UGbxLevelRoadAreaComponent>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGameResourcePool;
+DUMPER7_ASSERTS_UGbxLevelRoadAreaComponent;
+
+// Class GbxGame.NexusConfigStoreGameMode
+// 0x0050 (0x0390 - 0x0340)
+class UNexusConfigStoreGameMode final : public UNexusConfigStoreMix
+{
+public:
+	uint8                                         Pad_340[0x50];                                     // 0x0340(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreGameMode")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreGameMode")
+	}
+	static class UNexusConfigStoreGameMode* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreGameMode>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreGameMode;
 
 // Class GbxGame.GbxCharacterLegData
 // 0x00A8 (0x00D8 - 0x0030)
@@ -10911,34 +11294,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCharacterMovementBlueprintLibrary;
 
-// Class GbxGame.GbxLevelSequenceParticipant
-// 0x0000 (0x0000 - 0x0000)
-class IGbxLevelSequenceParticipant final
+// Class GbxGame.GbxLevelSequenceInstanceData
+// 0x0050 (0x00F0 - 0x00A0)
+class UGbxLevelSequenceInstanceData final : public UDefaultLevelSequenceInstanceData
 {
+public:
+	TMap<TSoftObjectPtr<class UGbxLevelSequence>, struct FGbxShotOriginActorRef> ShotOriginMap;      // 0x00A0(0x0050)(Edit, NativeAccessSpecifierPublic)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequenceParticipant")
+		STATIC_CLASS_IMPL("GbxLevelSequenceInstanceData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequenceParticipant")
+		STATIC_NAME_IMPL(L"GbxLevelSequenceInstanceData")
 	}
-	static class IGbxLevelSequenceParticipant* GetDefaultObj()
+	static class UGbxLevelSequenceInstanceData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxLevelSequenceParticipant>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxLevelSequenceInstanceData>();
 	}
 };
-DUMPER7_ASSERTS_IGbxLevelSequenceParticipant;
+DUMPER7_ASSERTS_UGbxLevelSequenceInstanceData;
 
 // Class GbxGame.GbxCharacterMovementComponent
 // 0x2680 (0x41C0 - 0x1B40)
@@ -11069,66 +11446,80 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCharacterMovementComponent;
 
-// Class GbxGame.NexusConfigStore_GbxRadioStation
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_GbxRadioStation final : public UNexusConfigStoreBasic
+// Class GbxGame.GbxRadioConfig
+// 0x0068 (0x0098 - 0x0030)
+class UGbxRadioConfig : public UDataAsset
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GbxRadioStation")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GbxRadioStation")
-	}
-	static class UNexusConfigStore_GbxRadioStation* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStore_GbxRadioStation>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStore_GbxRadioStation;
-
-// Class GbxGame.GbxProgressGraph
-// 0x0188 (0x01B0 - 0x0028)
-class UGbxProgressGraph final : public UObject
-{
-public:
-	uint8                                         Pad_28[0xE0];                                      // 0x0028(0x00E0)(Fixing Size After Last Property [ Dumper-7 ])
-	FGbxDefPtrProperty_                           ProgressGraphDef;                                  // 0x0108(0x0018)(Net, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	FGbxDefPtrProperty_                           GraphGroupDef;                                     // 0x0120(0x0018)(Net, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxUnlockableNode>             nodes;                                             // 0x0138(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxUnlockableGroup>            Groups;                                            // 0x0148(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_158[0x10];                                     // 0x0158(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bIsUnlocked;                                       // 0x0168(0x0001)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_169[0x17];                                     // 0x0169(0x0017)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bIsActivated;                                      // 0x0180(0x0001)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	EProgressGraphAllowedOperation                AllowedOperations;                                 // 0x0181(0x0001)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_182[0x2E];                                     // 0x0182(0x002E)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void Server_ActivateNodeInGroup(int32 InGroupIndex, int32 InNodeIndex, bool InActivate, int32 ActivationLevel);
-	void Server_AddBonusPoints(int32 InNodeIndex, int32 InPointsToAdd);
-	void Server_ResetActivations();
-	void Server_ResetActivationsInGroup(int32 InGroupIndex);
-	void Server_ResetSpentPoints();
-	void Server_SpendProgressPoints(int32 InNodeIndex, int32 InPoints);
+	TMap<FGbxDefPtrProperty_, FGbxDefPtrProperty_> RadioStations;                                    // 0x0030(0x0050)(Edit, NativeAccessSpecifierPublic)
+	TArray<ERadioScriptType>                      RadioScriptSequence;                               // 0x0080(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	int32                                         InactiveQueueSize;                                 // 0x0090(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_94[0x4];                                       // 0x0094(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxProgressGraph")
+		STATIC_CLASS_IMPL("GbxRadioConfig")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxProgressGraph")
+		STATIC_NAME_IMPL(L"GbxRadioConfig")
 	}
-	static class UGbxProgressGraph* GetDefaultObj()
+	static class UGbxRadioConfig* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxProgressGraph>();
+		return GetDefaultObjImpl<UGbxRadioConfig>();
 	}
 };
-DUMPER7_ASSERTS_UGbxProgressGraph;
+DUMPER7_ASSERTS_UGbxRadioConfig;
+
+// Class GbxGame.GbxPlayerState
+// 0x0248 (0x0698 - 0x0450)
+class AGbxPlayerState : public APlayerState
+{
+public:
+	uint8                                         Pad_450[0x7C];                                     // 0x0450(0x007C)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGuid                                  ActiveCharGuid;                                    // 0x04CC(0x0010)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_4DC[0x2];                                      // 0x04DC(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	uint8                                         SeamlessTravelTransferRepKey;                      // 0x04DE(0x0001)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_4DF[0x1];                                      // 0x04DF(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	TWeakObjectPtr<class AGbxPlayerGroupState>    PlayerGroupState;                                  // 0x04E0(0x0008)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FUniqueNetIdRepl                       PlatformUniqueId;                                  // 0x04E8(0x0030)(Net, RepNotify, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIsInRealtimeGameplay;                             // 0x0518(0x0001)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_519[0x17];                                     // 0x0519(0x0017)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   ReplicatedCharacterDef;                            // 0x0530(0x0008)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	int16                                         StableIndex;                                       // 0x0538(0x0002)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_53A[0x15E];                                    // 0x053A(0x015E)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void ClientLockUnlockable(const struct FSName& LedgerIdent, const struct FSName& EntryIdent);
+	void ClientSendProfileDataToVault(int32 InProfileIndex);
+	void ClientUnlockUnlockable(const struct FSName& LedgerIdent, const struct FSName& EntryIdent);
+	void OnGroupAssigned(class AGbxPlayerGroupState* InPlayerGroupState);
+	void OnGroupRemoved(class AGbxPlayerGroupState* InPlayerGroupState);
+	void OnRep_CharacterDef();
+	void OnRep_PlatformUniqueId();
+	void OnRep_PlayerGroupState();
+	void OnRep_SeamlessTravelTransferKey();
+	void OnRep_StableIndex();
+	void ServerSetDiscoveryRegion(const struct FSName& InRegionName);
+	void ServerSetPlatformUniqueId(const struct FUniqueNetIdRepl& InPlatformUniqueId);
+	void ServerSetRealtimeGameplayStatus(bool bIsInRTGP);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxPlayerState")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxPlayerState")
+	}
+	static class AGbxPlayerState* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxPlayerState>();
+	}
+};
+DUMPER7_ASSERTS_AGbxPlayerState;
 
 // Class GbxGame.GbxCharacterPushComponent
 // 0x0000 (0x0650 - 0x0650)
@@ -11153,34 +11544,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCharacterPushComponent;
 
-// Class GbxGame.GbxSequenceTrackActorBindingInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxSequenceTrackActorBindingInterface final
+// Class GbxGame.GbxSequenceRotationTargetTrack
+// 0x0010 (0x0108 - 0x00F8)
+class UGbxSequenceRotationTargetTrack final : public UMovieSceneNameableTrack
 {
+public:
+	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceTrackActorBindingInterface")
+		STATIC_CLASS_IMPL("GbxSequenceRotationTargetTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceTrackActorBindingInterface")
+		STATIC_NAME_IMPL(L"GbxSequenceRotationTargetTrack")
 	}
-	static class IGbxSequenceTrackActorBindingInterface* GetDefaultObj()
+	static class UGbxSequenceRotationTargetTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxSequenceTrackActorBindingInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxSequenceRotationTargetTrack>();
 	}
 };
-DUMPER7_ASSERTS_IGbxSequenceTrackActorBindingInterface;
+DUMPER7_ASSERTS_UGbxSequenceRotationTargetTrack;
 
 // Class GbxGame.NexusConfigStoreSliding
 // 0x0000 (0x0380 - 0x0380)
@@ -11222,48 +11607,66 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxSwimming;
 
-// Class GbxGame.GbxSequenceNotifySection
-// 0x00F8 (0x0208 - 0x0110)
-class UGbxSequenceNotifySection final : public UGbxSequenceNotifySectionBase
+// Class GbxGame.GbxSequenceNormalizedDoubleBlenderSystem
+// 0x00B8 (0x0120 - 0x0068)
+class UGbxSequenceNormalizedDoubleBlenderSystem final : public UMovieSceneBlenderSystem
 {
 public:
-	struct FGbxMovieSceneNotifyChannel            NotifyChannel;                                     // 0x0110(0x00F8)(Edit, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	uint8                                         Pad_68[0xB8];                                      // 0x0068(0x00B8)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceNotifySection")
+		STATIC_CLASS_IMPL("GbxSequenceNormalizedDoubleBlenderSystem")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceNotifySection")
+		STATIC_NAME_IMPL(L"GbxSequenceNormalizedDoubleBlenderSystem")
 	}
-	static class UGbxSequenceNotifySection* GetDefaultObj()
+	static class UGbxSequenceNormalizedDoubleBlenderSystem* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceNotifySection>();
+		return GetDefaultObjImpl<UGbxSequenceNormalizedDoubleBlenderSystem>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceNotifySection;
+DUMPER7_ASSERTS_UGbxSequenceNormalizedDoubleBlenderSystem;
 
-// Class GbxGame.GbxStatusEffectModifierType_Chance
-// 0x0000 (0x0030 - 0x0030)
-class UGbxStatusEffectModifierType_Chance final : public UGbxStatusEffectModifierType
+// Class GbxGame.GbxStatusEffectData
+// 0x0130 (0x0180 - 0x0050)
+class UGbxStatusEffectData final : public UGbxGraphAsset
 {
+public:
+	struct FGbxInlineStruct                       Driver;                                            // 0x0050(0x0018)(Edit, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxInlineStruct>               Aspects;                                           // 0x0068(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxInlineStruct>               Mutators;                                          // 0x0078(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	struct FGbxStatusEffectScriptData             ScriptData;                                        // 0x0088(0x0018)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxInlineStruct>               CoreNotifies;                                      // 0x00A0(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxInlineStruct>               StartActions;                                      // 0x00B0(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxInlineStruct>               EndActions;                                        // 0x00C0(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	class UGbxStatusEffectPresentationAsset*      Presentation;                                      // 0x00D0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<TSubclassOf<class UGbxStatusEffectSignatureParam>> params;                                // 0x00D8(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	struct FGbxInlineStruct                       SeverityGenerator;                                 // 0x00E8(0x0018)(Edit, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxStatusEffectNotifyData>     NotifyEvents;                                      // 0x0100(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	class FName                                   RowKey;                                            // 0x0110(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FGbxInlineStruct                       MetaData;                                          // 0x0118(0x0018)(Edit, NativeAccessSpecifierPrivate)
+	FGbxDefPtrProperty_                           TickGroup;                                         // 0x0130(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_148[0x18];                                     // 0x0148(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGameplayTagContainer                  GameplayTags;                                      // 0x0160(0x0020)(Edit, NativeAccessSpecifierPrivate)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectModifierType_Chance")
+		STATIC_CLASS_IMPL("GbxStatusEffectData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectModifierType_Chance")
+		STATIC_NAME_IMPL(L"GbxStatusEffectData")
 	}
-	static class UGbxStatusEffectModifierType_Chance* GetDefaultObj()
+	static class UGbxStatusEffectData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectModifierType_Chance>();
+		return GetDefaultObjImpl<UGbxStatusEffectData>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectModifierType_Chance;
+DUMPER7_ASSERTS_UGbxStatusEffectData;
 
 // Class GbxGame.GbxCheatManager
 // 0x0000 (0x0088 - 0x0088)
@@ -11296,6 +11699,7 @@ public:
 	static void PopGlobalCinematicModeWithReason(class UObject* WorldContext, class FName reason);
 	static void PopPlayerCinematicMode(class AActor* player, FGameDataHandleProperty_ CinematicMode);
 	static void PopPlayerCinematicModeWithReason(class AActor* player, class FName reason);
+	static void PopPlayerControllerCinematicModeWithReason(class APlayerController* PlayerController, class FName reason);
 	static void PushGlobalCinematicMode(class UObject* WorldContext, FGameDataHandleProperty_ CinematicMode);
 	static void PushGlobalCinematicModeWithReason(class UObject* WorldContext, FGameDataHandleProperty_ CinematicMode, class FName reason);
 	static void PushPlayerCinematicMode(class AActor* player, FGameDataHandleProperty_ CinematicMode);
@@ -11317,34 +11721,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCinematicFunctionLibrary;
 
-// Class GbxGame.RefreshActor
-// 0x0000 (0x0000 - 0x0000)
-class IRefreshActor final
+// Class GbxGame.RadiateDamageAreaBodyData
+// 0x0000 (0x0060 - 0x0060)
+class URadiateDamageAreaBodyData final : public UGbxBodyData
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("RefreshActor")
+		STATIC_CLASS_IMPL("RadiateDamageAreaBodyData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"RefreshActor")
+		STATIC_NAME_IMPL(L"RadiateDamageAreaBodyData")
 	}
-	static class IRefreshActor* GetDefaultObj()
+	static class URadiateDamageAreaBodyData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IRefreshActor>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<URadiateDamageAreaBodyData>();
 	}
 };
-DUMPER7_ASSERTS_IRefreshActor;
+DUMPER7_ASSERTS_URadiateDamageAreaBodyData;
 
 // Class GbxGame.NexusConfigStoreCinematicMode
 // 0x0000 (0x0390 - 0x0390)
@@ -11386,31 +11781,52 @@ public:
 };
 DUMPER7_ASSERTS_AGbxClimbingWall;
 
-// Class GbxGame.GbxLevelRoadConnector
-// 0x0018 (0x03A8 - 0x0390)
-class AGbxLevelRoadConnector final : public AActor
+// Class GbxGame.GbxLegIKBlueprintLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UGbxLegIKBlueprintLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	uint8                                         Pad_390[0x8];                                      // 0x0390(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxLevelRoadAreaComponent*             RoadAreaComponent;                                 // 0x0398(0x0008)(Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	bool                                          bInitializedRoadNavArea;                           // 0x03A0(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_3A1[0x7];                                      // 0x03A1(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	static void SetLegIKEnabled(class AActor* Actor, bool bNewEnabled, const class FString& reason);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelRoadConnector")
+		STATIC_CLASS_IMPL("GbxLegIKBlueprintLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelRoadConnector")
+		STATIC_NAME_IMPL(L"GbxLegIKBlueprintLibrary")
 	}
-	static class AGbxLevelRoadConnector* GetDefaultObj()
+	static class UGbxLegIKBlueprintLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxLevelRoadConnector>();
+		return GetDefaultObjImpl<UGbxLegIKBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_AGbxLevelRoadConnector;
+DUMPER7_ASSERTS_UGbxLegIKBlueprintLibrary;
+
+// Class GbxGame.GbxStatusEffectScriptDelegateBinding
+// 0x0020 (0x0048 - 0x0028)
+class UGbxStatusEffectScriptDelegateBinding final : public UDynamicBlueprintBinding
+{
+public:
+	TArray<struct FGbxStatusEffectPushEventBind>  EventBinds;                                        // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxStatusEffectNotifyEventBind> NotifyBinds;                                      // 0x0038(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxStatusEffectScriptDelegateBinding")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxStatusEffectScriptDelegateBinding")
+	}
+	static class UGbxStatusEffectScriptDelegateBinding* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxStatusEffectScriptDelegateBinding>();
+	}
+};
+DUMPER7_ASSERTS_UGbxStatusEffectScriptDelegateBinding;
 
 // Class GbxGame.GbxConditionalCollisionComponent
 // 0x0000 (0x0000 - 0x0000)
@@ -11441,34 +11857,29 @@ public:
 };
 DUMPER7_ASSERTS_IGbxConditionalCollisionComponent;
 
-// Class GbxGame.GbxInputRebindContextProvider
-// 0x0000 (0x0000 - 0x0000)
-class IGbxInputRebindContextProvider final
+// Class GbxGame.GbxInputDeviceSubsystem
+// 0x0008 (0x0038 - 0x0030)
+class UGbxInputDeviceSubsystem final : public UGameInstanceSubsystem
 {
+public:
+	bool                                          bHandleInputDeviceConnectionChanges;               // 0x0030(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_31[0x7];                                       // 0x0031(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxInputRebindContextProvider")
+		STATIC_CLASS_IMPL("GbxInputDeviceSubsystem")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxInputRebindContextProvider")
+		STATIC_NAME_IMPL(L"GbxInputDeviceSubsystem")
 	}
-	static class IGbxInputRebindContextProvider* GetDefaultObj()
+	static class UGbxInputDeviceSubsystem* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxInputRebindContextProvider>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxInputDeviceSubsystem>();
 	}
 };
-DUMPER7_ASSERTS_IGbxInputRebindContextProvider;
+DUMPER7_ASSERTS_UGbxInputDeviceSubsystem;
 
 // Class GbxGame.GbxConsoleCommands
 // 0x0010 (0x0048 - 0x0038)
@@ -11539,33 +11950,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCurrencyFunctionLibrary;
 
-// Class GbxGame.GbxOpportunisticAmbientAudioComponent
-// 0x0020 (0x0640 - 0x0620)
-class UGbxOpportunisticAmbientAudioComponent final : public UPrimitiveComponent
+// Class GbxGame.GbxOpportunisticAmbientAudioProceduralActor
+// 0x0000 (0x0390 - 0x0390)
+class AGbxOpportunisticAmbientAudioProceduralActor final : public APartitionActor
 {
-public:
-	TArray<struct FGbxAmbientAudioOpportunitySet> OpportunitySets;                                   // 0x0620(0x0010)(Edit, BlueprintVisible, ZeroConstructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_630[0x10];                                     // 0x0630(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static bool GetAudioOpportunisticShowFlag();
-	static void SetAudioOpportunisticShowFlag(bool bValue);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxOpportunisticAmbientAudioComponent")
+		STATIC_CLASS_IMPL("GbxOpportunisticAmbientAudioProceduralActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxOpportunisticAmbientAudioComponent")
+		STATIC_NAME_IMPL(L"GbxOpportunisticAmbientAudioProceduralActor")
 	}
-	static class UGbxOpportunisticAmbientAudioComponent* GetDefaultObj()
+	static class AGbxOpportunisticAmbientAudioProceduralActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxOpportunisticAmbientAudioComponent>();
+		return GetDefaultObjImpl<AGbxOpportunisticAmbientAudioProceduralActor>();
 	}
 };
-DUMPER7_ASSERTS_UGbxOpportunisticAmbientAudioComponent;
+DUMPER7_ASSERTS_AGbxOpportunisticAmbientAudioProceduralActor;
 
 // Class GbxGame.GbxCurrencyHolder
 // 0x0000 (0x0000 - 0x0000)
@@ -11596,28 +11999,25 @@ public:
 };
 DUMPER7_ASSERTS_IGbxCurrencyHolder;
 
-// Class GbxGame.GbxSequenceFeedbackTrack
-// 0x0010 (0x0108 - 0x00F8)
-class UGbxSequenceFeedbackTrack final : public UMovieSceneNameableTrack
+// Class GbxGame.GbxSequenceFadeColorSystem
+// 0x0000 (0x0040 - 0x0040)
+class UGbxSequenceFadeColorSystem final : public UMovieSceneEntitySystem
 {
-public:
-	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceFeedbackTrack")
+		STATIC_CLASS_IMPL("GbxSequenceFadeColorSystem")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceFeedbackTrack")
+		STATIC_NAME_IMPL(L"GbxSequenceFadeColorSystem")
 	}
-	static class UGbxSequenceFeedbackTrack* GetDefaultObj()
+	static class UGbxSequenceFadeColorSystem* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceFeedbackTrack>();
+		return GetDefaultObjImpl<UGbxSequenceFadeColorSystem>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceFeedbackTrack;
+DUMPER7_ASSERTS_UGbxSequenceFadeColorSystem;
 
 // Class GbxGame.GbxCurrencyManager
 // 0x0070 (0x0098 - 0x0028)
@@ -11647,44 +12047,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxCurrencyManager;
 
-// Class GbxGame.ProjectileStatics
+// Class GbxGame.ProjectileBounceStatics
 // 0x0000 (0x0028 - 0x0028)
-class UProjectileStatics final : public UBlueprintFunctionLibrary
+class UProjectileBounceStatics final : public UBlueprintFunctionLibrary
 {
 public:
-	static float GetProjectileDistanceOverTime(FGameDataHandleProperty_ definition, float time, float SpeedOverride);
-	static float GetProjectileTimeOverDistance(FGameDataHandleProperty_ definition, float Distance, float SpeedOverride);
-	static struct FTransform GetSafeProjectileThrowTransform(class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const TArray<class AActor*>& IgnoreActors, ECollisionChannel TraceChannel, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static struct FTransform GetSafeProjectileThrowTransformFromLocation(class AActor* Source, const struct FVector& Location, const TArray<class AActor*>& IgnoreActors, ECollisionChannel TraceChannel, bool bUseAnimatedCameraRotation);
-	static struct FGbxViewRelativeLocation MakeViewRelativeLocation(const struct FVector& Offset);
-	static void SpawnProjectile(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* owner, bool bOwnerIsInstigator, class APawn* instigator, const struct FVector& Location, const struct FVector& Velocity, float GravityScale, const struct FProjectileDamageOverrideData& DamageOverrides);
-	static void SpawnProjectile_Const(FGameDataHandleProperty_ definition, class AActor* owner, bool bOwnerIsInstigator, class APawn* instigator, const struct FVector& Location, const struct FVector& Velocity, float GravityScale, const struct FProjectileDamageOverrideData& DamageOverrides);
-	static void SpawnProjectile_Source(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, float SpeedOverride, float GravityScale, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static void SpawnProjectile_Source_Const(FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, float SpeedOverride, float GravityScale, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static void SpawnProjectile_ThrowAtActor(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static void SpawnProjectile_ThrowAtActor_Const(FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static void SpawnProjectile_ThrowAtCrosshair(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static void SpawnProjectile_ThrowAtCrosshair_Const(FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static void SpawnProjectile_ThrowAtLocation(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, const struct FVector& Location, const struct FTrajectoryOptions& TrajectoryOptions, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static void SpawnProjectile_ThrowAtLocation_Const(FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, const struct FVector& Location, const struct FTrajectoryOptions& TrajectoryOptions, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
-	static void SpawnProjectiles_Query(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, ESpawnProjectileExec* Exec, TArray<class Aprojectile*>* AllProjectiles, class Aprojectile** SpawnedProjectile, FGameDataHandleProperty_ definition, class AActor* owner, const struct FGpsQueryRunData& QueryData, const struct FGbxRelativeRotation& Rotation, int32 MaxResults, float delay, const struct FProjectileDamageOverrideData& DamageOverrides);
-	static void SpawnProjectiles_Query_Const(FGameDataHandleProperty_ definition, class AActor* owner, const struct FGpsQueryRunData& QueryData, const struct FGbxRelativeRotation& Rotation, int32 MaxResults, float delay, const struct FProjectileDamageOverrideData& DamageOverrides);
+	static EProjectileGameplayBounceSurfaceType GetGameplayBounceSurfaceType(const struct FHitResult& Impact);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("ProjectileStatics")
+		STATIC_CLASS_IMPL("ProjectileBounceStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"ProjectileStatics")
+		STATIC_NAME_IMPL(L"ProjectileBounceStatics")
 	}
-	static class UProjectileStatics* GetDefaultObj()
+	static class UProjectileBounceStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UProjectileStatics>();
+		return GetDefaultObjImpl<UProjectileBounceStatics>();
 	}
 };
-DUMPER7_ASSERTS_UProjectileStatics;
+DUMPER7_ASSERTS_UProjectileBounceStatics;
 
 // Class GbxGame.NexusConfigStoreCustomizationData
 // 0x0000 (0x0380 - 0x0380)
@@ -11851,58 +12235,55 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDangerZoneCracksBodyData;
 
-// Class GbxGame.GbxGameSpawnPoint
-// 0x0490 (0x0850 - 0x03C0)
-#pragma pack(push, 0x1)
-class alignas(0x10) AGbxGameSpawnPoint : public AGbxNavSpawnPoint
+// Class GbxGame.GbxGameSpawner
+// 0x0088 (0x04A0 - 0x0418)
+class AGbxGameSpawner : public AGbxNavSpawner
 {
 public:
-	uint8                                         Pad_3C0[0x40];                                     // 0x03C0(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxGameSpawnPointComponent*            GbxGameSpawnPointComponent;                        // 0x0400(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	struct FGbxActorData                          GbxActorData;                                      // 0x0408(0x0108)(Edit, DisableEditOnTemplate, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_510[0x230];                                    // 0x0510(0x0230)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxActorScriptOwnerState              ScriptData;                                        // 0x0740(0x0080)(Edit, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	struct FGbxActorState                         ActorState;                                        // 0x07C0(0x0070)(Edit, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
-	class AActor*                                 TerritoryOverrideActor;                            // 0x0830(0x0008)(Edit, ZeroConstructor, DisableEditOnTemplate, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_838[0x10];                                     // 0x0838(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_418[0x18];                                     // 0x0418(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	class AActor*                                 TerritoryOverrideActor;                            // 0x0430(0x0008)(Edit, ZeroConstructor, DisableEditOnTemplate, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UGbxTerritoryComponent*                 TerritoryComponent;                                // 0x0438(0x0008)(Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UGbxTerritoryComponent*                 CurrentTerritory;                                  // 0x0440(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	struct FGbxActivityActorData                  ActivityData;                                      // 0x0448(0x0058)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
 
 public:
-	void OnHasUsers();
-	void OnNoUsers();
+	void ResetTerritoryToDefault();
+	void SetTerritory(TScriptInterface<class IGbxTerritoryProvider> TerritoryProvider);
+
+	class UGbxTerritoryComponent* GetTerritory() const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameSpawnPoint")
+		STATIC_CLASS_IMPL("GbxGameSpawner")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameSpawnPoint")
+		STATIC_NAME_IMPL(L"GbxGameSpawner")
 	}
-	static class AGbxGameSpawnPoint* GetDefaultObj()
+	static class AGbxGameSpawner* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxGameSpawnPoint>();
+		return GetDefaultObjImpl<AGbxGameSpawner>();
 	}
 };
-#pragma pack(pop)
-DUMPER7_ASSERTS_AGbxGameSpawnPoint;
+DUMPER7_ASSERTS_AGbxGameSpawner;
 
-// Class GbxGame.VisibilityPhaseInterface
+// Class GbxGame.UsableConsumer
 // 0x0000 (0x0000 - 0x0000)
-class IVisibilityPhaseInterface final
+class IUsableConsumer final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("VisibilityPhaseInterface")
+		STATIC_CLASS_IMPL("UsableConsumer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"VisibilityPhaseInterface")
+		STATIC_NAME_IMPL(L"UsableConsumer")
 	}
-	static class IVisibilityPhaseInterface* GetDefaultObj()
+	static class IUsableConsumer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IVisibilityPhaseInterface>();
+		return GetDefaultObjImpl<IUsableConsumer>();
 	}
 
 	class UObject* AsUObject()
@@ -11914,44 +12295,31 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IVisibilityPhaseInterface;
+DUMPER7_ASSERTS_IUsableConsumer;
 
-// Class GbxGame.GbxTrickInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxTrickInterface final
+// Class GbxGame.GbxTrickAnimNotify_WriteParam
+// 0x0040 (0x0078 - 0x0038)
+class UGbxTrickAnimNotify_WriteParam final : public UGbxTrickAnimNotify
 {
 public:
-	uint8 PlayTrick(class UGbxTrick* Trick);
-	uint8 PlayTrickLocal(class UGbxTrick* Trick);
-	void StopTrick(class UGbxTrick* Trick);
-	void StopTrickId(uint8 ID);
-	void StopTrickIdLocal(uint8 ID);
-	void StopTrickLocal(class UGbxTrick* Trick);
+	class FName                                   ParamName;                                         // 0x0038(0x0008)(Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FGbxParam                              Param;                                             // 0x0040(0x0038)(Edit, BlueprintReadOnly, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrickInterface")
+		STATIC_CLASS_IMPL("GbxTrickAnimNotify_WriteParam")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrickInterface")
+		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_WriteParam")
 	}
-	static class IGbxTrickInterface* GetDefaultObj()
+	static class UGbxTrickAnimNotify_WriteParam* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxTrickInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxTrickAnimNotify_WriteParam>();
 	}
 };
-DUMPER7_ASSERTS_IGbxTrickInterface;
+DUMPER7_ASSERTS_UGbxTrickAnimNotify_WriteParam;
 
 // Class GbxGame.GbxDangerZoneSubsystem
 // 0x0010 (0x0040 - 0x0030)
@@ -11979,52 +12347,57 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDangerZoneSubsystem;
 
-// Class GbxGame.GbxSequenceFeedbackSection
-// 0x00F8 (0x0208 - 0x0110)
-class UGbxSequenceFeedbackSection final : public UMovieSceneHookSection
+// Class GbxGame.GbxSequenceDialogTrack
+// 0x0018 (0x0110 - 0x00F8)
+class UGbxSequenceDialogTrack final : public UMovieSceneNameableTrack
 {
 public:
-	struct FGbxSequenceFeedbackChannel            channel;                                           // 0x0110(0x00F8)(Edit, NativeAccessSpecifierPublic)
+	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_108[0x8];                                      // 0x0108(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceFeedbackSection")
+		STATIC_CLASS_IMPL("GbxSequenceDialogTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceFeedbackSection")
+		STATIC_NAME_IMPL(L"GbxSequenceDialogTrack")
 	}
-	static class UGbxSequenceFeedbackSection* GetDefaultObj()
+	static class UGbxSequenceDialogTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceFeedbackSection>();
+		return GetDefaultObjImpl<UGbxSequenceDialogTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceFeedbackSection;
+DUMPER7_ASSERTS_UGbxSequenceDialogTrack;
 
-// Class GbxGame.GbxTrickAnimNotify_GbxSkillScript
-// 0x0020 (0x0058 - 0x0038)
-class UGbxTrickAnimNotify_GbxSkillScript final : public UGbxTrickAnimNotify
+// Class GbxGame.GbxTrickAnimNotify_ScriptEvent
+// 0x0018 (0x0050 - 0x0038)
+class UGbxTrickAnimNotify_ScriptEvent final : public UGbxTrickAnimNotify
 {
 public:
-	FGbxDefPtrProperty_                           StateDef;                                          // 0x0038(0x0018)(Edit, BlueprintReadOnly, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	class FName                                   EventName;                                         // 0x0050(0x0008)(Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bUseNotifyNameForEvent;                            // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bGenerateEndEventFromBeginName;                    // 0x0039(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_3A[0x2];                                       // 0x003A(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   BeginEvent;                                        // 0x003C(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	class FName                                   EndEvent;                                          // 0x0044(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrickAnimNotify_GbxSkillScript")
+		STATIC_CLASS_IMPL("GbxTrickAnimNotify_ScriptEvent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_GbxSkillScript")
+		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_ScriptEvent")
 	}
-	static class UGbxTrickAnimNotify_GbxSkillScript* GetDefaultObj()
+	static class UGbxTrickAnimNotify_ScriptEvent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrickAnimNotify_GbxSkillScript>();
+		return GetDefaultObjImpl<UGbxTrickAnimNotify_ScriptEvent>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrickAnimNotify_GbxSkillScript;
+DUMPER7_ASSERTS_UGbxTrickAnimNotify_ScriptEvent;
 
 // Class GbxGame.GbxDecoCharacter
 // 0x0208 (0x1C60 - 0x1A58)
@@ -12112,25 +12485,25 @@ public:
 };
 DUMPER7_ASSERTS_AGbxDestructibleActor;
 
-// Class GbxGame.NexusConfigSubType_StaticLI
+// Class GbxGame.NexusConfigSubType_RefreshArea
 // 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_StaticLI final : public UNexusConfigLevelSubType
+class UNexusConfigSubType_RefreshArea final : public UNexusConfigLevelSubType
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_StaticLI")
+		STATIC_CLASS_IMPL("NexusConfigSubType_RefreshArea")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_StaticLI")
+		STATIC_NAME_IMPL(L"NexusConfigSubType_RefreshArea")
 	}
-	static class UNexusConfigSubType_StaticLI* GetDefaultObj()
+	static class UNexusConfigSubType_RefreshArea* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigSubType_StaticLI>();
+		return GetDefaultObjImpl<UNexusConfigSubType_RefreshArea>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigSubType_StaticLI;
+DUMPER7_ASSERTS_UNexusConfigSubType_RefreshArea;
 
 // Class GbxGame.GbxDestructibleStaticMeshScriptedData
 // 0x0130 (0x0250 - 0x0120)
@@ -12138,7 +12511,7 @@ class UGbxDestructibleStaticMeshScriptedData final : public UGbxDestructibleStat
 {
 public:
 	TArray<struct FDamageModifierDef>             DamageDefsToPass;                                  // 0x0120(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	TSubclassOf<class UGbxDestructibleScript>     script;                                            // 0x0130(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TSubclassOf<class UGbxDestructibleScript>     Script;                                            // 0x0130(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	struct FGbxDestructibleCollisionEventSettings CollisionEventSettings;                            // 0x0138(0x0040)(Edit, NoDestructor, NativeAccessSpecifierPublic)
 	uint8                                         Pad_178[0x8];                                      // 0x0178(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
 	struct FGbxDestructibleFractureEffectsSettings FractureEffectsSettings;                          // 0x0180(0x00C0)(Edit, NativeAccessSpecifierPublic)
@@ -12161,35 +12534,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDestructibleStaticMeshScriptedData;
 
-// Class GbxGame.GoreLimb
-// 0x0190 (0x0520 - 0x0390)
-class AGoreLimb final : public AActor
+// Class GbxGame.GlobalStateCacheProgressRole
+// 0x0000 (0x0100 - 0x0100)
+class UGlobalStateCacheProgressRole final : public UGbxProfileProgressRoleHostPlayer
 {
-public:
-	uint8                                         Pad_390[0x8];                                      // 0x0390(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxActorData                          GbxActorData;                                      // 0x0398(0x0108)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	class UMeshComponent*                         MeshComponent;                                     // 0x04A0(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	struct FLimbImpactEffectState                 LimbImpactEffectState;                             // 0x04A8(0x0058)(NativeAccessSpecifierPrivate)
-	uint8                                         Pad_500[0x20];                                     // 0x0500(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnHit(class AActor* SelfActor, class AActor* OtherActor, const struct FVector& NormalImpulse, const struct FHitResult& Hit);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GoreLimb")
+		STATIC_CLASS_IMPL("GlobalStateCacheProgressRole")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GoreLimb")
+		STATIC_NAME_IMPL(L"GlobalStateCacheProgressRole")
 	}
-	static class AGoreLimb* GetDefaultObj()
+	static class UGlobalStateCacheProgressRole* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGoreLimb>();
+		return GetDefaultObjImpl<UGlobalStateCacheProgressRole>();
 	}
 };
-DUMPER7_ASSERTS_AGoreLimb;
+DUMPER7_ASSERTS_UGlobalStateCacheProgressRole;
 
 // Class GbxGame.GbxDestructibleComponent
 // 0x02F0 (0x0A10 - 0x0720)
@@ -12285,56 +12648,59 @@ public:
 };
 DUMPER7_ASSERTS_IGbxDialogActor;
 
-// Class GbxGame.TimedFactsProgressRole
-// 0x0000 (0x0100 - 0x0100)
-class UTimedFactsProgressRole final : public UGbxProfileProgressRoleHostPlayer
+// Class GbxGame.StreamingEffectsGroup
+// 0x0028 (0x0058 - 0x0030)
+class UStreamingEffectsGroup final : public UDataAsset
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("TimedFactsProgressRole")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"TimedFactsProgressRole")
-	}
-	static class UTimedFactsProgressRole* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UTimedFactsProgressRole>();
-	}
-};
-DUMPER7_ASSERTS_UTimedFactsProgressRole;
-
-// Class GbxGame.GbxTrickAnimNotify_GbxSkillAction
-// 0x0008 (0x0040 - 0x0038)
-class UGbxTrickAnimNotify_GbxSkillAction final : public UGbxTrickAnimNotify
-{
-public:
-	class FName                                   EventName;                                         // 0x0038(0x0008)(Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_30[0x28];                                      // 0x0030(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrickAnimNotify_GbxSkillAction")
+		STATIC_CLASS_IMPL("StreamingEffectsGroup")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_GbxSkillAction")
+		STATIC_NAME_IMPL(L"StreamingEffectsGroup")
 	}
-	static class UGbxTrickAnimNotify_GbxSkillAction* GetDefaultObj()
+	static class UStreamingEffectsGroup* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrickAnimNotify_GbxSkillAction>();
+		return GetDefaultObjImpl<UStreamingEffectsGroup>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrickAnimNotify_GbxSkillAction;
+DUMPER7_ASSERTS_UStreamingEffectsGroup;
+
+// Class GbxGame.GbxTrickAnimNotify_Damage
+// 0x0018 (0x0050 - 0x0038)
+class UGbxTrickAnimNotify_Damage final : public UGbxTrickAnimNotify
+{
+public:
+	FGameDataHandleProperty_                      DamageDef;                                         // 0x0038(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrickAnimNotify_Damage")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_Damage")
+	}
+	static class UGbxTrickAnimNotify_Damage* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrickAnimNotify_Damage>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrickAnimNotify_Damage;
 
 // Class GbxGame.GbxDialogBlueprintLibrary
 // 0x0000 (0x0028 - 0x0028)
 class UGbxDialogBlueprintLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	static void ActivateScript(class UObject* WorldContextObject, FGbxDefPtrProperty_ script);
-	static void DectivateScript(class UObject* WorldContextObject, FGbxDefPtrProperty_ script);
+	static void ActivateScript(class UObject* WorldContextObject, FGbxDefPtrProperty_ Script);
+	static void DectivateScript(class UObject* WorldContextObject, FGbxDefPtrProperty_ Script);
 	static void EnableDialog(bool bEnable, class UObject* OwnerContext);
 	static bool IsDialogThreadPlaying(class UObject* WorldContextObject, int32 ThreadID);
 	static struct FDialogContext NewDialogContext(class AActor* InstigatorActor, class AActor* TargetActor);
@@ -12365,25 +12731,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDialogBlueprintLibrary;
 
-// Class GbxGame.GbxSequenceCapsuleOffsetSection
-// 0x0000 (0x0218 - 0x0218)
-class UGbxSequenceCapsuleOffsetSection final : public UMovieSceneDoubleSection
+// Class GbxGame.GbxSequenceAnimSetProviderTrack
+// 0x0010 (0x0108 - 0x00F8)
+class UGbxSequenceAnimSetProviderTrack final : public UMovieSceneNameableTrack
 {
+public:
+	TArray<class UMovieSceneSection*>             ProviderSections;                                  // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceCapsuleOffsetSection")
+		STATIC_CLASS_IMPL("GbxSequenceAnimSetProviderTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceCapsuleOffsetSection")
+		STATIC_NAME_IMPL(L"GbxSequenceAnimSetProviderTrack")
 	}
-	static class UGbxSequenceCapsuleOffsetSection* GetDefaultObj()
+	static class UGbxSequenceAnimSetProviderTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceCapsuleOffsetSection>();
+		return GetDefaultObjImpl<UGbxSequenceAnimSetProviderTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceCapsuleOffsetSection;
+DUMPER7_ASSERTS_UGbxSequenceAnimSetProviderTrack;
 
 // Class GbxGame.GbxDialogComponent
 // 0x0038 (0x0148 - 0x0110)
@@ -12434,28 +12803,28 @@ public:
 };
 DUMPER7_ASSERTS_UQuietTimePredicate;
 
-// Class GbxGame.GbxSplineActorSettings
-// 0x0018 (0x0050 - 0x0038)
-class UGbxSplineActorSettings final : public UDeveloperSettings
+// Class GbxGame.GbxSocketComponent
+// 0x0000 (0x02B0 - 0x02B0)
+class UGbxSocketComponent final : public USceneComponent
 {
 public:
-	uint8                                         Pad_38[0x18];                                      // 0x0038(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FName                                   SocketName;                                        // 0x02A8(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSplineActorSettings")
+		STATIC_CLASS_IMPL("GbxSocketComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSplineActorSettings")
+		STATIC_NAME_IMPL(L"GbxSocketComponent")
 	}
-	static class UGbxSplineActorSettings* GetDefaultObj()
+	static class UGbxSocketComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSplineActorSettings>();
+		return GetDefaultObjImpl<UGbxSocketComponent>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSplineActorSettings;
+DUMPER7_ASSERTS_UGbxSocketComponent;
 
 // Class GbxGame.QuietTimePredicate_BlockStuff
 // 0x0048 (0x0070 - 0x0028)
@@ -12509,54 +12878,68 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDialogFunction;
 
-// Class GbxGame.GbxSequenceAnimSetTrack
-// 0x0000 (0x01A0 - 0x01A0)
-class UGbxSequenceAnimSetTrack final : public UGbxMovieSceneSkeletalAnimationTrack
+// Class GbxGame.GbxSequenceAnimSetProviderSection
+// 0x0038 (0x0148 - 0x0110)
+class UGbxSequenceAnimSetProviderSection final : public UMovieSceneHookSection
 {
+public:
+	uint8                                         Pad_110[0x8];                                      // 0x0110(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bFirstPersonTrickMesh;                             // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_119[0x7];                                      // 0x0119(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UGbxAnimSet*>                    AnimSets;                                          // 0x0120(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class UGbxAnimSetPicker*>              AnimSetPickers;                                    // 0x0130(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	class UGbxTrick*                              TrickToPlay;                                       // 0x0140(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceAnimSetTrack")
+		STATIC_CLASS_IMPL("GbxSequenceAnimSetProviderSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceAnimSetTrack")
+		STATIC_NAME_IMPL(L"GbxSequenceAnimSetProviderSection")
 	}
-	static class UGbxSequenceAnimSetTrack* GetDefaultObj()
+	static class UGbxSequenceAnimSetProviderSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceAnimSetTrack>();
+		return GetDefaultObjImpl<UGbxSequenceAnimSetProviderSection>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceAnimSetTrack;
+DUMPER7_ASSERTS_UGbxSequenceAnimSetProviderSection;
 
-// Class GbxGame.GbxSubtitleManagerInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxSubtitleManagerInterface final
+// Class GbxGame.GbxStatusEffectsStatics
+// 0x0000 (0x0028 - 0x0028)
+class UGbxStatusEffectsStatics final : public UObject
 {
+public:
+	static double GetQueryResult_Float(const struct FGbxStatusEffectQueryResult& Result, class FName Name_0, class UObject* Context);
+	static int32 GetQueryResult_Int(const struct FGbxStatusEffectQueryResult& Result, class FName Name_0, class UObject* Context);
+	static int32 GetStatusEffectInstanceCount(class UObject* target, const class UGbxStatusEffectData* StatusEffectData, bool bFilterByOwner, class UObject* InOwner);
+	static bool HasStatusEffect(class UObject* target, const class UGbxStatusEffectData* StatusEffectData);
+	static int32 PopAllFromEffect(class UObject* target, const class UGbxStatusEffectData* StatusEffectData);
+	static int32 PopAllFromEffectSpec(class UObject* target, const struct FGbxStatusEffectPopAllFromEffectSpec& Spec);
+	static int32 PopAllSpec(class UObject* target, const struct FGbxStatusEffectPopAllSpec& Spec);
+	static int32 PopSpec(class UObject* target, const struct FGbxStatusEffectPopSpec& Spec);
+	static bool PushSpec(class UObject* target, const struct FGbxStatusEffectPushSpec& Spec);
+	static bool Query(class UObject* target, class UGbxStatusEffectData* StatusEffect, class UGbxStatusEffectQuerySpec* Spec, struct FGbxStatusEffectQueryResult& Result);
+	static bool Query_ByTag(class UObject* target, const struct FGameplayTagQuery& TagQuery, class UGbxStatusEffectQuerySpec* Spec, struct FGbxStatusEffectQueryResult& Result);
+	static void RegisterListener(class UObject* Context, class UGbxStatusEffectNotifyEvent* Event, class UObject* EventContext, class FName EventName, EGbxStatusEffectNotifyEventType EventType);
+	static void UnRegisterListener(class UObject* Context, class UGbxStatusEffectNotifyEvent* Event, class UObject* EventContext, class FName EventName, EGbxStatusEffectNotifyEventType EventType);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSubtitleManagerInterface")
+		STATIC_CLASS_IMPL("GbxStatusEffectsStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSubtitleManagerInterface")
+		STATIC_NAME_IMPL(L"GbxStatusEffectsStatics")
 	}
-	static class IGbxSubtitleManagerInterface* GetDefaultObj()
+	static class UGbxStatusEffectsStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxSubtitleManagerInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxStatusEffectsStatics>();
 	}
 };
-DUMPER7_ASSERTS_IGbxSubtitleManagerInterface;
+DUMPER7_ASSERTS_UGbxStatusEffectsStatics;
 
 // Class GbxGame.LiveDialogSpeakerHost
 // 0x0038 (0x03C8 - 0x0390)
@@ -12583,25 +12966,25 @@ public:
 };
 DUMPER7_ASSERTS_ALiveDialogSpeakerHost;
 
-// Class GbxGame.NexusConfigSubType_Waypoint
+// Class GbxGame.NexusConfigSubType_StaticLI
 // 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_Waypoint final : public UNexusConfigLevelSubType
+class UNexusConfigSubType_StaticLI final : public UNexusConfigLevelSubType
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_Waypoint")
+		STATIC_CLASS_IMPL("NexusConfigSubType_StaticLI")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_Waypoint")
+		STATIC_NAME_IMPL(L"NexusConfigSubType_StaticLI")
 	}
-	static class UNexusConfigSubType_Waypoint* GetDefaultObj()
+	static class UNexusConfigSubType_StaticLI* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigSubType_Waypoint>();
+		return GetDefaultObjImpl<UNexusConfigSubType_StaticLI>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigSubType_Waypoint;
+DUMPER7_ASSERTS_UNexusConfigSubType_StaticLI;
 
 // Class GbxGame.GbxDialogLiveSpeaker
 // 0x0038 (0x0060 - 0x0028)
@@ -12634,29 +13017,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDialogLiveSpeaker;
 
-// Class GbxGame.GbxSkillComponentFunctions_Material
+// Class GbxGame.GbxSkillComponentFunctions_Library
 // 0x0000 (0x0028 - 0x0028)
-class UGbxSkillComponentFunctions_Material final : public UObject
+class UGbxSkillComponentFunctions_Library final : public UObject
 {
 public:
-	static void InterpColor(const struct FGbxSkillComponentReference& ComponentReference, const struct FLinearColor& Color, const struct FGuid& MaterialID);
-	static void InterpScalar(const struct FGbxSkillComponentReference& ComponentReference, float Scalar, const struct FGuid& MaterialID);
+	static struct FGbxParam GetEntryValue(const struct FGbxSkillComponentReference& ComponentReference, class FName EntryName);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkillComponentFunctions_Material")
+		STATIC_CLASS_IMPL("GbxSkillComponentFunctions_Library")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkillComponentFunctions_Material")
+		STATIC_NAME_IMPL(L"GbxSkillComponentFunctions_Library")
 	}
-	static class UGbxSkillComponentFunctions_Material* GetDefaultObj()
+	static class UGbxSkillComponentFunctions_Library* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkillComponentFunctions_Material>();
+		return GetDefaultObjImpl<UGbxSkillComponentFunctions_Library>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkillComponentFunctions_Material;
+DUMPER7_ASSERTS_UGbxSkillComponentFunctions_Library;
 
 // Class GbxGame.GbxDialogParameterProvider
 // 0x0000 (0x0000 - 0x0000)
@@ -12687,25 +13069,25 @@ public:
 };
 DUMPER7_ASSERTS_IGbxDialogParameterProvider;
 
-// Class GbxGame.NexusConfigStoreLightBeam
+// Class GbxGame.NexusConfigStoreItemPoolList
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreLightBeam final : public UNexusConfigStoreBasic
+class UNexusConfigStoreItemPoolList final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreLightBeam")
+		STATIC_CLASS_IMPL("NexusConfigStoreItemPoolList")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreLightBeam")
+		STATIC_NAME_IMPL(L"NexusConfigStoreItemPoolList")
 	}
-	static class UNexusConfigStoreLightBeam* GetDefaultObj()
+	static class UNexusConfigStoreItemPoolList* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreLightBeam>();
+		return GetDefaultObjImpl<UNexusConfigStoreItemPoolList>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreLightBeam;
+DUMPER7_ASSERTS_UNexusConfigStoreItemPoolList;
 
 // Class GbxGame.GbxDialogProvider
 // 0x0200 (0x0228 - 0x0028)
@@ -12757,38 +13139,70 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDialogProvider;
 
-// Class GbxGame.GbxGameModeModuleHost_Timer
-// 0x0048 (0x0118 - 0x00D0)
-class UGbxGameModeModuleHost_Timer final : public UGbxGameModeModuleHost
+// Class GbxGame.GbxGameModeModuleHost
+// 0x0088 (0x00D0 - 0x0048)
+class UGbxGameModeModuleHost : public UGbxGameModeModule
 {
 public:
-	uint8                                         Pad_D0[0x48];                                      // 0x00D0(0x0048)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_48[0x88];                                      // 0x0048(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void OnTimerCompletedBP();
-	void OnTimerEventCompletedBP(const class FName& EventName);
-	void OnTimerPausedBP();
-	void OnTimerStartedBP();
-	void OnTimerUnpausedBP();
-	void PauseTimer();
-	void RestartTimer(int32 NewTimeLimit);
-	void UnpauseTimer();
+	void EnableBP(bool bEnable);
+	class UGbxGameModeModuleConduit* GetModuleConduit(TSubclassOf<class UGbxGameModeModuleConduit> ConduitType, EGbxGameModeModuleHostConduitExecs* Exec);
+	void OnDisabledBP();
+	void OnEnabledBP();
+	void OnGameModePhaseChangedBP(FGbxDefPtrProperty_ PhaseDef);
+	void OnLogoutBP(class AController* ExitingController);
+	void OnMatchAbortedBP();
+	void OnMatchEndedBP();
+	void OnMatchStartedBP();
+	void OnPostLoginBP(class APlayerController* NewPlayer);
+	void OnPostMatchBP();
+	void OnPreMatchBP();
+	void UnwatchAllEvents();
+	void UnwatchEvent(FGbxDefPtrProperty_ EventDef);
+	void WatchEvent(FGbxDefPtrProperty_ EventDef, TDelegate<void(const struct FGbxGameModeModuleEventParams& params)> Delegate);
+
+	class AGbxGameMode* GetGameMode() const;
+	struct FGbxParam GetModuleParameter(class FName ParamName) const;
+	bool IsEnabled() const;
+	void SetModuleParameter(class FName ParamName, const struct FGbxParam& Value) const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameModeModuleHost_Timer")
+		STATIC_CLASS_IMPL("GbxGameModeModuleHost")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameModeModuleHost_Timer")
+		STATIC_NAME_IMPL(L"GbxGameModeModuleHost")
 	}
-	static class UGbxGameModeModuleHost_Timer* GetDefaultObj()
+	static class UGbxGameModeModuleHost* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameModeModuleHost_Timer>();
+		return GetDefaultObjImpl<UGbxGameModeModuleHost>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameModeModuleHost_Timer;
+DUMPER7_ASSERTS_UGbxGameModeModuleHost;
+
+// Class GbxGame.GbxGameModeModuleHost_DataLayer
+// 0x0000 (0x00D0 - 0x00D0)
+class UGbxGameModeModuleHost_DataLayer final : public UGbxGameModeModuleHost
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxGameModeModuleHost_DataLayer")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxGameModeModuleHost_DataLayer")
+	}
+	static class UGbxGameModeModuleHost_DataLayer* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxGameModeModuleHost_DataLayer>();
+	}
+};
+DUMPER7_ASSERTS_UGbxGameModeModuleHost_DataLayer;
 
 // Class GbxGame.GbxDialogSettings
 // 0x0040 (0x0078 - 0x0038)
@@ -12870,55 +13284,31 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryCategoryDef;
 
-// Class GbxGame.GbxMovingPlatformControllerActor_FullReplicating
-// 0x0080 (0x0560 - 0x04E0)
-class AGbxMovingPlatformControllerActor_FullReplicating final : public AGbxMovingPlatformControllerActor
+// Class GbxGame.MissionSystemSettings
+// 0x0018 (0x0050 - 0x0038)
+class UMissionSystemSettings final : public UDeveloperSettings
 {
 public:
-	struct FGbxMovingPlatformReplicatedMoveState_FullReplicating ReplicatedMoveState;                // 0x04E0(0x0070)(Net, Transient, RepNotify, NoDestructor, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_550[0x10];                                     // 0x0550(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnRep_MoveState();
+	TArray<struct FMissionInteractObjectiveSubTypeConfig> InteractObjectiveSubTypes;                 // 0x0038(0x0010)(Edit, ZeroConstructor, Config, NativeAccessSpecifierPrivate)
+	int32                                         DefaultObjectivePhaseWaypointVisibilityFlags;      // 0x0048(0x0004)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bShouldGeneratedMissionsCacheRewardsOnCreation;    // 0x004C(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4D[0x3];                                       // 0x004D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformControllerActor_FullReplicating")
+		STATIC_CLASS_IMPL("MissionSystemSettings")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformControllerActor_FullReplicating")
+		STATIC_NAME_IMPL(L"MissionSystemSettings")
 	}
-	static class AGbxMovingPlatformControllerActor_FullReplicating* GetDefaultObj()
+	static class UMissionSystemSettings* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxMovingPlatformControllerActor_FullReplicating>();
+		return GetDefaultObjImpl<UMissionSystemSettings>();
 	}
 };
-DUMPER7_ASSERTS_AGbxMovingPlatformControllerActor_FullReplicating;
-
-// Class GbxGame.MissionTaskChannel
-// 0x0010 (0x0078 - 0x0068)
-class UMissionTaskChannel final : public Uchannel
-{
-public:
-	uint8                                         Pad_68[0x10];                                      // 0x0068(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("MissionTaskChannel")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"MissionTaskChannel")
-	}
-	static class UMissionTaskChannel* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UMissionTaskChannel>();
-	}
-};
-DUMPER7_ASSERTS_UMissionTaskChannel;
+DUMPER7_ASSERTS_UMissionSystemSettings;
 
 // Class GbxGame.NexusConfigStoreGbxDiscoveryDiscovererDef
 // 0x0000 (0x0390 - 0x0390)
@@ -12940,31 +13330,28 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryDiscovererDef;
 
-// Class GbxGame.GbxMomentData
-// 0x0010 (0x0060 - 0x0050)
-class UGbxMomentData final : public UGbxGraphAsset
+// Class GbxGame.GbxMaterialParameterTemplateData
+// 0x0010 (0x0040 - 0x0030)
+class UGbxMaterialParameterTemplateData final : public UDataAsset
 {
 public:
-	uint8                                         Pad_50[0x10];                                      // 0x0050(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	TArray<class FName> GetDialogScriptIdents() const;
+	TArray<struct FGbxMaterialParameterInfo>      GbxMaterialParameterInfo;                          // 0x0030(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMomentData")
+		STATIC_CLASS_IMPL("GbxMaterialParameterTemplateData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMomentData")
+		STATIC_NAME_IMPL(L"GbxMaterialParameterTemplateData")
 	}
-	static class UGbxMomentData* GetDefaultObj()
+	static class UGbxMaterialParameterTemplateData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxMomentData>();
+		return GetDefaultObjImpl<UGbxMaterialParameterTemplateData>();
 	}
 };
-DUMPER7_ASSERTS_UGbxMomentData;
+DUMPER7_ASSERTS_UGbxMaterialParameterTemplateData;
 
 // Class GbxGame.GbxDiscoveryDiscovererInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -13038,59 +13425,95 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryFODBase;
 
-// Class GbxGame.GbxRewardsManager
-// 0x0098 (0x00C0 - 0x0028)
-class UGbxRewardsManager final : public UObject
+// Class GbxGame.GbxReplicatedNiagaraActor
+// 0x0020 (0x03B0 - 0x0390)
+class AGbxReplicatedNiagaraActor final : public AActor
 {
 public:
-	uint8                                         Pad_28[0x50];                                      // 0x0028(0x0050)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class FName>                           UniqueRewards;                                     // 0x0078(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxRewardPackage>              packages;                                          // 0x0088(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_98[0x28];                                      // 0x0098(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class UNiagaraComponent*                      NiagaraComponent;                                  // 0x0390(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class UNiagaraSystem*                         NiagaraAsset;                                      // 0x0398(0x0008)(Net, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<struct FGbxParticleParameter>          Parameters;                                        // 0x03A0(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
 
 public:
-	void Client_GivenPackage(const struct FGbxRewardPackage& Package);
-	void Client_OpenedPackage(const struct FGbxRewardPackage& Package);
-	void Client_OpenedPackages(const TArray<struct FGbxRewardPackage>& OpenedPackages);
-	void Server_DeletePackage(int32 PackageIndex);
-	void Server_OpenAllPackages();
-	void Server_OpenPackage(int32 PackageIndex);
+	void OnSystemFinished(class UNiagaraComponent* Component);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxRewardsManager")
+		STATIC_CLASS_IMPL("GbxReplicatedNiagaraActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxRewardsManager")
+		STATIC_NAME_IMPL(L"GbxReplicatedNiagaraActor")
 	}
-	static class UGbxRewardsManager* GetDefaultObj()
+	static class AGbxReplicatedNiagaraActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxRewardsManager>();
+		return GetDefaultObjImpl<AGbxReplicatedNiagaraActor>();
 	}
 };
-DUMPER7_ASSERTS_UGbxRewardsManager;
+DUMPER7_ASSERTS_AGbxReplicatedNiagaraActor;
 
-// Class GbxGame.GbxSkillActorComponent
-// 0x0000 (0x0110 - 0x0110)
-class UGbxSkillActorComponent final : public UActorComponent
+// Class GbxGame.GbxSkillActionExecHandler
+// 0x0050 (0x0078 - 0x0028)
+class UGbxSkillActionExecHandler : public UObject
+{
+public:
+	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	class AActor*                                 Actor;                                             // 0x0038(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class UGbxSkill*                              Skill;                                             // 0x0040(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class UGbxSkillScript*                        SkillScript;                                       // 0x0048(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_50[0x28];                                      // 0x0050(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void K2_ActionEnded();
+	void K2_ActionStarted();
+	void K2_BranchOnActionState(EGbxSkillActionHandlerState ActionState, ESkillStateScriptExec* Result);
+	void K2_Prepare();
+	void K2_Reset();
+	void K2_SkillConditionBranch(FGbxDefPtrProperty_ ConditionDef, ESkillStateScriptExec* Result);
+	void K2_SkillStateBranch(FGbxDefPtrProperty_ StateDef, ESkillStateScriptExec* Result);
+	void Publish(EGbxSkillActionHandlerResult Result);
+	void SetTargetActionItem(class FName InActionItemName);
+
+	bool IsSkillConditionEnabled(FGbxDefPtrProperty_ ConditionDef) const;
+	bool IsSkillStateEnabled(FGbxDefPtrProperty_ StateDef) const;
+	bool K2_CanExecute(class UGbxSkill* Context, class AActor* target) const;
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSkillActionExecHandler")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSkillActionExecHandler")
+	}
+	static class UGbxSkillActionExecHandler* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSkillActionExecHandler>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSkillActionExecHandler;
+
+// Class GbxGame.GbxSkillActionExecHandler_ControlledMove
+// 0x0000 (0x0078 - 0x0078)
+class UGbxSkillActionExecHandler_ControlledMove final : public UGbxSkillActionExecHandler
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkillActorComponent")
+		STATIC_CLASS_IMPL("GbxSkillActionExecHandler_ControlledMove")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkillActorComponent")
+		STATIC_NAME_IMPL(L"GbxSkillActionExecHandler_ControlledMove")
 	}
-	static class UGbxSkillActorComponent* GetDefaultObj()
+	static class UGbxSkillActionExecHandler_ControlledMove* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkillActorComponent>();
+		return GetDefaultObjImpl<UGbxSkillActionExecHandler_ControlledMove>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkillActorComponent;
+DUMPER7_ASSERTS_UGbxSkillActionExecHandler_ControlledMove;
 
 // Class GbxGame.GbxDiscoveryFODManagerCPU
 // 0x00E0 (0x0120 - 0x0040)
@@ -13141,25 +13564,34 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryFunctionLibrary;
 
-// Class GbxGame.WaypointLocationComponent
-// 0x0000 (0x02B0 - 0x02B0)
-class UWaypointLocationComponent final : public USceneComponent
+// Class GbxGame.VisibilityPhaseInterface
+// 0x0000 (0x0000 - 0x0000)
+class IVisibilityPhaseInterface final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("WaypointLocationComponent")
+		STATIC_CLASS_IMPL("VisibilityPhaseInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"WaypointLocationComponent")
+		STATIC_NAME_IMPL(L"VisibilityPhaseInterface")
 	}
-	static class UWaypointLocationComponent* GetDefaultObj()
+	static class IVisibilityPhaseInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UWaypointLocationComponent>();
+		return GetDefaultObjImpl<IVisibilityPhaseInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UWaypointLocationComponent;
+DUMPER7_ASSERTS_IVisibilityPhaseInterface;
 
 // Class GbxGame.NexusConfigStoreGbxDiscoveryGeneratorDef
 // 0x0000 (0x0390 - 0x0390)
@@ -13201,50 +13633,45 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryIconSizeDef;
 
-// Class GbxGame.GbxGameModeModuleHost_DataLayer
-// 0x0000 (0x00D0 - 0x00D0)
-class UGbxGameModeModuleHost_DataLayer final : public UGbxGameModeModuleHost
+// Class GbxGame.GbxTraceTrajectoryComponent
+// 0x0160 (0x0270 - 0x0110)
+class UGbxTraceTrajectoryComponent final : public UActorComponent
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxGameModeModuleHost_DataLayer")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxGameModeModuleHost_DataLayer")
-	}
-	static class UGbxGameModeModuleHost_DataLayer* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxGameModeModuleHost_DataLayer>();
-	}
-};
-DUMPER7_ASSERTS_UGbxGameModeModuleHost_DataLayer;
+	bool                                          bEnableOnStart;                                    // 0x0110(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_111[0x3];                                      // 0x0111(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxTraceTrajectorySimulationData      SimulationSettings;                                // 0x0114(0x0018)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxTraceTrajectoryCollisionData       CollisionSettings;                                 // 0x012C(0x0014)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxTraceTrajectorySourceData          SourceSettings;                                    // 0x0140(0x00D0)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(const struct FHitResult& HitResult)> OnPostSimulation;             // 0x0210(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	uint8                                         Pad_220[0x8];                                      // 0x0220(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class UFXSystemComponent*                     TrajectoryParticleComponent;                       // 0x0228(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_230[0x8];                                      // 0x0230(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class UFXSystemAsset*                         ParticleSystem;                                    // 0x0238(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_240[0x30];                                     // 0x0240(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
-// Class GbxGame.AnimNotifyState_Trick
-// 0x0018 (0x0048 - 0x0030)
-class UAnimNotifyState_Trick final : public UAnimNotifyState
-{
 public:
-	class FName                                   TrickEventName;                                    // 0x0030(0x0008)(BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           TrickEventTag;                                     // 0x0038(0x0008)(Edit, BlueprintReadOnly, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_40[0x8];                                       // 0x0040(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	void SetTrajectoryEnabled(bool bEnabled);
+	void SetTrajectoryParticleComponent(class UFXSystemComponent* ParticleComponent);
+	void UpdateCollisionShape();
+
+	bool IsTrajectoryEnabled() const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("AnimNotifyState_Trick")
+		STATIC_CLASS_IMPL("GbxTraceTrajectoryComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"AnimNotifyState_Trick")
+		STATIC_NAME_IMPL(L"GbxTraceTrajectoryComponent")
 	}
-	static class UAnimNotifyState_Trick* GetDefaultObj()
+	static class UGbxTraceTrajectoryComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UAnimNotifyState_Trick>();
+		return GetDefaultObjImpl<UGbxTraceTrajectoryComponent>();
 	}
 };
-DUMPER7_ASSERTS_UAnimNotifyState_Trick;
+DUMPER7_ASSERTS_UGbxTraceTrajectoryComponent;
 
 // Class GbxGame.NexusConfigStoreGbxDiscoveryInWorldIndicatorDef
 // 0x0000 (0x0390 - 0x0390)
@@ -13266,67 +13693,67 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryInWorldIndicatorDef;
 
-// Class GbxGame.GbxGameHeldActorFunctionLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxGameHeldActorFunctionLibrary final : public UGbxAIHeldActorFunctionLibrary
+// Class GbxGame.GbxGameAudioGlobals
+// 0x0280 (0x0438 - 0x01B8)
+class UGbxGameAudioGlobals : public UGbxAudioGlobals
 {
 public:
-	static void AIHeldExplosive_Destroy(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldExplosive_Detonate(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType, bool bKillSelfOnDetonate, bool bRequestNewExplosive, class AActor* InstigatorOverride);
-	static void AIHeldExplosive_Drop(class AActor* AIActor, bool bRequestNewHeldActor, class FName ID, EGbxAIHeldFilterType FilterType, class AActor* InstigatorOverride);
-	static TArray<class Aprojectile*> AIHeldExplosive_GetActors(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldExplosive_SetChildActorDef(class AActor* AIActor, FGameDataHandleProperty_ NewActorDef, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldExplosive_Spawn(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldExplosive_ThrowAtActor(class AActor* AIActor, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldExplosive_ThrowAtCrosshair(class AActor* AIActor, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldExplosive_ThrowAtTarget(class AActor* AIActor, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldExplosive_ThrowHeldActorAtLocation(class AActor* AIActor, const struct FVector& ThrowAtLocation, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldMelee_Destroy(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldMelee_Drop(class AActor* AIActor, bool bRequestNewHeldActor, class FName ID, EGbxAIHeldFilterType FilterType, class AActor* InstigatorOverride);
-	static TArray<class Aprojectile*> AIHeldMelee_GetActors(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldMelee_SetChildActorDef(class AActor* AIActor, FGameDataHandleProperty_ NewActorDef, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldMelee_Spawn(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldMelee_ThrowAtActor(class AActor* AIActor, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldMelee_ThrowAtCrosshair(class AActor* AIActor, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldMelee_ThrowAtTarget(class AActor* AIActor, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldMelee_ThrowHeldActorAtLocation(class AActor* AIActor, const struct FVector& ThrowAtLocation, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldProjectile_Destroy(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldProjectile_Drop(class AActor* AIActor, bool bRequestNewHeldActor, class FName ID, EGbxAIHeldFilterType FilterType, class AActor* InstigatorOverride);
-	static TArray<class Aprojectile*> AIHeldProjectile_GetActors(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static struct FImpactEffectSelection AIHeldProjectile_GetImpactEffect(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldProjectile_SetChildActorDef(class AActor* AIActor, FGameDataHandleProperty_ NewActorDef, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldProjectile_Spawn(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldProjectile_ThrowAtActor(class AActor* AIActor, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldProjectile_ThrowAtCrosshair(class AActor* AIActor, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldProjectile_ThrowAtTarget(class AActor* AIActor, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldProjectile_ThrowHeldActorAtLocation(class AActor* AIActor, const struct FVector& ThrowAtLocation, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldShield_Destroy(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldShield_Drop(class AActor* AIActor, bool bRequestNewHeldActor, class FName ID, EGbxAIHeldFilterType FilterType, class AActor* InstigatorOverride);
-	static TArray<class Aprojectile*> AIHeldShield_GetActors(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldShield_SetChildActorDef(class AActor* AIActor, FGameDataHandleProperty_ NewActorDef, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldShield_Spawn(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldShield_ThrowAtActor(class AActor* AIActor, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldShield_ThrowAtCrosshair(class AActor* AIActor, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldShield_ThrowAtTarget(class AActor* AIActor, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIHeldShield_ThrowHeldActorAtLocation(class AActor* AIActor, const struct FVector& ThrowAtLocation, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
-	static void AIProjectile_CallOnDrop(class Aprojectile* HeldProjectile);
-	static void AIProjectile_CallOnThrown(class Aprojectile* HeldProjectile);
+	float                                         BulletByCooldownInSeconds;                         // 0x01B8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BulletByMinShooterDistance;                        // 0x01BC(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BulletByMaxPathProximity;                          // 0x01C0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAlwaysScheduleBulletBy;                           // 0x01C4(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EBulletByDeterminant                          BulletByDeterminant;                               // 0x01C5(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1C6[0x2];                                      // 0x01C6(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	TSubclassOf<class UGbxMusicSystem>            MusicSystemClass;                                  // 0x01C8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         MusicSystemTickRate;                               // 0x01D0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1D4[0x4];                                      // 0x01D4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	TSubclassOf<class UGbxAudioVolumeAmbientSystem> AudioVolumeAmbientSystemClass;                   // 0x01D8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      AudioVolumeAudioProviderDef;                       // 0x01E0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           ExteriorAttenuationGameParameter;                  // 0x01F8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TSubclassOf<class UGbxSymphonicAmbientAudioSystem> SymphonicAmbienceSystemClass;                 // 0x0210(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SymphonicAmbienceTickRate;                         // 0x0218(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         OpportunisticAudioTickRate;                        // 0x021C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      OpportunisticAudioProviderDef;                     // 0x0220(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           HeadgearGameParameter;                             // 0x0238(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMap<struct FGameplayTag, int32>              HeadgearValueMap;                                  // 0x0250(0x0050)(Edit, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           ImpactVelocityGameParameter;                       // 0x02A0(0x0018)(Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           ImpactMassGameParameter;                           // 0x02B8(0x0018)(Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TSubclassOf<class UGbxAcousticSystem>         AcousticsSystemClass;                              // 0x02D0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         AcousticsTickRate;                                 // 0x02D8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2DC[0x4];                                      // 0x02DC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxAcousticsConfig*                    AcousticsConfig;                                   // 0x02E0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	FGbxDefPtrProperty_                           MuteAcousticsRTPC;                                 // 0x02E8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           CharacterWetnessRTPC;                              // 0x0300(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           CharacterIsInAirRTPC;                              // 0x0318(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMap<TSoftObjectPtr<class UPhysicalMaterial>, FGbxDefPtrProperty_> MaterialToAudioEventList;     // 0x0330(0x0050)(Edit, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           DefaultCollisionAudioEvent;                        // 0x0380(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           DestructionVelocityRTPC;                           // 0x0398(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           DestructionMassRTPC;                               // 0x03B0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         WallaSystemTickRate;                               // 0x03C8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3CC[0x4];                                      // 0x03CC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	FGbxDefPtrProperty_                           TownSizeRTPC;                                      // 0x03D0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           IsSubmergedRTPC;                                   // 0x03E8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           WadingPercentageRTPC;                              // 0x0400(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         RadioSystemTickRate;                               // 0x0418(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_41C[0x4];                                      // 0x041C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxRadioConfig*                        RadioConfig;                                       // 0x0420(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	TArray<struct FGbxAudioWeatherState>          WeatherStates;                                     // 0x0428(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameHeldActorFunctionLibrary")
+		STATIC_CLASS_IMPL("GbxGameAudioGlobals")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameHeldActorFunctionLibrary")
+		STATIC_NAME_IMPL(L"GbxGameAudioGlobals")
 	}
-	static class UGbxGameHeldActorFunctionLibrary* GetDefaultObj()
+	static class UGbxGameAudioGlobals* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameHeldActorFunctionLibrary>();
+		return GetDefaultObjImpl<UGbxGameAudioGlobals>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameHeldActorFunctionLibrary;
+DUMPER7_ASSERTS_UGbxGameAudioGlobals;
 
 // Class GbxGame.GbxDiscoveryLocationComponent
 // 0x0448 (0x0558 - 0x0110)
@@ -13411,47 +13838,28 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryLocationMetaData;
 
-// Class GbxGame.GbxLevelSequenceActor
-// 0x0358 (0x0790 - 0x0438)
-class AGbxLevelSequenceActor : public ALevelSequenceActor
+// Class GbxGame.GbxLevelRoadSubsystem
+// 0x0038 (0x0068 - 0x0030)
+class UGbxLevelRoadSubsystem final : public UWorldSubsystem
 {
 public:
-	uint8                                         Pad_438[0x28];                                     // 0x0438(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
-	FGameDataHandleProperty_                      CinematicMode;                                     // 0x0460(0x0018)(Edit, BlueprintVisible, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxActivityActorData                  ActivityData;                                      // 0x0478(0x0058)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
-	bool                                          bIsPersistent;                                     // 0x04D0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_4D1[0x7];                                      // 0x04D1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FFactsConduit                          FactsConduit;                                      // 0x04D8(0x00D8)(Edit, DisableEditOnTemplate, Protected, NativeAccessSpecifierProtected)
-	struct FGbxActorState                         ActorState;                                        // 0x05B0(0x0070)(Edit, EditConst, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_620[0x8];                                      // 0x0620(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class UMinimalLevelSequenceInstanceData*      PassthroughInstanceData;                           // 0x0628(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UMovieSceneBindingOverrides*            TransientBindingOverrides;                         // 0x0630(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_638[0x8];                                      // 0x0638(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxLevelSequenceActorSettings         ReplicatedSettings;                                // 0x0640(0x00D0)(Net, Transient, RepNotify, Protected, NativeAccessSpecifierProtected)
-	TArray<struct FGbxLevelSequenceActorBinding>  ReplicatedTransientBindings;                       // 0x0710(0x0010)(Net, ZeroConstructor, Transient, RepNotify, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_720[0x68];                                     // 0x0720(0x0068)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bAttachPlayerBodyComponents;                       // 0x0788(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_789[0x7];                                      // 0x0789(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnRep_ReplicatedSettings();
-	void OnRep_ReplicatedTransientBindings();
+	uint8                                         Pad_30[0x38];                                      // 0x0030(0x0038)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelSequenceActor")
+		STATIC_CLASS_IMPL("GbxLevelRoadSubsystem")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelSequenceActor")
+		STATIC_NAME_IMPL(L"GbxLevelRoadSubsystem")
 	}
-	static class AGbxLevelSequenceActor* GetDefaultObj()
+	static class UGbxLevelRoadSubsystem* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxLevelSequenceActor>();
+		return GetDefaultObjImpl<UGbxLevelRoadSubsystem>();
 	}
 };
-DUMPER7_ASSERTS_AGbxLevelSequenceActor;
+DUMPER7_ASSERTS_UGbxLevelRoadSubsystem;
 
 // Class GbxGame.GbxTriggerBase
 // 0x0250 (0x05E8 - 0x0398)
@@ -13482,26 +13890,6 @@ public:
 };
 DUMPER7_ASSERTS_AGbxTriggerBase;
 
-// Class GbxGame.GbxTriggerCapsule
-// 0x0000 (0x05E8 - 0x05E8)
-class AGbxTriggerCapsule : public AGbxTriggerBase
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTriggerCapsule")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTriggerCapsule")
-	}
-	static class AGbxTriggerCapsule* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<AGbxTriggerCapsule>();
-	}
-};
-DUMPER7_ASSERTS_AGbxTriggerCapsule;
-
 // Class GbxGame.NexusConfigStoreGbxDiscoveryLocationTypeDef
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGbxDiscoveryLocationTypeDef final : public UNexusConfigStoreBasic
@@ -13522,29 +13910,49 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryLocationTypeDef;
 
-// Class GbxGame.AnimNotifyState_Perch
-// 0x0008 (0x0038 - 0x0030)
-class UAnimNotifyState_Perch final : public UAnimNotifyState
+// Class GbxGame.GbxTrick_Anim
+// 0x0158 (0x0228 - 0x00D0)
+class UGbxTrick_Anim : public UGbxTrick_AnimBase
 {
 public:
-	EPerchVerticalInterp                          InterpOption;                                      // 0x0030(0x0001)(Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_31[0x7];                                       // 0x0031(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxTrickAnimData                      AnimData;                                          // 0x00D0(0x0150)(Edit, NativeAccessSpecifierPrivate)
+	class UAnimSequenceBase*                      Animation;                                         // 0x0220(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("AnimNotifyState_Perch")
+		STATIC_CLASS_IMPL("GbxTrick_Anim")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"AnimNotifyState_Perch")
+		STATIC_NAME_IMPL(L"GbxTrick_Anim")
 	}
-	static class UAnimNotifyState_Perch* GetDefaultObj()
+	static class UGbxTrick_Anim* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UAnimNotifyState_Perch>();
+		return GetDefaultObjImpl<UGbxTrick_Anim>();
 	}
 };
-DUMPER7_ASSERTS_UAnimNotifyState_Perch;
+DUMPER7_ASSERTS_UGbxTrick_Anim;
+
+// Class GbxGame.GbxTrick_Mood
+// 0x0000 (0x0228 - 0x0228)
+class UGbxTrick_Mood final : public UGbxTrick_Anim
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrick_Mood")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrick_Mood")
+	}
+	static class UGbxTrick_Mood* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrick_Mood>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrick_Mood;
 
 // Class GbxGame.GbxDiscoveryPinningInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -13575,25 +13983,25 @@ public:
 };
 DUMPER7_ASSERTS_IGbxDiscoveryPinningInterface;
 
-// Class GbxGame.NexusConfigStoreSpawnPattern
+// Class GbxGame.NexusConfigStoreMissionTask
 // 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreSpawnPattern final : public UNexusConfigStoreBasicDefFlat
+class UNexusConfigStoreMissionTask final : public UNexusConfigStoreBasicDefFlat
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreSpawnPattern")
+		STATIC_CLASS_IMPL("NexusConfigStoreMissionTask")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreSpawnPattern")
+		STATIC_NAME_IMPL(L"NexusConfigStoreMissionTask")
 	}
-	static class UNexusConfigStoreSpawnPattern* GetDefaultObj()
+	static class UNexusConfigStoreMissionTask* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreSpawnPattern>();
+		return GetDefaultObjImpl<UNexusConfigStoreMissionTask>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreSpawnPattern;
+DUMPER7_ASSERTS_UNexusConfigStoreMissionTask;
 
 // Class GbxGame.NexusConfigStoreGbxDiscoveryPresentationDef
 // 0x0000 (0x0390 - 0x0390)
@@ -13615,50 +14023,42 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryPresentationDef;
 
-// Class GbxGame.GbxProfileProgressRoleClientLocal
-// 0x0000 (0x0100 - 0x0100)
-class UGbxProfileProgressRoleClientLocal : public UGbxProfileProgressRoleFiltered
+// Class GbxGame.RefreshActor
+// 0x0000 (0x0000 - 0x0000)
+class IRefreshActor final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxProfileProgressRoleClientLocal")
+		STATIC_CLASS_IMPL("RefreshActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxProfileProgressRoleClientLocal")
+		STATIC_NAME_IMPL(L"RefreshActor")
 	}
-	static class UGbxProfileProgressRoleClientLocal* GetDefaultObj()
+	static class IRefreshActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxProfileProgressRoleClientLocal>();
+		return GetDefaultObjImpl<IRefreshActor>();
 	}
-};
-DUMPER7_ASSERTS_UGbxProfileProgressRoleClientLocal;
 
-// Class GbxGame.NexusConfigStoreRefreshManager
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreRefreshManager final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
+	class UObject* AsUObject()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreRefreshManager")
+		return reinterpret_cast<UObject*>(this);
 	}
-	static const class FName& StaticName()
+	const class UObject* AsUObject() const
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreRefreshManager")
-	}
-	static class UNexusConfigStoreRefreshManager* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreRefreshManager>();
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreRefreshManager;
+DUMPER7_ASSERTS_IRefreshActor;
 
 // Class GbxGame.GbxDiscoveryPerCharacterProgressRole
-// 0x0000 (0x0100 - 0x0100)
-class UGbxDiscoveryPerCharacterProgressRole final : public UGbxProfileProgressRoleClientLocal
+// 0x0008 (0x0108 - 0x0100)
+class UGbxDiscoveryPerCharacterProgressRole : public UGbxProfileProgressRoleClientLocal
 {
+public:
+	uint8                                         Pad_100[0x8];                                      // 0x0100(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
@@ -13675,111 +14075,107 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryPerCharacterProgressRole;
 
-// Class GbxGame.GbxSkillActionExceptionHandler
-// 0x0010 (0x0038 - 0x0028)
-class UGbxSkillActionExceptionHandler final : public UObject
+// Class GbxGame.GbxSkeletalMeshOwnerInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxSkeletalMeshOwnerInterface final
 {
 public:
-	TArray<struct FGbxSkillActionExceptionGroup>  ActionGroups;                                      // 0x0028(0x0010)(Edit, BlueprintReadOnly, ZeroConstructor, NativeAccessSpecifierPrivate)
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSkeletalMeshOwnerInterface")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSkeletalMeshOwnerInterface")
+	}
+	static class IGbxSkeletalMeshOwnerInterface* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IGbxSkeletalMeshOwnerInterface>();
+	}
 
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IGbxSkeletalMeshOwnerInterface;
+
+// Class GbxGame.InventoryModel
+// 0x0138 (0x0658 - 0x0520)
+class AInventoryModel final : public AInventoryBase
+{
 public:
-	static void BreakActionException(const struct FGbxSkillActionException& InActionException, EGbxSkillActionExecType* ExecType, EGbxSkillActionExceptionType* ExceptionType);
-
-	void HandleException(const struct FGbxSkillActionException& Exception) const;
-	bool IsSkillConditionEnabled(const struct FGbxSkillActionException& Exception, FGbxDefPtrProperty_ ConditionDef) const;
-	bool IsSkillStateEnabled(const struct FGbxSkillActionException& Exception, FGbxDefPtrProperty_ StateDef) const;
-	void K2_SkillConditionBranch(const struct FGbxSkillActionException& Exception, FGbxDefPtrProperty_ ConditionDef, ESkillStateScriptExec* Result) const;
-	void K2_SkillStateBranch(const struct FGbxSkillActionException& Exception, FGbxDefPtrProperty_ StateDef, ESkillStateScriptExec* Result) const;
-	void PlayActionGroup(const struct FGbxSkillActionException& InActionException, class FName GroupName) const;
+	uint8                                         Pad_520[0x28];                                     // 0x0520(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxActorData                          GbxActorData;                                      // 0x0548(0x0108)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_650[0x8];                                      // 0x0650(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkillActionExceptionHandler")
+		STATIC_CLASS_IMPL("InventoryModel")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkillActionExceptionHandler")
+		STATIC_NAME_IMPL(L"InventoryModel")
 	}
-	static class UGbxSkillActionExceptionHandler* GetDefaultObj()
+	static class AInventoryModel* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkillActionExceptionHandler>();
+		return GetDefaultObjImpl<AInventoryModel>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkillActionExceptionHandler;
+DUMPER7_ASSERTS_AInventoryModel;
 
-// Class GbxGame.InventoryBase
-// 0x0190 (0x0520 - 0x0390)
-class AInventoryBase : public AActor
+// Class GbxGame.GbxDiscoveryPerCharacterProgressRole_Shared
+// 0x0000 (0x0108 - 0x0108)
+class UGbxDiscoveryPerCharacterProgressRole_Shared final : public UGbxDiscoveryPerCharacterProgressRole
 {
-public:
-	uint8                                         Pad_390[0x40];                                     // 0x0390(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
-	class UInventoryBodyData*                     BodyData;                                          // 0x03D0(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_3D8[0x10];                                     // 0x03D8(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxItem                               item;                                              // 0x03E8(0x00F8)(Net, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_4E0[0x38];                                     // 0x04E0(0x0038)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxBrainTaskData*                      BrainTaskData;                                     // 0x0518(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-
-public:
-	const struct FInventoryIdentity GetIdentity() const;
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("InventoryBase")
+		STATIC_CLASS_IMPL("GbxDiscoveryPerCharacterProgressRole_Shared")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"InventoryBase")
+		STATIC_NAME_IMPL(L"GbxDiscoveryPerCharacterProgressRole_Shared")
 	}
-	static class AInventoryBase* GetDefaultObj()
+	static class UGbxDiscoveryPerCharacterProgressRole_Shared* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AInventoryBase>();
+		return GetDefaultObjImpl<UGbxDiscoveryPerCharacterProgressRole_Shared>();
 	}
 };
-DUMPER7_ASSERTS_AInventoryBase;
+DUMPER7_ASSERTS_UGbxDiscoveryPerCharacterProgressRole_Shared;
 
-// Class GbxGame.InventoryPickup
-// 0x04A0 (0x09C0 - 0x0520)
-class alignas(0x10) AInventoryPickup final : public AInventoryBase
+// Class GbxGame.NexusConfigStoreMelee
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreMelee final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_520[0x190];                                    // 0x0520(0x0190)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FUsableActorState                      UsableActorState;                                  // 0x06B0(0x00D0)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_780[0x8];                                      // 0x0780(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class UPrimitiveComponent*                    RootPrimitiveComponent;                            // 0x0788(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UFXSystemComponent*                     AttractEffectComponent;                            // 0x0790(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_798[0x98];                                     // 0x0798(0x0098)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxActorData                          GbxActorData;                                      // 0x0830(0x0108)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_938[0x88];                                     // 0x0938(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnActorOverlap(class AActor* OverlappedActor, class AActor* OtherActor);
-	void OnHit(class AActor* SelfActor, class AActor* OtherActor, const struct FVector& NormalImpulse, const struct FHitResult& Hit);
-	void OnPhysicsSleep(class UPrimitiveComponent* Component, class FName BoneName);
-	void OnPhysicsWake(class UPrimitiveComponent* Component, class FName BoneName);
-	void OnPickupHit_CheckImpactEffect(class UPrimitiveComponent* HitComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, const struct FVector& NormalImpulse, const struct FHitResult& Hit);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("InventoryPickup")
+		STATIC_CLASS_IMPL("NexusConfigStoreMelee")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"InventoryPickup")
+		STATIC_NAME_IMPL(L"NexusConfigStoreMelee")
 	}
-	static class AInventoryPickup* GetDefaultObj()
+	static class UNexusConfigStoreMelee* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AInventoryPickup>();
+		return GetDefaultObjImpl<UNexusConfigStoreMelee>();
 	}
 };
-DUMPER7_ASSERTS_AInventoryPickup;
+DUMPER7_ASSERTS_UNexusConfigStoreMelee;
 
 // Class GbxGame.GbxDiscoveryPerGameProgressRole
-// 0x0000 (0x0100 - 0x0100)
-class UGbxDiscoveryPerGameProgressRole final : public UGbxProfileProgressRoleHostPlayer
+// 0x0008 (0x0108 - 0x0100)
+class UGbxDiscoveryPerGameProgressRole : public UGbxProfileProgressRoleHostPlayer
 {
+public:
+	uint8                                         Pad_100[0x8];                                      // 0x0100(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
@@ -13796,25 +14192,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryPerGameProgressRole;
 
-// Class GbxGame.NexusConfigStoreMissionSets
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreMissionSets final : public UNexusConfigStoreBasic
+// Class GbxGame.GbxDiscoveryPerGameProgressRole_Shared
+// 0x0000 (0x0108 - 0x0108)
+class UGbxDiscoveryPerGameProgressRole_Shared final : public UGbxDiscoveryPerGameProgressRole
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreMissionSets")
+		STATIC_CLASS_IMPL("GbxDiscoveryPerGameProgressRole_Shared")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreMissionSets")
+		STATIC_NAME_IMPL(L"GbxDiscoveryPerGameProgressRole_Shared")
 	}
-	static class UNexusConfigStoreMissionSets* GetDefaultObj()
+	static class UGbxDiscoveryPerGameProgressRole_Shared* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreMissionSets>();
+		return GetDefaultObjImpl<UGbxDiscoveryPerGameProgressRole_Shared>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreMissionSets;
+DUMPER7_ASSERTS_UGbxDiscoveryPerGameProgressRole_Shared;
 
 // Class GbxGame.GbxDiscoveryProvider
 // 0x0030 (0x0058 - 0x0028)
@@ -13839,6 +14235,32 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryProvider;
 
+// Class GbxGame.GbxLevelRoadConnector
+// 0x0018 (0x03A8 - 0x0390)
+class AGbxLevelRoadConnector final : public AActor
+{
+public:
+	uint8                                         Pad_390[0x8];                                      // 0x0390(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxLevelRoadAreaComponent*             RoadAreaComponent;                                 // 0x0398(0x0008)(Edit, ExportObject, ZeroConstructor, EditConst, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	bool                                          bInitializedRoadNavArea;                           // 0x03A0(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_3A1[0x7];                                      // 0x03A1(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxLevelRoadConnector")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxLevelRoadConnector")
+	}
+	static class AGbxLevelRoadConnector* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxLevelRoadConnector>();
+	}
+};
+DUMPER7_ASSERTS_AGbxLevelRoadConnector;
+
 // Class GbxGame.GbxDiscoveryProviderObject
 // 0x00A0 (0x00C8 - 0x0028)
 class UGbxDiscoveryProviderObject : public UObject
@@ -13861,6 +14283,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxDiscoveryProviderObject;
+
+// Class GbxGame.NexusConfigStore_GbxProgressionCommandListDef
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStore_GbxProgressionCommandListDef final : public UNexusConfigStoreBasic
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStore_GbxProgressionCommandListDef")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStore_GbxProgressionCommandListDef")
+	}
+	static class UNexusConfigStore_GbxProgressionCommandListDef* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStore_GbxProgressionCommandListDef>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStore_GbxProgressionCommandListDef;
 
 // Class GbxGame.GbxDiscoveryProviderObject_DiscoveryLocation
 // 0x0050 (0x0118 - 0x00C8)
@@ -13885,29 +14327,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryProviderObject_DiscoveryLocation;
 
-// Class GbxGame.GbxLevelRoadSubsystem
-// 0x0038 (0x0068 - 0x0030)
-class UGbxLevelRoadSubsystem final : public UWorldSubsystem
-{
-public:
-	uint8                                         Pad_30[0x38];                                      // 0x0030(0x0038)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxLevelRoadSubsystem")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxLevelRoadSubsystem")
-	}
-	static class UGbxLevelRoadSubsystem* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxLevelRoadSubsystem>();
-	}
-};
-DUMPER7_ASSERTS_UGbxLevelRoadSubsystem;
-
 // Class GbxGame.GbxDiscoveryProviderObject_CustomWaypoint
 // 0x0048 (0x0110 - 0x00C8)
 class UGbxDiscoveryProviderObject_CustomWaypoint final : public UGbxDiscoveryProviderObject
@@ -13931,45 +14350,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryProviderObject_CustomWaypoint;
 
-// Class GbxGame.GbxProgression_BlueprintFunctions
-// 0x0000 (0x0028 - 0x0028)
-class UGbxProgression_BlueprintFunctions final : public UBlueprintFunctionLibrary
+// Class GbxGame.NexusConfigStore_GbxRadioScript
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStore_GbxRadioScript final : public UNexusConfigStoreBasic
 {
-public:
-	static bool AreProgressGraphGroupMaxNodesActivated(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
-	static bool AreProgressGraphGroupMaxNodesActivatedPure(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
-	static int32 GetProgressGraphGroupTotalPoints(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
-	static int32 GetProgressGraphGroupTotalPointsPure(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
-	static int32 GetProgressGraphNodeActivationLevel(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
-	static int32 GetProgressGraphNodeActivationLevelPure(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
-	static int32 GetProgressGraphNodeTotalPoints(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
-	static int32 GetProgressGraphNodeTotalPointsPure(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
-	static bool IsProgressGraphGroupUnlocked(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
-	static bool IsProgressGraphGroupUnlockedPure(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
-	static bool IsProgressGraphNodeActivated(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
-	static bool IsProgressGraphNodeActivatedPure(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
-	static bool IsProgressGraphNodeUnlocked(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
-	static bool IsProgressGraphNodeUnlockedPure(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
-	static struct FGbxUnlockableGroupNodeRef MakeGbxProgressGraphGroupNodeRef(const struct FGbxUnlockableGroupNodeRef& GraphGroupNode);
-	static struct FGbxUnlockableGroupRef MakeGbxProgressGraphGroupRef(const struct FGbxUnlockableGroupRef& GraphGroup);
-	static struct FGbxUnlockableNodeRef MakeGbxProgressGraphNodeRef(const struct FGbxUnlockableNodeRef& GraphNode);
-	static struct FGbxProgressPointsAmount MakeGbxProgressPointsAmount(const struct FGbxProgressPointsAmount& Amount);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxProgression_BlueprintFunctions")
+		STATIC_CLASS_IMPL("NexusConfigStore_GbxRadioScript")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxProgression_BlueprintFunctions")
+		STATIC_NAME_IMPL(L"NexusConfigStore_GbxRadioScript")
 	}
-	static class UGbxProgression_BlueprintFunctions* GetDefaultObj()
+	static class UNexusConfigStore_GbxRadioScript* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxProgression_BlueprintFunctions>();
+		return GetDefaultObjImpl<UNexusConfigStore_GbxRadioScript>();
 	}
 };
-DUMPER7_ASSERTS_UGbxProgression_BlueprintFunctions;
+DUMPER7_ASSERTS_UNexusConfigStore_GbxRadioScript;
 
 // Class GbxGame.GbxDiscoveryProviderObject_LiveReplicatedActor
 // 0x0028 (0x00F0 - 0x00C8)
@@ -13994,6 +14393,81 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryProviderObject_LiveReplicatedActor;
 
+// Class GbxGame.GbxSkill
+// 0x0228 (0x0250 - 0x0028)
+class UGbxSkill final : public UObject
+{
+public:
+	uint8                                         Pad_28[0x18];                                      // 0x0028(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	class AActor*                                 SkillOwner;                                        // 0x0040(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_48[0x40];                                      // 0x0048(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
+	TScriptInterface<class IGbxSkillOwner>        OwnerInterface;                                    // 0x0088(0x0010)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<class UGbxSkillScript*>                SkillScripts;                                      // 0x0098(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_A8[0x1A8];                                     // 0x00A8(0x01A8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	class AActor* GetActor() const;
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSkill")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSkill")
+	}
+	static class UGbxSkill* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSkill>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSkill;
+
+// Class GbxGame.GbxSequenceScene
+// 0x0000 (0x0178 - 0x0178)
+class UGbxSequenceScene final : public UMovieScene
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSequenceScene")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSequenceScene")
+	}
+	static class UGbxSequenceScene* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSequenceScene>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSequenceScene;
+
+// Class GbxGame.GbxTrick_AnimDirection
+// 0x0560 (0x0630 - 0x00D0)
+class UGbxTrick_AnimDirection final : public UGbxTrick_AnimBase
+{
+public:
+	struct FGbxTrickAnimData                      AnimDirections[0x4];                               // 0x00D0(0x0150)(Edit, NativeAccessSpecifierPrivate)
+	class UAnimSequenceBase*                      Animations[0x4];                                   // 0x0610(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrick_AnimDirection")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrick_AnimDirection")
+	}
+	static class UGbxTrick_AnimDirection* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrick_AnimDirection>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrick_AnimDirection;
+
 // Class GbxGame.GbxDiscoveryProvider_DiscoveryLocations
 // 0x0050 (0x00A8 - 0x0058)
 class UGbxDiscoveryProvider_DiscoveryLocations : public UGbxDiscoveryProvider
@@ -14016,29 +14490,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxDiscoveryProvider_DiscoveryLocations;
-
-// Class GbxGame.GbxRadioSystem
-// 0x0050 (0x0088 - 0x0038)
-class UGbxRadioSystem final : public UGbxWorldAudioSystemBase
-{
-public:
-	uint8                                         Pad_38[0x50];                                      // 0x0038(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxRadioSystem")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxRadioSystem")
-	}
-	static class UGbxRadioSystem* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxRadioSystem>();
-	}
-};
-DUMPER7_ASSERTS_UGbxRadioSystem;
 
 // Class GbxGame.GbxDiscoveryProvider_DiscoveryPins
 // 0x0010 (0x0068 - 0x0058)
@@ -14063,98 +14514,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryProvider_DiscoveryPins;
 
-// Class GbxGame.GbxSkillActionExecHandler
-// 0x0050 (0x0078 - 0x0028)
-class UGbxSkillActionExecHandler : public UObject
-{
-public:
-	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	class AActor*                                 Actor;                                             // 0x0038(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	class UGbxSkill*                              Skill;                                             // 0x0040(0x0008)(BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	class UGbxSkillScript*                        SkillScript;                                       // 0x0048(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_50[0x28];                                      // 0x0050(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void K2_ActionEnded();
-	void K2_ActionStarted();
-	void K2_BranchOnActionState(EGbxSkillActionHandlerState ActionState, ESkillStateScriptExec* Result);
-	void K2_Prepare();
-	void K2_Reset();
-	void K2_SkillConditionBranch(FGbxDefPtrProperty_ ConditionDef, ESkillStateScriptExec* Result);
-	void K2_SkillStateBranch(FGbxDefPtrProperty_ StateDef, ESkillStateScriptExec* Result);
-	void Publish(EGbxSkillActionHandlerResult Result);
-	void SetTargetActionItem(class FName InActionItemName);
-
-	bool IsSkillConditionEnabled(FGbxDefPtrProperty_ ConditionDef) const;
-	bool IsSkillStateEnabled(FGbxDefPtrProperty_ StateDef) const;
-	bool K2_CanExecute(class UGbxSkill* Context, class AActor* target) const;
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSkillActionExecHandler")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSkillActionExecHandler")
-	}
-	static class UGbxSkillActionExecHandler* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSkillActionExecHandler>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSkillActionExecHandler;
-
-// Class GbxGame.GbxShard
-// 0x0140 (0x0168 - 0x0028)
-class UGbxShard : public UObject
-{
-public:
-	class UGbxGameInstance*                       GameInstance;                                      // 0x0028(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	class UMissionTaskStateManager*               MissionTaskStateManager;                           // 0x0030(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	class UMissionSourceStateManager*             MissionSourceStateManager;                         // 0x0038(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_40[0x128];                                     // 0x0040(0x0128)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxShard")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxShard")
-	}
-	static class UGbxShard* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxShard>();
-	}
-};
-DUMPER7_ASSERTS_UGbxShard;
-
-// Class GbxGame.GbxTrick_Conditional
-// 0x0018 (0x00A8 - 0x0090)
-class UGbxTrick_Conditional final : public UGbxTrick
-{
-public:
-	TArray<struct FGbxTrickConditionalItem>       items;                                             // 0x0090(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	class UGbxTrick*                              BackupTrick;                                       // 0x00A0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrick_Conditional")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrick_Conditional")
-	}
-	static class UGbxTrick_Conditional* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrick_Conditional>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrick_Conditional;
-
 // Class GbxGame.GbxDiscoveryProvider_LiveReplicatedActors
 // 0x0010 (0x0068 - 0x0058)
 class UGbxDiscoveryProvider_LiveReplicatedActors final : public UGbxDiscoveryProvider
@@ -14178,6 +14537,26 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoveryProvider_LiveReplicatedActors;
 
+// Class GbxGame.NexusConfigSubType_Waypoint
+// 0x0000 (0x0040 - 0x0040)
+class UNexusConfigSubType_Waypoint final : public UNexusConfigLevelSubType
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigSubType_Waypoint")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigSubType_Waypoint")
+	}
+	static class UNexusConfigSubType_Waypoint* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigSubType_Waypoint>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigSubType_Waypoint;
+
 // Class GbxGame.NexusConfigStoreGbxDiscoveryRegionMapDef
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGbxDiscoveryRegionMapDef final : public UNexusConfigStoreBasic
@@ -14198,25 +14577,28 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryRegionMapDef;
 
-// Class GbxGame.GbxStatusEffectModifierType_Charge
-// 0x0000 (0x0030 - 0x0030)
-class UGbxStatusEffectModifierType_Charge final : public UGbxStatusEffectModifierType
+// Class GbxGame.GbxInventoryChannel
+// 0x0010 (0x0078 - 0x0068)
+class UGbxInventoryChannel final : public Uchannel
 {
+public:
+	uint8                                         Pad_68[0x10];                                      // 0x0068(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectModifierType_Charge")
+		STATIC_CLASS_IMPL("GbxInventoryChannel")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectModifierType_Charge")
+		STATIC_NAME_IMPL(L"GbxInventoryChannel")
 	}
-	static class UGbxStatusEffectModifierType_Charge* GetDefaultObj()
+	static class UGbxInventoryChannel* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectModifierType_Charge>();
+		return GetDefaultObjImpl<UGbxInventoryChannel>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectModifierType_Charge;
+DUMPER7_ASSERTS_UGbxInventoryChannel;
 
 // Class GbxGame.GbxDiscoveryDiscoverableActorData
 // 0x0038 (0x0060 - 0x0028)
@@ -14243,26 +14625,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxDiscoveryDiscoverableActorData;
-
-// Class GbxGame.GbxInteractObjectiveTypeFunctionLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxInteractObjectiveTypeFunctionLibrary final : public UBlueprintFunctionLibrary
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxInteractObjectiveTypeFunctionLibrary")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxInteractObjectiveTypeFunctionLibrary")
-	}
-	static class UGbxInteractObjectiveTypeFunctionLibrary* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxInteractObjectiveTypeFunctionLibrary>();
-	}
-};
-DUMPER7_ASSERTS_UGbxInteractObjectiveTypeFunctionLibrary;
 
 // Class GbxGame.GbxDiscoveryReplicationInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -14293,26 +14655,6 @@ public:
 };
 DUMPER7_ASSERTS_IGbxDiscoveryReplicationInterface;
 
-// Class GbxGame.NexusConfigStoreGbxItemBreakDown
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxItemBreakDown final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxItemBreakDown")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxItemBreakDown")
-	}
-	static class UNexusConfigStoreGbxItemBreakDown* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxItemBreakDown>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreGbxItemBreakDown;
-
 // Class GbxGame.GbxDiscoverySaveGameData
 // 0x00B0 (0x00D8 - 0x0028)
 class UGbxDiscoverySaveGameData final : public UObject
@@ -14336,6 +14678,88 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDiscoverySaveGameData;
 
+// Class GbxGame.GbxProgressGraph
+// 0x0188 (0x01B0 - 0x0028)
+class UGbxProgressGraph final : public UObject
+{
+public:
+	uint8                                         Pad_28[0xE0];                                      // 0x0028(0x00E0)(Fixing Size After Last Property [ Dumper-7 ])
+	FGbxDefPtrProperty_                           ProgressGraphDef;                                  // 0x0108(0x0018)(Net, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	FGbxDefPtrProperty_                           GraphGroupDef;                                     // 0x0120(0x0018)(Net, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxUnlockableNode>             nodes;                                             // 0x0138(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxUnlockableGroup>            Groups;                                            // 0x0148(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_158[0x10];                                     // 0x0158(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bIsUnlocked;                                       // 0x0168(0x0001)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_169[0x17];                                     // 0x0169(0x0017)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bIsActivated;                                      // 0x0180(0x0001)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	EProgressGraphAllowedOperation                AllowedOperations;                                 // 0x0181(0x0001)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_182[0x2E];                                     // 0x0182(0x002E)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void Server_ActivateNodeInGroup(int32 InGroupIndex, int32 InNodeIndex, bool InActivate, int32 ActivationLevel);
+	void Server_AddBonusPoints(int32 InNodeIndex, int32 InPointsToAdd);
+	void Server_ResetActivations();
+	void Server_ResetActivationsInGroup(int32 InGroupIndex);
+	void Server_ResetSpentPoints();
+	void Server_SpendProgressPoints(int32 InNodeIndex, int32 InPoints);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxProgressGraph")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxProgressGraph")
+	}
+	static class UGbxProgressGraph* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxProgressGraph>();
+	}
+};
+DUMPER7_ASSERTS_UGbxProgressGraph;
+
+// Class GbxGame.GbxTrick_Ragdoll
+// 0x0570 (0x0600 - 0x0090)
+class UGbxTrick_Ragdoll final : public UGbxTrick
+{
+public:
+	ERagdollBehaviorCategoryType                  RagdollBehaviorCategory;                           // 0x0090(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bUseOverride;                                      // 0x0094(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_95[0x3];                                       // 0x0095(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ForcedKinematicTimeScale[0x4];                     // 0x0098(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	EGbxSlotAnimEnd                               AnimDirectionsEnd;                                 // 0x00A8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bAlwaysPickClosestValidAnimDirection;              // 0x00A9(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_AA[0x6];                                       // 0x00AA(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxTrickAnimData                      AnimDirections[0x4];                               // 0x00B0(0x0150)(Edit, NativeAccessSpecifierPrivate)
+	bool                                          bCanRecover;                                       // 0x05F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bRigidifyOnSimulate;                               // 0x05F1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bWeldInitialWorldCollision;                        // 0x05F2(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bOverrideFriction;                                 // 0x05F3(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         FrictionCoefficient;                               // 0x05F4(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bOverrideRestitution;                              // 0x05F8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_5F9[0x3];                                      // 0x05F9(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         RestitutionCoefficient;                            // 0x05FC(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+
+public:
+	void ComponentHitCallback(class UPrimitiveComponent* HitComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, const struct FVector& NormalImpulse, const struct FHitResult& Hit);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrick_Ragdoll")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrick_Ragdoll")
+	}
+	static class UGbxTrick_Ragdoll* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrick_Ragdoll>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrick_Ragdoll;
+
 // Class GbxGame.NexusConfigStoreGbxDiscoveryViewableMapBehaviorDef
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGbxDiscoveryViewableMapBehaviorDef final : public UNexusConfigStoreBasic
@@ -14355,6 +14779,39 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryViewableMapBehaviorDef;
+
+// Class GbxGame.GbxPlayerCustomization
+// 0x0000 (0x0000 - 0x0000)
+class IGbxPlayerCustomization final
+{
+public:
+	void ApplyPlayerCustomization(FGbxDefPtrProperty_ NewCustomization);
+	void PrintCustomizationString();
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxPlayerCustomization")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxPlayerCustomization")
+	}
+	static class IGbxPlayerCustomization* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IGbxPlayerCustomization>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IGbxPlayerCustomization;
 
 // Class GbxGame.NexusConfigStoreGbxDiscoveryViewableMapDef
 // 0x0000 (0x0390 - 0x0390)
@@ -14376,54 +14833,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryViewableMapDef;
 
-// Class GbxGame.GbxProgressionDataManager
-// 0x0028 (0x0050 - 0x0028)
-class UGbxProgressionDataManager final : public UObject
-{
-public:
-	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxProgressStateDataContainer         ProgressStateData;                                 // 0x0038(0x0010)(Net, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_48[0x8];                                       // 0x0048(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void ServerResetProgressState(class FName Name_0);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxProgressionDataManager")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxProgressionDataManager")
-	}
-	static class UGbxProgressionDataManager* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxProgressionDataManager>();
-	}
-};
-DUMPER7_ASSERTS_UGbxProgressionDataManager;
-
-// Class GbxGame.GbxTrick_Teleport
-// 0x0000 (0x0438 - 0x0438)
-class UGbxTrick_Teleport final : public UGbxTrick_Loop
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrick_Teleport")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrick_Teleport")
-	}
-	static class UGbxTrick_Teleport* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrick_Teleport>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrick_Teleport;
-
 // Class GbxGame.NexusConfigStoreGbxDiscoveryViewableMapMetaData
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGbxDiscoveryViewableMapMetaData final : public UNexusConfigStoreBasic
@@ -14443,26 +14852,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxDiscoveryViewableMapMetaData;
-
-// Class GbxGame.NexusConfigStorePlayerGroup
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStorePlayerGroup final : public UNexusConfigStoreBasicDefFlat
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStorePlayerGroup")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStorePlayerGroup")
-	}
-	static class UNexusConfigStorePlayerGroup* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStorePlayerGroup>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStorePlayerGroup;
 
 // Class GbxGame.GbxDrawComponentOwner
 // 0x0000 (0x0000 - 0x0000)
@@ -14492,6 +14881,56 @@ public:
 	}
 };
 DUMPER7_ASSERTS_IGbxDrawComponentOwner;
+
+// Class GbxGame.GbxSequenceFeedbackSection
+// 0x00F8 (0x0208 - 0x0110)
+class UGbxSequenceFeedbackSection final : public UMovieSceneHookSection
+{
+public:
+	struct FGbxSequenceFeedbackChannel            channel;                                           // 0x0110(0x00F8)(Edit, NativeAccessSpecifierPublic)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSequenceFeedbackSection")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSequenceFeedbackSection")
+	}
+	static class UGbxSequenceFeedbackSection* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSequenceFeedbackSection>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSequenceFeedbackSection;
+
+// Class GbxGame.GbxSplineActorUserSettings
+// 0x0008 (0x0040 - 0x0038)
+class UGbxSplineActorUserSettings final : public UDeveloperSettings
+{
+public:
+	bool                                          bShowSplineDebug;                                  // 0x0038(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bShowSplineDebugInPIE;                             // 0x0039(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bShowVolumeDebug;                                  // 0x003A(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bShowVolumeDebugInPIE;                             // 0x003B(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3C[0x4];                                       // 0x003C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSplineActorUserSettings")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSplineActorUserSettings")
+	}
+	static class UGbxSplineActorUserSettings* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSplineActorUserSettings>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSplineActorUserSettings;
 
 // Class GbxGame.GbxDrone
 // 0x1670 (0x2BB0 - 0x1540)
@@ -14619,55 +15058,6 @@ public:
 };
 DUMPER7_ASSERTS_AGbxDrone;
 
-// Class GbxGame.GbxSequenceInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxSequenceInterface final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSequenceInterface")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSequenceInterface")
-	}
-	static class IGbxSequenceInterface* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IGbxSequenceInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IGbxSequenceInterface;
-
-// Class GbxGame.GbxStampNavMesh
-// 0x0000 (0x03A8 - 0x03A8)
-class AGbxStampNavMesh final : public AGbxNavMesh
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxStampNavMesh")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxStampNavMesh")
-	}
-	static class AGbxStampNavMesh* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<AGbxStampNavMesh>();
-	}
-};
-DUMPER7_ASSERTS_AGbxStampNavMesh;
-
 // Class GbxGame.GbxDroneMovementComponent
 // 0x0060 (0x0580 - 0x0520)
 class UGbxDroneMovementComponent final : public UGbxProjectileMovementComponent
@@ -14731,6 +15121,55 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDroneStatics;
 
+// Class GbxGame.GbxInputRebindContextProvider
+// 0x0000 (0x0000 - 0x0000)
+class IGbxInputRebindContextProvider final
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxInputRebindContextProvider")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxInputRebindContextProvider")
+	}
+	static class IGbxInputRebindContextProvider* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IGbxInputRebindContextProvider>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IGbxInputRebindContextProvider;
+
+// Class GbxGame.GbxTrick_Interp
+// 0x0000 (0x0090 - 0x0090)
+class UGbxTrick_Interp final : public UGbxTrick
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrick_Interp")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrick_Interp")
+	}
+	static class UGbxTrick_Interp* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrick_Interp>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrick_Interp;
+
 // Class GbxGame.GbxDynamicBindingResolverLibrary
 // 0x0000 (0x0028 - 0x0028)
 class UGbxDynamicBindingResolverLibrary final : public UBlueprintFunctionLibrary
@@ -14755,6 +15194,33 @@ public:
 };
 DUMPER7_ASSERTS_UGbxDynamicBindingResolverLibrary;
 
+// Class GbxGame.GbxGeometryCollectionScript
+// 0x0010 (0x00B0 - 0x00A0)
+class UGbxGeometryCollectionScript final : public UGbxActorScript
+{
+public:
+	uint8                                         Pad_A0[0x10];                                      // 0x00A0(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnApplyCollision(class UGbxGeometryCollectionScriptedComponent* Destructible, const struct FHitResult& HitResult, float CollisionSpeed) const;
+	void OnApplyHit(class UGbxGeometryCollectionScriptedComponent* Destructible, const struct FDestructionHitProperties& Properties) const;
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxGeometryCollectionScript")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxGeometryCollectionScript")
+	}
+	static class UGbxGeometryCollectionScript* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxGeometryCollectionScript>();
+	}
+};
+DUMPER7_ASSERTS_UGbxGeometryCollectionScript;
+
 // Class GbxGame.GbxPooledDecalComponent
 // 0x0010 (0x0320 - 0x0310)
 class UGbxPooledDecalComponent final : public UDecalComponent
@@ -14777,53 +15243,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxPooledDecalComponent;
-
-// Class GbxGame.GbxInventoryChannel
-// 0x0010 (0x0078 - 0x0068)
-class UGbxInventoryChannel final : public Uchannel
-{
-public:
-	uint8                                         Pad_68[0x10];                                      // 0x0068(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxInventoryChannel")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxInventoryChannel")
-	}
-	static class UGbxInventoryChannel* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxInventoryChannel>();
-	}
-};
-DUMPER7_ASSERTS_UGbxInventoryChannel;
-
-// Class GbxGame.GbxTrickScript_Loop
-// 0x0000 (0x0040 - 0x0040)
-class UGbxTrickScript_Loop : public UGbxTrickScript
-{
-public:
-	void OnLoop_Mut(class AActor* Actor, int32 LoopCount);
-	void OnLoopEnd_Mut(class AActor* Actor);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrickScript_Loop")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrickScript_Loop")
-	}
-	static class UGbxTrickScript_Loop* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrickScript_Loop>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrickScript_Loop;
 
 // Class GbxGame.GbxEffectsManagerProxy
 // 0x0008 (0x0030 - 0x0028)
@@ -14850,37 +15269,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxEffectsManagerProxy;
-
-// Class GbxGame.GbxGeometryCollectionScriptedComponent
-// 0x0090 (0x1040 - 0x0FB0)
-class UGbxGeometryCollectionScriptedComponent final : public UGbxGeometryCollectionComponent
-{
-public:
-	class UGbxNavPainterComponent*                PainterComponent;                                  // 0x0FB0(0x0008)(ExportObject, ZeroConstructor, InstancedReference, DuplicateTransient, NoDestructor, TextExportTransient, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	class UGbxNavLinkComponent*                   NavLinkComponent;                                  // 0x0FB8(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	TScriptInterface<class IGbxDestructibleScriptInterface> ScriptInstance;                          // 0x0FC0(0x0010)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_FD0[0x70];                                     // 0x0FD0(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static void InitNavLink(class UGbxGeometryCollectionComponent* GeometryCollection, class UGbxNavLinkComponent* NavLink);
-
-	void OnCollision(const struct FChaosPhysicsCollisionInfo& CollisionInfo);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxGeometryCollectionScriptedComponent")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxGeometryCollectionScriptedComponent")
-	}
-	static class UGbxGeometryCollectionScriptedComponent* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxGeometryCollectionScriptedComponent>();
-	}
-};
-DUMPER7_ASSERTS_UGbxGeometryCollectionScriptedComponent;
 
 // Class GbxGame.GbxEffectsFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -14910,6 +15298,60 @@ public:
 };
 DUMPER7_ASSERTS_UGbxEffectsFunctionLibrary;
 
+// Class GbxGame.GbxMovingPlatformInfluenceVolume
+// 0x0028 (0x03F0 - 0x03C8)
+class AGbxMovingPlatformInfluenceVolume final : public AVolume
+{
+public:
+	uint8                                         Pad_3C8[0x20];                                     // 0x03C8(0x0020)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bDelayCollisionToAccountForSpawnedOverlaps;        // 0x03E8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_3E9[0x7];                                      // 0x03E9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxMovingPlatformInfluenceVolume")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxMovingPlatformInfluenceVolume")
+	}
+	static class AGbxMovingPlatformInfluenceVolume* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxMovingPlatformInfluenceVolume>();
+	}
+};
+DUMPER7_ASSERTS_AGbxMovingPlatformInfluenceVolume;
+
+// Class GbxGame.FactsSystemObject
+// 0x0000 (0x0000 - 0x0000)
+class IFactsSystemObject final
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("FactsSystemObject")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"FactsSystemObject")
+	}
+	static class IFactsSystemObject* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IFactsSystemObject>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IFactsSystemObject;
+
 // Class GbxGame.NexusConfigStore_GbxEntitlement
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStore_GbxEntitlement final : public UNexusConfigStoreBasic
@@ -14929,6 +15371,62 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStore_GbxEntitlement;
+
+// Class GbxGame.GbxGameSpawnPoint
+// 0x0490 (0x0850 - 0x03C0)
+#pragma pack(push, 0x1)
+class alignas(0x10) AGbxGameSpawnPoint : public AGbxNavSpawnPoint
+{
+public:
+	uint8                                         Pad_3C0[0x40];                                     // 0x03C0(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxGameSpawnPointComponent*            GbxGameSpawnPointComponent;                        // 0x0400(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	struct FGbxActorData                          GbxActorData;                                      // 0x0408(0x0108)(Edit, DisableEditOnTemplate, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_510[0x230];                                    // 0x0510(0x0230)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxActorScriptOwnerState              ScriptData;                                        // 0x0740(0x0080)(Edit, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	struct FGbxActorState                         ActorState;                                        // 0x07C0(0x0070)(Edit, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
+	class AActor*                                 TerritoryOverrideActor;                            // 0x0830(0x0008)(Edit, ZeroConstructor, DisableEditOnTemplate, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_838[0x10];                                     // 0x0838(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnHasUsers();
+	void OnNoUsers();
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxGameSpawnPoint")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxGameSpawnPoint")
+	}
+	static class AGbxGameSpawnPoint* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxGameSpawnPoint>();
+	}
+};
+#pragma pack(pop)
+DUMPER7_ASSERTS_AGbxGameSpawnPoint;
+
+// Class GbxGame.GpsSpawnPoint
+// 0x0000 (0x0850 - 0x0850)
+class AGpsSpawnPoint final : public AGbxGameSpawnPoint
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GpsSpawnPoint")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GpsSpawnPoint")
+	}
+	static class AGpsSpawnPoint* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGpsSpawnPoint>();
+	}
+};
+DUMPER7_ASSERTS_AGpsSpawnPoint;
 
 // Class GbxGame.GbxEquippedInventorySlotOwner
 // 0x0000 (0x0000 - 0x0000)
@@ -14959,55 +15457,22 @@ public:
 };
 DUMPER7_ASSERTS_IGbxEquippedInventorySlotOwner;
 
-// Class GbxGame.GbxMovingPlatformLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxMovingPlatformLibrary final : public UBlueprintFunctionLibrary
-{
-public:
-	static void MovePlatformAlongSpline(class AActor* MovingPlatformActor, class AActor* SplineActor, float SpeedMultiplier);
-	static void MovePlatformToDestination(class AActor* MovingPlatformActor, int32 DestinationIndex, bool bTeleport);
-	static void SetMovingPlatformConfig(class AActor* MovingPlatformActor, const struct FGbxMovingPlatformConfig& InConfig);
-	static void SetMovingPlatformDestinationTransform(class AActor* MovingPlatformActor, int32 DestinationIndex, const struct FTransform& RelativeTransform);
-	static void SetMovingPlatformMoveCompleteCallback(class AActor* MovingPlatformActor, const TDelegate<void()>& Delegate);
-	static void SetMovingPlatformMoveSpeed(struct FGbxMovingPlatformConfig& Config, float InMoveSpeed);
-	static void SetMovingPlatformMoveTime(struct FGbxMovingPlatformConfig& Config, float InMoveTime);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformLibrary")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformLibrary")
-	}
-	static class UGbxMovingPlatformLibrary* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxMovingPlatformLibrary>();
-	}
-};
-DUMPER7_ASSERTS_UGbxMovingPlatformLibrary;
-
-// Class GbxGame.GbxProgressGraphUser
+// Class GbxGame.PerchProvider
 // 0x0000 (0x0000 - 0x0000)
-class IGbxProgressGraphUser final
+class IPerchProvider final
 {
-public:
-	void GbxGetUnlockableGroupNames(FGbxDefPtrProperty_ InGraph, TArray<class FName>* OutNames) const;
-	void GbxGetUnlockableNodeNames(FGbxDefPtrProperty_ InGraph, TArray<class FName>* OutNames) const;
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxProgressGraphUser")
+		STATIC_CLASS_IMPL("PerchProvider")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxProgressGraphUser")
+		STATIC_NAME_IMPL(L"PerchProvider")
 	}
-	static class IGbxProgressGraphUser* GetDefaultObj()
+	static class IPerchProvider* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxProgressGraphUser>();
+		return GetDefaultObjImpl<IPerchProvider>();
 	}
 
 	class UObject* AsUObject()
@@ -15019,7 +15484,7 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IGbxProgressGraphUser;
+DUMPER7_ASSERTS_IPerchProvider;
 
 // Class GbxGame.NexusConfigStoreGbxFeedbackDef
 // 0x0000 (0x0380 - 0x0380)
@@ -15040,57 +15505,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxFeedbackDef;
-
-// Class GbxGame.HazardInteractionComponent
-// 0x07A0 (0x0A50 - 0x02B0)
-class UHazardInteractionComponent final : public USceneComponent
-{
-public:
-	uint8                                         Pad_2A8[0x8];                                      // 0x02A8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bEnabled;                                          // 0x02B0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2B1[0x7];                                      // 0x02B1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	FGameDataHandleProperty_                      Interaction;                                       // 0x02B8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(FGameDataHandleProperty_ State, bool bIsInitialState)> OnInteractionStarted; // 0x02D0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	bool                                          bDamageOverride;                                   // 0x02E0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2E1[0x7];                                      // 0x02E1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxAttributeInit                      damage;                                            // 0x02E8(0x0050)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	EHazardPrimitiveCollectionType                DamagePrimitiveType;                               // 0x0338(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_339[0x7];                                      // 0x0339(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class FName>                           DamagePrimitiveNames;                              // 0x0340(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	EHazardPrimitiveCollectionType                InteractionPrimitiveType;                          // 0x0350(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_351[0x7];                                      // 0x0351(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class FName>                           InteractionPrimitiveNames;                         // 0x0358(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	TArray<class FName>                           EffectPrimitiveNames;                              // 0x0368(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	EHazardEffectSizeSourceType                   EffectSizeSource;                                  // 0x0378(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_379[0x3];                                      // 0x0379(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         EffectSizeOverride;                                // 0x037C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FHazardInteractionState                HazardInteraction;                                 // 0x0380(0x0658)(Transient, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
-	struct FHazardInteractionReplicationState     RepHazardInteractionState;                         // 0x09D8(0x0070)(Net, Transient, RepNotify, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_A48[0x8];                                      // 0x0A48(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void BeginInteraction(FGameDataHandleProperty_ NewState, bool bIsSource, float SourceDuration, class AActor* NewInstigator);
-	void OnRep_InteractionState();
-	void SetDamageInstigator(class AActor* NewInstigator);
-	void SetEnabled(bool bNewEnabled);
-
-	bool IsEnabled() const;
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("HazardInteractionComponent")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"HazardInteractionComponent")
-	}
-	static class UHazardInteractionComponent* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UHazardInteractionComponent>();
-	}
-};
-DUMPER7_ASSERTS_UHazardInteractionComponent;
 
 // Class GbxGame.GbxFeedbackObserver
 // 0x0000 (0x0000 - 0x0000)
@@ -15121,26 +15535,6 @@ public:
 };
 DUMPER7_ASSERTS_IGbxFeedbackObserver;
 
-// Class GbxGame.NexusConfigStore_PerchUser
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_PerchUser final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStore_PerchUser")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_PerchUser")
-	}
-	static class UNexusConfigStore_PerchUser* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStore_PerchUser>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStore_PerchUser;
-
 // Class GbxGame.GbxFeedbackStateManager
 // 0x0000 (0x0000 - 0x0000)
 class IGbxFeedbackStateManager final
@@ -15170,22 +15564,25 @@ public:
 };
 DUMPER7_ASSERTS_IGbxFeedbackStateManager;
 
-// Class GbxGame.GbxCameraShakeStateManager
+// Class GbxGame.ScreenParticleStateManager
 // 0x0000 (0x0000 - 0x0000)
-class IGbxCameraShakeStateManager final
+class IScreenParticleStateManager final
 {
+public:
+	void OnScreenParticleFinished(class UFXSystemComponent* Component);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxCameraShakeStateManager")
+		STATIC_CLASS_IMPL("ScreenParticleStateManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxCameraShakeStateManager")
+		STATIC_NAME_IMPL(L"ScreenParticleStateManager")
 	}
-	static class IGbxCameraShakeStateManager* GetDefaultObj()
+	static class IScreenParticleStateManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxCameraShakeStateManager>();
+		return GetDefaultObjImpl<IScreenParticleStateManager>();
 	}
 
 	class UObject* AsUObject()
@@ -15197,36 +15594,7 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IGbxCameraShakeStateManager;
-
-// Class GbxGame.RadialBlurStateManager
-// 0x0000 (0x0000 - 0x0000)
-class IRadialBlurStateManager final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("RadialBlurStateManager")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"RadialBlurStateManager")
-	}
-	static class IRadialBlurStateManager* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IRadialBlurStateManager>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IRadialBlurStateManager;
+DUMPER7_ASSERTS_IScreenParticleStateManager;
 
 // Class GbxGame.FeedbackAudioStateManager
 // 0x0000 (0x0000 - 0x0000)
@@ -15257,59 +15625,118 @@ public:
 };
 DUMPER7_ASSERTS_IFeedbackAudioStateManager;
 
-// Class GbxGame.GbxFirstPersonData
-// 0x0050 (0x0080 - 0x0030)
-class UGbxFirstPersonData final : public UDataAsset
+// Class GbxGame.GbxFlyToActorFunctionLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UGbxFlyToActorFunctionLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	uint8                                         Pad_30[0x8];                                       // 0x0030(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class USkeletalMesh*                          ArmsMesh;                                          // 0x0038(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	TSubclassOf<class UAnimInstance>              ArmsBlueprint;                                     // 0x0040(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FBoneReference                         CameraBone;                                        // 0x0048(0x0010)(Deprecated, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FBoneReference                         PivotBone;                                         // 0x0058(0x0010)(Deprecated, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   CameraBoneName;                                    // 0x0068(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   PivotBoneName;                                     // 0x0070(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class USkeletalMesh*                          LegsMesh;                                          // 0x0078(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	static void EndActorFlight(class AActor* FlightActor);
+	static void FlyActorToActor(FGbxDefPtrProperty_ FlightConfig, class AActor* FlightActor, class AActor* TargetActor);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxFirstPersonData")
+		STATIC_CLASS_IMPL("GbxFlyToActorFunctionLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxFirstPersonData")
+		STATIC_NAME_IMPL(L"GbxFlyToActorFunctionLibrary")
 	}
-	static class UGbxFirstPersonData* GetDefaultObj()
+	static class UGbxFlyToActorFunctionLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxFirstPersonData>();
+		return GetDefaultObjImpl<UGbxFlyToActorFunctionLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UGbxFirstPersonData;
+DUMPER7_ASSERTS_UGbxFlyToActorFunctionLibrary;
 
-// Class GbxGame.GbxForcedSlidingVolume
-// 0x0028 (0x03F0 - 0x03C8)
-class AGbxForcedSlidingVolume final : public AVolume
+// Class GbxGame.GbxGameCover
+// 0x00E0 (0x04E8 - 0x0408)
+class AGbxGameCover final : public ACover
 {
 public:
-	FGameDataHandleProperty_                      OverrideSlidingDef;                                // 0x03C8(0x0018)(Edit, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_3E0[0x10];                                     // 0x03E0(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_408[0x8];                                      // 0x0408(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FFactsConduit                          FactsConduit;                                      // 0x0410(0x00D8)(Edit, Net, DisableEditOnTemplate, RepNotify, Protected, NativeAccessSpecifierProtected)
+
+public:
+	void OnRep_FactsConduit();
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxForcedSlidingVolume")
+		STATIC_CLASS_IMPL("GbxGameCover")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxForcedSlidingVolume")
+		STATIC_NAME_IMPL(L"GbxGameCover")
 	}
-	static class AGbxForcedSlidingVolume* GetDefaultObj()
+	static class AGbxGameCover* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxForcedSlidingVolume>();
+		return GetDefaultObjImpl<AGbxGameCover>();
 	}
 };
-DUMPER7_ASSERTS_AGbxForcedSlidingVolume;
+DUMPER7_ASSERTS_AGbxGameCover;
+
+// Class GbxGame.GbxGameHeldActorFunctionLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UGbxGameHeldActorFunctionLibrary final : public UGbxAIHeldActorFunctionLibrary
+{
+public:
+	static void AIHeldExplosive_Destroy(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldExplosive_Detonate(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType, bool bKillSelfOnDetonate, bool bRequestNewExplosive, class AActor* InstigatorOverride);
+	static void AIHeldExplosive_Drop(class AActor* AIActor, bool bRequestNewHeldActor, class FName ID, EGbxAIHeldFilterType FilterType, class AActor* InstigatorOverride);
+	static TArray<class Aprojectile*> AIHeldExplosive_GetActors(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldExplosive_SetChildActorDef(class AActor* AIActor, FGameDataHandleProperty_ NewActorDef, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldExplosive_Spawn(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldExplosive_ThrowAtActor(class AActor* AIActor, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldExplosive_ThrowAtCrosshair(class AActor* AIActor, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldExplosive_ThrowAtTarget(class AActor* AIActor, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldExplosive_ThrowHeldActorAtLocation(class AActor* AIActor, const struct FVector& ThrowAtLocation, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldMelee_Destroy(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldMelee_Drop(class AActor* AIActor, bool bRequestNewHeldActor, class FName ID, EGbxAIHeldFilterType FilterType, class AActor* InstigatorOverride);
+	static TArray<class Aprojectile*> AIHeldMelee_GetActors(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldMelee_SetChildActorDef(class AActor* AIActor, FGameDataHandleProperty_ NewActorDef, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldMelee_Spawn(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldMelee_ThrowAtActor(class AActor* AIActor, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldMelee_ThrowAtCrosshair(class AActor* AIActor, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldMelee_ThrowAtTarget(class AActor* AIActor, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldMelee_ThrowHeldActorAtLocation(class AActor* AIActor, const struct FVector& ThrowAtLocation, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldProjectile_Destroy(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldProjectile_Drop(class AActor* AIActor, bool bRequestNewHeldActor, class FName ID, EGbxAIHeldFilterType FilterType, class AActor* InstigatorOverride);
+	static TArray<class Aprojectile*> AIHeldProjectile_GetActors(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static struct FImpactEffectSelection AIHeldProjectile_GetImpactEffect(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldProjectile_SetChildActorDef(class AActor* AIActor, FGameDataHandleProperty_ NewActorDef, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldProjectile_Spawn(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldProjectile_ThrowAtActor(class AActor* AIActor, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldProjectile_ThrowAtCrosshair(class AActor* AIActor, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldProjectile_ThrowAtTarget(class AActor* AIActor, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldProjectile_ThrowHeldActorAtLocation(class AActor* AIActor, const struct FVector& ThrowAtLocation, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldShield_Destroy(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldShield_Drop(class AActor* AIActor, bool bRequestNewHeldActor, class FName ID, EGbxAIHeldFilterType FilterType, class AActor* InstigatorOverride);
+	static TArray<class Aprojectile*> AIHeldShield_GetActors(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldShield_SetChildActorDef(class AActor* AIActor, FGameDataHandleProperty_ NewActorDef, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldShield_Spawn(class AActor* AIActor, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldShield_ThrowAtActor(class AActor* AIActor, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldShield_ThrowAtCrosshair(class AActor* AIActor, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldShield_ThrowAtTarget(class AActor* AIActor, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIHeldShield_ThrowHeldActorAtLocation(class AActor* AIActor, const struct FVector& ThrowAtLocation, const struct FTrajectoryOptions& TrajectoryOptions, bool bRequestNewHeldActor, bool bSpawnIfDoesNotExist, class FName ID, EGbxAIHeldFilterType FilterType);
+	static void AIProjectile_CallOnDrop(class Aprojectile* HeldProjectile);
+	static void AIProjectile_CallOnThrown(class Aprojectile* HeldProjectile);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxGameHeldActorFunctionLibrary")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxGameHeldActorFunctionLibrary")
+	}
+	static class UGbxGameHeldActorFunctionLibrary* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxGameHeldActorFunctionLibrary>();
+	}
+};
+DUMPER7_ASSERTS_UGbxGameHeldActorFunctionLibrary;
 
 // Class GbxGame.GbxGameInstance
 // 0x0260 (0x0420 - 0x01C0)
@@ -15377,26 +15804,6 @@ public:
 };
 DUMPER7_ASSERTS_AGbxGameMode;
 
-// Class GbxGame.GbxGameModeModuleClient
-// 0x0000 (0x0048 - 0x0048)
-class UGbxGameModeModuleClient final : public UGbxGameModeModule
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxGameModeModuleClient")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxGameModeModuleClient")
-	}
-	static class UGbxGameModeModuleClient* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxGameModeModuleClient>();
-	}
-};
-DUMPER7_ASSERTS_UGbxGameModeModuleClient;
-
 // Class GbxGame.NexusConfigStoreGbxGameModeModuleEvent
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGbxGameModeModuleEvent final : public UNexusConfigStoreBasic
@@ -15461,103 +15868,91 @@ public:
 };
 DUMPER7_ASSERTS_UGbxGameModeModuleHost_Facts;
 
-// Class GbxGame.NexusConfigStoreGbxGameModePhaseDef
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxGameModePhaseDef final : public UNexusConfigStoreBasic
+// Class GbxGame.GbxGameModeModuleHost_Timer
+// 0x0048 (0x0118 - 0x00D0)
+class UGbxGameModeModuleHost_Timer final : public UGbxGameModeModuleHost
 {
+public:
+	uint8                                         Pad_D0[0x48];                                      // 0x00D0(0x0048)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnTimerCompletedBP();
+	void OnTimerEventCompletedBP(const class FName& EventName);
+	void OnTimerPausedBP();
+	void OnTimerStartedBP();
+	void OnTimerUnpausedBP();
+	void PauseTimer();
+	void RestartTimer(int32 NewTimeLimit);
+	void UnpauseTimer();
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxGameModePhaseDef")
+		STATIC_CLASS_IMPL("GbxGameModeModuleHost_Timer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxGameModePhaseDef")
+		STATIC_NAME_IMPL(L"GbxGameModeModuleHost_Timer")
 	}
-	static class UNexusConfigStoreGbxGameModePhaseDef* GetDefaultObj()
+	static class UGbxGameModeModuleHost_Timer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxGameModePhaseDef>();
+		return GetDefaultObjImpl<UGbxGameModeModuleHost_Timer>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxGameModePhaseDef;
+DUMPER7_ASSERTS_UGbxGameModeModuleHost_Timer;
 
-// Class GbxGame.GbxGameModeStatics
+// Class GbxGame.GbxGamePhysicsBlueprintLibrary
 // 0x0000 (0x0028 - 0x0028)
-class UGbxGameModeStatics final : public UBlueprintFunctionLibrary
+class UGbxGamePhysicsBlueprintLibrary final : public UBlueprintFunctionLibrary
 {
 public:
-	static void ChangePlayerTeam(class UObject* WorldContext, class APlayerController* PlayerController, FGbxDefPtrProperty_ TeamDef, int32 TeamIndex);
-	static void EnableModulesWithTags(class UObject* WorldContext, const struct FGbxGameModeModuleTags& tags, ENexusBitSetOperator Op, bool bEnable, bool bOnlyEnableFirstModule);
-	static void EnableModulesWithType(class UObject* WorldContext, TSubclassOf<class UGbxGameModeModuleHost> type, bool bEnable, bool bOnlyEnableFirstModule);
-	static void EnableModuleWithName(class UObject* WorldContext, class FName ModuleName, bool bEnable);
-	static struct FGbxParam GetGameModeModuleParameter(class UObject* WorldContext, class FName ParameterName);
-	static FGbxDefPtrProperty_ GetGameModePhase(class UObject* WorldContext);
-	static bool HasGameModeTag(class UObject* WorldContext, const struct FGbxGameModeTags& tags, ENexusBitSetOperator Op);
-	static void SendEventToModules(class UObject* WorldContext, FGbxDefPtrProperty_ EventDef, const struct FGbxGameModeModuleEventParams& params);
-	static void SendEventToModulesWithTags(class UObject* WorldContext, FGbxDefPtrProperty_ EventDef, const struct FGbxGameModeModuleEventParams& params, const struct FGbxGameModeModuleTags& tags, ENexusBitSetOperator Op);
-	static void SendEventToModulesWithType(class UObject* WorldContext, FGbxDefPtrProperty_ EventDef, const struct FGbxGameModeModuleEventParams& params, TSubclassOf<class UGbxGameModeModuleHost> type);
-	static void SendEventToModuleWithName(class UObject* WorldContext, FGbxDefPtrProperty_ EventDef, const struct FGbxGameModeModuleEventParams& params, class FName ModuleName);
-	static void SetGameModePhase(class UObject* WorldContext, FGbxDefPtrProperty_ GameModePhase);
+	static class AGbxCharacter* GrabIt_Crosshair(class APlayerController* ControllerToUse, const struct FGrabItParams& params);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameModeStatics")
+		STATIC_CLASS_IMPL("GbxGamePhysicsBlueprintLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameModeStatics")
+		STATIC_NAME_IMPL(L"GbxGamePhysicsBlueprintLibrary")
 	}
-	static class UGbxGameModeStatics* GetDefaultObj()
+	static class UGbxGamePhysicsBlueprintLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameModeStatics>();
+		return GetDefaultObjImpl<UGbxGamePhysicsBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameModeStatics;
+DUMPER7_ASSERTS_UGbxGamePhysicsBlueprintLibrary;
 
-// Class GbxGame.GbxGameplayStatics
-// 0x0000 (0x0028 - 0x0028)
-class UGbxGameplayStatics final : public UGameplayStatics
+// Class GbxGame.GbxGameSpawnEncounter
+// 0x0178 (0x0618 - 0x04A0)
+class AGbxGameSpawnEncounter : public ASpawnEncounter
 {
 public:
-	static bool AreAllPlayersOverlappingActor(class UObject* WorldContextObject, class AActor* Actor);
-	static bool AreAllPlayersOverlappingActors(class UObject* WorldContextObject, const TArray<class AActor*>& Actors);
-	static bool AreAnyPlayersOverlappingActor(class UObject* WorldContextObject, class AActor* Actor);
-	static bool AreAnyPlayersOverlappingActors(class UObject* WorldContextObject, const TArray<class AActor*>& Actors);
-	static void BranchOnAreAllPlayersOverlappingActor(class UObject* WorldContextObject, class AActor* Actor, EPlayersOverlappingActorOutput* Branches);
-	static void BranchOnAreAllPlayersOverlappingActors(class UObject* WorldContextObject, const TArray<class AActor*>& Actors, EPlayersOverlappingActorOutput* Branches);
-	static void BranchOnAreAnyPlayersOverlappingActor(class UObject* WorldContextObject, class AActor* Actor, EPlayersOverlappingActorOutput* Branches);
-	static void BranchOnAreAnyPlayersOverlappingActors(class UObject* WorldContextObject, const TArray<class AActor*>& Actors, EPlayersOverlappingActorOutput* Branches);
-	static struct FVector CalculateConeVector(float Fraction, const struct FVector& Origin, const struct FVector& Direction, float AngleWidth, float AngleHeight);
-	static TArray<struct FTransform> GeneratePointsOnCone(const struct FVector& Origin, const struct FVector& Direction, int32 SampleCount, float SpreadAngle, float RotateAngle, float OriginOffset);
-	static TArray<struct FTransform> GeneratePointsOnFan(const struct FVector& Origin, const struct FVector& Direction, int32 SampleCount, float SpreadAngle, float RotateAngle, float OriginOffset);
-	static class AGbxCharacter* GetAssociatedPrimaryCharacter(class AActor* Actor);
-	static class AGbxGameplayDirector* GetGameplayDirector(const class UObject* WorldContextObject);
-	static struct FVector GetViewRelativeSpawnLocation(class AActor* Source, const struct FGbxRelativeLocation& RelativeLocation, const struct FVector& ViewRelativeOffset);
-	static bool SetCanCharacterStepUpOn(class AActor* Actor, ECanBeCharacterBase CanCharacterStepUpOn);
-	static void SpawnEmitterAtActorSocketMulticast(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, class AActor* Actor, class FName socket, bool bAutoDestroy, bool bAutoActivateSystem);
-	static void SpawnEmitterAtComponentSocketMulticast(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, class USceneComponent* Component, class FName socket, bool bAutoDestroy, bool bAutoActivateSystem);
-	static class UFXSystemComponent* SpawnEmitterAtLocation_Generic(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, const TArray<struct FGbxParticleParameter>& EmitterParameters, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, bool bAutoDestroy, EPSCPoolMethod PoolingMethod, bool bAutoActivateSystem, EGameplayEffectVisibility Visibility, EGameplayEffectReplication Replication);
-	static class UFXSystemComponent* SpawnEmitterAtLocation_GenericConst(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, const TArray<struct FGbxParticleParameter>& EmitterParameters, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, bool bAutoDestroy, EPSCPoolMethod PoolingMethod, bool bAutoActivateSystem, EGameplayEffectVisibility Visibility, EGameplayEffectReplication Replication);
-	static void SpawnEmitterAtLocationMulticast(const class UObject* WorldContextObject, class UFXSystemAsset* EmitterTemplate, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, bool bAutoDestroy, bool bAutoActivateSystem);
-	static void SpawnEmitterAttached_Body(class UFXSystemAsset* EmitterTemplate, const TArray<struct FGbxParticleParameter>& EmitterParameters, class AActor* AttachToActor, class FName AttachPointName, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, EAttachLocation LocationType, bool bAutoDestroy, EPSCPoolMethod PoolingMethod, bool bAutoActivate, EGameplayEffectBodyVisibility Visibility, EGameplayEffectReplication Replication);
-	static class UFXSystemComponent* SpawnEmitterAttached_Generic(class UFXSystemAsset* EmitterTemplate, const TArray<struct FGbxParticleParameter>& EmitterParameters, class USceneComponent* AttachToComponent, class FName AttachPointName, const struct FVector& Location, const struct FRotator& Rotation, const struct FVector& scale, EAttachLocation LocationType, bool bAutoDestroy, EPSCPoolMethod PoolingMethod, bool bAutoActivate, EGameplayEffectVisibility Visibility, EGameplayEffectReplication Replication);
+	uint8                                         Pad_4A0[0x10];                                     // 0x04A0(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxActivityActorData                  ActivityData;                                      // 0x04B0(0x0058)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_508[0x18];                                     // 0x0508(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FFactsConduit                          FactsConduit;                                      // 0x0520(0x00D8)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_5F8[0x8];                                      // 0x05F8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<TSoftClassPtr<class UClass>>           ActorClassesToCluster;                             // 0x0600(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	bool                                          bIgnoredTeamLinkingErrors;                         // 0x0610(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_611[0x7];                                      // 0x0611(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameplayStatics")
+		STATIC_CLASS_IMPL("GbxGameSpawnEncounter")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameplayStatics")
+		STATIC_NAME_IMPL(L"GbxGameSpawnEncounter")
 	}
-	static class UGbxGameplayStatics* GetDefaultObj()
+	static class AGbxGameSpawnEncounter* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameplayStatics>();
+		return GetDefaultObjImpl<AGbxGameSpawnEncounter>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameplayStatics;
+DUMPER7_ASSERTS_AGbxGameSpawnEncounter;
 
 // Class GbxGame.GbxGameSpawnerComponent
 // 0x02A0 (0x0ED0 - 0x0C30)
@@ -15594,86 +15989,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxGameSpawnerComponent;
 
-// Class GbxGame.GbxGameStateBase
-// 0x0070 (0x0480 - 0x0410)
-class AGbxGameStateBase : public AGameState
-{
-public:
-	uint8                                         Pad_410[0x18];                                     // 0x0410(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	class FString                                 ServerIdentity;                                    // 0x0428(0x0010)(Net, ZeroConstructor, Transient, RepNotify, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 ServerModeDef;                                     // 0x0438(0x0010)(Net, ZeroConstructor, Transient, RepNotify, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FDefSelectorResolveStates              SelectorStates;                                    // 0x0448(0x0010)(Net, Transient, NativeAccessSpecifierPublic)
-	class AGbxGameplayDirector*                   GameplayDirector;                                  // 0x0458(0x0008)(Net, ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	TArray<class AGbxPlayerGroupState*>           PlayerGroupStateStableArray;                       // 0x0460(0x0010)(Net, ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
-	TArray<TWeakObjectPtr<class AGbxPlayerState>> PlayerStateStableArray;                            // 0x0470(0x0010)(Net, ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPublic)
-
-public:
-	void OnGroupAdded(class AGbxPlayerGroupState* PlayerGroup);
-	void OnGroupRemoved(class AGbxPlayerGroupState* PlayerGroup);
-	void OnPlayerAddedToGroup(class AGbxPlayerGroupState* PlayerGroupState, class AGbxPlayerState* PlayerState);
-	void OnPlayerRemovedFromGroup(class AGbxPlayerGroupState* PlayerGroupState, class AGbxPlayerState* PlayerState);
-	void OnRep_ServerIdentity();
-	void OnRep_ServerModeDef();
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxGameStateBase")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxGameStateBase")
-	}
-	static class AGbxGameStateBase* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<AGbxGameStateBase>();
-	}
-};
-DUMPER7_ASSERTS_AGbxGameStateBase;
-
-// Class GbxGame.GbxGameState
-// 0x00B0 (0x0530 - 0x0480)
-class AGbxGameState : public AGbxGameStateBase
-{
-public:
-	bool                                          bRepPlayersOnly;                                   // 0x0480(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_481[0x7];                                      // 0x0481(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class APlayerState*                           HostPlayerState;                                   // 0x0488(0x0008)(Net, ZeroConstructor, Transient, RepNotify, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	bool                                          bPartyCrossplayEnabled;                            // 0x0490(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_491[0x7];                                      // 0x0491(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FPlatformGameplaySessionInfo>   PlatformGameplaySessions;                          // 0x0498(0x0010)(Net, ZeroConstructor, Transient, RepNotify, Protected, NativeAccessSpecifierProtected)
-	struct FGuid                                  GameSessionEventGuid;                              // 0x04A8(0x0010)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	struct FGuid                                  GameSessionGuid;                                   // 0x04B8(0x0010)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_4C8[0x40];                                     // 0x04C8(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UGbxGameModeModuleConduit*>      ModuleConduits;                                    // 0x0508(0x0010)(Net, ZeroConstructor, Transient, RepNotify, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_518[0x18];                                     // 0x0518(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnRep_bPlayersOnly();
-	void OnRep_HostPlayerState();
-	void OnRep_ModuleConduits();
-	void OnRep_PlatformGameplaySessions();
-	void PlayMusicEvent(const struct FGameplayTag& MusicEvent);
-	void PlaySoundInWorldMulticast(class AActor* ActorInstigator, const struct FGbxAudioEmitterSource& EmitterSource, const struct FGbxAudioEvent& Event, const struct FWwiseSwitchDef& OptionalSwitch);
-	void PlaySoundOnActorMulticast(class AActor* ActorInstigator, const struct FGbxAudioEvent& Event, const class FName EmitterTag, const struct FWwiseSwitchDef& OptionalSwitch);
-	void PlaySoundOnActorSocketMulticast(class AActor* ActorInstigator, const struct FGbxAudioEvent& Event, const class FName& SocketName);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxGameState")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxGameState")
-	}
-	static class AGbxGameState* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<AGbxGameState>();
-	}
-};
-DUMPER7_ASSERTS_AGbxGameState;
-
 // Class GbxGame.GbxGameTaggedAnimData
 // 0x0000 (0x0030 - 0x0030)
 class UGbxGameTaggedAnimData : public UGbxSpawnTaggedAnimData
@@ -15694,79 +16009,68 @@ public:
 };
 DUMPER7_ASSERTS_UGbxGameTaggedAnimData;
 
-// Class GbxGame.GbxGameUserSettings
-// 0x0118 (0x0260 - 0x0148)
-class UGbxGameUserSettings : public UGameUserSettings
+// Class GbxGame.GbxDestructibleGeometryCollectionScriptedData
+// 0x01F0 (0x04B0 - 0x02C0)
+class UGbxDestructibleGeometryCollectionScriptedData final : public UGbxDestructibleGeometryCollectionData
 {
 public:
-	class UDeviceProfileManager*                  DeviceProfileManager;                              // 0x0148(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class FName                                   ActiveGraphicsPreset;                              // 0x0150(0x0008)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	float                                         BlackLevel;                                        // 0x0158(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	float                                         BaseFOV;                                           // 0x015C(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	float                                         MotionBlurAmount;                                  // 0x0160(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          IsFrameGenerationEnabled;                          // 0x0164(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_165[0x3];                                      // 0x0165(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         FramesToGenerate;                                  // 0x0168(0x0004)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	EShowFPSMode                                  ShowFPSMode;                                       // 0x016C(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_16D[0x1B];                                     // 0x016D(0x001B)(Fixing Size After Last Property [ Dumper-7 ])
-	TMap<class FName, class FName>                GraphicsSettings;                                  // 0x0188(0x0050)(Config, Protected, NativeAccessSpecifierProtected)
-	EGbxNvidiaReflexMode                          ReflexMode;                                        // 0x01D8(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_1D9[0x4F];                                     // 0x01D9(0x004F)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          HWRayTracingEnabled;                               // 0x0228(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_229[0x37];                                     // 0x0229(0x0037)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void ApplyNewVSyncValue(bool NewValue);
-	class FName GetActiveGraphicsPreset();
-	TArray<class FName> GetAvailableGraphicsPresets();
-	class FName GetDefaultGraphicsPreset();
-	bool GetFrameGenerationState();
-	int32 GetMaxFrameGenerationGeneratedFrames();
-	float GetMotionblurAmout();
-	bool IsFrameGenerationSupported();
-	bool IsNvidiaReflexSupported();
-	void RevertGraphicsSetting(class FName GraphicsSetting);
-	void RevertGraphicsSettings();
-	void SetBaseFOV(float InBaseFOV);
-	void SetBlackLevel(float NewBlackLevel);
-	void SetFrameGenerationState(bool NewState);
-	void SetFramesToGenerate(int32 FramesToGenerate_0);
-	void SetGraphicsPreset(class FName newPreset);
-	void SetGraphicsPresetToDefault();
-	void SetGraphicsSettingOption(class FName GraphicsSetting, class FName Option);
-	void SetHDRBrightness(float NewHDRBrightness);
-	void SetLumenHardwareRayTracing(bool NewValue);
-	void SetMotionblurAmount(float NewValue);
-	void SetNvidiaStreamlineMode(EGbxNvidiaReflexMode ReflexMode_0);
-	void SetShowFPSMode(EShowFPSMode ShowFPSMode_0);
-	void ToggleHDR(bool Activate);
-
-	class FName GetActiveGraphicsSettingOption(class FName GraphicsSetting) const;
-	TArray<class FName> GetAvailableGraphicsSettingOptions(class FName GraphicsSetting) const;
-	TArray<class FName> GetAvailableGraphicsSettings() const;
-	float GetBaseFOV() const;
-	int32 GetFramesToGenerate() const;
-	float GetHDRBrightness() const;
-	EGbxNvidiaReflexMode GetNvidiaReflexMode() const;
-	EShowFPSMode GetShowFPSMode() const;
-	bool HasOverridenGraphicsSettings() const;
-	bool IsLumenHardwareRayTracingEnabled() const;
+	TArray<struct FDamageModifierDef>             DamageDefsToPass;                                  // 0x02C0(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	TSubclassOf<class UGbxGeometryCollectionScript> Script;                                          // 0x02D0(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxDestructibleCollisionEventSettings CollisionEventSettings;                            // 0x02D8(0x0040)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	bool                                          bOnCollisionChunkTurnIntoParticles;                // 0x0318(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_319[0x3];                                      // 0x0319(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ChunkTurnIntoParticlesMinVolume;                   // 0x031C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxDestructibleFractureEffectsSettings OnCollisionChunkTurnIntoParticlesSettings;        // 0x0320(0x00C0)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxDestructibleFractureEffectsSettings FractureEffectsSettings;                          // 0x03E0(0x00C0)(Edit, NativeAccessSpecifierPublic)
+	float                                         NavPainterBoundsOffset;                            // 0x04A0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4A4[0xC];                                      // 0x04A4(0x000C)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxGameUserSettings")
+		STATIC_CLASS_IMPL("GbxDestructibleGeometryCollectionScriptedData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxGameUserSettings")
+		STATIC_NAME_IMPL(L"GbxDestructibleGeometryCollectionScriptedData")
 	}
-	static class UGbxGameUserSettings* GetDefaultObj()
+	static class UGbxDestructibleGeometryCollectionScriptedData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxGameUserSettings>();
+		return GetDefaultObjImpl<UGbxDestructibleGeometryCollectionScriptedData>();
 	}
 };
-DUMPER7_ASSERTS_UGbxGameUserSettings;
+DUMPER7_ASSERTS_UGbxDestructibleGeometryCollectionScriptedData;
+
+// Class GbxGame.GbxGeometryCollectionScriptedComponent
+// 0x0090 (0x1040 - 0x0FB0)
+class UGbxGeometryCollectionScriptedComponent final : public UGbxGeometryCollectionComponent
+{
+public:
+	class UGbxNavPainterComponent*                PainterComponent;                                  // 0x0FB0(0x0008)(ExportObject, ZeroConstructor, InstancedReference, DuplicateTransient, NoDestructor, TextExportTransient, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UGbxNavLinkComponent*                   NavLinkComponent;                                  // 0x0FB8(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	TScriptInterface<class IGbxDestructibleScriptInterface> ScriptInstance;                          // 0x0FC0(0x0010)(ZeroConstructor, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_FD0[0x70];                                     // 0x0FD0(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static void InitNavLink(class UGbxGeometryCollectionComponent* GeometryCollection, class UGbxNavLinkComponent* NavLink);
+
+	void OnCollision(const struct FChaosPhysicsCollisionInfo& CollisionInfo);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxGeometryCollectionScriptedComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxGeometryCollectionScriptedComponent")
+	}
+	static class UGbxGeometryCollectionScriptedComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxGeometryCollectionScriptedComponent>();
+	}
+};
+DUMPER7_ASSERTS_UGbxGeometryCollectionScriptedComponent;
 
 // Class GbxGame.GbxGlobalInputManager
 // 0x0060 (0x0088 - 0x0028)
@@ -15844,26 +16148,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxGoreSettings;
 
-// Class GbxGame.NexusConfigStoreIngredients
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreIngredients final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreIngredients")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreIngredients")
-	}
-	static class UNexusConfigStoreIngredients* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreIngredients>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreIngredients;
-
 // Class GbxGame.GbxInputComponent
 // 0x0200 (0x0398 - 0x0198)
 class UGbxInputComponent final : public UInputComponent
@@ -15887,108 +16171,115 @@ public:
 };
 DUMPER7_ASSERTS_UGbxInputComponent;
 
-// Class GbxGame.GbxInputProgressRole
-// 0x0050 (0x0150 - 0x0100)
-class UGbxInputProgressRole final : public UGbxProfileProgressRoleClientLocal
+// Class GbxGame.GbxInventorySettings
+// 0x0000 (0x0038 - 0x0038)
+class UGbxInventorySettings final : public UDeveloperSettings
 {
 public:
-	uint8                                         Pad_100[0x50];                                     // 0x0100(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	static void GetInventoryEffectTypes(TArray<class FName>* OutNames);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxInputProgressRole")
+		STATIC_CLASS_IMPL("GbxInventorySettings")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxInputProgressRole")
+		STATIC_NAME_IMPL(L"GbxInventorySettings")
 	}
-	static class UGbxInputProgressRole* GetDefaultObj()
+	static class UGbxInventorySettings* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxInputProgressRole>();
+		return GetDefaultObjImpl<UGbxInventorySettings>();
 	}
 };
-DUMPER7_ASSERTS_UGbxInputProgressRole;
+DUMPER7_ASSERTS_UGbxInventorySettings;
 
-// Class GbxGame.GbxItemContainerOwner
-// 0x0000 (0x0000 - 0x0000)
-class IGbxItemContainerOwner final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxItemContainerOwner")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxItemContainerOwner")
-	}
-	static class IGbxItemContainerOwner* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IGbxItemContainerOwner>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IGbxItemContainerOwner;
-
-// Class GbxGame.NexusConfigStoreGbxItemFilter
+// Class GbxGame.NexusConfigStoreGbxItemBreakDown
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxItemFilter final : public UNexusConfigStoreBasic
+class UNexusConfigStoreGbxItemBreakDown final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxItemFilter")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxItemBreakDown")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxItemFilter")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxItemBreakDown")
 	}
-	static class UNexusConfigStoreGbxItemFilter* GetDefaultObj()
+	static class UNexusConfigStoreGbxItemBreakDown* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxItemFilter>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxItemBreakDown>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxItemFilter;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxItemBreakDown;
 
-// Class GbxGame.GbxLevelRoadAreaComponent
-// 0x0040 (0x0660 - 0x0620)
-class UGbxLevelRoadAreaComponent final : public UPrimitiveComponent
+// Class GbxGame.GbxLadder
+// 0x0000 (0x1E60 - 0x1E60)
+class AGbxLadder final : public AClimbableInteractiveObject
 {
 public:
-	EGbxLevelRoadAreaShape                        Shape;                                             // 0x0620(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         CylinderRadius;                                    // 0x0624(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         CylinderHalfHeight;                                // 0x0628(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_62C[0x4];                                      // 0x062C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVector                                BoxExtent;                                         // 0x0630(0x0018)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FColor                                 DrawColor;                                         // 0x0648(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FColor                                 DrawLinkColor;                                     // 0x064C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bDrawSolid;                                        // 0x0650(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_651[0xF];                                      // 0x0651(0x000F)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxLadder")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxLadder")
+	}
+	static class AGbxLadder* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxLadder>();
+	}
+};
+DUMPER7_ASSERTS_AGbxLadder;
+
+// Class GbxGame.GbxLevelSequenceSettings
+// 0x0018 (0x0050 - 0x0038)
+class UGbxLevelSequenceSettings final : public UDeveloperSettings
+{
+public:
+	FGbxDefPtrProperty_                           DefaultStandInDef;                                 // 0x0038(0x0018)(Edit, Config, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLevelRoadAreaComponent")
+		STATIC_CLASS_IMPL("GbxLevelSequenceSettings")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLevelRoadAreaComponent")
+		STATIC_NAME_IMPL(L"GbxLevelSequenceSettings")
 	}
-	static class UGbxLevelRoadAreaComponent* GetDefaultObj()
+	static class UGbxLevelSequenceSettings* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLevelRoadAreaComponent>();
+		return GetDefaultObjImpl<UGbxLevelSequenceSettings>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLevelRoadAreaComponent;
+DUMPER7_ASSERTS_UGbxLevelSequenceSettings;
+
+// Class GbxGame.GbxLevelSequenceSubsystem
+// 0x0020 (0x0050 - 0x0030)
+class UGbxLevelSequenceSubsystem final : public UWorldSubsystem
+{
+public:
+	uint8                                         Pad_30[0x18];                                      // 0x0030(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	class AGbxLevelSequenceManager*               CachedManager;                                     // 0x0048(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxLevelSequenceSubsystem")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxLevelSequenceSubsystem")
+	}
+	static class UGbxLevelSequenceSubsystem* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxLevelSequenceSubsystem>();
+	}
+};
+DUMPER7_ASSERTS_UGbxLevelSequenceSubsystem;
 
 // Class GbxGame.GbxLevelSequenceWeatherSettings
 // 0x0128 (0x0160 - 0x0038)
@@ -16087,89 +16378,57 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreLoadingScreenDataDefs;
 
-// Class GbxGame.GbxLocalPlayer
-// 0x0028 (0x02E0 - 0x02B8)
-class UGbxLocalPlayer : public ULocalPlayer
+// Class GbxGame.GbxMaterialParamInterpStatics
+// 0x0000 (0x0028 - 0x0028)
+class UGbxMaterialParamInterpStatics final : public UBlueprintFunctionLibrary
 {
 public:
-	uint8                                         Pad_2B8[0x8];                                      // 0x02B8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         OverallVolume;                                     // 0x02C0(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	float                                         MusicVolume;                                       // 0x02C4(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	float                                         SFXVolume;                                         // 0x02C8(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	float                                         DialogVolume;                                      // 0x02CC(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          PlayInBackground;                                  // 0x02D0(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          MuteHitNotifies;                                   // 0x02D1(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bRumbleEnabled;                                    // 0x02D2(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_2D3[0x1];                                      // 0x02D3(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         CameraShakeIntensity;                              // 0x02D4(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bReactiveTriggersEnabled;                          // 0x02D8(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bMouseSmoothingEnabled;                            // 0x02D9(0x0001)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_2DA[0x6];                                      // 0x02DA(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void SetCameraShakeIntensity(float InCameraShakeIntensity);
-	void SetDialogVolume(float NewDialogVolume);
-	void SetMouseSmoothingEnabled(bool bInMouseSmoothingEnabled);
-	void SetMusicVolume(float NewMusicVolume);
-	void SetMuteHitNotifies(bool NewMHN);
-	void SetOverallVolume(float NewOverallVolume);
-	void SetPlayInBackground(bool NewPIB);
-	void SetReactiveTriggersEnabled(bool bInReactiveTriggersEnabled);
-	void SetRumbleEnabled(bool bInRumbleEnabled);
-	void SetSFXVolume(float NewSFXVolume);
-
-	float GetCameraShakeIntensity() const;
-	bool GetMouseSmoothingEnabled() const;
-	bool GetMuteHitNotifies() const;
-	bool GetReactiveTriggersEnabled() const;
-	bool GetRumbleEnabled() const;
+	static void BreakGbxParamInterpOptions(const struct FGbxMaterialParamInterpOptions& InterpData, class FName* ParamName, float* InterpTime, class FName* MaterialSlot, EAlphaBlendOption* CurveOption, class UCurveFloat** CustomCurve);
+	static void InterpScalar(class UObject* Context, float NewValue, const struct FGbxMaterialParamInterpOptions& options);
+	static void InterpVector(class UObject* Context, const struct FLinearColor& NewValue, const struct FGbxMaterialParamInterpOptions& options);
+	static struct FGbxMaterialParamInterpOptions MakeGbxParamInterpOptions(class FName ParamName, float InterpTime, class FName MaterialSlot, EAlphaBlendOption CurveOption, class UCurveFloat* CustomCurve);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxLocalPlayer")
+		STATIC_CLASS_IMPL("GbxMaterialParamInterpStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxLocalPlayer")
+		STATIC_NAME_IMPL(L"GbxMaterialParamInterpStatics")
 	}
-	static class UGbxLocalPlayer* GetDefaultObj()
+	static class UGbxMaterialParamInterpStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxLocalPlayer>();
+		return GetDefaultObjImpl<UGbxMaterialParamInterpStatics>();
 	}
 };
-DUMPER7_ASSERTS_UGbxLocalPlayer;
+DUMPER7_ASSERTS_UGbxMaterialParamInterpStatics;
 
-// Class GbxGame.GbxManagedSkeletalMeshComponent
-// 0x00C0 (0x1240 - 0x1180)
-class UGbxManagedSkeletalMeshComponent : public USkeletalMeshComponent
+// Class GbxGame.GbxMomentData
+// 0x0010 (0x0060 - 0x0050)
+class UGbxMomentData final : public UGbxGraphAsset
 {
 public:
-	uint8                                         Pad_1178[0x20];                                    // 0x1178(0x0020)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxAnimUpdateRateParameters           UpdateRateParams;                                  // 0x1198(0x0018)(Edit, NativeAccessSpecifierPrivate)
-	FGbxDefPtrProperty_                           AnimUpdateRateParamsDef;                           // 0x11B0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bUseDefaultVisibilityBasedAnimTickOption;          // 0x11C8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bMinimalUpdateForCopyBones;                        // 0x11C9(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_11CA[0x76];                                    // 0x11CA(0x0076)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_50[0x10];                                      // 0x0050(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void NotifyAnimInitialized();
+	TArray<class FName> GetDialogScriptIdents() const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxManagedSkeletalMeshComponent")
+		STATIC_CLASS_IMPL("GbxMomentData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxManagedSkeletalMeshComponent")
+		STATIC_NAME_IMPL(L"GbxMomentData")
 	}
-	static class UGbxManagedSkeletalMeshComponent* GetDefaultObj()
+	static class UGbxMomentData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxManagedSkeletalMeshComponent>();
+		return GetDefaultObjImpl<UGbxMomentData>();
 	}
 };
-DUMPER7_ASSERTS_UGbxManagedSkeletalMeshComponent;
+DUMPER7_ASSERTS_UGbxMomentData;
 
 // Class GbxGame.GbxMomentFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -16306,48 +16565,22 @@ public:
 };
 DUMPER7_ASSERTS_UGbxMovingPlatformComponent;
 
-// Class GbxGame.GbxMovingPlatformInstanceConfigComponent
-// 0x0318 (0x0428 - 0x0110)
-class UGbxMovingPlatformInstanceConfigComponent final : public UActorComponent
-{
-public:
-	struct FGbxMovingPlatformConfig               MovingPlatformConfig;                              // 0x0110(0x0120)(Deprecated, Protected, NativeAccessSpecifierProtected)
-	struct FGbxMovingPlatformConfig               BodyNodeConfig;                                    // 0x0230(0x0120)(Edit, Transient, EditConst, Protected, NativeAccessSpecifierProtected)
-	struct FGbxMovingPlatformInstanceConfig       MovingPlatformInstanceConfig;                      // 0x0350(0x00D0)(Edit, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_420[0x8];                                      // 0x0420(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformInstanceConfigComponent")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformInstanceConfigComponent")
-	}
-	static class UGbxMovingPlatformInstanceConfigComponent* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxMovingPlatformInstanceConfigComponent>();
-	}
-};
-DUMPER7_ASSERTS_UGbxMovingPlatformInstanceConfigComponent;
-
-// Class GbxGame.GbxMovingPlatformActorInterface
+// Class GbxGame.GbxMovingPlatformAdherent
 // 0x0000 (0x0000 - 0x0000)
-class IGbxMovingPlatformActorInterface final
+class IGbxMovingPlatformAdherent final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformActorInterface")
+		STATIC_CLASS_IMPL("GbxMovingPlatformAdherent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformActorInterface")
+		STATIC_NAME_IMPL(L"GbxMovingPlatformAdherent")
 	}
-	static class IGbxMovingPlatformActorInterface* GetDefaultObj()
+	static class IGbxMovingPlatformAdherent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxMovingPlatformActorInterface>();
+		return GetDefaultObjImpl<IGbxMovingPlatformAdherent>();
 	}
 
 	class UObject* AsUObject()
@@ -16359,53 +16592,87 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IGbxMovingPlatformActorInterface;
+DUMPER7_ASSERTS_IGbxMovingPlatformAdherent;
 
-// Class GbxGame.GbxMovingPlatformControllerActor_DestinationReplication
-// 0x00F0 (0x05D0 - 0x04E0)
-class AGbxMovingPlatformControllerActor_DestinationReplication final : public AGbxMovingPlatformControllerActor
+// Class GbxGame.GbxMovingPlatformKillVolume
+// 0x0068 (0x0430 - 0x03C8)
+class AGbxMovingPlatformKillVolume final : public AVolume
 {
 public:
-	struct FGbxMovingPlatformMoveState            ReplicatedMoveState;                               // 0x04E0(0x00F0)(Net, Transient, RepNotify, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	float                                         TimeToKill;                                        // 0x03C8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bMustBeWithinMovingPlatformBounds;                 // 0x03CC(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_3CD[0x3];                                      // 0x03CD(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              OnlyKillByThisMovingPlatform;                      // 0x03D0(0x0038)(Edit, Protected, NativeAccessSpecifierProtected)
+	TArray<class FName>                           OnlyKillAtTheseDestinations;                       // 0x0408(0x0010)(Edit, ZeroConstructor, Protected, NativeAccessSpecifierProtected)
+	bool                                          bMustBeFullyAtDestinationToKill;                   // 0x0418(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_419[0x17];                                     // 0x0419(0x0017)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void OnRep_MoveState();
+	void GetAvailablePlatformStates(TArray<class FName>* OptionList);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxMovingPlatformControllerActor_DestinationReplication")
+		STATIC_CLASS_IMPL("GbxMovingPlatformKillVolume")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxMovingPlatformControllerActor_DestinationReplication")
+		STATIC_NAME_IMPL(L"GbxMovingPlatformKillVolume")
 	}
-	static class AGbxMovingPlatformControllerActor_DestinationReplication* GetDefaultObj()
+	static class AGbxMovingPlatformKillVolume* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxMovingPlatformControllerActor_DestinationReplication>();
+		return GetDefaultObjImpl<AGbxMovingPlatformKillVolume>();
 	}
 };
-DUMPER7_ASSERTS_AGbxMovingPlatformControllerActor_DestinationReplication;
+DUMPER7_ASSERTS_AGbxMovingPlatformKillVolume;
 
-// Class GbxGame.NexusConfigStoreGbxMusic
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxMusic final : public UNexusConfigStoreBasic
+// Class GbxGame.GbxOpportunisticPartitionDebugDrawComponent
+// 0x0000 (0x0670 - 0x0670)
+class UGbxOpportunisticPartitionDebugDrawComponent final : public UDebugDrawComponent
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxMusic")
+		STATIC_CLASS_IMPL("GbxOpportunisticPartitionDebugDrawComponent")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxMusic")
+		STATIC_NAME_IMPL(L"GbxOpportunisticPartitionDebugDrawComponent")
 	}
-	static class UNexusConfigStoreGbxMusic* GetDefaultObj()
+	static class UGbxOpportunisticPartitionDebugDrawComponent* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxMusic>();
+		return GetDefaultObjImpl<UGbxOpportunisticPartitionDebugDrawComponent>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxMusic;
+DUMPER7_ASSERTS_UGbxOpportunisticPartitionDebugDrawComponent;
+
+// Class GbxGame.GbxOpportunisticAmbientAudioComponent
+// 0x0020 (0x0640 - 0x0620)
+class UGbxOpportunisticAmbientAudioComponent final : public UPrimitiveComponent
+{
+public:
+	TArray<struct FGbxAmbientAudioOpportunitySet> OpportunitySets;                                   // 0x0620(0x0010)(Edit, BlueprintVisible, ZeroConstructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_630[0x10];                                     // 0x0630(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static bool GetAudioOpportunisticShowFlag();
+	static void SetAudioOpportunisticShowFlag(bool bValue);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxOpportunisticAmbientAudioComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxOpportunisticAmbientAudioComponent")
+	}
+	static class UGbxOpportunisticAmbientAudioComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxOpportunisticAmbientAudioComponent>();
+	}
+};
+DUMPER7_ASSERTS_UGbxOpportunisticAmbientAudioComponent;
 
 // Class GbxGame.NexusConfigStore_GbxOpportunisticAmbientAudio
 // 0x0000 (0x0390 - 0x0390)
@@ -16489,51 +16756,52 @@ public:
 };
 DUMPER7_ASSERTS_UGbxOpportunisticAmbientAudioSystem;
 
-// Class GbxGame.GbxPerCharacterStateRole
-// 0x0000 (0x0100 - 0x0100)
-class UGbxPerCharacterStateRole final : public UGbxProfileProgressRoleAllPlayers
+// Class GbxGame.GbxPlayerGroup
+// 0x0058 (0x03E8 - 0x0390)
+class AGbxPlayerGroup final : public AInfo
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxPerCharacterStateRole")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxPerCharacterStateRole")
-	}
-	static class UGbxPerCharacterStateRole* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxPerCharacterStateRole>();
-	}
-};
-DUMPER7_ASSERTS_UGbxPerCharacterStateRole;
+	TSubclassOf<class AGbxPlayerGroupState>       PlayerGroupStateClass;                             // 0x0390(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, NoClear, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_398[0x50];                                     // 0x0398(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
-// Class GbxGame.GbxPlayerBotBlueprintLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UGbxPlayerBotBlueprintLibrary final : public UBlueprintFunctionLibrary
-{
 public:
-	static bool IsPlayerBot(class AActor* Actor);
-	static void RemovePlayerBot(class AActor* Actor);
-	static void RemovePlayerBots(class UObject* WorldContext);
-	static class AGbxCharacter* SpawnPlayerBot(class UObject* WorldContext, class AActor* SpawnAt, FGameDataHandleProperty_ CharacterDef, const struct FTransform& Transform, bool bEnableSplitscreen);
+	TArray<class AGbxPlayerState*> GetPlayerStateArray() const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxPlayerBotBlueprintLibrary")
+		STATIC_CLASS_IMPL("GbxPlayerGroup")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxPlayerBotBlueprintLibrary")
+		STATIC_NAME_IMPL(L"GbxPlayerGroup")
 	}
-	static class UGbxPlayerBotBlueprintLibrary* GetDefaultObj()
+	static class AGbxPlayerGroup* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxPlayerBotBlueprintLibrary>();
+		return GetDefaultObjImpl<AGbxPlayerGroup>();
 	}
 };
-DUMPER7_ASSERTS_UGbxPlayerBotBlueprintLibrary;
+DUMPER7_ASSERTS_AGbxPlayerGroup;
+
+// Class GbxGame.NexusConfigStorePlayerGroup
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStorePlayerGroup final : public UNexusConfigStoreBasicDefFlat
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStorePlayerGroup")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStorePlayerGroup")
+	}
+	static class UNexusConfigStorePlayerGroup* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStorePlayerGroup>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStorePlayerGroup;
 
 // Class GbxGame.GbxPlayerGroupState
 // 0x00A8 (0x0438 - 0x0390)
@@ -16646,74 +16914,73 @@ public:
 };
 DUMPER7_ASSERTS_IGbxPlayerProfileOwner;
 
-// Class GbxGame.GbxPlayerSharedStateRole
-// 0x0000 (0x0100 - 0x0100)
-class UGbxPlayerSharedStateRole final : public UGbxProfileProgressRoleAllPlayers
+// Class GbxGame.GbxProgressionDataManager
+// 0x0028 (0x0050 - 0x0028)
+class UGbxProgressionDataManager final : public UObject
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxPlayerSharedStateRole")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxPlayerSharedStateRole")
-	}
-	static class UGbxPlayerSharedStateRole* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxPlayerSharedStateRole>();
-	}
-};
-DUMPER7_ASSERTS_UGbxPlayerSharedStateRole;
-
-// Class GbxGame.GbxPlayerState
-// 0x0248 (0x0698 - 0x0450)
-class AGbxPlayerState : public APlayerState
-{
-public:
-	uint8                                         Pad_450[0x7C];                                     // 0x0450(0x007C)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGuid                                  ActiveCharGuid;                                    // 0x04CC(0x0010)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_4DC[0x2];                                      // 0x04DC(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	uint8                                         SeamlessTravelTransferRepKey;                      // 0x04DE(0x0001)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_4DF[0x1];                                      // 0x04DF(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	TWeakObjectPtr<class AGbxPlayerGroupState>    PlayerGroupState;                                  // 0x04E0(0x0008)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FUniqueNetIdRepl                       PlatformUniqueId;                                  // 0x04E8(0x0030)(Net, RepNotify, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIsInRealtimeGameplay;                             // 0x0518(0x0001)(Net, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_519[0x17];                                     // 0x0519(0x0017)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   ReplicatedCharacterDef;                            // 0x0530(0x0008)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	int16                                         StableIndex;                                       // 0x0538(0x0002)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_53A[0x15E];                                    // 0x053A(0x015E)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxProgressStateDataContainer         ProgressStateData;                                 // 0x0038(0x0010)(Net, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_48[0x8];                                       // 0x0048(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void ClientLockUnlockable(const struct FSName& LedgerIdent, const struct FSName& EntryIdent);
-	void ClientSendProfileDataToVault(int32 InProfileIndex);
-	void ClientUnlockUnlockable(const struct FSName& LedgerIdent, const struct FSName& EntryIdent);
-	void OnGroupAssigned(class AGbxPlayerGroupState* InPlayerGroupState);
-	void OnGroupRemoved(class AGbxPlayerGroupState* InPlayerGroupState);
-	void OnRep_CharacterDef();
-	void OnRep_PlatformUniqueId();
-	void OnRep_PlayerGroupState();
-	void OnRep_SeamlessTravelTransferKey();
-	void OnRep_StableIndex();
-	void ServerSetDiscoveryRegion(const struct FSName& InRegionName);
-	void ServerSetPlatformUniqueId(const struct FUniqueNetIdRepl& InPlatformUniqueId);
-	void ServerSetRealtimeGameplayStatus(bool bIsInRTGP);
+	void ServerResetProgressState(class FName Name_0);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxPlayerState")
+		STATIC_CLASS_IMPL("GbxProgressionDataManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxPlayerState")
+		STATIC_NAME_IMPL(L"GbxProgressionDataManager")
 	}
-	static class AGbxPlayerState* GetDefaultObj()
+	static class UGbxProgressionDataManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxPlayerState>();
+		return GetDefaultObjImpl<UGbxProgressionDataManager>();
 	}
 };
-DUMPER7_ASSERTS_AGbxPlayerState;
+DUMPER7_ASSERTS_UGbxProgressionDataManager;
+
+// Class GbxGame.GbxProgression_BlueprintFunctions
+// 0x0000 (0x0028 - 0x0028)
+class UGbxProgression_BlueprintFunctions final : public UBlueprintFunctionLibrary
+{
+public:
+	static bool AreProgressGraphGroupMaxNodesActivated(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
+	static bool AreProgressGraphGroupMaxNodesActivatedPure(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
+	static int32 GetProgressGraphGroupTotalPoints(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
+	static int32 GetProgressGraphGroupTotalPointsPure(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
+	static int32 GetProgressGraphNodeActivationLevel(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
+	static int32 GetProgressGraphNodeActivationLevelPure(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
+	static int32 GetProgressGraphNodeTotalPoints(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
+	static int32 GetProgressGraphNodeTotalPointsPure(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
+	static bool IsProgressGraphGroupUnlocked(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
+	static bool IsProgressGraphGroupUnlockedPure(const struct FGbxUnlockableGroupRef& GraphGroup, class UObject* OwnerContext);
+	static bool IsProgressGraphNodeActivated(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
+	static bool IsProgressGraphNodeActivatedPure(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
+	static bool IsProgressGraphNodeUnlocked(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
+	static bool IsProgressGraphNodeUnlockedPure(const struct FGbxUnlockableNodeRef& GraphNode, class UObject* OwnerContext);
+	static struct FGbxUnlockableGroupNodeRef MakeGbxProgressGraphGroupNodeRef(const struct FGbxUnlockableGroupNodeRef& GraphGroupNode);
+	static struct FGbxUnlockableGroupRef MakeGbxProgressGraphGroupRef(const struct FGbxUnlockableGroupRef& GraphGroup);
+	static struct FGbxUnlockableNodeRef MakeGbxProgressGraphNodeRef(const struct FGbxUnlockableNodeRef& GraphNode);
+	static struct FGbxProgressPointsAmount MakeGbxProgressPointsAmount(const struct FGbxProgressPointsAmount& Amount);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxProgression_BlueprintFunctions")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxProgression_BlueprintFunctions")
+	}
+	static class UGbxProgression_BlueprintFunctions* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxProgression_BlueprintFunctions>();
+	}
+};
+DUMPER7_ASSERTS_UGbxProgression_BlueprintFunctions;
 
 // Class GbxGame.GbxProgression_ProgressRole
 // 0x0008 (0x0108 - 0x0100)
@@ -16738,81 +17005,59 @@ public:
 };
 DUMPER7_ASSERTS_UGbxProgression_ProgressRole;
 
-// Class GbxGame.NexusConfigStore_GbxProgressPointPoolDef
+// Class GbxGame.NexusConfigStore_GbxRewardsDef
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_GbxProgressPointPoolDef final : public UNexusConfigStoreBasic
+class UNexusConfigStore_GbxRewardsDef final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GbxProgressPointPoolDef")
+		STATIC_CLASS_IMPL("NexusConfigStore_GbxRewardsDef")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GbxProgressPointPoolDef")
+		STATIC_NAME_IMPL(L"NexusConfigStore_GbxRewardsDef")
 	}
-	static class UNexusConfigStore_GbxProgressPointPoolDef* GetDefaultObj()
+	static class UNexusConfigStore_GbxRewardsDef* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStore_GbxProgressPointPoolDef>();
+		return GetDefaultObjImpl<UNexusConfigStore_GbxRewardsDef>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStore_GbxProgressPointPoolDef;
+DUMPER7_ASSERTS_UNexusConfigStore_GbxRewardsDef;
 
-// Class GbxGame.GbxProximityProcessingActor
-// 0x00E0 (0x0470 - 0x0390)
-class alignas(0x10) AGbxProximityProcessingActor final : public AActor
+// Class GbxGame.GbxRewardsManager
+// 0x0098 (0x00C0 - 0x0028)
+class UGbxRewardsManager final : public UObject
 {
 public:
-	class USphereComponent*                       ProximityZone;                                     // 0x0390(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_398[0xD8];                                     // 0x0398(0x00D8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_28[0x50];                                      // 0x0028(0x0050)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class FName>                           UniqueRewards;                                     // 0x0078(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxRewardPackage>              packages;                                          // 0x0088(0x0010)(Net, ZeroConstructor, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_98[0x28];                                      // 0x0098(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-	void OnEnteringProximityZone(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const struct FHitResult& SweepResult);
-	void OnExitingProximityZone(class UPrimitiveComponent* OverlappedComponent, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void Client_GivenPackage(const struct FGbxRewardPackage& Package);
+	void Client_OpenedPackage(const struct FGbxRewardPackage& Package);
+	void Client_OpenedPackages(const TArray<struct FGbxRewardPackage>& OpenedPackages);
+	void Server_DeletePackage(int32 PackageIndex);
+	void Server_OpenAllPackages();
+	void Server_OpenPackage(int32 PackageIndex);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxProximityProcessingActor")
+		STATIC_CLASS_IMPL("GbxRewardsManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxProximityProcessingActor")
+		STATIC_NAME_IMPL(L"GbxRewardsManager")
 	}
-	static class AGbxProximityProcessingActor* GetDefaultObj()
+	static class UGbxRewardsManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxProximityProcessingActor>();
+		return GetDefaultObjImpl<UGbxRewardsManager>();
 	}
 };
-DUMPER7_ASSERTS_AGbxProximityProcessingActor;
-
-// Class GbxGame.GbxRewards_BlueprintFunctions
-// 0x0000 (0x0028 - 0x0028)
-class UGbxRewards_BlueprintFunctions final : public UBlueprintFunctionLibrary
-{
-public:
-	static void GiveReward(FGbxDefPtrProperty_ RewardDef, class UObject* OwnerContext);
-	static void GiveRewardAllPlayers(FGbxDefPtrProperty_ RewardDef, class UObject* WorldContextObject);
-	static void GiveRewardPackage(FGbxDefPtrProperty_ RewardDef, class UObject* OwnerContext);
-	static void GiveRewardPackageAllPlayers(FGbxDefPtrProperty_ RewardDef, class UObject* WorldContextObject);
-	static bool HasReward(const struct FGbxRewardRef& RewardRef, class UObject* OwnerContext);
-	static struct FGbxRewardRef MakeGbxRewardRef(const struct FGbxRewardRef& RewardRef);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxRewards_BlueprintFunctions")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxRewards_BlueprintFunctions")
-	}
-	static class UGbxRewards_BlueprintFunctions* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxRewards_BlueprintFunctions>();
-	}
-};
-DUMPER7_ASSERTS_UGbxRewards_BlueprintFunctions;
+DUMPER7_ASSERTS_UGbxRewardsManager;
 
 // Class GbxGame.GbxRotationBlueprintLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -16869,25 +17114,51 @@ public:
 };
 DUMPER7_ASSERTS_UGbxRotationDef_Editor;
 
-// Class GbxGame.NexusConfigStoreGbxRumbleDef
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreGbxRumbleDef final : public UNexusConfigStoreBasicDefFlat
+// Class GbxGame.GbxSceneViewer
+// 0x00A8 (0x0438 - 0x0390)
+class AGbxSceneViewer : public AActor
+{
+public:
+	uint8                                         Pad_390[0x28];                                     // 0x0390(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
+	class USceneComponent*                        RootSceneComponent;                                // 0x03B8(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UGbxSceneViewerSceneCaptureComponent*   ViewSceneCaptureComponent;                         // 0x03C0(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_3C8[0x70];                                     // 0x03C8(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSceneViewer")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSceneViewer")
+	}
+	static class AGbxSceneViewer* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxSceneViewer>();
+	}
+};
+DUMPER7_ASSERTS_AGbxSceneViewer;
+
+// Class GbxGame.NexusConfigStoreGbxSceneViewerDef
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxSceneViewerDef final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxRumbleDef")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxSceneViewerDef")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxRumbleDef")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSceneViewerDef")
 	}
-	static class UNexusConfigStoreGbxRumbleDef* GetDefaultObj()
+	static class UNexusConfigStoreGbxSceneViewerDef* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxRumbleDef>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxSceneViewerDef>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxRumbleDef;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxSceneViewerDef;
 
 // Class GbxGame.GbxSceneViewerProvider
 // 0x0000 (0x0000 - 0x0000)
@@ -16919,12 +17190,12 @@ public:
 DUMPER7_ASSERTS_IGbxSceneViewerProvider;
 
 // Class GbxGame.GbxSceneViewerSceneCaptureComponent
-// 0x0010 (0x0DB0 - 0x0DA0)
+// 0x0000 (0x0DB0 - 0x0DB0)
 class UGbxSceneViewerSceneCaptureComponent final : public USceneCaptureComponent2D
 {
 public:
-	EGbxSceneViewerCaptureProjectionType          GbxProjectionType;                                 // 0x0DA0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_DA4[0xC];                                      // 0x0DA4(0x000C)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	EGbxSceneViewerCaptureProjectionType          GbxProjectionType;                                 // 0x0DA8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_DAC[0x4];                                      // 0x0DAC(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
@@ -16992,30 +17263,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSequenceActorStateSection;
 
-// Class GbxGame.GbxSequenceActorStateTrack
-// 0x0018 (0x0110 - 0x00F8)
-class UGbxSequenceActorStateTrack final : public UMovieSceneTrack
-{
-public:
-	class UGbxSequenceActorStateSection*          PrimarySection;                                    // 0x00F8(0x0008)(ExportObject, ZeroConstructor, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_100[0x10];                                     // 0x0100(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSequenceActorStateTrack")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSequenceActorStateTrack")
-	}
-	static class UGbxSequenceActorStateTrack* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSequenceActorStateTrack>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSequenceActorStateTrack;
-
 // Class GbxGame.GbxSequenceAnimSetSection
 // 0x0000 (0x0380 - 0x0380)
 class UGbxSequenceAnimSetSection final : public UGbxMovieSceneSkeletalAnimationSection
@@ -17039,106 +17286,94 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSequenceAnimSetSection;
 
-// Class GbxGame.GbxSequenceAnimSetProviderSection
-// 0x0038 (0x0148 - 0x0110)
-class UGbxSequenceAnimSetProviderSection final : public UMovieSceneHookSection
+// Class GbxGame.GbxSequenceAnimSetSystem
+// 0x0000 (0x0040 - 0x0040)
+class UGbxSequenceAnimSetSystem final : public UMovieSceneEntitySystem
 {
 public:
-	uint8                                         Pad_110[0x8];                                      // 0x0110(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bFirstPersonTrickMesh;                             // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_119[0x7];                                      // 0x0119(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UGbxAnimSet*>                    AnimSets;                                          // 0x0120(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class UGbxAnimSetPicker*>              AnimSetPickers;                                    // 0x0130(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	class UGbxTrick*                              TrickToPlay;                                       // 0x0140(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSequenceAnimSetSystem")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSequenceAnimSetSystem")
+	}
+	static class UGbxSequenceAnimSetSystem* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSequenceAnimSetSystem>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSequenceAnimSetSystem;
+
+// Class GbxGame.GbxSequenceAnimSetTrack
+// 0x0000 (0x01A0 - 0x01A0)
+class UGbxSequenceAnimSetTrack final : public UGbxMovieSceneSkeletalAnimationTrack
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSequenceAnimSetTrack")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSequenceAnimSetTrack")
+	}
+	static class UGbxSequenceAnimSetTrack* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSequenceAnimSetTrack>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSequenceAnimSetTrack;
+
+// Class GbxGame.GbxSequenceBlueprintLibrary
+// 0x0000 (0x0028 - 0x0028)
+class UGbxSequenceBlueprintLibrary final : public UBlueprintFunctionLibrary
+{
+public:
+	static bool IsPlayingGbxSequence(class AActor* Actor, class UGbxSequence* GbxSequence);
+	static void PlayGbxSequence(class AActor* Actor, class UGbxSequence* GbxSequence, const struct FGbxSequencePlaybackSettings& PlaybackSettings);
+	static void StopGbxSequence(class AActor* Actor);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceAnimSetProviderSection")
+		STATIC_CLASS_IMPL("GbxSequenceBlueprintLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceAnimSetProviderSection")
+		STATIC_NAME_IMPL(L"GbxSequenceBlueprintLibrary")
 	}
-	static class UGbxSequenceAnimSetProviderSection* GetDefaultObj()
+	static class UGbxSequenceBlueprintLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceAnimSetProviderSection>();
+		return GetDefaultObjImpl<UGbxSequenceBlueprintLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceAnimSetProviderSection;
+DUMPER7_ASSERTS_UGbxSequenceBlueprintLibrary;
 
-// Class GbxGame.GbxSequenceAnimSetPickerTrack
+// Class GbxGame.GbxSequenceCapsuleOffsetSection
+// 0x0000 (0x0218 - 0x0218)
+class UGbxSequenceCapsuleOffsetSection final : public UMovieSceneDoubleSection
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSequenceCapsuleOffsetSection")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSequenceCapsuleOffsetSection")
+	}
+	static class UGbxSequenceCapsuleOffsetSection* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSequenceCapsuleOffsetSection>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSequenceCapsuleOffsetSection;
+
+// Class GbxGame.GbxSequenceFeedbackTrack
 // 0x0010 (0x0108 - 0x00F8)
-class UGbxSequenceAnimSetPickerTrack final : public UMovieSceneNameableTrack
-{
-public:
-	TArray<class UMovieSceneSection*>             PickerSections;                                    // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSequenceAnimSetPickerTrack")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSequenceAnimSetPickerTrack")
-	}
-	static class UGbxSequenceAnimSetPickerTrack* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSequenceAnimSetPickerTrack>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSequenceAnimSetPickerTrack;
-
-// Class GbxGame.GbxSequenceAnimSetProviderTrack
-// 0x0010 (0x0108 - 0x00F8)
-class UGbxSequenceAnimSetProviderTrack final : public UMovieSceneNameableTrack
-{
-public:
-	TArray<class UMovieSceneSection*>             ProviderSections;                                  // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSequenceAnimSetProviderTrack")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSequenceAnimSetProviderTrack")
-	}
-	static class UGbxSequenceAnimSetProviderTrack* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSequenceAnimSetProviderTrack>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSequenceAnimSetProviderTrack;
-
-// Class GbxGame.GbxSequenceCapsuleOffsetSystem
-// 0x0050 (0x0090 - 0x0040)
-class UGbxSequenceCapsuleOffsetSystem final : public UMovieSceneEntitySystem
-{
-public:
-	uint8                                         Pad_40[0x50];                                      // 0x0040(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSequenceCapsuleOffsetSystem")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSequenceCapsuleOffsetSystem")
-	}
-	static class UGbxSequenceCapsuleOffsetSystem* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSequenceCapsuleOffsetSystem>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSequenceCapsuleOffsetSystem;
-
-// Class GbxGame.GbxSequenceCapsuleOffsetTrack
-// 0x0010 (0x0108 - 0x00F8)
-class UGbxSequenceCapsuleOffsetTrack final : public UMovieSceneNameableTrack
+class UGbxSequenceFeedbackTrack final : public UMovieSceneNameableTrack
 {
 public:
 	TArray<class UMovieSceneSection*>             sections;                                          // 0x00F8(0x0010)(ExportObject, ZeroConstructor, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
@@ -17146,42 +17381,47 @@ public:
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceCapsuleOffsetTrack")
+		STATIC_CLASS_IMPL("GbxSequenceFeedbackTrack")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceCapsuleOffsetTrack")
+		STATIC_NAME_IMPL(L"GbxSequenceFeedbackTrack")
 	}
-	static class UGbxSequenceCapsuleOffsetTrack* GetDefaultObj()
+	static class UGbxSequenceFeedbackTrack* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceCapsuleOffsetTrack>();
+		return GetDefaultObjImpl<UGbxSequenceFeedbackTrack>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceCapsuleOffsetTrack;
+DUMPER7_ASSERTS_UGbxSequenceFeedbackTrack;
 
-// Class GbxGame.GbxSequenceLoopSection
-// 0x0030 (0x0128 - 0x00F8)
-class UGbxSequenceLoopSection final : public UMovieSceneSection
+// Class GbxGame.GbxSequenceInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxSequenceInterface final
 {
-public:
-	uint8                                         Pad_F8[0x8];                                       // 0x00F8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxSequenceLoopParams                 params;                                            // 0x0100(0x0028)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceLoopSection")
+		STATIC_CLASS_IMPL("GbxSequenceInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceLoopSection")
+		STATIC_NAME_IMPL(L"GbxSequenceInterface")
 	}
-	static class UGbxSequenceLoopSection* GetDefaultObj()
+	static class IGbxSequenceInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceLoopSection>();
+		return GetDefaultObjImpl<IGbxSequenceInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceLoopSection;
+DUMPER7_ASSERTS_IGbxSequenceInterface;
 
 // Class GbxGame.GbxSequenceLoopSystem
 // 0x0050 (0x0090 - 0x0040)
@@ -17229,28 +17469,48 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSequenceMomentEventSection;
 
-// Class GbxGame.GbxSequenceNormalizedDoubleBlenderSystem
-// 0x00B8 (0x0120 - 0x0068)
-class UGbxSequenceNormalizedDoubleBlenderSystem final : public UMovieSceneBlenderSystem
+// Class GbxGame.GbxSequenceNotifySectionBase
+// 0x0000 (0x0110 - 0x0110)
+class UGbxSequenceNotifySectionBase : public UMovieSceneHookSection
 {
 public:
-	uint8                                         Pad_68[0xB8];                                      // 0x0068(0x00B8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSequenceNotifySectionBase")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSequenceNotifySectionBase")
+	}
+	static class UGbxSequenceNotifySectionBase* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSequenceNotifySectionBase>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSequenceNotifySectionBase;
+
+// Class GbxGame.GbxSequenceNotifySection
+// 0x00F8 (0x0208 - 0x0110)
+class UGbxSequenceNotifySection final : public UGbxSequenceNotifySectionBase
+{
+public:
+	struct FGbxMovieSceneNotifyChannel            NotifyChannel;                                     // 0x0110(0x00F8)(Edit, ContainsInstancedReference, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceNormalizedDoubleBlenderSystem")
+		STATIC_CLASS_IMPL("GbxSequenceNotifySection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceNormalizedDoubleBlenderSystem")
+		STATIC_NAME_IMPL(L"GbxSequenceNotifySection")
 	}
-	static class UGbxSequenceNormalizedDoubleBlenderSystem* GetDefaultObj()
+	static class UGbxSequenceNotifySection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceNormalizedDoubleBlenderSystem>();
+		return GetDefaultObjImpl<UGbxSequenceNotifySection>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceNormalizedDoubleBlenderSystem;
+DUMPER7_ASSERTS_UGbxSequenceNotifySection;
 
 // Class GbxGame.GbxSequenceNotifyStateSection
 // 0x0010 (0x0120 - 0x0110)
@@ -17343,35 +17603,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSequencePlayRateTrack;
 
-// Class GbxGame.GbxSequenceQueryInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxSequenceQueryInterface final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSequenceQueryInterface")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSequenceQueryInterface")
-	}
-	static class IGbxSequenceQueryInterface* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IGbxSequenceQueryInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IGbxSequenceQueryInterface;
-
 // Class GbxGame.GbxSequenceRotationTargetSection
 // 0x0088 (0x0198 - 0x0110)
 class UGbxSequenceRotationTargetSection final : public UMovieSceneHookSection
@@ -17405,25 +17636,60 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSequenceRotationTargetSection;
 
-// Class GbxGame.GbxSequenceScene
-// 0x0000 (0x0178 - 0x0178)
-class UGbxSequenceScene final : public UMovieScene
+// Class GbxGame.GbxSequenceTrackActorBindingInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxSequenceTrackActorBindingInterface final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceScene")
+		STATIC_CLASS_IMPL("GbxSequenceTrackActorBindingInterface")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceScene")
+		STATIC_NAME_IMPL(L"GbxSequenceTrackActorBindingInterface")
 	}
-	static class UGbxSequenceScene* GetDefaultObj()
+	static class IGbxSequenceTrackActorBindingInterface* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceScene>();
+		return GetDefaultObjImpl<IGbxSequenceTrackActorBindingInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceScene;
+DUMPER7_ASSERTS_IGbxSequenceTrackActorBindingInterface;
+
+// Class GbxGame.GbxShard
+// 0x0140 (0x0168 - 0x0028)
+class UGbxShard : public UObject
+{
+public:
+	class UGbxGameInstance*                       GameInstance;                                      // 0x0028(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class UMissionTaskStateManager*               MissionTaskStateManager;                           // 0x0030(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class UMissionSourceStateManager*             MissionSourceStateManager;                         // 0x0038(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_40[0x128];                                     // 0x0040(0x0128)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxShard")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxShard")
+	}
+	static class UGbxShard* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxShard>();
+	}
+};
+DUMPER7_ASSERTS_UGbxShard;
 
 // Class GbxGame.GbxShardProvider
 // 0x0000 (0x0000 - 0x0000)
@@ -17518,113 +17784,38 @@ public:
 };
 DUMPER7_ASSERTS_AGbxSkeletalMeshActor;
 
-// Class GbxGame.GbxSkeletalMeshComponent
-// 0x0780 (0x19C0 - 0x1240)
-class UGbxSkeletalMeshComponent final : public UGbxManagedSkeletalMeshComponent
+// Class GbxGame.GbxSkillActionExceptionHandler
+// 0x0010 (0x0038 - 0x0028)
+class UGbxSkillActionExceptionHandler final : public UObject
 {
 public:
-	uint8                                         Pad_1240[0x40];                                    // 0x1240(0x0040)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxAnimSetState                       AnimSetState;                                      // 0x1280(0x01A8)(Edit, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1428[0x50];                                    // 0x1428(0x0050)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FForwardDynamics                       ForwardDynamics;                                   // 0x1478(0x0060)(Edit, NativeAccessSpecifierPrivate)
-	class UDGeneratedSimulationData*              GeneratedSimulations;                              // 0x14D8(0x0008)(Edit, ZeroConstructor, Transient, EditConst, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_14E0[0xA0];                                    // 0x14E0(0x00A0)(Fixing Size After Last Property [ Dumper-7 ])
-	FGbxDefPtrProperty_                           DefaultImpactEffect;                               // 0x1580(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMap<struct FDBodyReference, FGbxDefPtrProperty_> ImpactEffectBodyOverrides;                     // 0x1598(0x0050)(Edit, NativeAccessSpecifierPublic)
-	TArray<float>                                 ImpactTimes;                                       // 0x15E8(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPublic)
-	TArray<struct FCharacterGestaltRenderStateData> CharacterGestaltRenderStateData;                 // 0x15F8(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1608[0x18];                                    // 0x1608(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGestaltPartListData*                   GestaltPartList;                                   // 0x1620(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	class USkeletalMesh*                          BackupGestaltSkeletalMesh;                         // 0x1628(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	class USkeleton*                              TargetPrimarySkeleton;                             // 0x1630(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class USkeletalMesh*>                  ResolvedPartListMeshParts;                         // 0x1638(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class USkeletalMesh*>                  GestaltMeshParts;                                  // 0x1648(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class USkeletalMesh*>                  ThirdPersonOnlyMeshParts;                          // 0x1658(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	int32                                         GestaltSeed;                                       // 0x1668(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	int32                                         CachedMaxGestaltLOD;                               // 0x166C(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	class UPhysicsAsset*                          GestaltPhysicsAsset;                               // 0x1670(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class USkeletalMesh*>                  ExternalGestaltMeshes;                             // 0x1678(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TMap<class USkeletalMesh*, struct FMaterialArray> ExternalGestaltMaterialOverrides;              // 0x1688(0x0050)(Transient, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxExternalPhysicsAssetData>   ExternalPhysicsAssets;                             // 0x16D8(0x0010)(ZeroConstructor, Transient, NativeAccessSpecifierPrivate)
-	TMap<int32, struct FCharacterGestaltLODInfo>  CharacterGestaltLODInfo;                           // 0x16E8(0x0050)(Transient, NativeAccessSpecifierPrivate)
-	TMap<class USkeletalMesh*, int32>             MeshToMaterialOffsetMap;                           // 0x1738(0x0050)(Transient, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_1788[0x70];                                    // 0x1788(0x0070)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UMaterialInterface*>             GestaltCustomMaskMaterials;                        // 0x17F8(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class UMaterialInterface*>             GestaltCustomGlowMaterials;                        // 0x1808(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_1818[0x68];                                    // 0x1818(0x0068)(Fixing Size After Last Property [ Dumper-7 ])
-	class UMaterialInterface*                     MaskMaterial;                                      // 0x1880(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	struct FGameplayTag                           PartsViewTarget;                                   // 0x1888(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<class USkeletalMesh*>                  GbxActorParts_Meshes;                              // 0x1890(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class UMaterialInterface*>             GbxActorParts_Materials;                           // 0x18A0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TMap<struct FGameplayTag, struct FGbxAnimSetValue> GbxActorParts_Anims;                          // 0x18B0(0x0050)(Transient, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_1900[0x58];                                    // 0x1900(0x0058)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   AvatarViewTarget;                                  // 0x1958(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_1960[0x60];                                    // 0x1960(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxSkillActionExceptionGroup>  ActionGroups;                                      // 0x0028(0x0010)(Edit, BlueprintReadOnly, ZeroConstructor, NativeAccessSpecifierPrivate)
 
 public:
-	void AddExternalGestaltMeshes_BP(const TArray<class USkeletalMesh*>& InGestaltMeshes);
-	void ForceDisableSimulatePhysics();
-	struct FVector GetForwardDynamicAngularVelocity(class FName BodyName, class FName Tag);
-	struct FVector GetForwardDynamicLinearVelocity(class FName BodyName, class FName Tag);
-	struct FTransform GetForwardDynamicTransform(class FName BodyName, class FName Tag);
-	void RemoveBodyAndChildren(const class FName& BoneName);
-	void RemoveBodyTarget(class FName BodyName, class FName Tag);
-	void RemoveExternalGestaltMeshes_BP(const TArray<class USkeletalMesh*>& InGestaltMeshes);
-	void ResetPrimarySimulationTag();
-	void SetBodyTarget(class FName BodyName, const struct FVector& Pose, double Radius, double Stiffness, double TargetSpeed, class FName Tag);
-	void SetBodyTargetDirection(class FName BodyName, const struct FVector& Direction, double TargetSpeed, class FName Tag);
-	void SetBodyTargetParams(class FName BodyName, const struct FDBodyTargetParams& params, class FName Tag);
-	void SetCollisionResponse(ECollisionEnabled CollisionEnabled, class FName BodyName, bool bIncludeChildren);
-	void SetGravityOverride(bool bEnabled, const struct FVector& Gravity, class FName Tag);
-	void SetPrimarySimulationTag(class FName Tag, bool bForceSet);
-	void TeleportPrimarySimulation(const struct FVector& NewLocation);
+	static void BreakActionException(const struct FGbxSkillActionException& InActionException, EGbxSkillActionExecType* ExecType, EGbxSkillActionExceptionType* ExceptionType);
 
-	class UAnimSequenceBase* GetAnimationFromTag(const struct FGameplayTag& InKey) const;
+	void HandleException(const struct FGbxSkillActionException& Exception) const;
+	bool IsSkillConditionEnabled(const struct FGbxSkillActionException& Exception, FGbxDefPtrProperty_ ConditionDef) const;
+	bool IsSkillStateEnabled(const struct FGbxSkillActionException& Exception, FGbxDefPtrProperty_ StateDef) const;
+	void K2_SkillConditionBranch(const struct FGbxSkillActionException& Exception, FGbxDefPtrProperty_ ConditionDef, ESkillStateScriptExec* Result) const;
+	void K2_SkillStateBranch(const struct FGbxSkillActionException& Exception, FGbxDefPtrProperty_ StateDef, ESkillStateScriptExec* Result) const;
+	void PlayActionGroup(const struct FGbxSkillActionException& InActionException, class FName GroupName) const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkeletalMeshComponent")
+		STATIC_CLASS_IMPL("GbxSkillActionExceptionHandler")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkeletalMeshComponent")
+		STATIC_NAME_IMPL(L"GbxSkillActionExceptionHandler")
 	}
-	static class UGbxSkeletalMeshComponent* GetDefaultObj()
+	static class UGbxSkillActionExceptionHandler* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkeletalMeshComponent>();
+		return GetDefaultObjImpl<UGbxSkillActionExceptionHandler>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkeletalMeshComponent;
-
-// Class GbxGame.GbxSkeletalMeshOwnerInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxSkeletalMeshOwnerInterface final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSkeletalMeshOwnerInterface")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSkeletalMeshOwnerInterface")
-	}
-	static class IGbxSkeletalMeshOwnerInterface* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IGbxSkeletalMeshOwnerInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IGbxSkeletalMeshOwnerInterface;
+DUMPER7_ASSERTS_UGbxSkillActionExceptionHandler;
 
 // Class GbxGame.GbxSkillActionExecHandlerWriter_ControlledMove
 // 0x0000 (0x0028 - 0x0028)
@@ -17649,26 +17840,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSkillActionExecHandlerWriter_ControlledMove;
 
-// Class GbxGame.GbxSkillActionExecHandler_ControlledMove
-// 0x0000 (0x0078 - 0x0078)
-class UGbxSkillActionExecHandler_ControlledMove final : public UGbxSkillActionExecHandler
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSkillActionExecHandler_ControlledMove")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSkillActionExecHandler_ControlledMove")
-	}
-	static class UGbxSkillActionExecHandler_ControlledMove* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSkillActionExecHandler_ControlledMove>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSkillActionExecHandler_ControlledMove;
-
 // Class GbxGame.GbxSkillActionExecHandler_Trick
 // 0x0000 (0x0078 - 0x0078)
 class UGbxSkillActionExecHandler_Trick final : public UGbxSkillActionExecHandler
@@ -17688,6 +17859,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxSkillActionExecHandler_Trick;
+
+// Class GbxGame.GbxSkillActorComponent
+// 0x0000 (0x0110 - 0x0110)
+class UGbxSkillActorComponent final : public UActorComponent
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSkillActorComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSkillActorComponent")
+	}
+	static class UGbxSkillActorComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSkillActorComponent>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSkillActorComponent;
 
 // Class GbxGame.GbxSkillBlueprintPrivate
 // 0x0000 (0x0028 - 0x0028)
@@ -17780,31 +17971,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSkillBlueprintPrivate;
 
-// Class GbxGame.GbxSkillChannel
-// 0x0080 (0x00E8 - 0x0068)
-class UGbxSkillChannel final : public Uchannel
-{
-public:
-	uint8                                         Pad_68[0x10];                                      // 0x0068(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxSkill*                              Skill;                                             // 0x0078(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_80[0x68];                                      // 0x0080(0x0068)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSkillChannel")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSkillChannel")
-	}
-	static class UGbxSkillChannel* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSkillChannel>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSkillChannel;
-
 // Class GbxGame.GbxSkillComponentFunctions
 // 0x0000 (0x0028 - 0x0028)
 class UGbxSkillComponentFunctions final : public UObject
@@ -17824,6 +17990,34 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxSkillComponentFunctions;
+
+// Class GbxGame.GbxSkillComponentDelegateBinding
+// 0x0060 (0x0088 - 0x0028)
+class UGbxSkillComponentDelegateBinding final : public UDynamicBlueprintBinding
+{
+public:
+	TArray<struct FGbxSkillComponentBinding>      ComponentBindings;                                 // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
+	TArray<struct FGbxSkillStateBinding>          StateBindings;                                     // 0x0038(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
+	TArray<struct FGbxSkillEffectBinding>         EffectBindings;                                    // 0x0048(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
+	TArray<struct FGbxSkillMessageBinding>        MessageBindings;                                   // 0x0058(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
+	TArray<struct FGbxSkillParamBinding>          ParamBindings;                                     // 0x0068(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
+	TArray<struct FGbxSkillActionBinding>         ActionBindings;                                    // 0x0078(0x0010)(ZeroConstructor, NativeAccessSpecifierPublic)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSkillComponentDelegateBinding")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSkillComponentDelegateBinding")
+	}
+	static class UGbxSkillComponentDelegateBinding* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSkillComponentDelegateBinding>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSkillComponentDelegateBinding;
 
 // Class GbxGame.GbxSkillComponentSetData
 // 0x0010 (0x0040 - 0x0030)
@@ -17848,80 +18042,52 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSkillComponentSetData;
 
-// Class GbxGame.GbxSkillComponentFunctions_AOE_Gps
+// Class GbxGame.GbxSkillLibraryStatics
 // 0x0000 (0x0028 - 0x0028)
-class UGbxSkillComponentFunctions_AOE_Gps final : public UObject
+class UGbxSkillLibraryStatics final : public UBlueprintFunctionLibrary
 {
 public:
-	void SetQueryOwner(const struct FGbxSkillComponentReference& ComponentReference, class AActor* QueryOwner);
+	static struct FGbxParam GetLibraryEntryValue(class UObject* Context, FGbxDefPtrProperty_ SkillDef, FGbxDefPtrProperty_ ComponentIdentifier, class FName EntryName);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkillComponentFunctions_AOE_Gps")
+		STATIC_CLASS_IMPL("GbxSkillLibraryStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkillComponentFunctions_AOE_Gps")
+		STATIC_NAME_IMPL(L"GbxSkillLibraryStatics")
 	}
-	static class UGbxSkillComponentFunctions_AOE_Gps* GetDefaultObj()
+	static class UGbxSkillLibraryStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkillComponentFunctions_AOE_Gps>();
+		return GetDefaultObjImpl<UGbxSkillLibraryStatics>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkillComponentFunctions_AOE_Gps;
+DUMPER7_ASSERTS_UGbxSkillLibraryStatics;
 
-// Class GbxGame.GbxSkillComponentFunctions_Library
+// Class GbxGame.GbxSkillComponentFunctions_Material
 // 0x0000 (0x0028 - 0x0028)
-class UGbxSkillComponentFunctions_Library final : public UObject
+class UGbxSkillComponentFunctions_Material final : public UObject
 {
 public:
-	static struct FGbxParam GetEntryValue(const struct FGbxSkillComponentReference& ComponentReference, class FName EntryName);
+	static void InterpColor(const struct FGbxSkillComponentReference& ComponentReference, const struct FLinearColor& Color, const struct FGuid& MaterialID);
+	static void InterpScalar(const struct FGbxSkillComponentReference& ComponentReference, float Scalar, const struct FGuid& MaterialID);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSkillComponentFunctions_Library")
+		STATIC_CLASS_IMPL("GbxSkillComponentFunctions_Material")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSkillComponentFunctions_Library")
+		STATIC_NAME_IMPL(L"GbxSkillComponentFunctions_Material")
 	}
-	static class UGbxSkillComponentFunctions_Library* GetDefaultObj()
+	static class UGbxSkillComponentFunctions_Material* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSkillComponentFunctions_Library>();
+		return GetDefaultObjImpl<UGbxSkillComponentFunctions_Material>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSkillComponentFunctions_Library;
-
-// Class GbxGame.GbxSkillComponentFunctions_ResourcePool
-// 0x0000 (0x0028 - 0x0028)
-class UGbxSkillComponentFunctions_ResourcePool final : public UObject
-{
-public:
-	static void DrainPercentage(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool, float Percentage, float MinPercentage);
-	static float GetCurrentPercentage(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool);
-	static float GetCurrentValue(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool);
-	static float GetMaxValue(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool);
-	static void RefillPercentage(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool, float Percentage, float MaxPercentage);
-	static void SetCurrentPercentage(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool, float NewValue);
-	static void SetCurrentValue(const struct FGbxSkillComponentReference& ComponentReference, FGameDataHandleProperty_ ResourcePool, float NewValue);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSkillComponentFunctions_ResourcePool")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSkillComponentFunctions_ResourcePool")
-	}
-	static class UGbxSkillComponentFunctions_ResourcePool* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSkillComponentFunctions_ResourcePool>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSkillComponentFunctions_ResourcePool;
+DUMPER7_ASSERTS_UGbxSkillComponentFunctions_Material;
 
 // Class GbxGame.GbxSkillComponentFunctions_TimerEx
 // 0x0000 (0x0028 - 0x0028)
@@ -17947,6 +18113,30 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxSkillComponentFunctions_TimerEx;
+
+// Class GbxGame.GbxSkillDef_Editor
+// 0x0130 (0x0170 - 0x0040)
+class UGbxSkillDef_Editor final : public UNexusEditorObject
+{
+public:
+	uint8                                         Pad_40[0x8];                                       // 0x0040(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxSkillDef                           EditorDef;                                         // 0x0048(0x0128)(Edit, NativeAccessSpecifierPrivate)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSkillDef_Editor")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSkillDef_Editor")
+	}
+	static class UGbxSkillDef_Editor* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSkillDef_Editor>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSkillDef_Editor;
 
 // Class GbxGame.GbxSkillGlobalChannel
 // 0x0028 (0x0090 - 0x0068)
@@ -17991,6 +18181,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxSkillMessageData;
+
+// Class GbxGame.GbxSkillQuestionData
+// 0x0000 (0x0060 - 0x0060)
+class UGbxSkillQuestionData final : public UGbxSkillSignatureData
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSkillQuestionData")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSkillQuestionData")
+	}
+	static class UGbxSkillQuestionData* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxSkillQuestionData>();
+	}
+};
+DUMPER7_ASSERTS_UGbxSkillQuestionData;
 
 // Class GbxGame.GbxSkillNetSpecializationComponent
 // 0x0000 (0x0110 - 0x0110)
@@ -18269,84 +18479,57 @@ public:
 };
 DUMPER7_ASSERTS_UGbxSkillTargetResolutionStatics;
 
-// Class GbxGame.GbxSlopeWarpingInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGbxSlopeWarpingInterface final
+// Class GbxGame.GbxSplineActor
+// 0x0008 (0x0398 - 0x0390)
+class AGbxSplineActor : public AActor
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSlopeWarpingInterface")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSlopeWarpingInterface")
-	}
-	static class IGbxSlopeWarpingInterface* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IGbxSlopeWarpingInterface>();
-	}
+	class USplineComponent*                       SplineComponent;                                   // 0x0390(0x0008)(Edit, ExportObject, ZeroConstructor, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
 
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IGbxSlopeWarpingInterface;
-
-// Class GbxGame.GbxSocketComponent
-// 0x0000 (0x02B0 - 0x02B0)
-class UGbxSocketComponent final : public USceneComponent
-{
 public:
-	class FName                                   SocketName;                                        // 0x02A8(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector GetClosestLocationOnSpline(const struct FVector& Location) const;
+	struct FRotator GetClosestRotationOnSpline(const struct FVector& Location) const;
+	float GetTotalLength() const;
+	struct FTransform GetTransformAtDistanceAlongSpline(float Distance, bool bWorldCoordinate, bool bUseScale) const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSocketComponent")
+		STATIC_CLASS_IMPL("GbxSplineActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSocketComponent")
+		STATIC_NAME_IMPL(L"GbxSplineActor")
 	}
-	static class UGbxSocketComponent* GetDefaultObj()
+	static class AGbxSplineActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSocketComponent>();
+		return GetDefaultObjImpl<AGbxSplineActor>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSocketComponent;
+DUMPER7_ASSERTS_AGbxSplineActor;
 
-// Class GbxGame.GbxSplineActorUserSettings
-// 0x0008 (0x0040 - 0x0038)
-class UGbxSplineActorUserSettings final : public UDeveloperSettings
+// Class GbxGame.GbxSplineActorSettings
+// 0x0018 (0x0050 - 0x0038)
+class UGbxSplineActorSettings final : public UDeveloperSettings
 {
 public:
-	bool                                          bShowSplineDebug;                                  // 0x0038(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bShowSplineDebugInPIE;                             // 0x0039(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bShowVolumeDebug;                                  // 0x003A(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bShowVolumeDebugInPIE;                             // 0x003B(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3C[0x4];                                       // 0x003C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_38[0x18];                                      // 0x0038(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSplineActorUserSettings")
+		STATIC_CLASS_IMPL("GbxSplineActorSettings")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSplineActorUserSettings")
+		STATIC_NAME_IMPL(L"GbxSplineActorSettings")
 	}
-	static class UGbxSplineActorUserSettings* GetDefaultObj()
+	static class UGbxSplineActorSettings* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSplineActorUserSettings>();
+		return GetDefaultObjImpl<UGbxSplineActorSettings>();
 	}
 };
-DUMPER7_ASSERTS_UGbxSplineActorUserSettings;
+DUMPER7_ASSERTS_UGbxSplineActorSettings;
 
 // Class GbxGame.GbxSplineVolume
 // 0x0080 (0x0418 - 0x0398)
@@ -18385,6 +18568,26 @@ public:
 };
 DUMPER7_ASSERTS_AGbxSplineVolume;
 
+// Class GbxGame.GbxStampNavMesh
+// 0x0000 (0x03A8 - 0x03A8)
+class AGbxStampNavMesh final : public AGbxNavMesh
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxStampNavMesh")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxStampNavMesh")
+	}
+	static class AGbxStampNavMesh* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxStampNavMesh>();
+	}
+};
+DUMPER7_ASSERTS_AGbxStampNavMesh;
+
 // Class GbxGame.GbxStandIn
 // 0x0830 (0x0BC0 - 0x0390)
 class alignas(0x10) AGbxStandIn : public AActor
@@ -18422,29 +18625,6 @@ public:
 };
 DUMPER7_ASSERTS_AGbxStandIn;
 
-// Class GbxGame.GbxStandInLoadingContext
-// 0x0020 (0x0048 - 0x0028)
-class UGbxStandInLoadingContext final : public UObject
-{
-public:
-	uint8                                         Pad_28[0x20];                                      // 0x0028(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxStandInLoadingContext")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxStandInLoadingContext")
-	}
-	static class UGbxStandInLoadingContext* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxStandInLoadingContext>();
-	}
-};
-DUMPER7_ASSERTS_UGbxStandInLoadingContext;
-
 // Class GbxGame.NexusConfigStoreGbxStandInSceneDef
 // 0x0018 (0x03A8 - 0x0390)
 class UNexusConfigStoreGbxStandInSceneDef final : public UNexusConfigStoreBasic
@@ -18467,6 +18647,32 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxStandInSceneDef;
+
+// Class GbxGame.GbxStandInStatics
+// 0x0000 (0x0028 - 0x0028)
+class UGbxStandInStatics final : public UBlueprintFunctionLibrary
+{
+public:
+	static void ClearStandIn(class UObject* owner, const struct FGameplayTag& StandInId);
+	static void PlayStandInTrick(class UObject* owner, const struct FGameplayTag& StandInId, const struct FGameplayTag& TrickId);
+	static void RequestStandIn(class UObject* owner, const struct FGameplayTag& StandInId, FGbxDefPtrProperty_ StandInSettings, const struct FTransform& SpawnTransform, FGbxDefPtrProperty_ LinkedActorDef, TDelegate<void(class AGbxStandIn* StandIn)> OnStandInInitialized);
+	static void ResetStandInBodySwitchesToDefaultState(class UObject* owner, const struct FGameplayTag& StandInId);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxStandInStatics")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxStandInStatics")
+	}
+	static class UGbxStandInStatics* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxStandInStatics>();
+	}
+};
+DUMPER7_ASSERTS_UGbxStandInStatics;
 
 // Class GbxGame.GbxStandInViewer
 // 0x0158 (0x0590 - 0x0438)
@@ -18491,63 +18697,45 @@ public:
 };
 DUMPER7_ASSERTS_AGbxStandInViewer;
 
-// Class GbxGame.GbxStatusEffectData
-// 0x0130 (0x0180 - 0x0050)
-class UGbxStatusEffectData final : public UGbxGraphAsset
-{
-public:
-	struct FGbxInlineStruct                       Driver;                                            // 0x0050(0x0018)(Edit, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxInlineStruct>               Aspects;                                           // 0x0068(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxInlineStruct>               Mutators;                                          // 0x0078(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	struct FGbxStatusEffectScriptData             ScriptData;                                        // 0x0088(0x0018)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxInlineStruct>               CoreNotifies;                                      // 0x00A0(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxInlineStruct>               StartActions;                                      // 0x00B0(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxInlineStruct>               EndActions;                                        // 0x00C0(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	class UGbxStatusEffectPresentationAsset*      Presentation;                                      // 0x00D0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<TSubclassOf<class UGbxStatusEffectSignatureParam>> params;                                // 0x00D8(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	struct FGbxInlineStruct                       SeverityGenerator;                                 // 0x00E8(0x0018)(Edit, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxStatusEffectNotifyData>     NotifyEvents;                                      // 0x0100(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	class FName                                   RowKey;                                            // 0x0110(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FGbxInlineStruct                       MetaData;                                          // 0x0118(0x0018)(Edit, NativeAccessSpecifierPrivate)
-	FGbxDefPtrProperty_                           TickGroup;                                         // 0x0130(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_148[0x18];                                     // 0x0148(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGameplayTagContainer                  GameplayTags;                                      // 0x0160(0x0020)(Edit, NativeAccessSpecifierPrivate)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxStatusEffectData")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectData")
-	}
-	static class UGbxStatusEffectData* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxStatusEffectData>();
-	}
-};
-DUMPER7_ASSERTS_UGbxStatusEffectData;
-
-// Class GbxGame.GbxStatusEffectModifierType_Duration
+// Class GbxGame.GbxStatusEffectModifierType_Chance
 // 0x0000 (0x0030 - 0x0030)
-class UGbxStatusEffectModifierType_Duration final : public UGbxStatusEffectModifierType
+class UGbxStatusEffectModifierType_Chance final : public UGbxStatusEffectModifierType
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectModifierType_Duration")
+		STATIC_CLASS_IMPL("GbxStatusEffectModifierType_Chance")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectModifierType_Duration")
+		STATIC_NAME_IMPL(L"GbxStatusEffectModifierType_Chance")
 	}
-	static class UGbxStatusEffectModifierType_Duration* GetDefaultObj()
+	static class UGbxStatusEffectModifierType_Chance* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectModifierType_Duration>();
+		return GetDefaultObjImpl<UGbxStatusEffectModifierType_Chance>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectModifierType_Duration;
+DUMPER7_ASSERTS_UGbxStatusEffectModifierType_Chance;
+
+// Class GbxGame.GbxStatusEffectModifierType_Charge
+// 0x0000 (0x0030 - 0x0030)
+class UGbxStatusEffectModifierType_Charge final : public UGbxStatusEffectModifierType
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxStatusEffectModifierType_Charge")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxStatusEffectModifierType_Charge")
+	}
+	static class UGbxStatusEffectModifierType_Charge* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxStatusEffectModifierType_Charge>();
+	}
+};
+DUMPER7_ASSERTS_UGbxStatusEffectModifierType_Charge;
 
 // Class GbxGame.GbxStatusEffectModifierType_DPS
 // 0x0000 (0x0030 - 0x0030)
@@ -18569,6 +18757,26 @@ public:
 };
 DUMPER7_ASSERTS_UGbxStatusEffectModifierType_DPS;
 
+// Class GbxGame.GbxStatusEffectModifierType_MutationChance
+// 0x0000 (0x0030 - 0x0030)
+class UGbxStatusEffectModifierType_MutationChance final : public UGbxStatusEffectModifierType
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxStatusEffectModifierType_MutationChance")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxStatusEffectModifierType_MutationChance")
+	}
+	static class UGbxStatusEffectModifierType_MutationChance* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxStatusEffectModifierType_MutationChance>();
+	}
+};
+DUMPER7_ASSERTS_UGbxStatusEffectModifierType_MutationChance;
+
 // Class GbxGame.GbxStatusEffectModifierType_MutationBonus
 // 0x0000 (0x0030 - 0x0030)
 class UGbxStatusEffectModifierType_MutationBonus final : public UGbxStatusEffectModifierType
@@ -18589,34 +18797,48 @@ public:
 };
 DUMPER7_ASSERTS_UGbxStatusEffectModifierType_MutationBonus;
 
-// Class GbxGame.GbxStatusEffectModifierProvider
-// 0x0000 (0x0000 - 0x0000)
-class IGbxStatusEffectModifierProvider final
+// Class GbxGame.GbxStatusEffectNotifyDelegateBinding
+// 0x0010 (0x0038 - 0x0028)
+class UGbxStatusEffectNotifyDelegateBinding : public UDynamicBlueprintBinding
+{
+public:
+	TArray<struct FGbxStatusEffectNotifyEventBind> EventBinds;                                       // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxStatusEffectNotifyDelegateBinding")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxStatusEffectNotifyDelegateBinding")
+	}
+	static class UGbxStatusEffectNotifyDelegateBinding* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxStatusEffectNotifyDelegateBinding>();
+	}
+};
+DUMPER7_ASSERTS_UGbxStatusEffectNotifyDelegateBinding;
+
+// Class GbxGame.GbxStatusEffectNotifyDelegateBinding_ActorScript
+// 0x0000 (0x0038 - 0x0038)
+class UGbxStatusEffectNotifyDelegateBinding_ActorScript final : public UGbxStatusEffectNotifyDelegateBinding
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectModifierProvider")
+		STATIC_CLASS_IMPL("GbxStatusEffectNotifyDelegateBinding_ActorScript")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectModifierProvider")
+		STATIC_NAME_IMPL(L"GbxStatusEffectNotifyDelegateBinding_ActorScript")
 	}
-	static class IGbxStatusEffectModifierProvider* GetDefaultObj()
+	static class UGbxStatusEffectNotifyDelegateBinding_ActorScript* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IGbxStatusEffectModifierProvider>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UGbxStatusEffectNotifyDelegateBinding_ActorScript>();
 	}
 };
-DUMPER7_ASSERTS_IGbxStatusEffectModifierProvider;
+DUMPER7_ASSERTS_UGbxStatusEffectNotifyDelegateBinding_ActorScript;
 
 // Class GbxGame.GbxStatusEffectNotifyEvent
 // 0x0008 (0x0038 - 0x0030)
@@ -18713,52 +18935,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxStatusEffectQuerySpec;
 
-// Class GbxGame.GbxStatusEffectScript
-// 0x0000 (0x0028 - 0x0028)
-class UGbxStatusEffectScript : public UGbxScript
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxStatusEffectScript")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectScript")
-	}
-	static class UGbxStatusEffectScript* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxStatusEffectScript>();
-	}
-};
-DUMPER7_ASSERTS_UGbxStatusEffectScript;
-
-// Class GbxGame.GbxStatusEffectScript_Const
-// 0x0000 (0x0028 - 0x0028)
-class UGbxStatusEffectScript_Const : public UGbxStatusEffectScript
-{
-public:
-	void OnBegin(const struct FGbxStatusEffectScript_ExecContext& execContext) const;
-	void OnEnd(const struct FGbxStatusEffectScript_ExecContext& execContext) const;
-	void OnPushEvent(const FGbxDefPtrProperty_& EventDef, const struct FGbxStatusEffectScript_ExecContext& execContext, const class UObject* PushOwner, const struct FGameplayTagContainer& tags, const struct FGbxStatusEffectSpec_Params& params) const;
-	void RequestShutdown(const struct FGbxStatusEffectScript_ExecContext& execContext) const;
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxStatusEffectScript_Const")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectScript_Const")
-	}
-	static class UGbxStatusEffectScript_Const* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxStatusEffectScript_Const>();
-	}
-};
-DUMPER7_ASSERTS_UGbxStatusEffectScript_Const;
-
 // Class GbxGame.GbxStatusEffectScript_Instanced
 // 0x0038 (0x0060 - 0x0028)
 class UGbxStatusEffectScript_Instanced : public UGbxStatusEffectScript
@@ -18788,29 +18964,28 @@ public:
 };
 DUMPER7_ASSERTS_UGbxStatusEffectScript_Instanced;
 
-// Class GbxGame.GbxStatusEffectScriptDelegateBinding
-// 0x0020 (0x0048 - 0x0028)
-class UGbxStatusEffectScriptDelegateBinding final : public UDynamicBlueprintBinding
+// Class GbxGame.GbxStatusEffectScriptClass
+// 0x0010 (0x03C0 - 0x03B0)
+class UGbxStatusEffectScriptClass final : public UBlueprintGeneratedClass
 {
 public:
-	TArray<struct FGbxStatusEffectPushEventBind>  EventBinds;                                        // 0x0028(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-	TArray<struct FGbxStatusEffectNotifyEventBind> NotifyBinds;                                      // 0x0038(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<struct FGbxStatusEffectScriptPushEventData> PushEvents;                                   // 0x03B0(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectScriptDelegateBinding")
+		STATIC_CLASS_IMPL("GbxStatusEffectScriptClass")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectScriptDelegateBinding")
+		STATIC_NAME_IMPL(L"GbxStatusEffectScriptClass")
 	}
-	static class UGbxStatusEffectScriptDelegateBinding* GetDefaultObj()
+	static class UGbxStatusEffectScriptClass* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectScriptDelegateBinding>();
+		return GetDefaultObjImpl<UGbxStatusEffectScriptClass>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectScriptDelegateBinding;
+DUMPER7_ASSERTS_UGbxStatusEffectScriptClass;
 
 // Class GbxGame.GbxStatusEffectSignatureData
 // 0x0010 (0x0040 - 0x0030)
@@ -18835,25 +19010,25 @@ public:
 };
 DUMPER7_ASSERTS_UGbxStatusEffectSignatureData;
 
-// Class GbxGame.GbxStatusEffectSignatureParam_Actor
+// Class GbxGame.GbxStatusEffectSignatureParam_Float
 // 0x0000 (0x0048 - 0x0048)
-class UGbxStatusEffectSignatureParam_Actor : public UGbxStatusEffectSignatureParam
+class UGbxStatusEffectSignatureParam_Float : public UGbxStatusEffectSignatureParam
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectSignatureParam_Actor")
+		STATIC_CLASS_IMPL("GbxStatusEffectSignatureParam_Float")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectSignatureParam_Actor")
+		STATIC_NAME_IMPL(L"GbxStatusEffectSignatureParam_Float")
 	}
-	static class UGbxStatusEffectSignatureParam_Actor* GetDefaultObj()
+	static class UGbxStatusEffectSignatureParam_Float* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectSignatureParam_Actor>();
+		return GetDefaultObjImpl<UGbxStatusEffectSignatureParam_Float>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam_Actor;
+DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam_Float;
 
 // Class GbxGame.GbxStatusEffectSignatureParam_GbxDef
 // 0x0000 (0x0048 - 0x0048)
@@ -18874,6 +19049,29 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam_GbxDef;
+
+// Class GbxGame.GbxStatusEffectSignatureParam_Duration
+// 0x0000 (0x0048 - 0x0048)
+class UGbxStatusEffectSignatureParam_Duration final : public UGbxStatusEffectSignatureParam_Float
+{
+public:
+	static float GetDuration(const struct FGbxStatusEffectSpec_Params& params, EGetStatusEffectParamResultPins* Outcome);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxStatusEffectSignatureParam_Duration")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxStatusEffectSignatureParam_Duration")
+	}
+	static class UGbxStatusEffectSignatureParam_Duration* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxStatusEffectSignatureParam_Duration>();
+	}
+};
+DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam_Duration;
 
 // Class GbxGame.GbxStatusEffectSignatureParam_DmgSource
 // 0x0000 (0x0048 - 0x0048)
@@ -19103,63 +19301,57 @@ public:
 };
 DUMPER7_ASSERTS_UGbxStatusEffectSignatureParam_MutationBonus;
 
-// Class GbxGame.GbxStatusEffectsStatics
-// 0x0000 (0x0028 - 0x0028)
-class UGbxStatusEffectsStatics final : public UObject
+// Class GbxGame.GbxSubtitleManagerInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxSubtitleManagerInterface final
 {
 public:
-	static double GetQueryResult_Float(const struct FGbxStatusEffectQueryResult& Result, class FName Name_0, class UObject* Context);
-	static int32 GetQueryResult_Int(const struct FGbxStatusEffectQueryResult& Result, class FName Name_0, class UObject* Context);
-	static int32 GetStatusEffectInstanceCount(class UObject* target, const class UGbxStatusEffectData* StatusEffectData, bool bFilterByOwner, class UObject* InOwner);
-	static bool HasStatusEffect(class UObject* target, const class UGbxStatusEffectData* StatusEffectData);
-	static int32 PopAllFromEffect(class UObject* target, const class UGbxStatusEffectData* StatusEffectData);
-	static int32 PopAllFromEffectSpec(class UObject* target, const struct FGbxStatusEffectPopAllFromEffectSpec& Spec);
-	static int32 PopAllSpec(class UObject* target, const struct FGbxStatusEffectPopAllSpec& Spec);
-	static int32 PopSpec(class UObject* target, const struct FGbxStatusEffectPopSpec& Spec);
-	static bool PushSpec(class UObject* target, const struct FGbxStatusEffectPushSpec& Spec);
-	static bool Query(class UObject* target, class UGbxStatusEffectData* StatusEffect, class UGbxStatusEffectQuerySpec* Spec, struct FGbxStatusEffectQueryResult& Result);
-	static bool Query_ByTag(class UObject* target, const struct FGameplayTagQuery& TagQuery, class UGbxStatusEffectQuerySpec* Spec, struct FGbxStatusEffectQueryResult& Result);
-	static void RegisterListener(class UObject* Context, class UGbxStatusEffectNotifyEvent* Event, class UObject* EventContext, class FName EventName, EGbxStatusEffectNotifyEventType EventType);
-	static void UnRegisterListener(class UObject* Context, class UGbxStatusEffectNotifyEvent* Event, class UObject* EventContext, class FName EventName, EGbxStatusEffectNotifyEventType EventType);
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxSubtitleManagerInterface")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxSubtitleManagerInterface")
+	}
+	static class IGbxSubtitleManagerInterface* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IGbxSubtitleManagerInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IGbxSubtitleManagerInterface;
+
+// Class GbxGame.GbxSymphonicAmbientAudioSystem
+// 0x0048 (0x0080 - 0x0038)
+class UGbxSymphonicAmbientAudioSystem : public UGbxWorldAudioSystemBase
+{
+public:
+	uint8                                         Pad_38[0x48];                                      // 0x0038(0x0048)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxStatusEffectsStatics")
+		STATIC_CLASS_IMPL("GbxSymphonicAmbientAudioSystem")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxStatusEffectsStatics")
+		STATIC_NAME_IMPL(L"GbxSymphonicAmbientAudioSystem")
 	}
-	static class UGbxStatusEffectsStatics* GetDefaultObj()
+	static class UGbxSymphonicAmbientAudioSystem* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxStatusEffectsStatics>();
+		return GetDefaultObjImpl<UGbxSymphonicAmbientAudioSystem>();
 	}
 };
-DUMPER7_ASSERTS_UGbxStatusEffectsStatics;
-
-// Class GbxGame.GbxSubtitleManager
-// 0x0060 (0x0088 - 0x0028)
-class UGbxSubtitleManager : public UObject
-{
-public:
-	uint8                                         Pad_28[0x60];                                      // 0x0028(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSubtitleManager")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSubtitleManager")
-	}
-	static class UGbxSubtitleManager* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSubtitleManager>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSubtitleManager;
+DUMPER7_ASSERTS_UGbxSymphonicAmbientAudioSystem;
 
 // Class GbxGame.NexusConfigStoreGbxSymphonicAmbientAudio
 // 0x0000 (0x0390 - 0x0390)
@@ -19240,141 +19432,77 @@ public:
 };
 DUMPER7_ASSERTS_IGbxTraceInfoProvider;
 
-// Class GbxGame.GbxTraceTrajectoryComponent
-// 0x0160 (0x0270 - 0x0110)
-class UGbxTraceTrajectoryComponent final : public UActorComponent
+// Class GbxGame.AnimNotifyState_Trick
+// 0x0018 (0x0048 - 0x0030)
+class UAnimNotifyState_Trick final : public UAnimNotifyState
 {
 public:
-	bool                                          bEnableOnStart;                                    // 0x0110(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_111[0x3];                                      // 0x0111(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxTraceTrajectorySimulationData      SimulationSettings;                                // 0x0114(0x0018)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxTraceTrajectoryCollisionData       CollisionSettings;                                 // 0x012C(0x0014)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxTraceTrajectorySourceData          SourceSettings;                                    // 0x0140(0x00D0)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(const struct FHitResult& HitResult)> OnPostSimulation;             // 0x0210(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	uint8                                         Pad_220[0x8];                                      // 0x0220(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class UFXSystemComponent*                     TrajectoryParticleComponent;                       // 0x0228(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_230[0x8];                                      // 0x0230(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	class UFXSystemAsset*                         ParticleSystem;                                    // 0x0238(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_240[0x30];                                     // 0x0240(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void SetTrajectoryEnabled(bool bEnabled);
-	void SetTrajectoryParticleComponent(class UFXSystemComponent* ParticleComponent);
-	void UpdateCollisionShape();
-
-	bool IsTrajectoryEnabled() const;
+	class FName                                   TrickEventName;                                    // 0x0030(0x0008)(BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           TrickEventTag;                                     // 0x0038(0x0008)(Edit, BlueprintReadOnly, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_40[0x8];                                       // 0x0040(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTraceTrajectoryComponent")
+		STATIC_CLASS_IMPL("AnimNotifyState_Trick")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTraceTrajectoryComponent")
+		STATIC_NAME_IMPL(L"AnimNotifyState_Trick")
 	}
-	static class UGbxTraceTrajectoryComponent* GetDefaultObj()
+	static class UAnimNotifyState_Trick* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTraceTrajectoryComponent>();
+		return GetDefaultObjImpl<UAnimNotifyState_Trick>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTraceTrajectoryComponent;
+DUMPER7_ASSERTS_UAnimNotifyState_Trick;
 
-// Class GbxGame.AnimNotify_Trick
-// 0x0018 (0x0050 - 0x0038)
-class UAnimNotify_Trick final : public UAnimNotify
+// Class GbxGame.GbxTrickAnimNotify_GbxSkillAction
+// 0x0008 (0x0040 - 0x0038)
+class UGbxTrickAnimNotify_GbxSkillAction final : public UGbxTrickAnimNotify
 {
 public:
-	class FName                                   TrickEventName;                                    // 0x0038(0x0008)(BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           TrickEventTag;                                     // 0x0040(0x0008)(Edit, BlueprintReadOnly, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_48[0x8];                                       // 0x0048(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FName                                   EventName;                                         // 0x0038(0x0008)(Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("AnimNotify_Trick")
+		STATIC_CLASS_IMPL("GbxTrickAnimNotify_GbxSkillAction")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"AnimNotify_Trick")
+		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_GbxSkillAction")
 	}
-	static class UAnimNotify_Trick* GetDefaultObj()
+	static class UGbxTrickAnimNotify_GbxSkillAction* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UAnimNotify_Trick>();
+		return GetDefaultObjImpl<UGbxTrickAnimNotify_GbxSkillAction>();
 	}
 };
-DUMPER7_ASSERTS_UAnimNotify_Trick;
+DUMPER7_ASSERTS_UGbxTrickAnimNotify_GbxSkillAction;
 
-// Class GbxGame.GbxTrickAnimNotify_Damage
-// 0x0018 (0x0050 - 0x0038)
-class UGbxTrickAnimNotify_Damage final : public UGbxTrickAnimNotify
+// Class GbxGame.GbxTrickAnimNotify_GbxSkillScript
+// 0x0020 (0x0058 - 0x0038)
+class UGbxTrickAnimNotify_GbxSkillScript final : public UGbxTrickAnimNotify
 {
 public:
-	FGameDataHandleProperty_                      DamageDef;                                         // 0x0038(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	FGbxDefPtrProperty_                           StateDef;                                          // 0x0038(0x0018)(Edit, BlueprintReadOnly, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	class FName                                   EventName;                                         // 0x0050(0x0008)(Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrickAnimNotify_Damage")
+		STATIC_CLASS_IMPL("GbxTrickAnimNotify_GbxSkillScript")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_Damage")
+		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_GbxSkillScript")
 	}
-	static class UGbxTrickAnimNotify_Damage* GetDefaultObj()
+	static class UGbxTrickAnimNotify_GbxSkillScript* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrickAnimNotify_Damage>();
+		return GetDefaultObjImpl<UGbxTrickAnimNotify_GbxSkillScript>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrickAnimNotify_Damage;
-
-// Class GbxGame.GbxTrickAnimNotify_ScriptEvent
-// 0x0018 (0x0050 - 0x0038)
-class UGbxTrickAnimNotify_ScriptEvent final : public UGbxTrickAnimNotify
-{
-public:
-	bool                                          bUseNotifyNameForEvent;                            // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bGenerateEndEventFromBeginName;                    // 0x0039(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_3A[0x2];                                       // 0x003A(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   BeginEvent;                                        // 0x003C(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	class FName                                   EndEvent;                                          // 0x0044(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrickAnimNotify_ScriptEvent")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_ScriptEvent")
-	}
-	static class UGbxTrickAnimNotify_ScriptEvent* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrickAnimNotify_ScriptEvent>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrickAnimNotify_ScriptEvent;
-
-// Class GbxGame.GbxTrickAnimNotify_Gib
-// 0x0000 (0x0038 - 0x0038)
-class UGbxTrickAnimNotify_Gib final : public UGbxTrickAnimNotify
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrickAnimNotify_Gib")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_Gib")
-	}
-	static class UGbxTrickAnimNotify_Gib* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrickAnimNotify_Gib>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrickAnimNotify_Gib;
+DUMPER7_ASSERTS_UGbxTrickAnimNotify_GbxSkillScript;
 
 // Class GbxGame.GbxTrickAnimNotify_MarkInterruptible
 // 0x0000 (0x0038 - 0x0038)
@@ -19395,6 +19523,29 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxTrickAnimNotify_MarkInterruptible;
+
+// Class GbxGame.GbxTrickAnimNotify_StateMachineAction
+// 0x0018 (0x0050 - 0x0038)
+class UGbxTrickAnimNotify_StateMachineAction : public UGbxTrickAnimNotify
+{
+public:
+	FGbxDefPtrProperty_                           SkillDef;                                          // 0x0038(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrickAnimNotify_StateMachineAction")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_StateMachineAction")
+	}
+	static class UGbxTrickAnimNotify_StateMachineAction* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrickAnimNotify_StateMachineAction>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrickAnimNotify_StateMachineAction;
 
 // Class GbxGame.GbxTrickAnimNotify_StateMachineRegister
 // 0x0020 (0x0070 - 0x0050)
@@ -19421,30 +19572,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxTrickAnimNotify_StateMachineRegister;
 
-// Class GbxGame.GbxTrickAnimNotify_WriteParam
-// 0x0040 (0x0078 - 0x0038)
-class UGbxTrickAnimNotify_WriteParam final : public UGbxTrickAnimNotify
-{
-public:
-	class FName                                   ParamName;                                         // 0x0038(0x0008)(Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FGbxParam                              Param;                                             // 0x0040(0x0038)(Edit, BlueprintReadOnly, NativeAccessSpecifierPrivate)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrickAnimNotify_WriteParam")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrickAnimNotify_WriteParam")
-	}
-	static class UGbxTrickAnimNotify_WriteParam* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrickAnimNotify_WriteParam>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrickAnimNotify_WriteParam;
-
 // Class GbxGame.GbxTrickChannel
 // 0x0040 (0x00A8 - 0x0068)
 class UGbxTrickChannel final : public Uchannel
@@ -19469,6 +19596,43 @@ public:
 };
 DUMPER7_ASSERTS_UGbxTrickChannel;
 
+// Class GbxGame.GbxTrickInterface
+// 0x0000 (0x0000 - 0x0000)
+class IGbxTrickInterface final
+{
+public:
+	uint8 PlayTrick(class UGbxTrick* Trick);
+	uint8 PlayTrickLocal(class UGbxTrick* Trick);
+	void StopTrick(class UGbxTrick* Trick);
+	void StopTrickId(uint8 ID);
+	void StopTrickIdLocal(uint8 ID);
+	void StopTrickLocal(class UGbxTrick* Trick);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrickInterface")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrickInterface")
+	}
+	static class IGbxTrickInterface* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IGbxTrickInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IGbxTrickInterface;
+
 // Class GbxGame.GbxTrickModifier
 // 0x0000 (0x0028 - 0x0028)
 class UGbxTrickModifier : public UObject
@@ -19488,6 +19652,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxTrickModifier;
+
+// Class GbxGame.WaypointLocationComponent
+// 0x0000 (0x02B0 - 0x02B0)
+class UWaypointLocationComponent final : public USceneComponent
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("WaypointLocationComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"WaypointLocationComponent")
+	}
+	static class UWaypointLocationComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UWaypointLocationComponent>();
+	}
+};
+DUMPER7_ASSERTS_UWaypointLocationComponent;
 
 // Class GbxGame.GbxTrickModifier_DisableMovement
 // 0x0000 (0x0028 - 0x0028)
@@ -19535,26 +19719,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxTrickModifier_DisableRotation;
-
-// Class GbxGame.WorldStateProgressRole
-// 0x0000 (0x0100 - 0x0100)
-class UWorldStateProgressRole final : public UGbxProfileProgressRoleHostPlayer
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("WorldStateProgressRole")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"WorldStateProgressRole")
-	}
-	static class UWorldStateProgressRole* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UWorldStateProgressRole>();
-	}
-};
-DUMPER7_ASSERTS_UWorldStateProgressRole;
 
 // Class GbxGame.GbxTrickModifier_DisableLegIk
 // 0x0000 (0x0028 - 0x0028)
@@ -19729,78 +19893,53 @@ public:
 };
 DUMPER7_ASSERTS_UGbxTrickStatics;
 
-// Class GbxGame.GbxTrick_Anim
-// 0x0158 (0x0228 - 0x00D0)
-class UGbxTrick_Anim : public UGbxTrick_AnimBase
+// Class GbxGame.GbxTrick_Conditional
+// 0x0018 (0x00A8 - 0x0090)
+class UGbxTrick_Conditional final : public UGbxTrick
 {
 public:
-	struct FGbxTrickAnimData                      AnimData;                                          // 0x00D0(0x0150)(Edit, NativeAccessSpecifierPrivate)
-	class UAnimSequenceBase*                      Animation;                                         // 0x0220(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<struct FGbxTrickConditionalItem>       items;                                             // 0x0090(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
+	class UGbxTrick*                              BackupTrick;                                       // 0x00A0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrick_Anim")
+		STATIC_CLASS_IMPL("GbxTrick_Conditional")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrick_Anim")
+		STATIC_NAME_IMPL(L"GbxTrick_Conditional")
 	}
-	static class UGbxTrick_Anim* GetDefaultObj()
+	static class UGbxTrick_Conditional* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrick_Anim>();
+		return GetDefaultObjImpl<UGbxTrick_Conditional>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrick_Anim;
+DUMPER7_ASSERTS_UGbxTrick_Conditional;
 
-// Class GbxGame.GbxTrick_AnimDirection
-// 0x0560 (0x0630 - 0x00D0)
-class UGbxTrick_AnimDirection final : public UGbxTrick_AnimBase
+// Class GbxGame.GbxTrick_Sequencer
+// 0x0018 (0x00A8 - 0x0090)
+class UGbxTrick_Sequencer : public UGbxTrick
 {
 public:
-	struct FGbxTrickAnimData                      AnimDirections[0x4];                               // 0x00D0(0x0150)(Edit, NativeAccessSpecifierPrivate)
-	class UAnimSequenceBase*                      Animations[0x4];                                   // 0x0610(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	class UGbxSequence*                           Sequence;                                          // 0x0090(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	struct FGbxSequencePlaybackSettings           settings;                                          // 0x0098(0x0010)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrick_AnimDirection")
+		STATIC_CLASS_IMPL("GbxTrick_Sequencer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrick_AnimDirection")
+		STATIC_NAME_IMPL(L"GbxTrick_Sequencer")
 	}
-	static class UGbxTrick_AnimDirection* GetDefaultObj()
+	static class UGbxTrick_Sequencer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrick_AnimDirection>();
+		return GetDefaultObjImpl<UGbxTrick_Sequencer>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrick_AnimDirection;
-
-// Class GbxGame.GbxTrick_AnimRandom
-// 0x0018 (0x00E8 - 0x00D0)
-class UGbxTrick_AnimRandom final : public UGbxTrick_AnimBase
-{
-public:
-	bool                                          bPreventSameAnimChosenConsecutively;               // 0x00D0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_D1[0x7];                                       // 0x00D1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FGbxTrickAnimRandomData>        RandomAnims;                                       // 0x00D8(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrick_AnimRandom")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrick_AnimRandom")
-	}
-	static class UGbxTrick_AnimRandom* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrick_AnimRandom>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrick_AnimRandom;
+DUMPER7_ASSERTS_UGbxTrick_Sequencer;
 
 // Class GbxGame.GbxTrick_CoordinatedEffect
 // 0x0000 (0x00A8 - 0x00A8)
@@ -19882,53 +20021,64 @@ public:
 };
 DUMPER7_ASSERTS_UGbxTrick_Gib;
 
-// Class GbxGame.GbxTrick_Interp
-// 0x0000 (0x0090 - 0x0090)
-class UGbxTrick_Interp final : public UGbxTrick
+// Class GbxGame.GbxTrickScript_Loop
+// 0x0000 (0x0040 - 0x0040)
+class UGbxTrickScript_Loop : public UGbxTrickScript
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrick_Interp")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrick_Interp")
-	}
-	static class UGbxTrick_Interp* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrick_Interp>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrick_Interp;
-
-// Class GbxGame.GbxTrick_Leap
-// 0x03F8 (0x04C8 - 0x00D0)
-class UGbxTrick_Leap : public UGbxTrick_AnimBase
-{
-public:
-	struct FGbxTrickAnimData                      Enter;                                             // 0x00D0(0x0150)(Edit, NativeAccessSpecifierPrivate)
-	struct FGbxTrickAnimData                      Idle;                                              // 0x0220(0x0150)(Edit, NativeAccessSpecifierPrivate)
-	struct FGbxTrickAnimData                      Exit;                                              // 0x0370(0x0150)(Edit, NativeAccessSpecifierPrivate)
-	float                                         ExitInAirTime;                                     // 0x04C0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bSetLocalGoalDirAsBlendSpaceInput;                 // 0x04C4(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_4C5[0x3];                                      // 0x04C5(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	void OnLoop_Mut(class AActor* Actor, int32 LoopCount);
+	void OnLoopEnd_Mut(class AActor* Actor);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrick_Leap")
+		STATIC_CLASS_IMPL("GbxTrickScript_Loop")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrick_Leap")
+		STATIC_NAME_IMPL(L"GbxTrickScript_Loop")
 	}
-	static class UGbxTrick_Leap* GetDefaultObj()
+	static class UGbxTrickScript_Loop* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrick_Leap>();
+		return GetDefaultObjImpl<UGbxTrickScript_Loop>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrick_Leap;
+DUMPER7_ASSERTS_UGbxTrickScript_Loop;
+
+// Class GbxGame.GbxTrick_Loop
+// 0x0368 (0x0438 - 0x00D0)
+class UGbxTrick_Loop : public UGbxTrick_AnimBase
+{
+public:
+	struct FGbxTrickAnimData                      Start;                                             // 0x00D0(0x0150)(Edit, Protected, NativeAccessSpecifierProtected)
+	TArray<struct FTrickLoopAnim>                 Loops;                                             // 0x0220(0x0010)(Edit, ZeroConstructor, Protected, NativeAccessSpecifierProtected)
+	struct FGbxTrickAnimData                      Stop;                                              // 0x0230(0x0150)(Edit, Protected, NativeAccessSpecifierProtected)
+	float                                         InterruptStartPercent;                             // 0x0380(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bCanInterruptLoop;                                 // 0x0384(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	ETrickLoopType                                LoopType;                                          // 0x0385(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_386[0x2];                                      // 0x0386(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              LoopTime;                                          // 0x0388(0x0038)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxParam                              LoopCount;                                         // 0x03C0(0x0038)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxParam                              LoopCondition;                                     // 0x03F8(0x0038)(Edit, Protected, NativeAccessSpecifierProtected)
+	ETrickLoopCondition                           LoopConditionType;                                 // 0x0430(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bIncludeLoopInDurationTime;                        // 0x0431(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_432[0x6];                                      // 0x0432(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrick_Loop")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrick_Loop")
+	}
+	static class UGbxTrick_Loop* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrick_Loop>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrick_Loop;
 
 // Class GbxGame.GbxTrick_Mantle
 // 0x0000 (0x0228 - 0x0228)
@@ -19950,55 +20100,29 @@ public:
 };
 DUMPER7_ASSERTS_UGbxTrick_Mantle;
 
-// Class GbxGame.GbxTrick_Mood
-// 0x0000 (0x0228 - 0x0228)
-class UGbxTrick_Mood final : public UGbxTrick_Anim
+// Class GbxGame.AnimNotifyState_Perch
+// 0x0008 (0x0038 - 0x0030)
+class UAnimNotifyState_Perch final : public UAnimNotifyState
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxTrick_Mood")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxTrick_Mood")
-	}
-	static class UGbxTrick_Mood* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxTrick_Mood>();
-	}
-};
-DUMPER7_ASSERTS_UGbxTrick_Mood;
-
-// Class GbxGame.GbxTrick_Perch
-// 0x02C0 (0x0390 - 0x00D0)
-class UGbxTrick_Perch final : public UGbxTrick_AnimBase
-{
-public:
-	struct FGbxTrickAnimData                      Enter;                                             // 0x00D0(0x0150)(Edit, NativeAccessSpecifierPrivate)
-	TArray<struct FPerchIdleAnim>                 Idles;                                             // 0x0220(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPrivate)
-	struct FGbxTrickAnimData                      Exit;                                              // 0x0230(0x0150)(Edit, NativeAccessSpecifierPrivate)
-	bool                                          bCanInterruptIdle;                                 // 0x0380(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_381[0x3];                                      // 0x0381(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ExitDistanceExitPoseThreshold;                     // 0x0384(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         EndMotionTime;                                     // 0x0388(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_38C[0x4];                                      // 0x038C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	EPerchVerticalInterp                          InterpOption;                                      // 0x0030(0x0001)(Edit, BlueprintReadOnly, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_31[0x7];                                       // 0x0031(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTrick_Perch")
+		STATIC_CLASS_IMPL("AnimNotifyState_Perch")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTrick_Perch")
+		STATIC_NAME_IMPL(L"AnimNotifyState_Perch")
 	}
-	static class UGbxTrick_Perch* GetDefaultObj()
+	static class UAnimNotifyState_Perch* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxTrick_Perch>();
+		return GetDefaultObjImpl<UAnimNotifyState_Perch>();
 	}
 };
-DUMPER7_ASSERTS_UGbxTrick_Perch;
+DUMPER7_ASSERTS_UAnimNotifyState_Perch;
 
 // Class GbxGame.GbxTrick_Random
 // 0x0010 (0x00A0 - 0x0090)
@@ -20022,6 +20146,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGbxTrick_Random;
+
+// Class GbxGame.GbxTrick_Teleport
+// 0x0000 (0x0438 - 0x0438)
+class UGbxTrick_Teleport final : public UGbxTrick_Loop
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTrick_Teleport")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTrick_Teleport")
+	}
+	static class UGbxTrick_Teleport* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxTrick_Teleport>();
+	}
+};
+DUMPER7_ASSERTS_UGbxTrick_Teleport;
 
 // Class GbxGame.GbxTrick_TestParams
 // 0x0008 (0x0098 - 0x0090)
@@ -20066,6 +20210,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_AGbxTriggerBox;
+
+// Class GbxGame.GbxTriggerCapsule
+// 0x0000 (0x05E8 - 0x05E8)
+class AGbxTriggerCapsule : public AGbxTriggerBase
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxTriggerCapsule")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxTriggerCapsule")
+	}
+	static class AGbxTriggerCapsule* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AGbxTriggerCapsule>();
+	}
+};
+DUMPER7_ASSERTS_AGbxTriggerCapsule;
 
 // Class GbxGame.GbxTriggerComponent
 // 0x0060 (0x0680 - 0x0620)
@@ -20152,37 +20316,25 @@ public:
 };
 DUMPER7_ASSERTS_AGbxTriggerSphere;
 
-// Class GbxGame.GbxTriggerVolume
-// 0x0250 (0x0618 - 0x03C8)
-class AGbxTriggerVolume : public ATriggerVolume
+// Class GbxGame.NexusConfigStore_Rotation
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStore_Rotation final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_3C8[0x38];                                     // 0x03C8(0x0038)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxTriggerData                        TriggerData;                                       // 0x0400(0x00B8)(Edit, NativeAccessSpecifierPublic)
-	struct FFactsConduit                          FactsConduit;                                      // 0x04B8(0x00D8)(Edit, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(class AActor* TouchingActor, bool bIsPlayer)> OnTouchedTrigger;    // 0x0590(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void(class AActor* LeavingActor, bool bIsPlayer)> OnUntouchedTrigger;   // 0x05A0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	TMulticastInlineDelegate<void()>              OnAllPlayersTouching;                              // 0x05B0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	struct FGbxActivityActorData                  ActivityData;                                      // 0x05C0(0x0058)(Edit, DisableEditOnTemplate, NativeAccessSpecifierPrivate)
-
-public:
-	void BindAndCallOnTouchedTrigger(TDelegate<void(class AActor* InActor, bool bIsPlayer)> InEvent, bool bCallThisEventOnly);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxTriggerVolume")
+		STATIC_CLASS_IMPL("NexusConfigStore_Rotation")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxTriggerVolume")
+		STATIC_NAME_IMPL(L"NexusConfigStore_Rotation")
 	}
-	static class AGbxTriggerVolume* GetDefaultObj()
+	static class UNexusConfigStore_Rotation* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AGbxTriggerVolume>();
+		return GetDefaultObjImpl<UNexusConfigStore_Rotation>();
 	}
 };
-DUMPER7_ASSERTS_AGbxTriggerVolume;
+DUMPER7_ASSERTS_UNexusConfigStore_Rotation;
 
 // Class GbxGame.NexusConfigStore_UIRewardTier
 // 0x0000 (0x0390 - 0x0390)
@@ -20204,25 +20356,25 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStore_UIRewardTier;
 
-// Class GbxGame.NexusConfigSubType_GbxActivityArea
-// 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_GbxActivityArea final : public UNexusConfigLevelSubType
+// Class GbxGame.NexusConfigStore_UIRewardType
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStore_UIRewardType final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_GbxActivityArea")
+		STATIC_CLASS_IMPL("NexusConfigStore_UIRewardType")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_GbxActivityArea")
+		STATIC_NAME_IMPL(L"NexusConfigStore_UIRewardType")
 	}
-	static class UNexusConfigSubType_GbxActivityArea* GetDefaultObj()
+	static class UNexusConfigStore_UIRewardType* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigSubType_GbxActivityArea>();
+		return GetDefaultObjImpl<UNexusConfigStore_UIRewardType>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigSubType_GbxActivityArea;
+DUMPER7_ASSERTS_UNexusConfigStore_UIRewardType;
 
 // Class GbxGame.NexusConfigStore_StatDisplay
 // 0x0000 (0x0390 - 0x0390)
@@ -20263,6 +20415,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStore_StatDisplayGroup;
+
+// Class GbxGame.NexusConfigSubType_Road
+// 0x0000 (0x0040 - 0x0040)
+class UNexusConfigSubType_Road final : public UNexusConfigLevelSubType
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigSubType_Road")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigSubType_Road")
+	}
+	static class UNexusConfigSubType_Road* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigSubType_Road>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigSubType_Road;
 
 // Class GbxGame.GbxUseTrigger
 // 0x0248 (0x05E0 - 0x0398)
@@ -20335,26 +20507,6 @@ public:
 };
 DUMPER7_ASSERTS_UGbxViewAttachmentComponent;
 
-// Class GbxGame.NexusConfigSubType_Station
-// 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_Station final : public UNexusConfigLevelSubType
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_Station")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_Station")
-	}
-	static class UNexusConfigSubType_Station* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigSubType_Station>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigSubType_Station;
-
 // Class GbxGame.GbxWallaProviderComponent
 // 0x0010 (0x0630 - 0x0620)
 class UGbxWallaProviderComponent final : public UPrimitiveComponent
@@ -20402,6 +20554,26 @@ public:
 };
 DUMPER7_ASSERTS_UGbxWallaSystem;
 
+// Class GbxGame.NexusConfigSubType_Zone
+// 0x0000 (0x0040 - 0x0040)
+class UNexusConfigSubType_Zone final : public UNexusConfigLevelSubType
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigSubType_Zone")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigSubType_Zone")
+	}
+	static class UNexusConfigSubType_Zone* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigSubType_Zone>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigSubType_Zone;
+
 // Class GbxGame.GbxWorldDebugger_ImGui_Settings
 // 0x0010 (0x0048 - 0x0038)
 class UGbxWorldDebugger_ImGui_Settings final : public UDeveloperSettings
@@ -20447,35 +20619,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGestaltPartData;
-
-// Class GbxGame.OxygenConsumer
-// 0x0000 (0x0000 - 0x0000)
-class IOxygenConsumer final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("OxygenConsumer")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"OxygenConsumer")
-	}
-	static class IOxygenConsumer* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IOxygenConsumer>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IOxygenConsumer;
 
 // Class GbxGame.GestaltPartData_Random
 // 0x0010 (0x0058 - 0x0048)
@@ -20528,6 +20671,41 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UGestaltPartListData;
+
+// Class GbxGame.ParticlePropertyTrackingData
+// 0x0020 (0x0050 - 0x0030)
+class UParticlePropertyTrackingData final : public UDataAsset
+{
+public:
+	float                                         MinValue;                                          // 0x0030(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         MaxValue;                                          // 0x0034(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bStopTrackingWhenMinReached;                       // 0x0038(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bStopTrackingWhenMaxReached;                       // 0x0039(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bStopTrackingWhenPrimaryCharacterIsDeadOrNone;     // 0x003A(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bDestroyParticleWhenTrackingStopped;               // 0x003B(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bChangeValueOverTime;                              // 0x003C(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ValueChangePerSecond;                              // 0x0040(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bPauseChangeOnUpdate;                              // 0x0044(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_45[0x3];                                       // 0x0045(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         PauseDuration;                                     // 0x0048(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ParticlePropertyTrackingData")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ParticlePropertyTrackingData")
+	}
+	static class UParticlePropertyTrackingData* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UParticlePropertyTrackingData>();
+	}
+};
+DUMPER7_ASSERTS_UParticlePropertyTrackingData;
 
 // Class GbxGame.GestaltPartReplicationDataInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -20587,147 +20765,111 @@ public:
 };
 DUMPER7_ASSERTS_IGestaltPartSelectorMeshListProvider;
 
-// Class GbxGame.PerchComponent
-// 0x00C0 (0x06E0 - 0x0620)
-class UPerchComponent final : public UPrimitiveComponent
+// Class GbxGame.GoreLimb
+// 0x0190 (0x0520 - 0x0390)
+class AGoreLimb final : public AActor
 {
 public:
-	uint8                                         Pad_620[0x10];                                     // 0x0620(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bPerchEnabled;                                     // 0x0630(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bHiddenFromSearch;                                 // 0x0631(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_632[0x6];                                      // 0x0632(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
-	class UPerchData*                             PerchData;                                         // 0x0638(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	class UGbxTrick*                              PerchObjectTrick;                                  // 0x0640(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	struct FGameplayTagContainer                  OverridePearchSearchTags;                          // 0x0648(0x0020)(Edit, NativeAccessSpecifierPrivate)
-	bool                                          bOverridePearchSearchTags;                         // 0x0668(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bCombatInterruptsPerch;                            // 0x0669(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bOverrideCombatInterrupts;                         // 0x066A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bCombatInterruptsSkipExitAnim;                     // 0x066B(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FNumericRange                          cooldown;                                          // 0x066C(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
-	bool                                          bOverrideCooldown;                                 // 0x0674(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	EIdleTimeBehavior                             IdleTimeBehavior;                                  // 0x0675(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_676[0x2];                                      // 0x0676(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FNumericRange                          IdleTime;                                          // 0x0678(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
-	bool                                          bOverrideWaitForLoop;                              // 0x0680(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bUseOverrideWaitForLoop;                           // 0x0681(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bApproachFromAnyDirection;                         // 0x0682(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bOverrideApproachFromAnyDirection;                 // 0x0683(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         AlignmentTime;                                     // 0x0684(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bOverrideAlignmentTime;                            // 0x0688(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_689[0x7];                                      // 0x0689(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class AActor*                                 CurrentUser;                                       // 0x0690(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	TScriptInterface<class IGbxTrickInterface>    UserInterface;                                     // 0x0698(0x0010)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	class UGbxTrick_Perch*                        CurrentUserTrick;                                  // 0x06A8(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_6B0[0x30];                                     // 0x06B0(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_390[0x8];                                      // 0x0390(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxActorData                          GbxActorData;                                      // 0x0398(0x0108)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	class UMeshComponent*                         MeshComponent;                                     // 0x04A0(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	struct FLimbImpactEffectState                 LimbImpactEffectState;                             // 0x04A8(0x0058)(NativeAccessSpecifierPrivate)
+	uint8                                         Pad_500[0x20];                                     // 0x0500(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnHit(class AActor* SelfActor, class AActor* OtherActor, const struct FVector& NormalImpulse, const struct FHitResult& Hit);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PerchComponent")
+		STATIC_CLASS_IMPL("GoreLimb")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PerchComponent")
+		STATIC_NAME_IMPL(L"GoreLimb")
 	}
-	static class UPerchComponent* GetDefaultObj()
+	static class AGoreLimb* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UPerchComponent>();
+		return GetDefaultObjImpl<AGoreLimb>();
 	}
 };
-DUMPER7_ASSERTS_UPerchComponent;
+DUMPER7_ASSERTS_AGoreLimb;
 
-// Class GbxGame.GlobalStateCacheProgressRole
-// 0x0000 (0x0100 - 0x0100)
-class UGlobalStateCacheProgressRole final : public UGbxProfileProgressRoleHostPlayer
+// Class GbxGame.GpsContext_Projectile
+// 0x0008 (0x0030 - 0x0028)
+class UGpsContext_Projectile final : public UGpsContext
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GlobalStateCacheProgressRole")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GlobalStateCacheProgressRole")
-	}
-	static class UGlobalStateCacheProgressRole* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGlobalStateCacheProgressRole>();
-	}
-};
-DUMPER7_ASSERTS_UGlobalStateCacheProgressRole;
-
-// Class GbxGame.GoreableInterface
-// 0x0000 (0x0000 - 0x0000)
-class IGoreableInterface final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GoreableInterface")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GoreableInterface")
-	}
-	static class IGoreableInterface* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IGoreableInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IGoreableInterface;
-
-// Class GbxGame.GpsSpawnPoint
-// 0x0000 (0x0850 - 0x0850)
-class AGpsSpawnPoint final : public AGbxGameSpawnPoint
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GpsSpawnPoint")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GpsSpawnPoint")
-	}
-	static class AGpsSpawnPoint* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<AGpsSpawnPoint>();
-	}
-};
-DUMPER7_ASSERTS_AGpsSpawnPoint;
-
-// Class GbxGame.GpsSpawnPointComponent
-// 0x0210 (0x0B60 - 0x0950)
-class UGpsSpawnPointComponent final : public UGbxGameSpawnPointComponent
-{
-public:
-	struct FGpsQueryRunData                       QueryData;                                         // 0x0950(0x01E0)(Edit, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_B30[0x30];                                     // 0x0B30(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	EProjectileGpsContextDataType                 data;                                              // 0x0028(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	ELightProjectileQueryActorType                ActorType;                                         // 0x0029(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_2A[0x6];                                       // 0x002A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GpsSpawnPointComponent")
+		STATIC_CLASS_IMPL("GpsContext_Projectile")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GpsSpawnPointComponent")
+		STATIC_NAME_IMPL(L"GpsContext_Projectile")
 	}
-	static class UGpsSpawnPointComponent* GetDefaultObj()
+	static class UGpsContext_Projectile* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGpsSpawnPointComponent>();
+		return GetDefaultObjImpl<UGpsContext_Projectile>();
 	}
 };
-DUMPER7_ASSERTS_UGpsSpawnPointComponent;
+DUMPER7_ASSERTS_UGpsContext_Projectile;
+
+// Class GbxGame.HazardInteractionComponent
+// 0x07A0 (0x0A50 - 0x02B0)
+class UHazardInteractionComponent final : public USceneComponent
+{
+public:
+	uint8                                         Pad_2A8[0x8];                                      // 0x02A8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bEnabled;                                          // 0x02B0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2B1[0x7];                                      // 0x02B1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	FGameDataHandleProperty_                      Interaction;                                       // 0x02B8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMulticastInlineDelegate<void(FGameDataHandleProperty_ State, bool bIsInitialState)> OnInteractionStarted; // 0x02D0(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	bool                                          bDamageOverride;                                   // 0x02E0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2E1[0x7];                                      // 0x02E1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxAttributeInit                      damage;                                            // 0x02E8(0x0050)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	EHazardPrimitiveCollectionType                DamagePrimitiveType;                               // 0x0338(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_339[0x7];                                      // 0x0339(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class FName>                           DamagePrimitiveNames;                              // 0x0340(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	EHazardPrimitiveCollectionType                InteractionPrimitiveType;                          // 0x0350(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_351[0x7];                                      // 0x0351(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class FName>                           InteractionPrimitiveNames;                         // 0x0358(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	TArray<class FName>                           EffectPrimitiveNames;                              // 0x0368(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	EHazardEffectSizeSourceType                   EffectSizeSource;                                  // 0x0378(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_379[0x3];                                      // 0x0379(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         EffectSizeOverride;                                // 0x037C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FHazardInteractionState                HazardInteraction;                                 // 0x0380(0x0658)(Transient, ContainsInstancedReference, Protected, NativeAccessSpecifierProtected)
+	struct FHazardInteractionReplicationState     RepHazardInteractionState;                         // 0x09D8(0x0070)(Net, Transient, RepNotify, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_A48[0x8];                                      // 0x0A48(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void BeginInteraction(FGameDataHandleProperty_ NewState, bool bIsSource, float SourceDuration, class AActor* NewInstigator);
+	void OnRep_InteractionState();
+	void SetDamageInstigator(class AActor* NewInstigator);
+	void SetEnabled(bool bNewEnabled);
+
+	bool IsEnabled() const;
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("HazardInteractionComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"HazardInteractionComponent")
+	}
+	static class UHazardInteractionComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UHazardInteractionComponent>();
+	}
+};
+DUMPER7_ASSERTS_UHazardInteractionComponent;
 
 // Class GbxGame.HazardOverlapCollisonComponent
 // 0x0030 (0x0650 - 0x0620)
@@ -20753,6 +20895,31 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UHazardOverlapCollisonComponent;
+
+// Class GbxGame.HazardVolume
+// 0x00E8 (0x04C0 - 0x03D8)
+class AHazardVolume final : public APhysicsVolume
+{
+public:
+	uint8                                         Pad_3D8[0x8];                                      // 0x03D8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	class UHazardInteractionComponent*            HazardInteractionComponent;                        // 0x03E0(0x0008)(Edit, BlueprintVisible, ExportObject, BlueprintReadOnly, ZeroConstructor, EditConst, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	struct FFactsConduit                          FactsConduit;                                      // 0x03E8(0x00D8)(Edit, DisableEditOnTemplate, Protected, NativeAccessSpecifierProtected)
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("HazardVolume")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"HazardVolume")
+	}
+	static class AHazardVolume* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<AHazardVolume>();
+	}
+};
+DUMPER7_ASSERTS_AHazardVolume;
 
 // Class GbxGame.FactAddressReferencerContext
 // 0x0000 (0x0000 - 0x0000)
@@ -20783,35 +20950,6 @@ public:
 };
 DUMPER7_ASSERTS_IFactAddressReferencerContext;
 
-// Class GbxGame.FactsSystemObject
-// 0x0000 (0x0000 - 0x0000)
-class IFactsSystemObject final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("FactsSystemObject")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"FactsSystemObject")
-	}
-	static class IFactsSystemObject* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IFactsSystemObject>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IFactsSystemObject;
-
 // Class GbxGame.GbxProgressGraphOwner
 // 0x0000 (0x0000 - 0x0000)
 class IGbxProgressGraphOwner final
@@ -20840,6 +20978,39 @@ public:
 	}
 };
 DUMPER7_ASSERTS_IGbxProgressGraphOwner;
+
+// Class GbxGame.GbxProgressGraphUser
+// 0x0000 (0x0000 - 0x0000)
+class IGbxProgressGraphUser final
+{
+public:
+	void GbxGetUnlockableGroupNames(FGbxDefPtrProperty_ InGraph, TArray<class FName>* OutNames) const;
+	void GbxGetUnlockableNodeNames(FGbxDefPtrProperty_ InGraph, TArray<class FName>* OutNames) const;
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxProgressGraphUser")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxProgressGraphUser")
+	}
+	static class IGbxProgressGraphUser* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IGbxProgressGraphUser>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IGbxProgressGraphUser;
 
 // Class GbxGame.GbxRewardsOwner
 // 0x0000 (0x0000 - 0x0000)
@@ -21331,47 +21502,45 @@ public:
 };
 DUMPER7_ASSERTS_UInventoryMaterialsDataAsset;
 
-// Class GbxGame.InventoryModel
-// 0x0138 (0x0658 - 0x0520)
-class AInventoryModel final : public AInventoryBase
+// Class GbxGame.InventoryPickupSpawnManager
+// 0x0030 (0x0060 - 0x0030)
+class UInventoryPickupSpawnManager final : public UGameInstanceSubsystem
 {
 public:
-	uint8                                         Pad_520[0x28];                                     // 0x0520(0x0028)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxActorData                          GbxActorData;                                      // 0x0548(0x0108)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_650[0x8];                                      // 0x0650(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_30[0x30];                                      // 0x0030(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("InventoryModel")
+		STATIC_CLASS_IMPL("InventoryPickupSpawnManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"InventoryModel")
+		STATIC_NAME_IMPL(L"InventoryPickupSpawnManager")
 	}
-	static class AInventoryModel* GetDefaultObj()
+	static class UInventoryPickupSpawnManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<AInventoryModel>();
+		return GetDefaultObjImpl<UInventoryPickupSpawnManager>();
 	}
 };
-DUMPER7_ASSERTS_AInventoryModel;
+DUMPER7_ASSERTS_UInventoryPickupSpawnManager;
 
-// Class GbxGame.InventoryOwner
+// Class GbxGame.SequencerStreamableContentProvider
 // 0x0000 (0x0000 - 0x0000)
-class IInventoryOwner final
+class ISequencerStreamableContentProvider final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("InventoryOwner")
+		STATIC_CLASS_IMPL("SequencerStreamableContentProvider")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"InventoryOwner")
+		STATIC_NAME_IMPL(L"SequencerStreamableContentProvider")
 	}
-	static class IInventoryOwner* GetDefaultObj()
+	static class ISequencerStreamableContentProvider* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IInventoryOwner>();
+		return GetDefaultObjImpl<ISequencerStreamableContentProvider>();
 	}
 
 	class UObject* AsUObject()
@@ -21383,7 +21552,7 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IInventoryOwner;
+DUMPER7_ASSERTS_ISequencerStreamableContentProvider;
 
 // Class GbxGame.ItemPoolFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -21409,6 +21578,29 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UItemPoolFunctionLibrary;
+
+// Class GbxGame.NexusConfigStoreStats
+// 0x0088 (0x0358 - 0x02D0)
+class UNexusConfigStoreStats final : public UNexusConfigStoreFlat
+{
+public:
+	uint8                                         Pad_2D0[0x88];                                     // 0x02D0(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreStats")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreStats")
+	}
+	static class UNexusConfigStoreStats* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreStats>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreStats;
 
 // Class GbxGame.ItemsFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -21457,26 +21649,6 @@ public:
 };
 DUMPER7_ASSERTS_UJunkReplicationChannel;
 
-// Class GbxGame.NexusConfigStoreUIMaterialAnimationDataDef
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreUIMaterialAnimationDataDef final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreUIMaterialAnimationDataDef")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreUIMaterialAnimationDataDef")
-	}
-	static class UNexusConfigStoreUIMaterialAnimationDataDef* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreUIMaterialAnimationDataDef>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreUIMaterialAnimationDataDef;
-
 // Class GbxGame.JunkSystemFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
 class UJunkSystemFunctionLibrary final : public UBlueprintFunctionLibrary
@@ -21504,34 +21676,25 @@ public:
 };
 DUMPER7_ASSERTS_UJunkSystemFunctionLibrary;
 
-// Class GbxGame.JunkSystemNotificationReceiver
-// 0x0000 (0x0000 - 0x0000)
-class IJunkSystemNotificationReceiver final
+// Class GbxGame.NexusConfigStoreUsabilityData
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreUsabilityData final : public UNexusConfigStoreBasicDefFlat
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("JunkSystemNotificationReceiver")
+		STATIC_CLASS_IMPL("NexusConfigStoreUsabilityData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"JunkSystemNotificationReceiver")
+		STATIC_NAME_IMPL(L"NexusConfigStoreUsabilityData")
 	}
-	static class IJunkSystemNotificationReceiver* GetDefaultObj()
+	static class UNexusConfigStoreUsabilityData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IJunkSystemNotificationReceiver>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
+		return GetDefaultObjImpl<UNexusConfigStoreUsabilityData>();
 	}
 };
-DUMPER7_ASSERTS_IJunkSystemNotificationReceiver;
+DUMPER7_ASSERTS_UNexusConfigStoreUsabilityData;
 
 // Class GbxGame.NexusConfigStoreLanding
 // 0x0000 (0x0380 - 0x0380)
@@ -21553,25 +21716,39 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreLanding;
 
-// Class GbxGame.NexusConfigStoreUsableConsumer
-// 0x0000 (0x02D0 - 0x02D0)
-class UNexusConfigStoreUsableConsumer final : public UNexusConfigStoreGeneric
+// Class GbxGame.LightBeamManager
+// 0x0120 (0x04B0 - 0x0390)
+class ALightBeamManager final : public AActor
 {
+public:
+	TArray<class ULightBeam*>                     ActiveBeams;                                       // 0x0390(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_3A0[0x18];                                     // 0x03A0(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class ULightBeam*>                     BeamsWaitingBatch;                                 // 0x03B8(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class ULightBeam*>                     BeamPool;                                          // 0x03C8(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<class UFXSystemComponent*>             ActiveParticles;                                   // 0x03D8(0x0010)(ExportObject, ZeroConstructor, Transient, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	TArray<struct FLightBeamParticlePoolData>     ParticlesPool;                                     // 0x03E8(0x0010)(ZeroConstructor, Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_3F8[0x44];                                     // 0x03F8(0x0044)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         MaxAsyncSpawnTime;                                 // 0x043C(0x0004)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_440[0x70];                                     // 0x0440(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnParticleSystemFinished(class UFXSystemComponent* FinishedComponent);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreUsableConsumer")
+		STATIC_CLASS_IMPL("LightBeamManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreUsableConsumer")
+		STATIC_NAME_IMPL(L"LightBeamManager")
 	}
-	static class UNexusConfigStoreUsableConsumer* GetDefaultObj()
+	static class ALightBeamManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreUsableConsumer>();
+		return GetDefaultObjImpl<ALightBeamManager>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreUsableConsumer;
+DUMPER7_ASSERTS_ALightBeamManager;
 
 // Class GbxGame.LightBeam
 // 0x0958 (0x0980 - 0x0028)
@@ -21662,33 +21839,25 @@ public:
 };
 DUMPER7_ASSERTS_ULightBeam;
 
-// Class GbxGame.LightBeamCollisionHandler
-// 0x0008 (0x00A8 - 0x00A0)
-class ULightBeamCollisionHandler final : public UGbxActorScript
+// Class GbxGame.NexusConfigStoreWorldRegion
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreWorldRegion final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_A0[0x8];                                       // 0x00A0(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	ELightBeamCollisionHandlerResult StartBeamImpact(const class ULightBeam* Beam, const struct FHitResult& Impact);
-	void StopBeamImpact(const class ULightBeam* Beam, const struct FHitResult& LastImpact);
-	void UpdateBeamImpact(const class ULightBeam* Beam, const struct FHitResult& Impact);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("LightBeamCollisionHandler")
+		STATIC_CLASS_IMPL("NexusConfigStoreWorldRegion")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"LightBeamCollisionHandler")
+		STATIC_NAME_IMPL(L"NexusConfigStoreWorldRegion")
 	}
-	static class ULightBeamCollisionHandler* GetDefaultObj()
+	static class UNexusConfigStoreWorldRegion* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<ULightBeamCollisionHandler>();
+		return GetDefaultObjImpl<UNexusConfigStoreWorldRegion>();
 	}
 };
-DUMPER7_ASSERTS_ULightBeamCollisionHandler;
+DUMPER7_ASSERTS_UNexusConfigStoreWorldRegion;
 
 // Class GbxGame.LightBeamCollisionHandlerInterface
 // 0x0000 (0x0000 - 0x0000)
@@ -21719,28 +21888,32 @@ public:
 };
 DUMPER7_ASSERTS_ILightBeamCollisionHandlerInterface;
 
-// Class GbxGame.NexusConfigStore_GbxActorPart
-// 0x0070 (0x0400 - 0x0390)
-class UNexusConfigStore_GbxActorPart final : public UNexusConfigStoreBasic
+// Class GbxGame.LightBeamScript
+// 0x0008 (0x0030 - 0x0028)
+class ULightBeamScript final : public UObject
 {
 public:
-	uint8                                         Pad_390[0x70];                                     // 0x0390(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnBegin(class ULightBeam* Beam) const;
+	void OnShutdown(class ULightBeam* Beam) const;
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GbxActorPart")
+		STATIC_CLASS_IMPL("LightBeamScript")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GbxActorPart")
+		STATIC_NAME_IMPL(L"LightBeamScript")
 	}
-	static class UNexusConfigStore_GbxActorPart* GetDefaultObj()
+	static class ULightBeamScript* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStore_GbxActorPart>();
+		return GetDefaultObjImpl<ULightBeamScript>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStore_GbxActorPart;
+DUMPER7_ASSERTS_ULightBeamScript;
 
 // Class GbxGame.LightBeamStatics
 // 0x0000 (0x0028 - 0x0028)
@@ -21775,45 +21948,34 @@ public:
 };
 DUMPER7_ASSERTS_ULightBeamStatics;
 
-// Class GbxGame.LightProjectileManager
-// 0x01D8 (0x0568 - 0x0390)
-class ALightProjectileManager final : public AActor
+// Class GbxGame.GbxSequenceFadeSection
+// 0x0450 (0x0548 - 0x00F8)
+class UGbxSequenceFadeSection final : public UMovieSceneSection
 {
 public:
-	uint8                                         Pad_390[0x18];                                     // 0x0390(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class ULightProjectile*>               ActiveProjectiles;                                 // 0x03A8(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_3B8[0x18];                                     // 0x03B8(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class ULightProjectile*>               ProjectilesWaitingBatch;                           // 0x03D0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class ULightProjectile*>               ProjectilePool;                                    // 0x03E0(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<class UFXSystemComponent*>             ActiveParticles;                                   // 0x03F0(0x0010)(ExportObject, ZeroConstructor, Transient, ContainsInstancedReference, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	TArray<struct FLightProjectileParticlePoolData> ParticlesPool;                                   // 0x0400(0x0010)(ZeroConstructor, Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	TArray<struct FLightProjectileMeshPoolData>   MeshesPool;                                        // 0x0410(0x0010)(ZeroConstructor, Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_420[0xAC];                                     // 0x0420(0x00AC)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         MaxAsyncSpawnTime;                                 // 0x04CC(0x0004)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_4D0[0x80];                                     // 0x04D0(0x0080)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class ULightProjectile*>               DamageableProjectiles;                             // 0x0550(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_560[0x8];                                      // 0x0560(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnParticleSystemFinished(class UFXSystemComponent* FinishedComponent);
-	void ServerSendDebugProjectileImpact(int32 ProjSyncID, class AActor* HitActor, class FName BoneName, uint16 ProjFlags);
-	void ServerSendDebugProjectilePath(int32 ProjSyncID, const struct FVector_NetQuantize& Location);
+	uint8                                         Pad_F8[0x8];                                       // 0x00F8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FMovieSceneFloatChannel                FloatCurve;                                        // 0x0100(0x0110)(NativeAccessSpecifierPublic)
+	struct FMovieSceneFloatChannel                RedCurve;                                          // 0x0210(0x0110)(NativeAccessSpecifierPublic)
+	struct FMovieSceneFloatChannel                GreenCurve;                                        // 0x0320(0x0110)(NativeAccessSpecifierPublic)
+	struct FMovieSceneFloatChannel                BlueCurve;                                         // 0x0430(0x0110)(NativeAccessSpecifierPublic)
+	uint8                                         bFadeAudio : 1;                                    // 0x0540(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         Pad_541[0x7];                                      // 0x0541(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("LightProjectileManager")
+		STATIC_CLASS_IMPL("GbxSequenceFadeSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"LightProjectileManager")
+		STATIC_NAME_IMPL(L"GbxSequenceFadeSection")
 	}
-	static class ALightProjectileManager* GetDefaultObj()
+	static class UGbxSequenceFadeSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<ALightProjectileManager>();
+		return GetDefaultObjImpl<UGbxSequenceFadeSection>();
 	}
 };
-DUMPER7_ASSERTS_ALightProjectileManager;
+DUMPER7_ASSERTS_UGbxSequenceFadeSection;
 
 // Class GbxGame.LightProjectile
 // 0x0788 (0x07B0 - 0x0028)
@@ -21926,6 +22088,46 @@ public:
 	}
 };
 DUMPER7_ASSERTS_ULightProjectile;
+
+// Class GbxGame.LightProjectileScript
+// 0x0008 (0x0030 - 0x0028)
+class ULightProjectileScript final : public UObject
+{
+public:
+	uint8                                         Pad_28[0x8];                                       // 0x0028(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnAttached(class ULightProjectile* projectile, class AActor* AttachedActor) const;
+	void OnBegin(class ULightProjectile* projectile) const;
+	void OnBounce(class ULightProjectile* projectile, const struct FHitResult& Hit, const struct FVector& ImpactVelocity) const;
+	void OnDetached(class ULightProjectile* projectile) const;
+	void OnDirectDamage(class ULightProjectile* projectile, const struct FHitResult& Hit, bool bCritical) const;
+	void OnExplode(class ULightProjectile* projectile) const;
+	void OnGameplayBounce(class ULightProjectile* projectile, const struct FHitResult& Hit, const struct FVector& ImpactVelocity) const;
+	void OnHomingTargetLost(class ULightProjectile* projectile, EHomingTargetLostReason reason) const;
+	void OnHomingTargetReached(class ULightProjectile* projectile) const;
+	void OnImpact(class ULightProjectile* projectile, const struct FHitResult& Hit) const;
+	void OnLastGameplayBounce(class ULightProjectile* projectile, const struct FHitResult& Hit) const;
+	void OnLifetimeExpired(class ULightProjectile* projectile) const;
+	void OnNonGameplayBounce(class ULightProjectile* projectile, const struct FHitResult& Hit, const struct FVector& ImpactVelocity) const;
+	void OnProxyImpact(class ULightProjectile* projectile, const struct FHitResult& Hit) const;
+	void OnStopHomingDistanceReached(class ULightProjectile* projectile) const;
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("LightProjectileScript")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"LightProjectileScript")
+	}
+	static class ULightProjectileScript* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<ULightProjectileScript>();
+	}
+};
+DUMPER7_ASSERTS_ULightProjectileScript;
 
 // Class GbxGame.LightProjectileStatics
 // 0x0000 (0x0028 - 0x0028)
@@ -22160,58 +22362,45 @@ public:
 };
 DUMPER7_ASSERTS_UMinimalLevelSequenceInstanceData;
 
-// Class GbxGame.NexusConfigStoreMissionArchetype
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreMissionArchetype final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreMissionArchetype")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreMissionArchetype")
-	}
-	static class UNexusConfigStoreMissionArchetype* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreMissionArchetype>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreMissionArchetype;
-
-// Class GbxGame.MissionBlueprintLibrary
+// Class GbxGame.MissionDependencyConditionObjectiveHelper
 // 0x0000 (0x0028 - 0x0028)
-class UMissionBlueprintLibrary final : public UBlueprintFunctionLibrary
+class UMissionDependencyConditionObjectiveHelper final : public UObject
 {
-public:
-	static struct FMissionInstanceHandle GetOrCreateMissionInstanceForPlayer(const struct FMissionInstanceHandle& primarymission, const class AActor* Actor);
-	static struct FMissionInstanceHandle GetOrCreateMissionInstanceForPlayerGroup(const struct FMissionInstanceHandle& primarymission, const class AActor* Actor);
-	static bool IsActorPartOfActiveMission(class AActor* Actor);
-	static bool IsPlayerRelevantForMissionInstance(class UObject* WorldContextObject, const struct FMissionInstanceHandle& MissionHandle, class AActor* Actor);
-	static bool IsValid(const struct FMissionInstanceHandle& MissionHandle);
-	static void QueryPrimaryMissionInstance(class UObject* WorldContextObject, FGbxDefPtrProperty_ MissionDef, struct FMissionInstanceHandle* OutMission);
-	static void QuerySubordinateMissionInstancesForPlayer(class UObject* WorldContextObject, FGbxDefPtrProperty_ MissionDef, class AActor* Actor, TArray<struct FMissionInstanceHandle>* OutMissions);
-	static void ResetRepeatableMission(class UObject* WorldContextObject, FGbxDefPtrProperty_ mission);
-	static void SendMissionEvent(class UObject* WorldContextObject, FGbxDefPtrProperty_ mission, class FName Event);
-
-	class FString GetMissionIdent(const struct FMissionInstanceHandle& MissionInstanceHandle);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("MissionBlueprintLibrary")
+		STATIC_CLASS_IMPL("MissionDependencyConditionObjectiveHelper")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"MissionBlueprintLibrary")
+		STATIC_NAME_IMPL(L"MissionDependencyConditionObjectiveHelper")
 	}
-	static class UMissionBlueprintLibrary* GetDefaultObj()
+	static class UMissionDependencyConditionObjectiveHelper* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UMissionBlueprintLibrary>();
+		return GetDefaultObjImpl<UMissionDependencyConditionObjectiveHelper>();
 	}
 };
-DUMPER7_ASSERTS_UMissionBlueprintLibrary;
+DUMPER7_ASSERTS_UMissionDependencyConditionObjectiveHelper;
+
+// Class GbxGame.MissionProgressRole
+// 0x0000 (0x0100 - 0x0100)
+class UMissionProgressRole final : public UGbxProfileProgressRoleFiltered
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("MissionProgressRole")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"MissionProgressRole")
+	}
+	static class UMissionProgressRole* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UMissionProgressRole>();
+	}
+};
+DUMPER7_ASSERTS_UMissionProgressRole;
 
 // Class GbxGame.MissionReplicationChannel
 // 0x0080 (0x00E8 - 0x0068)
@@ -22235,37 +22424,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UMissionReplicationChannel;
-
-// Class GbxGame.MissionSourceBlueprintLibrary
-// 0x0000 (0x0028 - 0x0028)
-class UMissionSourceBlueprintLibrary final : public UBlueprintFunctionLibrary
-{
-public:
-	static void AddMissionSource(class AActor* Origin, FGbxDefPtrProperty_ MSDef, struct FSToken* OutIndex);
-	static TArray<struct FMissionInstanceHandle> GetBestMission(class AActor* Origin, const struct FSToken& MSIndex, int32 Count);
-	static void GetMissionSource(class AActor* Origin, FGbxDefPtrProperty_ MSDef, struct FSToken* OutIndex);
-	static void GetMissionSourceRank(class AActor* Origin, const struct FSToken& MSIndex, int32* OutRank);
-	static void GetMissionSourceTimerTimeRemaining(class AActor* Origin, const struct FSToken& MSIndex, const struct FSToken& TimerLabel, float* OutRemainingTime);
-	static void SetMissionSourceRank(class AActor* Origin, const struct FSToken& MSIndex, const struct FFactValue& Rank);
-	static struct FMissionInstanceHandle StartBestMission(class AActor* Origin, const struct FSToken& MSIndex);
-	static struct FMissionInstanceHandle StartMissionSourceMission(class AActor* Origin, const struct FSToken& MSIndex, const struct FSToken& MissionName);
-	static void StartMissionSourceTimer(class AActor* Origin, const struct FSToken& MSIndex, class FName TimerName, float* OutRemainingTime);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("MissionSourceBlueprintLibrary")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"MissionSourceBlueprintLibrary")
-	}
-	static class UMissionSourceBlueprintLibrary* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UMissionSourceBlueprintLibrary>();
-	}
-};
-DUMPER7_ASSERTS_UMissionSourceBlueprintLibrary;
 
 // Class GbxGame.MissionSourceStateManager
 // 0x0030 (0x0058 - 0x0028)
@@ -22291,6 +22449,26 @@ public:
 };
 DUMPER7_ASSERTS_UMissionSourceStateManager;
 
+// Class GbxGame.MissionSourceStateRole
+// 0x0000 (0x0100 - 0x0100)
+class UMissionSourceStateRole final : public UGbxProfileProgressRoleAllPlayers
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("MissionSourceStateRole")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"MissionSourceStateRole")
+	}
+	static class UMissionSourceStateRole* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UMissionSourceStateRole>();
+	}
+};
+DUMPER7_ASSERTS_UMissionSourceStateRole;
+
 // Class GbxGame.MissionStateDebugShard
 // 0x0000 (0x0168 - 0x0168)
 class UMissionStateDebugShard final : public UGbxShard
@@ -22311,6 +22489,35 @@ public:
 };
 DUMPER7_ASSERTS_UMissionStateDebugShard;
 
+// Class GbxGame.PerchUserInterface
+// 0x0000 (0x0000 - 0x0000)
+class IPerchUserInterface final
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("PerchUserInterface")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"PerchUserInterface")
+	}
+	static class IPerchUserInterface* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IPerchUserInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IPerchUserInterface;
+
 // Class GbxGame.MissionStateDebugGameInstance
 // 0x0000 (0x0420 - 0x0420)
 class UMissionStateDebugGameInstance final : public UGbxGameInstance
@@ -22330,52 +22537,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UMissionStateDebugGameInstance;
-
-// Class GbxGame.MissionSystemSettings
-// 0x0018 (0x0050 - 0x0038)
-class UMissionSystemSettings final : public UDeveloperSettings
-{
-public:
-	TArray<struct FMissionInteractObjectiveSubTypeConfig> InteractObjectiveSubTypes;                 // 0x0038(0x0010)(Edit, ZeroConstructor, Config, NativeAccessSpecifierPrivate)
-	int32                                         DefaultObjectivePhaseWaypointVisibilityFlags;      // 0x0048(0x0004)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bShouldGeneratedMissionsCacheRewardsOnCreation;    // 0x004C(0x0001)(Edit, ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4D[0x3];                                       // 0x004D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("MissionSystemSettings")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"MissionSystemSettings")
-	}
-	static class UMissionSystemSettings* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UMissionSystemSettings>();
-	}
-};
-DUMPER7_ASSERTS_UMissionSystemSettings;
-
-// Class GbxGame.NexusConfigStorePingFeedback
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStorePingFeedback final : public UNexusConfigStoreBasicDefFlat
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStorePingFeedback")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStorePingFeedback")
-	}
-	static class UNexusConfigStorePingFeedback* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStorePingFeedback>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStorePingFeedback;
 
 // Class GbxGame.MissionTaskBlueprintLibrary
 // 0x0000 (0x0028 - 0x0028)
@@ -22403,6 +22564,49 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UMissionTaskBlueprintLibrary;
+
+// Class GbxGame.MissionTaskChannel
+// 0x0010 (0x0078 - 0x0068)
+class UMissionTaskChannel final : public Uchannel
+{
+public:
+	uint8                                         Pad_68[0x10];                                      // 0x0068(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("MissionTaskChannel")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"MissionTaskChannel")
+	}
+	static class UMissionTaskChannel* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UMissionTaskChannel>();
+	}
+};
+DUMPER7_ASSERTS_UMissionTaskChannel;
+
+// Class GbxGame.ProjectileBodyData
+// 0x0000 (0x0060 - 0x0060)
+class UProjectileBodyData final : public UGbxBodyData
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ProjectileBodyData")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ProjectileBodyData")
+	}
+	static class UProjectileBodyData* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UProjectileBodyData>();
+	}
+};
+DUMPER7_ASSERTS_UProjectileBodyData;
 
 // Class GbxGame.MissionTaskStateManager
 // 0x00F8 (0x0120 - 0x0028)
@@ -22447,35 +22651,6 @@ public:
 };
 DUMPER7_ASSERTS_UMissionTaskStateRole;
 
-// Class GbxGame.ProjectileMovementInterface
-// 0x0000 (0x0000 - 0x0000)
-class IProjectileMovementInterface final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ProjectileMovementInterface")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ProjectileMovementInterface")
-	}
-	static class IProjectileMovementInterface* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IProjectileMovementInterface>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IProjectileMovementInterface;
-
 // Class GbxGame.MovieSceneCoordinatedMaterialParameterSection
 // 0x0000 (0x0180 - 0x0180)
 class UMovieSceneCoordinatedMaterialParameterSection final : public UGbxMovieSceneMaterialParameterSection
@@ -22496,25 +22671,64 @@ public:
 };
 DUMPER7_ASSERTS_UMovieSceneCoordinatedMaterialParameterSection;
 
-// Class GbxGame.MovieSceneCoordinatedComponentMaterialParameterSection
-// 0x0000 (0x0120 - 0x0120)
-class UMovieSceneCoordinatedComponentMaterialParameterSection final : public UMovieSceneComponentMaterialParameterSection
+// Class GbxGame.PuddleHazard
+// 0x07F8 (0x0B88 - 0x0390)
+class APuddleHazard final : public AActor
 {
+public:
+	uint8                                         Pad_390[0x10];                                     // 0x0390(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FHazardInteractionState                HazardInteraction;                                 // 0x03A0(0x0658)(Transient, ContainsInstancedReference, NativeAccessSpecifierPublic)
+	class UPuddleHazardConfigurationData*         Configuration;                                     // 0x09F8(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UProceduralMeshComponent*               CollisionComponent;                                // 0x0A00(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UHazardOverlapCollisonComponent*        OverlapCollisionComponent;                         // 0x0A08(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class USceneComponent*                        VisualComponent;                                   // 0x0A10(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UFXSystemComponent*                     ParticleSystemComponent;                           // 0x0A18(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UDecalComponent*                        GroundingDecalComponent;                           // 0x0A20(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class USceneComponent*                        TransitionVisualComponent;                         // 0x0A28(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	class UDecalComponent*                        TransitionGroundingDecalComponent;                 // 0x0A30(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_A38[0x44];                                     // 0x0A38(0x0044)(Fixing Size After Last Property [ Dumper-7 ])
+	EPuddleState                                  PuddleState;                                       // 0x0A7C(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_A7D[0x3];                                      // 0x0A7D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         CurrentOpacity;                                    // 0x0A80(0x0004)(Edit, ZeroConstructor, Transient, EditConst, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	float                                         CurrentRadius;                                     // 0x0A84(0x0004)(Edit, ZeroConstructor, Transient, EditConst, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_A88[0x4];                                      // 0x0A88(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         lifespan;                                          // 0x0A8C(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         FullRadius;                                        // 0x0A90(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         TraceDistanceOverride;                             // 0x0A94(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         RepCleanUpTransitionTime;                          // 0x0A98(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_A9C[0x4];                                      // 0x0A9C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	FGameDataHandleProperty_                      DefHandle;                                         // 0x0AA0(0x0018)(Edit, Net, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FHazardInteractionReplicationState     RepHazardInteractionState;                         // 0x0AB8(0x0070)(Net, Transient, RepNotify, NativeAccessSpecifierPrivate)
+	EPuddleHazardInstanceBuildType                LevelBuildType;                                    // 0x0B28(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_B29[0x5F];                                     // 0x0B29(0x005F)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static void CleanUpPuddleById(class UObject* WorldContext, int32 ID);
+	static void CleanUpPuddleByOwner(class AActor* PuddleOwner);
+	static void ForEachPuddle_Owner(class AActor* PuddleOwner, const TDelegate<void(class APuddleHazard* Puddle)>& Callback);
+	static int32 SpawnPuddleHazard(class UObject* WorldContext, class AActor* PuddleOwner, const struct FTransform& Transform, FGameDataHandleProperty_ definition, const struct FDamageSourceContainer& DamageSource, const bool bCanDamageOwner, const bool bCanDamageFriendlies, float Radius, float lifespan_0, bool bAdjustSpawnTransform, float DamageOverride, bool bLevelSyncDamage, float GroundPlacementRadius);
+
+	void BeginInteraction(FGameDataHandleProperty_ NewState, bool bIsSource, float SourceDuration, class AActor* NewInstigator);
+	void Convert(FGameDataHandleProperty_ NewDef);
+	void OnRep_CleanUpPuddle();
+	void OnRep_DefHandle();
+	void OnRep_InteractionState();
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("MovieSceneCoordinatedComponentMaterialParameterSection")
+		STATIC_CLASS_IMPL("PuddleHazard")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"MovieSceneCoordinatedComponentMaterialParameterSection")
+		STATIC_NAME_IMPL(L"PuddleHazard")
 	}
-	static class UMovieSceneCoordinatedComponentMaterialParameterSection* GetDefaultObj()
+	static class APuddleHazard* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UMovieSceneCoordinatedComponentMaterialParameterSection>();
+		return GetDefaultObjImpl<APuddleHazard>();
 	}
 };
-DUMPER7_ASSERTS_UMovieSceneCoordinatedComponentMaterialParameterSection;
+DUMPER7_ASSERTS_APuddleHazard;
 
 // Class GbxGame.MovieSceneCoordinatedMaterialParameterTrack
 // 0x0058 (0x0168 - 0x0110)
@@ -22545,30 +22759,28 @@ public:
 };
 DUMPER7_ASSERTS_UMovieSceneCoordinatedMaterialParameterTrack;
 
-// Class GbxGame.GbxPureEchoSpeaker
-// 0x0028 (0x0050 - 0x0028)
-class UGbxPureEchoSpeaker final : public UObject
+// Class GbxGame.MovieSceneCoordinatedMaterialSection
+// 0x0018 (0x0110 - 0x00F8)
+class UMovieSceneCoordinatedMaterialSection final : public UMovieSceneSection
 {
 public:
-	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	class UGbxDialogProvider*                     GbxDialogProvider;                                 // 0x0038(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_40[0x10];                                      // 0x0040(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxInlineStruct                       settings;                                          // 0x00F8(0x0018)(Edit, NoClear, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxPureEchoSpeaker")
+		STATIC_CLASS_IMPL("MovieSceneCoordinatedMaterialSection")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxPureEchoSpeaker")
+		STATIC_NAME_IMPL(L"MovieSceneCoordinatedMaterialSection")
 	}
-	static class UGbxPureEchoSpeaker* GetDefaultObj()
+	static class UMovieSceneCoordinatedMaterialSection* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxPureEchoSpeaker>();
+		return GetDefaultObjImpl<UMovieSceneCoordinatedMaterialSection>();
 	}
 };
-DUMPER7_ASSERTS_UGbxPureEchoSpeaker;
+DUMPER7_ASSERTS_UMovieSceneCoordinatedMaterialSection;
 
 // Class GbxGame.MovieSceneCoordinatedMaterialTrack
 // 0x0040 (0x0138 - 0x00F8)
@@ -22596,29 +22808,25 @@ public:
 };
 DUMPER7_ASSERTS_UMovieSceneCoordinatedMaterialTrack;
 
-// Class GbxGame.MovieSceneCoordinatedParticleSection
-// 0x00A8 (0x01A0 - 0x00F8)
-class UMovieSceneCoordinatedParticleSection final : public UMovieSceneSection
+// Class GbxGame.NexusConfigStoreInventoryNamePart
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreInventoryNamePart final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_F8[0x8];                                       // 0x00F8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FCoordinatedParticleSettings           settings;                                          // 0x0100(0x00A0)(Edit, NativeAccessSpecifierPublic)
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("MovieSceneCoordinatedParticleSection")
+		STATIC_CLASS_IMPL("NexusConfigStoreInventoryNamePart")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"MovieSceneCoordinatedParticleSection")
+		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryNamePart")
 	}
-	static class UMovieSceneCoordinatedParticleSection* GetDefaultObj()
+	static class UNexusConfigStoreInventoryNamePart* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UMovieSceneCoordinatedParticleSection>();
+		return GetDefaultObjImpl<UNexusConfigStoreInventoryNamePart>();
 	}
 };
-DUMPER7_ASSERTS_UMovieSceneCoordinatedParticleSection;
+DUMPER7_ASSERTS_UNexusConfigStoreInventoryNamePart;
 
 // Class GbxGame.MovieSceneCoordinatedParticleTrack
 // 0x0028 (0x0120 - 0x00F8)
@@ -22645,28 +22853,31 @@ public:
 };
 DUMPER7_ASSERTS_UMovieSceneCoordinatedParticleTrack;
 
-// Class GbxGame.NexusConfigStoreInventoryParams
-// 0x0028 (0x03B8 - 0x0390)
-class UNexusConfigStoreInventoryParams final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusActorDataLayerHelper
+// 0x0118 (0x0140 - 0x0028)
+class UNexusActorDataLayerHelper final : public UObject
 {
 public:
-	uint8                                         Pad_390[0x28];                                     // 0x0390(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_28[0x118];                                     // 0x0028(0x0118)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnDataLayerInstanceRuntimeStateChanged(const class UDataLayerInstance* InDataLayerInstance, EDataLayerRuntimeState InEffectiveState);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreInventoryParams")
+		STATIC_CLASS_IMPL("NexusActorDataLayerHelper")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryParams")
+		STATIC_NAME_IMPL(L"NexusActorDataLayerHelper")
 	}
-	static class UNexusConfigStoreInventoryParams* GetDefaultObj()
+	static class UNexusActorDataLayerHelper* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreInventoryParams>();
+		return GetDefaultObjImpl<UNexusActorDataLayerHelper>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreInventoryParams;
+DUMPER7_ASSERTS_UNexusActorDataLayerHelper;
 
 // Class GbxGame.NexusConfigStoreAimAssistParameters
 // 0x0000 (0x0390 - 0x0390)
@@ -22710,6 +22921,29 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreAvatarArchetypes;
+
+// Class GbxGame.NexusConfigStoreInventoryStats
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreInventoryStats final : public UNexusConfigStoreBasic
+{
+public:
+	static void GetInventoryStatNames(TArray<class FName>* OutNames);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreInventoryStats")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryStats")
+	}
+	static class UNexusConfigStoreInventoryStats* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreInventoryStats>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreInventoryStats;
 
 // Class GbxGame.NexusConfigStoreAvatarAspects
 // 0x0028 (0x03B8 - 0x0390)
@@ -22757,29 +22991,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreAvatarFeatures;
 
-// Class GbxGame.NexusConfigStoreItemPool
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreItemPool final : public UNexusConfigStoreBasic
-{
-public:
-	static void SpawnInventoryFromItemPool(class UObject* WorldContextObject, const struct FTransform& Transform, int32 gamestage, class FName ItemPoolName);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreItemPool")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreItemPool")
-	}
-	static class UNexusConfigStoreItemPool* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreItemPool>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreItemPool;
-
 // Class GbxGame.NexusConfigStoreAvatarForms
 // 0x0028 (0x03B8 - 0x0390)
 class UNexusConfigStoreAvatarForms final : public UNexusConfigStoreBasic
@@ -22825,6 +23036,29 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreAvatarMaterialDrivers;
+
+// Class GbxGame.NexusConfigStoreLevels
+// 0x01E8 (0x0528 - 0x0340)
+class UNexusConfigStoreLevels final : public UNexusConfigStorePath
+{
+public:
+	uint8                                         Pad_340[0x1E8];                                    // 0x0340(0x01E8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreLevels")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreLevels")
+	}
+	static class UNexusConfigStoreLevels* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreLevels>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreLevels;
 
 // Class GbxGame.NexusConfigStoreAvatarParts
 // 0x0030 (0x0370 - 0x0340)
@@ -22872,26 +23106,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreAvatarRequirements;
 
-// Class GbxGame.NexusConfigStoreLightProjectile
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreLightProjectile final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreLightProjectile")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreLightProjectile")
-	}
-	static class UNexusConfigStoreLightProjectile* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreLightProjectile>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreLightProjectile;
-
 // Class GbxGame.NexusConfigStoreAvatarSelectors
 // 0x0028 (0x03B8 - 0x0390)
 class UNexusConfigStoreAvatarSelectors final : public UNexusConfigStoreBasic
@@ -22915,51 +23129,45 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreAvatarSelectors;
 
-// Class GbxGame.NexusConfigStoreCameraModeBehavior
-// 0x0028 (0x02F8 - 0x02D0)
-class UNexusConfigStoreCameraModeBehavior final : public UNexusConfigStoreFlat
+// Class GbxGame.NexusConfigStoreCameraMode
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreCameraMode final : public UNexusConfigStoreBasicDefFlat
 {
-public:
-	uint8                                         Pad_2D0[0x28];                                     // 0x02D0(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreCameraModeBehavior")
+		STATIC_CLASS_IMPL("NexusConfigStoreCameraMode")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreCameraModeBehavior")
+		STATIC_NAME_IMPL(L"NexusConfigStoreCameraMode")
 	}
-	static class UNexusConfigStoreCameraModeBehavior* GetDefaultObj()
+	static class UNexusConfigStoreCameraMode* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreCameraModeBehavior>();
+		return GetDefaultObjImpl<UNexusConfigStoreCameraMode>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreCameraModeBehavior;
+DUMPER7_ASSERTS_UNexusConfigStoreCameraMode;
 
-// Class GbxGame.NexusConfigStoreCameraModeTransition
-// 0x0028 (0x02F8 - 0x02D0)
-class UNexusConfigStoreCameraModeTransition final : public UNexusConfigStoreFlat
+// Class GbxGame.NexusConfigStoreCameraTransition
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreCameraTransition final : public UNexusConfigStoreBasicDefFlat
 {
-public:
-	uint8                                         Pad_2D0[0x28];                                     // 0x02D0(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreCameraModeTransition")
+		STATIC_CLASS_IMPL("NexusConfigStoreCameraTransition")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreCameraModeTransition")
+		STATIC_NAME_IMPL(L"NexusConfigStoreCameraTransition")
 	}
-	static class UNexusConfigStoreCameraModeTransition* GetDefaultObj()
+	static class UNexusConfigStoreCameraTransition* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreCameraModeTransition>();
+		return GetDefaultObjImpl<UNexusConfigStoreCameraTransition>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreCameraModeTransition;
+DUMPER7_ASSERTS_UNexusConfigStoreCameraTransition;
 
 // Class GbxGame.NexusConfigStoreCapital
 // 0x0000 (0x0390 - 0x0390)
@@ -22981,26 +23189,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreCapital;
 
-// Class GbxGame.NexusConfigStoreCoordinatedEffectFilter
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreCoordinatedEffectFilter final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreCoordinatedEffectFilter")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreCoordinatedEffectFilter")
-	}
-	static class UNexusConfigStoreCoordinatedEffectFilter* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreCoordinatedEffectFilter>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreCoordinatedEffectFilter;
-
 // Class GbxGame.NexusConfigStoreHealthType
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreHealthType final : public UNexusConfigStoreBasic
@@ -23021,25 +23209,45 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreHealthType;
 
-// Class GbxGame.NexusConfigStoreDamageSource
+// Class GbxGame.NexusConfigStoreDamageType
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreDamageSource final : public UNexusConfigStoreBasic
+class UNexusConfigStoreDamageType final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreDamageSource")
+		STATIC_CLASS_IMPL("NexusConfigStoreDamageType")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreDamageSource")
+		STATIC_NAME_IMPL(L"NexusConfigStoreDamageType")
 	}
-	static class UNexusConfigStoreDamageSource* GetDefaultObj()
+	static class UNexusConfigStoreDamageType* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreDamageSource>();
+		return GetDefaultObjImpl<UNexusConfigStoreDamageType>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreDamageSource;
+DUMPER7_ASSERTS_UNexusConfigStoreDamageType;
+
+// Class GbxGame.UnlockablesProgressRoleShared
+// 0x0000 (0x0108 - 0x0108)
+class UUnlockablesProgressRoleShared final : public UUnlockablesProgressRole
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("UnlockablesProgressRoleShared")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"UnlockablesProgressRoleShared")
+	}
+	static class UUnlockablesProgressRoleShared* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UUnlockablesProgressRoleShared>();
+	}
+};
+DUMPER7_ASSERTS_UUnlockablesProgressRoleShared;
 
 // Class GbxGame.NexusConfigStoreDamageModifier
 // 0x0050 (0x03E0 - 0x0390)
@@ -23064,57 +23272,25 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreDamageModifier;
 
-// Class GbxGame.Usable
-// 0x0000 (0x0000 - 0x0000)
-class IUsable final
-{
-public:
-	void BP_OnUsed(const struct FUseEvent& UseEvent);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("Usable")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"Usable")
-	}
-	static class IUsable* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IUsable>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IUsable;
-
-// Class GbxGame.NexusConfigStoreDamageFilter
+// Class GbxGame.NexusConfigStoreDamage
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreDamageFilter final : public UNexusConfigStoreBasic
+class UNexusConfigStoreDamage final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreDamageFilter")
+		STATIC_CLASS_IMPL("NexusConfigStoreDamage")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreDamageFilter")
+		STATIC_NAME_IMPL(L"NexusConfigStoreDamage")
 	}
-	static class UNexusConfigStoreDamageFilter* GetDefaultObj()
+	static class UNexusConfigStoreDamage* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreDamageFilter>();
+		return GetDefaultObjImpl<UNexusConfigStoreDamage>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreDamageFilter;
+DUMPER7_ASSERTS_UNexusConfigStoreDamage;
 
 // Class GbxGame.NexusConfigStoreDialogEchoPresentations
 // 0x0000 (0x0390 - 0x0390)
@@ -23179,6 +23355,49 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreDialogScripts;
 
+// Class GbxGame.WaypointReplicationChannel
+// 0x0030 (0x0098 - 0x0068)
+class UWaypointReplicationChannel final : public Uchannel
+{
+public:
+	uint8                                         Pad_68[0x30];                                      // 0x0068(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("WaypointReplicationChannel")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"WaypointReplicationChannel")
+	}
+	static class UWaypointReplicationChannel* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UWaypointReplicationChannel>();
+	}
+};
+DUMPER7_ASSERTS_UWaypointReplicationChannel;
+
+// Class GbxGame.NexusConfigStoreDialogStyles
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreDialogStyles final : public UNexusConfigStoreBasicDefFlat
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreDialogStyles")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreDialogStyles")
+	}
+	static class UNexusConfigStoreDialogStyles* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreDialogStyles>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreDialogStyles;
+
 // Class GbxGame.NexusConfigStoreEffectRelevance
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreEffectRelevance final : public UNexusConfigStoreBasic
@@ -23198,35 +23417,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreEffectRelevance;
-
-// Class GbxGame.ZoomValueProvider
-// 0x0000 (0x0000 - 0x0000)
-class IZoomValueProvider final
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ZoomValueProvider")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ZoomValueProvider")
-	}
-	static class IZoomValueProvider* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<IZoomValueProvider>();
-	}
-
-	class UObject* AsUObject()
-	{
-		return reinterpret_cast<UObject*>(this);
-	}
-	const class UObject* AsUObject() const
-	{
-		return reinterpret_cast<const UObject*>(this);
-	}
-};
-DUMPER7_ASSERTS_IZoomValueProvider;
 
 // Class GbxGame.NexusConfigStoreExperienceProgression
 // 0x0000 (0x0390 - 0x0390)
@@ -23248,29 +23438,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreExperienceProgression;
 
-// Class GbxGame.NexusConfigStoreGameMode
-// 0x0050 (0x0390 - 0x0340)
-class UNexusConfigStoreGameMode final : public UNexusConfigStoreMix
-{
-public:
-	uint8                                         Pad_340[0x50];                                     // 0x0340(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGameMode")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGameMode")
-	}
-	static class UNexusConfigStoreGameMode* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreGameMode>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreGameMode;
-
 // Class GbxGame.NexusConfigStoreGameResource
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGameResource final : public UNexusConfigStoreBasic
@@ -23290,6 +23457,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGameResource;
+
+// Class GbxGame.NexusConfigStoreGameResourcePool
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGameResourcePool final : public UNexusConfigStoreBasic
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreGameResourcePool")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreGameResourcePool")
+	}
+	static class UNexusConfigStoreGameResourcePool* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreGameResourcePool>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreGameResourcePool;
 
 // Class GbxGame.NexusConfigStoreJumpGoal
 // 0x0000 (0x0380 - 0x0380)
@@ -23391,26 +23578,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxInputAction;
 
-// Class GbxGame.NexusConfigStoreGbxInputActionGroup
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxInputActionGroup final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxInputActionGroup")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxInputActionGroup")
-	}
-	static class UNexusConfigStoreGbxInputActionGroup* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxInputActionGroup>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreGbxInputActionGroup;
-
 // Class GbxGame.NexusConfigStoreGbxInputContext
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGbxInputContext final : public UNexusConfigStoreBasic
@@ -23430,6 +23597,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxInputContext;
+
+// Class GbxGame.NexusConfigStoreGbxInputFeel
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxInputFeel final : public UNexusConfigStoreBasic
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxInputFeel")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxInputFeel")
+	}
+	static class UNexusConfigStoreGbxInputFeel* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreGbxInputFeel>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreGbxInputFeel;
 
 // Class GbxGame.NexusConfigStoreGbxInputKeyRebind
 // 0x0000 (0x0390 - 0x0390)
@@ -23451,45 +23638,48 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxInputKeyRebind;
 
-// Class GbxGame.NexusConfigStoreGbxInputRebindContext
+// Class GbxGame.NexusConfigStoreGbxMaterialParameter
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxInputRebindContext final : public UNexusConfigStoreBasic
+class UNexusConfigStoreGbxMaterialParameter final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxInputRebindContext")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxMaterialParameter")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxInputRebindContext")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxMaterialParameter")
 	}
-	static class UNexusConfigStoreGbxInputRebindContext* GetDefaultObj()
+	static class UNexusConfigStoreGbxMaterialParameter* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxInputRebindContext>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxMaterialParameter>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxInputRebindContext;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxMaterialParameter;
 
-// Class GbxGame.NexusConfigStoreGbxInputSchema
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxInputSchema final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreGbxProgressGraph
+// 0x0068 (0x03F8 - 0x0390)
+class UNexusConfigStoreGbxProgressGraph final : public UNexusConfigStoreBasic
 {
+public:
+	uint8                                         Pad_390[0x68];                                     // 0x0390(0x0068)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxInputSchema")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxProgressGraph")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxInputSchema")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxProgressGraph")
 	}
-	static class UNexusConfigStoreGbxInputSchema* GetDefaultObj()
+	static class UNexusConfigStoreGbxProgressGraph* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxInputSchema>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxProgressGraph>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxInputSchema;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxProgressGraph;
 
 // Class GbxGame.NexusConfigStoreGbxProgressGraphGroup
 // 0x0000 (0x0390 - 0x0390)
@@ -23511,26 +23701,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxProgressGraphGroup;
 
-// Class GbxGame.NexusConfigStoreGbxProgression
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxProgression final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxProgression")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxProgression")
-	}
-	static class UNexusConfigStoreGbxProgression* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxProgression>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreGbxProgression;
-
 // Class GbxGame.NexusConfigStoreGbxSkill
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGbxSkill final : public UNexusConfigStoreBasic
@@ -23550,6 +23720,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxSkill;
+
+// Class GbxGame.NexusConfigStoreGbxSkillActionExecFilter
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxSkillActionExecFilter final : public UNexusConfigStoreBasic
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxSkillActionExecFilter")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSkillActionExecFilter")
+	}
+	static class UNexusConfigStoreGbxSkillActionExecFilter* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreGbxSkillActionExecFilter>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillActionExecFilter;
 
 // Class GbxGame.NexusConfigStoreGbxSkillAlias
 // 0x0000 (0x0390 - 0x0390)
@@ -23651,29 +23841,6 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillEvent;
 
-// Class GbxGame.NexusConfigStoreGbxSkillLibrary
-// 0x0018 (0x03A8 - 0x0390)
-class UNexusConfigStoreGbxSkillLibrary final : public UNexusConfigStoreBasic
-{
-public:
-	uint8                                         Pad_390[0x18];                                     // 0x0390(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxSkillLibrary")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSkillLibrary")
-	}
-	static class UNexusConfigStoreGbxSkillLibrary* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxSkillLibrary>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillLibrary;
-
 // Class GbxGame.NexusConfigStoreGbxSkillManagedResourceGroup
 // 0x0000 (0x0390 - 0x0390)
 class UNexusConfigStoreGbxSkillManagedResourceGroup final : public UNexusConfigStoreBasic
@@ -23713,6 +23880,26 @@ public:
 	}
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillStateCondition;
+
+// Class GbxGame.NexusConfigStoreGbxSkillStateMachine
+// 0x0000 (0x0340 - 0x0340)
+class UNexusConfigStoreGbxSkillStateMachine final : public UNexusConfigStorePath
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxSkillStateMachine")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxSkillStateMachine")
+	}
+	static class UNexusConfigStoreGbxSkillStateMachine* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreGbxSkillStateMachine>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillStateMachine;
 
 // Class GbxGame.NexusConfigStoreGbxSkillTargetList
 // 0x0000 (0x0390 - 0x0390)
@@ -23754,25 +23941,36 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxSkillTargetResolutionStrategy;
 
-// Class GbxGame.NexusConfigStoreGbxStatusEffectPushEvent
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreGbxStatusEffectPushEvent final : public UNexusConfigStoreBasic
+// Class GbxGame.RadiateDamageAreaActor
+// 0x0320 (0x06B0 - 0x0390)
+class alignas(0x10) ARadiateDamageAreaActor : public AActor
 {
+public:
+	uint8                                         Pad_390[0x260];                                    // 0x0390(0x0260)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxActorState                         ActorState;                                        // 0x05F0(0x0070)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_660[0x38];                                     // 0x0660(0x0038)(Fixing Size After Last Property [ Dumper-7 ])
+	class URadiateDamageMovementComponent*        MovementComponent;                                 // 0x0698(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_6A0[0x10];                                     // 0x06A0(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	void OnActorBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* Other, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const struct FHitResult& SweepResult);
+	void OnActorEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* Other, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGbxStatusEffectPushEvent")
+		STATIC_CLASS_IMPL("RadiateDamageAreaActor")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGbxStatusEffectPushEvent")
+		STATIC_NAME_IMPL(L"RadiateDamageAreaActor")
 	}
-	static class UNexusConfigStoreGbxStatusEffectPushEvent* GetDefaultObj()
+	static class ARadiateDamageAreaActor* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGbxStatusEffectPushEvent>();
+		return GetDefaultObjImpl<ARadiateDamageAreaActor>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGbxStatusEffectPushEvent;
+DUMPER7_ASSERTS_ARadiateDamageAreaActor;
 
 // Class GbxGame.NexusConfigStoreGbxStatusEffectRule
 // 0x0000 (0x0390 - 0x0390)
@@ -23794,28 +23992,25 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxStatusEffectRule;
 
-// Class GbxGame.RadiateDamageMovementComponent
-// 0x0018 (0x0190 - 0x0178)
-class URadiateDamageMovementComponent final : public UMovementComponent
+// Class GbxGame.NexusConfigStoreGbxStatusEffectSeverityChannel
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGbxStatusEffectSeverityChannel final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_178[0x18];                                     // 0x0178(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("RadiateDamageMovementComponent")
+		STATIC_CLASS_IMPL("NexusConfigStoreGbxStatusEffectSeverityChannel")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"RadiateDamageMovementComponent")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGbxStatusEffectSeverityChannel")
 	}
-	static class URadiateDamageMovementComponent* GetDefaultObj()
+	static class UNexusConfigStoreGbxStatusEffectSeverityChannel* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<URadiateDamageMovementComponent>();
+		return GetDefaultObjImpl<UNexusConfigStoreGbxStatusEffectSeverityChannel>();
 	}
 };
-DUMPER7_ASSERTS_URadiateDamageMovementComponent;
+DUMPER7_ASSERTS_UNexusConfigStoreGbxStatusEffectSeverityChannel;
 
 // Class GbxGame.NexusConfigStoreGbxStatusEffectTickGroup
 // 0x0000 (0x0390 - 0x0390)
@@ -23837,25 +24032,28 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGbxStatusEffectTickGroup;
 
-// Class GbxGame.NexusConfigStoreGimme
-// 0x0000 (0x0340 - 0x0340)
-class UNexusConfigStoreGimme final : public UNexusConfigStorePath
+// Class GbxGame.RefreshManager
+// 0x02D8 (0x0300 - 0x0028)
+class URefreshManager final : public UObject
 {
+public:
+	uint8                                         Pad_28[0x2D8];                                     // 0x0028(0x02D8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreGimme")
+		STATIC_CLASS_IMPL("RefreshManager")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreGimme")
+		STATIC_NAME_IMPL(L"RefreshManager")
 	}
-	static class UNexusConfigStoreGimme* GetDefaultObj()
+	static class URefreshManager* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreGimme>();
+		return GetDefaultObjImpl<URefreshManager>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreGimme;
+DUMPER7_ASSERTS_URefreshManager;
 
 // Class GbxGame.NexusConfigStoreGore
 // 0x0000 (0x0390 - 0x0390)
@@ -23877,42 +24075,25 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreGore;
 
-// Class GbxGame.ScreenParticleManagerComponent
-// 0x0040 (0x0150 - 0x0110)
-class UScreenParticleManagerComponent final : public UActorComponent
+// Class GbxGame.NexusConfigStoreGoreRegion
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreGoreRegion final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_110[0x40];                                     // 0x0110(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static void HideScreenParticleForActor(class AActor* Actor, class UFXSystemAsset* Template, class FName Tag, bool bAllowParticleToFinish, bool bServerAuthority);
-	static void ShowScreenParticleForActor(class AActor* Actor, class UFXSystemAsset* Template, bool bHideWhenFinished, const TArray<struct FGbxParticleParameter>& ParticleParameters, const struct FVector2D& ContentDims, float ParticleDepth, EScreenParticleScalingMode ScalingMode, bool bOnlyOwnerSee, bool bAlwaysVisible, class FName Tag, bool bAllowMultipleInstances, bool bServerAuthority, bool bTickEvenWhenPaused, bool bHideDuringInGameMenu, EScreenParticleVisibility ThirdPersonVisibility, EScreenParticleVisibility FirstPersonVisibility, bool bHideDuringCinematic);
-
-	void ClientHideScreenParticle(class UFXSystemAsset* Template, class FName Tag, bool bAllowParticleToFinish);
-	void ClientSetScreenParticleActorParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, class AActor* Param);
-	void ClientSetScreenParticleColorParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, const struct FLinearColor& Param);
-	void ClientSetScreenParticleFloatParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, float Param);
-	void ClientSetScreenParticleMaterialParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, class UMaterialInterface* Param);
-	void ClientSetScreenParticleVectorParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, const struct FVector& Param);
-	void ClientShowScreenParticle(class UFXSystemAsset* Template, bool bHideWhenFinished, const TArray<struct FGbxParticleParameter>& ParticleParameters, const struct FVector2D& ContentDims, float ParticleDepth, EScreenParticleScalingMode ScalingMode, bool bOnlyOwnerSee, bool bAlwaysVisible, class FName Tag, bool bAllowMultipleInstances, bool bTickEvenWhenPaused, bool bHideDuringInGameMenu, bool bDepthPriorityWorld, EScreenParticleVisibility ThirdPersonVisibility, EScreenParticleVisibility FirstPersonVisibility, bool bHideDuringCinematic);
-	void ClientShowScreenParticleEx(class UFXSystemAsset* Template, uint16 InitFlags, const TArray<struct FGbxParticleParameter>& ParticleParameters, const struct FVector2D& ContentDims, float ParticleDepth, EScreenParticleScalingMode ScalingMode, class FName Tag);
-	void ClientTrackParticleProperty(class UParticlePropertyTrackingData* TrackingData, class UFXSystemAsset* Template, class FName Tag, class FName PropertyName, float PropertyValue, bool bAddToValue, class UMaterialInterface* UsedMaterialProperty, class FName MaterialPropertyName);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("ScreenParticleManagerComponent")
+		STATIC_CLASS_IMPL("NexusConfigStoreGoreRegion")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"ScreenParticleManagerComponent")
+		STATIC_NAME_IMPL(L"NexusConfigStoreGoreRegion")
 	}
-	static class UScreenParticleManagerComponent* GetDefaultObj()
+	static class UNexusConfigStoreGoreRegion* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UScreenParticleManagerComponent>();
+		return GetDefaultObjImpl<UNexusConfigStoreGoreRegion>();
 	}
 };
-DUMPER7_ASSERTS_UScreenParticleManagerComponent;
+DUMPER7_ASSERTS_UNexusConfigStoreGoreRegion;
 
 // Class GbxGame.NexusConfigStorePuddleHazard
 // 0x0000 (0x0380 - 0x0380)
@@ -23934,25 +24115,30 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStorePuddleHazard;
 
-// Class GbxGame.NexusConfigStoreHazardInteractionState
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreHazardInteractionState final : public UNexusConfigStoreBasicDefFlat
+// Class GbxGame.SpawnEncounterCondition_Health
+// 0x0090 (0x00B8 - 0x0028)
+class USpawnEncounterCondition_Health final : public USpawnEncounterCondition
 {
+public:
+	struct FSpawnEncounterSpawnerRef              Spawner;                                           // 0x0028(0x0038)(Edit, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPrivate)
+	struct FGbxAttributeInit                      HealthThreshold;                                   // 0x0060(0x0050)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_B0[0x8];                                       // 0x00B0(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreHazardInteractionState")
+		STATIC_CLASS_IMPL("SpawnEncounterCondition_Health")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreHazardInteractionState")
+		STATIC_NAME_IMPL(L"SpawnEncounterCondition_Health")
 	}
-	static class UNexusConfigStoreHazardInteractionState* GetDefaultObj()
+	static class USpawnEncounterCondition_Health* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreHazardInteractionState>();
+		return GetDefaultObjImpl<USpawnEncounterCondition_Health>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreHazardInteractionState;
+DUMPER7_ASSERTS_USpawnEncounterCondition_Health;
 
 // Class GbxGame.NexusConfigStoreHazardInteraction
 // 0x0000 (0x0380 - 0x0380)
@@ -23974,29 +24160,25 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreHazardInteraction;
 
-// Class GbxGame.SpawnEncounterEvent_Fact
-// 0x0068 (0x0098 - 0x0030)
-class USpawnEncounterEvent_Fact final : public USpawnEncounterEvent
+// Class GbxGame.NexusConfigStoreHitRegion
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreHitRegion final : public UNexusConfigStoreBasic
 {
-public:
-	struct FRelativeFactsSystemActorReference     FactActor;                                         // 0x0030(0x0028)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
-	struct FContingentFactChange                  FactValue;                                         // 0x0058(0x0040)(Edit, NativeAccessSpecifierPrivate)
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("SpawnEncounterEvent_Fact")
+		STATIC_CLASS_IMPL("NexusConfigStoreHitRegion")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"SpawnEncounterEvent_Fact")
+		STATIC_NAME_IMPL(L"NexusConfigStoreHitRegion")
 	}
-	static class USpawnEncounterEvent_Fact* GetDefaultObj()
+	static class UNexusConfigStoreHitRegion* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<USpawnEncounterEvent_Fact>();
+		return GetDefaultObjImpl<UNexusConfigStoreHitRegion>();
 	}
 };
-DUMPER7_ASSERTS_USpawnEncounterEvent_Fact;
+DUMPER7_ASSERTS_UNexusConfigStoreHitRegion;
 
 // Class GbxGame.NexusConfigStoreImpactResponse
 // 0x0030 (0x0300 - 0x02D0)
@@ -24021,62 +24203,48 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreImpactResponse;
 
-// Class GbxGame.NexusConfigStoreImpactEffect
-// 0x0068 (0x03F8 - 0x0390)
-class UNexusConfigStoreImpactEffect final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreInventoryAspect
+// 0x0030 (0x0300 - 0x02D0)
+class UNexusConfigStoreInventoryAspect final : public UNexusConfigStoreFlat
 {
 public:
-	bool                                          bLoadAssetsForAllPhysicalMaterials;                // 0x0390(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_391[0x67];                                     // 0x0391(0x0067)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_2D0[0x30];                                     // 0x02D0(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreImpactEffect")
+		STATIC_CLASS_IMPL("NexusConfigStoreInventoryAspect")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreImpactEffect")
+		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryAspect")
 	}
-	static class UNexusConfigStoreImpactEffect* GetDefaultObj()
+	static class UNexusConfigStoreInventoryAspect* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreImpactEffect>();
+		return GetDefaultObjImpl<UNexusConfigStoreInventoryAspect>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreImpactEffect;
+DUMPER7_ASSERTS_UNexusConfigStoreInventoryAspect;
 
-// Class GbxGame.NexusConfigStoreInventory
-// 0x00E8 (0x0428 - 0x0340)
-class UNexusConfigStoreInventory final : public UNexusConfigStorePath
+// Class GbxGame.NexusConfigStoreInventoryCriteriaPreset
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreInventoryCriteriaPreset final : public UNexusConfigStoreBasic
 {
-public:
-	uint8                                         Pad_340[0xC8];                                     // 0x0340(0x00C8)(Fixing Size After Last Property [ Dumper-7 ])
-	class FString                                 DefsAccumFilters;                                  // 0x0408(0x0010)(ZeroConstructor, Config, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_418[0x10];                                     // 0x0418(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static void GetAspectMeshGestaltPartNames(TSoftObjectPtr<class UObject> Mesh, TArray<class FName>* OutNames);
-	static void GetCriterionDisplayNames(TArray<class FName>* OutNames);
-	static class FName GetCriterionNameFromDisplayName(const class FString& DisplayName);
-	static void GetCriterionNames(TArray<class FName>* OutNames);
-	static void GetCriterionTagNames(TArray<class FName>* OutNames);
-	static void GetStorePartTypeNames(TArray<class FName>* OutNames);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreInventory")
+		STATIC_CLASS_IMPL("NexusConfigStoreInventoryCriteriaPreset")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreInventory")
+		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryCriteriaPreset")
 	}
-	static class UNexusConfigStoreInventory* GetDefaultObj()
+	static class UNexusConfigStoreInventoryCriteriaPreset* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreInventory>();
+		return GetDefaultObjImpl<UNexusConfigStoreInventoryCriteriaPreset>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreInventory;
+DUMPER7_ASSERTS_UNexusConfigStoreInventoryCriteriaPreset;
 
 // Class GbxGame.NexusConfigStoreInventoryCriterionPreset
 // 0x0000 (0x0390 - 0x0390)
@@ -24118,383 +24286,294 @@ public:
 };
 DUMPER7_ASSERTS_UNexusConfigStoreInventoryCustomization;
 
-// Class GbxGame.NexusConfigStoreInventoryNamePart
+// Class GbxGame.NexusConfigStoreInventoryParams
+// 0x0028 (0x03B8 - 0x0390)
+class UNexusConfigStoreInventoryParams final : public UNexusConfigStoreBasic
+{
+public:
+	uint8                                         Pad_390[0x28];                                     // 0x0390(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreInventoryParams")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryParams")
+	}
+	static class UNexusConfigStoreInventoryParams* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreInventoryParams>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreInventoryParams;
+
+// Class GbxGame.NexusConfigStoreItemPoolPreferredParts
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreInventoryNamePart final : public UNexusConfigStoreBasic
+class UNexusConfigStoreItemPoolPreferredParts final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreInventoryNamePart")
+		STATIC_CLASS_IMPL("NexusConfigStoreItemPoolPreferredParts")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryNamePart")
+		STATIC_NAME_IMPL(L"NexusConfigStoreItemPoolPreferredParts")
 	}
-	static class UNexusConfigStoreInventoryNamePart* GetDefaultObj()
+	static class UNexusConfigStoreItemPoolPreferredParts* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreInventoryNamePart>();
+		return GetDefaultObjImpl<UNexusConfigStoreItemPoolPreferredParts>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreInventoryNamePart;
+DUMPER7_ASSERTS_UNexusConfigStoreItemPoolPreferredParts;
 
-// Class GbxGame.NexusConfigStoreInventoryNameStrategy
+// Class GbxGame.NexusConfigStoreItemPool
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreInventoryNameStrategy final : public UNexusConfigStoreBasic
+class UNexusConfigStoreItemPool final : public UNexusConfigStoreBasic
 {
+public:
+	static void SpawnInventoryFromItemPool(class UObject* WorldContextObject, const struct FTransform& Transform, int32 gamestage, class FName ItemPoolName);
+
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreInventoryNameStrategy")
+		STATIC_CLASS_IMPL("NexusConfigStoreItemPool")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryNameStrategy")
+		STATIC_NAME_IMPL(L"NexusConfigStoreItemPool")
 	}
-	static class UNexusConfigStoreInventoryNameStrategy* GetDefaultObj()
+	static class UNexusConfigStoreItemPool* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreInventoryNameStrategy>();
+		return GetDefaultObjImpl<UNexusConfigStoreItemPool>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreInventoryNameStrategy;
+DUMPER7_ASSERTS_UNexusConfigStoreItemPool;
 
-// Class GbxGame.NexusConfigStoreInventoryStats
+// Class GbxGame.NexusConfigStoreLightBeam
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreInventoryStats final : public UNexusConfigStoreBasic
+class UNexusConfigStoreLightBeam final : public UNexusConfigStoreBasic
 {
-public:
-	static void GetInventoryStatNames(TArray<class FName>* OutNames);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreInventoryStats")
+		STATIC_CLASS_IMPL("NexusConfigStoreLightBeam")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreInventoryStats")
+		STATIC_NAME_IMPL(L"NexusConfigStoreLightBeam")
 	}
-	static class UNexusConfigStoreInventoryStats* GetDefaultObj()
+	static class UNexusConfigStoreLightBeam* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreInventoryStats>();
+		return GetDefaultObjImpl<UNexusConfigStoreLightBeam>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreInventoryStats;
+DUMPER7_ASSERTS_UNexusConfigStoreLightBeam;
 
-// Class GbxGame.NexusConfigStoreItemPoolList
+// Class GbxGame.NexusConfigStoreLightProjectile
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreItemPoolList final : public UNexusConfigStoreBasic
+class UNexusConfigStoreLightProjectile final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreItemPoolList")
+		STATIC_CLASS_IMPL("NexusConfigStoreLightProjectile")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreItemPoolList")
+		STATIC_NAME_IMPL(L"NexusConfigStoreLightProjectile")
 	}
-	static class UNexusConfigStoreItemPoolList* GetDefaultObj()
+	static class UNexusConfigStoreLightProjectile* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreItemPoolList>();
+		return GetDefaultObjImpl<UNexusConfigStoreLightProjectile>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreItemPoolList;
+DUMPER7_ASSERTS_UNexusConfigStoreLightProjectile;
 
-// Class GbxGame.NexusConfigStoreLevels
-// 0x01E8 (0x0528 - 0x0340)
-class UNexusConfigStoreLevels final : public UNexusConfigStorePath
+// Class GbxGame.NexusConfigStoreProfileDefaults
+// 0x0000 (0x02D0 - 0x02D0)
+class UNexusConfigStoreProfileDefaults final : public UNexusConfigStoreFlat
 {
-public:
-	uint8                                         Pad_340[0x1E8];                                    // 0x0340(0x01E8)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreLevels")
+		STATIC_CLASS_IMPL("NexusConfigStoreProfileDefaults")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreLevels")
+		STATIC_NAME_IMPL(L"NexusConfigStoreProfileDefaults")
 	}
-	static class UNexusConfigStoreLevels* GetDefaultObj()
+	static class UNexusConfigStoreProfileDefaults* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreLevels>();
+		return GetDefaultObjImpl<UNexusConfigStoreProfileDefaults>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreLevels;
+DUMPER7_ASSERTS_UNexusConfigStoreProfileDefaults;
 
-// Class GbxGame.NexusConfigStoreLootConfig
+// Class GbxGame.NexusConfigStoreUIMaterialAnimationDataDef
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStoreLootConfig final : public UNexusConfigStoreBasic
+class UNexusConfigStoreUIMaterialAnimationDataDef final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreLootConfig")
+		STATIC_CLASS_IMPL("NexusConfigStoreUIMaterialAnimationDataDef")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreLootConfig")
+		STATIC_NAME_IMPL(L"NexusConfigStoreUIMaterialAnimationDataDef")
 	}
-	static class UNexusConfigStoreLootConfig* GetDefaultObj()
+	static class UNexusConfigStoreUIMaterialAnimationDataDef* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreLootConfig>();
+		return GetDefaultObjImpl<UNexusConfigStoreUIMaterialAnimationDataDef>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreLootConfig;
+DUMPER7_ASSERTS_UNexusConfigStoreUIMaterialAnimationDataDef;
 
-// Class GbxGame.NexusConfigStoreManufacturer
-// 0x0008 (0x0398 - 0x0390)
-class UNexusConfigStoreManufacturer final : public UNexusConfigStoreBasic
+// Class GbxGame.NexusConfigStoreWaypoints
+// 0x0050 (0x03E0 - 0x0390)
+class UNexusConfigStoreWaypoints final : public UNexusConfigStoreBasic
 {
 public:
-	bool                                          bAddToDamageTags;                                  // 0x0390(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_391[0x7];                                      // 0x0391(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_390[0x50];                                     // 0x0390(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreManufacturer")
+		STATIC_CLASS_IMPL("NexusConfigStoreWaypoints")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreManufacturer")
+		STATIC_NAME_IMPL(L"NexusConfigStoreWaypoints")
 	}
-	static class UNexusConfigStoreManufacturer* GetDefaultObj()
+	static class UNexusConfigStoreWaypoints* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreManufacturer>();
+		return GetDefaultObjImpl<UNexusConfigStoreWaypoints>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreManufacturer;
+DUMPER7_ASSERTS_UNexusConfigStoreWaypoints;
 
-// Class GbxGame.NexusConfigStoreStats
-// 0x0088 (0x0358 - 0x02D0)
-class UNexusConfigStoreStats final : public UNexusConfigStoreFlat
+// Class GbxGame.NexusConfigStore_GbxActorPart
+// 0x0070 (0x0400 - 0x0390)
+class UNexusConfigStore_GbxActorPart final : public UNexusConfigStoreBasic
 {
 public:
-	uint8                                         Pad_2D0[0x88];                                     // 0x02D0(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_390[0x70];                                     // 0x0390(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStoreStats")
+		STATIC_CLASS_IMPL("NexusConfigStore_GbxActorPart")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreStats")
+		STATIC_NAME_IMPL(L"NexusConfigStore_GbxActorPart")
 	}
-	static class UNexusConfigStoreStats* GetDefaultObj()
+	static class UNexusConfigStore_GbxActorPart* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStoreStats>();
+		return GetDefaultObjImpl<UNexusConfigStore_GbxActorPart>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStoreStats;
+DUMPER7_ASSERTS_UNexusConfigStore_GbxActorPart;
 
-// Class GbxGame.NexusConfigStoreUsabilityData
-// 0x0000 (0x0380 - 0x0380)
-class UNexusConfigStoreUsabilityData final : public UNexusConfigStoreBasicDefFlat
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStoreUsabilityData")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStoreUsabilityData")
-	}
-	static class UNexusConfigStoreUsabilityData* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStoreUsabilityData>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStoreUsabilityData;
-
-// Class GbxGame.NexusConfigStore_GbxActivity
+// Class GbxGame.NexusConfigStore_GlobalActivities
 // 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_GbxActivity final : public UNexusConfigStoreBasic
+class UNexusConfigStore_GlobalActivities final : public UNexusConfigStoreBasic
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigStore_GbxActivity")
+		STATIC_CLASS_IMPL("NexusConfigStore_GlobalActivities")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_GbxActivity")
+		STATIC_NAME_IMPL(L"NexusConfigStore_GlobalActivities")
 	}
-	static class UNexusConfigStore_GbxActivity* GetDefaultObj()
+	static class UNexusConfigStore_GlobalActivities* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigStore_GbxActivity>();
+		return GetDefaultObjImpl<UNexusConfigStore_GlobalActivities>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigStore_GbxActivity;
+DUMPER7_ASSERTS_UNexusConfigStore_GlobalActivities;
 
-// Class GbxGame.NexusConfigStore_Rotation
-// 0x0000 (0x0390 - 0x0390)
-class UNexusConfigStore_Rotation final : public UNexusConfigStoreBasic
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigStore_Rotation")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigStore_Rotation")
-	}
-	static class UNexusConfigStore_Rotation* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigStore_Rotation>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigStore_Rotation;
-
-// Class GbxGame.NexusConfigSubType_ActivityAreaStamp
+// Class GbxGame.NexusConfigSubType_GbxActivityArea
 // 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_ActivityAreaStamp final : public UNexusConfigLevelSubType
+class UNexusConfigSubType_GbxActivityArea final : public UNexusConfigLevelSubType
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_ActivityAreaStamp")
+		STATIC_CLASS_IMPL("NexusConfigSubType_GbxActivityArea")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_ActivityAreaStamp")
+		STATIC_NAME_IMPL(L"NexusConfigSubType_GbxActivityArea")
 	}
-	static class UNexusConfigSubType_ActivityAreaStamp* GetDefaultObj()
+	static class UNexusConfigSubType_GbxActivityArea* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigSubType_ActivityAreaStamp>();
+		return GetDefaultObjImpl<UNexusConfigSubType_GbxActivityArea>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigSubType_ActivityAreaStamp;
+DUMPER7_ASSERTS_UNexusConfigSubType_GbxActivityArea;
 
-// Class GbxGame.NexusConfigSubType_Road
+// Class GbxGame.NexusConfigSubType_Station
 // 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_Road final : public UNexusConfigLevelSubType
+class UNexusConfigSubType_Station final : public UNexusConfigLevelSubType
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_Road")
+		STATIC_CLASS_IMPL("NexusConfigSubType_Station")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_Road")
+		STATIC_NAME_IMPL(L"NexusConfigSubType_Station")
 	}
-	static class UNexusConfigSubType_Road* GetDefaultObj()
+	static class UNexusConfigSubType_Station* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UNexusConfigSubType_Road>();
+		return GetDefaultObjImpl<UNexusConfigSubType_Station>();
 	}
 };
-DUMPER7_ASSERTS_UNexusConfigSubType_Road;
+DUMPER7_ASSERTS_UNexusConfigSubType_Station;
 
-// Class GbxGame.NexusConfigSubType_Zone
-// 0x0000 (0x0040 - 0x0040)
-class UNexusConfigSubType_Zone final : public UNexusConfigLevelSubType
-{
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("NexusConfigSubType_Zone")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"NexusConfigSubType_Zone")
-	}
-	static class UNexusConfigSubType_Zone* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UNexusConfigSubType_Zone>();
-	}
-};
-DUMPER7_ASSERTS_UNexusConfigSubType_Zone;
-
-// Class GbxGame.OxygenConsumptionStatics
+// Class GbxGame.GbxInteractObjectiveTypeFunctionLibrary
 // 0x0000 (0x0028 - 0x0028)
-class UOxygenConsumptionStatics final : public UBlueprintFunctionLibrary
+class UGbxInteractObjectiveTypeFunctionLibrary final : public UBlueprintFunctionLibrary
 {
-public:
-	static void RegisterOxygenConsumption(class AGbxCharacter* TargetCharacter, class FName reason, float ConsumptionRate);
-	static void RegisterOxygenConsumptionForAllPlayers(class AActor* ContextActor, class FName reason, float ConsumptionRate);
-	static void RegisterOxygenRegeneration(class AGbxCharacter* TargetCharacter, class FName reason, float RegenerationRate);
-	static void SetSkipDefaultOxygenDepletedBehavior(class UObject* OwnerContext, bool bShouldSkipDefaultOxygenDepletedBehavior);
-	static void SubscribeToOxygenDepletedEvent(class UObject* OwnerContext, TDelegate<void(class AActor* OxygenConsumer)> Delegate, bool bOverrideDefaultBehavior);
-	static void SubscribeToOxygenNotDepletedEvent(class UObject* OwnerContext, TDelegate<void(class AActor* OxygenConsumer)> Delegate);
-	static void UnregisterOxygenConsumption(class AGbxCharacter* TargetCharacter, class FName reason);
-	static void UnregisterOxygenConsumptionForAllPlayers(class AActor* ContextActor, class FName reason);
-	static void UnregisterOxygenRegeneration(class AGbxCharacter* TargetCharacter, class FName reason);
-	static void UnsubscribeFromOxygenDepletedEvent(class UObject* OwnerContext, TDelegate<void(class AActor* OxygenConsumer)> Delegate, bool bRemoveDefaultBehaviorOverride);
-	static void UnsubscribeFromOxygenNotDepletedEvent(class UObject* OwnerContext, TDelegate<void(class AActor* OxygenConsumer)> Delegate);
-
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("OxygenConsumptionStatics")
+		STATIC_CLASS_IMPL("GbxInteractObjectiveTypeFunctionLibrary")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"OxygenConsumptionStatics")
+		STATIC_NAME_IMPL(L"GbxInteractObjectiveTypeFunctionLibrary")
 	}
-	static class UOxygenConsumptionStatics* GetDefaultObj()
+	static class UGbxInteractObjectiveTypeFunctionLibrary* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UOxygenConsumptionStatics>();
+		return GetDefaultObjImpl<UGbxInteractObjectiveTypeFunctionLibrary>();
 	}
 };
-DUMPER7_ASSERTS_UOxygenConsumptionStatics;
+DUMPER7_ASSERTS_UGbxInteractObjectiveTypeFunctionLibrary;
 
-// Class GbxGame.ParticlePropertyTrackingData
-// 0x0020 (0x0050 - 0x0030)
-class UParticlePropertyTrackingData final : public UDataAsset
-{
-public:
-	float                                         MinValue;                                          // 0x0030(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         MaxValue;                                          // 0x0034(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bStopTrackingWhenMinReached;                       // 0x0038(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bStopTrackingWhenMaxReached;                       // 0x0039(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bStopTrackingWhenPrimaryCharacterIsDeadOrNone;     // 0x003A(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bDestroyParticleWhenTrackingStopped;               // 0x003B(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bChangeValueOverTime;                              // 0x003C(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ValueChangePerSecond;                              // 0x0040(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bPauseChangeOnUpdate;                              // 0x0044(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_45[0x3];                                       // 0x0045(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         PauseDuration;                                     // 0x0048(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_4C[0x4];                                       // 0x004C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ParticlePropertyTrackingData")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ParticlePropertyTrackingData")
-	}
-	static class UParticlePropertyTrackingData* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UParticlePropertyTrackingData>();
-	}
-};
-DUMPER7_ASSERTS_UParticlePropertyTrackingData;
-
-// Class GbxGame.PerchUserInterface
+// Class GbxGame.OxygenConsumer
 // 0x0000 (0x0000 - 0x0000)
-class IPerchUserInterface final
+class IOxygenConsumer final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PerchUserInterface")
+		STATIC_CLASS_IMPL("OxygenConsumer")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PerchUserInterface")
+		STATIC_NAME_IMPL(L"OxygenConsumer")
 	}
-	static class IPerchUserInterface* GetDefaultObj()
+	static class IOxygenConsumer* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<IPerchUserInterface>();
+		return GetDefaultObjImpl<IOxygenConsumer>();
 	}
 
 	class UObject* AsUObject()
@@ -24506,210 +24585,244 @@ public:
 		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_IPerchUserInterface;
+DUMPER7_ASSERTS_IOxygenConsumer;
 
-// Class GbxGame.ProjectileBodyData
-// 0x0000 (0x0060 - 0x0060)
-class UProjectileBodyData final : public UGbxBodyData
+// Class GbxGame.PerchStatics
+// 0x0000 (0x0028 - 0x0028)
+class UPerchStatics final : public UBlueprintFunctionLibrary
 {
 public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("ProjectileBodyData")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"ProjectileBodyData")
-	}
-	static class UProjectileBodyData* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UProjectileBodyData>();
-	}
-};
-DUMPER7_ASSERTS_UProjectileBodyData;
-
-// Class GbxGame.PuddleHazard
-// 0x07F8 (0x0B88 - 0x0390)
-class APuddleHazard final : public AActor
-{
-public:
-	uint8                                         Pad_390[0x10];                                     // 0x0390(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FHazardInteractionState                HazardInteraction;                                 // 0x03A0(0x0658)(Transient, ContainsInstancedReference, NativeAccessSpecifierPublic)
-	class UPuddleHazardConfigurationData*         Configuration;                                     // 0x09F8(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UProceduralMeshComponent*               CollisionComponent;                                // 0x0A00(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UHazardOverlapCollisonComponent*        OverlapCollisionComponent;                         // 0x0A08(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class USceneComponent*                        VisualComponent;                                   // 0x0A10(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UFXSystemComponent*                     ParticleSystemComponent;                           // 0x0A18(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UDecalComponent*                        GroundingDecalComponent;                           // 0x0A20(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class USceneComponent*                        TransitionVisualComponent;                         // 0x0A28(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	class UDecalComponent*                        TransitionGroundingDecalComponent;                 // 0x0A30(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_A38[0x44];                                     // 0x0A38(0x0044)(Fixing Size After Last Property [ Dumper-7 ])
-	EPuddleState                                  PuddleState;                                       // 0x0A7C(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_A7D[0x3];                                      // 0x0A7D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         CurrentOpacity;                                    // 0x0A80(0x0004)(Edit, ZeroConstructor, Transient, EditConst, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	float                                         CurrentRadius;                                     // 0x0A84(0x0004)(Edit, ZeroConstructor, Transient, EditConst, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_A88[0x4];                                      // 0x0A88(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         lifespan;                                          // 0x0A8C(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         FullRadius;                                        // 0x0A90(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         TraceDistanceOverride;                             // 0x0A94(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         RepCleanUpTransitionTime;                          // 0x0A98(0x0004)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_A9C[0x4];                                      // 0x0A9C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	FGameDataHandleProperty_                      DefHandle;                                         // 0x0AA0(0x0018)(Edit, Net, RepNotify, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FHazardInteractionReplicationState     RepHazardInteractionState;                         // 0x0AB8(0x0070)(Net, Transient, RepNotify, NativeAccessSpecifierPrivate)
-	EPuddleHazardInstanceBuildType                LevelBuildType;                                    // 0x0B28(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_B29[0x5F];                                     // 0x0B29(0x005F)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static void CleanUpPuddleById(class UObject* WorldContext, int32 ID);
-	static void CleanUpPuddleByOwner(class AActor* PuddleOwner);
-	static void ForEachPuddle_Owner(class AActor* PuddleOwner, const TDelegate<void(class APuddleHazard* Puddle)>& Callback);
-	static int32 SpawnPuddleHazard(class UObject* WorldContext, class AActor* PuddleOwner, const struct FTransform& Transform, FGameDataHandleProperty_ definition, const struct FDamageSourceContainer& DamageSource, const bool bCanDamageOwner, const bool bCanDamageFriendlies, float Radius, float lifespan_0, bool bAdjustSpawnTransform, float DamageOverride, bool bLevelSyncDamage, float GroundPlacementRadius);
-
-	void BeginInteraction(FGameDataHandleProperty_ NewState, bool bIsSource, float SourceDuration, class AActor* NewInstigator);
-	void Convert(FGameDataHandleProperty_ NewDef);
-	void OnRep_CleanUpPuddle();
-	void OnRep_DefHandle();
-	void OnRep_InteractionState();
+	static void AIScriptedPerch(class AActor* AIActor, class AActor* Perch, EGbxBrainExec* Exec, const struct FLatentActionInfo& LatentInfo);
+	static void SetPerchEnabled(class AActor* Perch, bool bEnabled);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("PuddleHazard")
+		STATIC_CLASS_IMPL("PerchStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"PuddleHazard")
+		STATIC_NAME_IMPL(L"PerchStatics")
 	}
-	static class APuddleHazard* GetDefaultObj()
+	static class UPerchStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<APuddleHazard>();
+		return GetDefaultObjImpl<UPerchStatics>();
 	}
 };
-DUMPER7_ASSERTS_APuddleHazard;
+DUMPER7_ASSERTS_UPerchStatics;
 
-// Class GbxGame.PuddleHazardConfigurationData
-// 0x0110 (0x0140 - 0x0030)
-class UPuddleHazardConfigurationData final : public UDataAsset
-{
-public:
-	float                                         EffectSizeScale;                                   // 0x0030(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	TMap<FGameDataHandleProperty_, struct FPuddleHazardTransitionConfigurationData> InteractionTransitionConfigurations; // 0x0038(0x0050)(Edit, DisableEditOnInstance, NativeAccessSpecifierPublic)
-	class UMaterialInterface*                     PuddleDecalMaterial;                               // 0x0088(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	class UMaterialInterface*                     PuddleDecalMaterial_Ripples;                       // 0x0090(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	class UMaterialInterface*                     PuddleMeshMaterial;                                // 0x0098(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	class UMaterialInterface*                     PuddleMeshMaterial_Ripples;                        // 0x00A0(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	class UMaterialInterface*                     GroundingDecalMaterial;                            // 0x00A8(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	bool                                          bMaskEdges;                                        // 0x00B0(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_B1[0x3];                                       // 0x00B1(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         MaskEdgeScale;                                     // 0x00B4(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLinearColor                           Color;                                             // 0x00B8(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FLinearColor                           ColorHighlights;                                   // 0x00C8(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         NormalStrength;                                    // 0x00D8(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         MovementSpeed;                                     // 0x00DC(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         DepthFade;                                         // 0x00E0(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_E4[0x4];                                       // 0x00E4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class UFXSystemAsset*                         ParticleSystem;                                    // 0x00E8(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	TArray<struct FGbxParticleParameter>          ParticleSystemParameters;                          // 0x00F0(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, NativeAccessSpecifierPublic)
-	class FName                                   ParticleSystemSurfaceAreaParameterName;            // 0x0100(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ParticleSystemSurfaceAreaScalar;                   // 0x0108(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_10C[0x4];                                      // 0x010C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class FName>                           NaturalStateEmitterNames;                          // 0x0110(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           NaturalStateAudioLoop;                             // 0x0120(0x0018)(Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class UPhysicalMaterial*                      NaturalStatePhysMat;                               // 0x0138(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-
-public:
-	void GetParticleEmitterNames(TArray<class FName>* OutNames);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("PuddleHazardConfigurationData")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"PuddleHazardConfigurationData")
-	}
-	static class UPuddleHazardConfigurationData* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UPuddleHazardConfigurationData>();
-	}
-};
-DUMPER7_ASSERTS_UPuddleHazardConfigurationData;
-
-// Class GbxGame.RadiateDamageAreaActor
-// 0x0320 (0x06B0 - 0x0390)
-class alignas(0x10) ARadiateDamageAreaActor : public AActor
-{
-public:
-	uint8                                         Pad_390[0x260];                                    // 0x0390(0x0260)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxActorState                         ActorState;                                        // 0x05F0(0x0070)(Transient, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_660[0x38];                                     // 0x0660(0x0038)(Fixing Size After Last Property [ Dumper-7 ])
-	class URadiateDamageMovementComponent*        MovementComponent;                                 // 0x0698(0x0008)(ExportObject, ZeroConstructor, Transient, InstancedReference, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_6A0[0x10];                                     // 0x06A0(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	void OnActorBeginOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* Other, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const struct FHitResult& SweepResult);
-	void OnActorEndOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* Other, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("RadiateDamageAreaActor")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"RadiateDamageAreaActor")
-	}
-	static class ARadiateDamageAreaActor* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<ARadiateDamageAreaActor>();
-	}
-};
-DUMPER7_ASSERTS_ARadiateDamageAreaActor;
-
-// Class GbxGame.RadiateDamageAreaBodyData
-// 0x0000 (0x0060 - 0x0060)
-class URadiateDamageAreaBodyData final : public UGbxBodyData
+// Class GbxGame.NexusConfigStorePingFeedback
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStorePingFeedback final : public UNexusConfigStoreBasicDefFlat
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("RadiateDamageAreaBodyData")
+		STATIC_CLASS_IMPL("NexusConfigStorePingFeedback")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"RadiateDamageAreaBodyData")
+		STATIC_NAME_IMPL(L"NexusConfigStorePingFeedback")
 	}
-	static class URadiateDamageAreaBodyData* GetDefaultObj()
+	static class UNexusConfigStorePingFeedback* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<URadiateDamageAreaBodyData>();
+		return GetDefaultObjImpl<UNexusConfigStorePingFeedback>();
 	}
 };
-DUMPER7_ASSERTS_URadiateDamageAreaBodyData;
+DUMPER7_ASSERTS_UNexusConfigStorePingFeedback;
 
-// Class GbxGame.RefreshManager
-// 0x02D8 (0x0300 - 0x0028)
-class URefreshManager final : public UObject
+// Class GbxGame.ProjectileMovementInterface
+// 0x0000 (0x0000 - 0x0000)
+class IProjectileMovementInterface final
 {
 public:
-	uint8                                         Pad_28[0x2D8];                                     // 0x0028(0x02D8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ProjectileMovementInterface")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ProjectileMovementInterface")
+	}
+	static class IProjectileMovementInterface* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IProjectileMovementInterface>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IProjectileMovementInterface;
+
+// Class GbxGame.ProjectileStatics
+// 0x0000 (0x0028 - 0x0028)
+class UProjectileStatics final : public UBlueprintFunctionLibrary
+{
+public:
+	static float GetProjectileDistanceOverTime(FGameDataHandleProperty_ definition, float time, float SpeedOverride);
+	static float GetProjectileTimeOverDistance(FGameDataHandleProperty_ definition, float Distance, float SpeedOverride);
+	static struct FTransform GetSafeProjectileThrowTransform(class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const TArray<class AActor*>& IgnoreActors, ECollisionChannel TraceChannel, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static struct FTransform GetSafeProjectileThrowTransformFromLocation(class AActor* Source, const struct FVector& Location, const TArray<class AActor*>& IgnoreActors, ECollisionChannel TraceChannel, bool bUseAnimatedCameraRotation);
+	static struct FGbxViewRelativeLocation MakeViewRelativeLocation(const struct FVector& Offset);
+	static void SpawnProjectile(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* owner, bool bOwnerIsInstigator, class APawn* instigator, const struct FVector& Location, const struct FVector& Velocity, float GravityScale, const struct FProjectileDamageOverrideData& DamageOverrides);
+	static void SpawnProjectile_Const(FGameDataHandleProperty_ definition, class AActor* owner, bool bOwnerIsInstigator, class APawn* instigator, const struct FVector& Location, const struct FVector& Velocity, float GravityScale, const struct FProjectileDamageOverrideData& DamageOverrides);
+	static void SpawnProjectile_Source(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, float SpeedOverride, float GravityScale, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static void SpawnProjectile_Source_Const(FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, float SpeedOverride, float GravityScale, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static void SpawnProjectile_ThrowAtActor(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static void SpawnProjectile_ThrowAtActor_Const(FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, class AActor* target, const struct FGbxRelativeLocation& TargetOptions, const struct FTrajectoryOptions& TrajectoryOptions, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static void SpawnProjectile_ThrowAtCrosshair(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static void SpawnProjectile_ThrowAtCrosshair_Const(FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, const struct FTrajectoryOptions& TrajectoryOptions, float TraceDistance, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static void SpawnProjectile_ThrowAtLocation(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, class Aprojectile** projectile, FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, const struct FVector& Location, const struct FTrajectoryOptions& TrajectoryOptions, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static void SpawnProjectile_ThrowAtLocation_Const(FGameDataHandleProperty_ definition, class AActor* Source, const struct FGbxRelativeLocation& SourceOptions, const struct FGbxRelativeRotation& SourceRotation, const struct FVector& Location, const struct FTrajectoryOptions& TrajectoryOptions, const struct FProjectileOwnerOptions& OwnerOptions, const struct FProjectileDamageOverrideData& DamageOverrides, const struct FGbxViewRelativeLocation& SourceViewOptions);
+	static void SpawnProjectiles_Query(class UObject* WorldContext, const struct FLatentActionInfo& LatentInfo, ESpawnProjectileExec* Exec, TArray<class Aprojectile*>* AllProjectiles, class Aprojectile** SpawnedProjectile, FGameDataHandleProperty_ definition, class AActor* owner, const struct FGpsQueryRunData& QueryData, const struct FGbxRelativeRotation& Rotation, int32 MaxResults, float delay, const struct FProjectileDamageOverrideData& DamageOverrides);
+	static void SpawnProjectiles_Query_Const(FGameDataHandleProperty_ definition, class AActor* owner, const struct FGpsQueryRunData& QueryData, const struct FGbxRelativeRotation& Rotation, int32 MaxResults, float delay, const struct FProjectileDamageOverrideData& DamageOverrides);
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("RefreshManager")
+		STATIC_CLASS_IMPL("ProjectileStatics")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"RefreshManager")
+		STATIC_NAME_IMPL(L"ProjectileStatics")
 	}
-	static class URefreshManager* GetDefaultObj()
+	static class UProjectileStatics* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<URefreshManager>();
+		return GetDefaultObjImpl<UProjectileStatics>();
 	}
 };
-DUMPER7_ASSERTS_URefreshManager;
+DUMPER7_ASSERTS_UProjectileStatics;
+
+// Class GbxGame.GbxPureEchoSpeaker
+// 0x0028 (0x0050 - 0x0028)
+class UGbxPureEchoSpeaker final : public UObject
+{
+public:
+	uint8                                         Pad_28[0x10];                                      // 0x0028(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	class UGbxDialogProvider*                     GbxDialogProvider;                                 // 0x0038(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_40[0x10];                                      // 0x0040(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("GbxPureEchoSpeaker")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"GbxPureEchoSpeaker")
+	}
+	static class UGbxPureEchoSpeaker* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UGbxPureEchoSpeaker>();
+	}
+};
+DUMPER7_ASSERTS_UGbxPureEchoSpeaker;
+
+// Class GbxGame.NexusConfigStoreRadialBlur
+// 0x0000 (0x0380 - 0x0380)
+class UNexusConfigStoreRadialBlur final : public UNexusConfigStoreBasicDefFlat
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreRadialBlur")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreRadialBlur")
+	}
+	static class UNexusConfigStoreRadialBlur* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreRadialBlur>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreRadialBlur;
+
+// Class GbxGame.RadiateDamageMovementComponent
+// 0x0018 (0x0190 - 0x0178)
+class URadiateDamageMovementComponent final : public UMovementComponent
+{
+public:
+	uint8                                         Pad_178[0x18];                                     // 0x0178(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("RadiateDamageMovementComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"RadiateDamageMovementComponent")
+	}
+	static class URadiateDamageMovementComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<URadiateDamageMovementComponent>();
+	}
+};
+DUMPER7_ASSERTS_URadiateDamageMovementComponent;
+
+// Class GbxGame.NexusConfigStoreRefreshManager
+// 0x0000 (0x0390 - 0x0390)
+class UNexusConfigStoreRefreshManager final : public UNexusConfigStoreBasic
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("NexusConfigStoreRefreshManager")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"NexusConfigStoreRefreshManager")
+	}
+	static class UNexusConfigStoreRefreshManager* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UNexusConfigStoreRefreshManager>();
+	}
+};
+DUMPER7_ASSERTS_UNexusConfigStoreRefreshManager;
+
+// Class GbxGame.ScreenParticleManagerComponent
+// 0x0040 (0x0150 - 0x0110)
+class UScreenParticleManagerComponent final : public UActorComponent
+{
+public:
+	uint8                                         Pad_110[0x40];                                     // 0x0110(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
+
+public:
+	static void HideScreenParticleForActor(class AActor* Actor, class UFXSystemAsset* Template, class FName Tag, bool bAllowParticleToFinish, bool bServerAuthority);
+	static void ShowScreenParticleForActor(class AActor* Actor, class UFXSystemAsset* Template, bool bHideWhenFinished, const TArray<struct FGbxParticleParameter>& ParticleParameters, const struct FVector2D& ContentDims, float ParticleDepth, EScreenParticleScalingMode ScalingMode, bool bOnlyOwnerSee, bool bAlwaysVisible, class FName Tag, bool bAllowMultipleInstances, bool bServerAuthority, bool bTickEvenWhenPaused, bool bHideDuringInGameMenu, EScreenParticleVisibility ThirdPersonVisibility, EScreenParticleVisibility FirstPersonVisibility, bool bHideDuringCinematic);
+
+	void ClientHideScreenParticle(class UFXSystemAsset* Template, class FName Tag, bool bAllowParticleToFinish);
+	void ClientSetScreenParticleActorParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, class AActor* Param);
+	void ClientSetScreenParticleColorParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, const struct FLinearColor& Param);
+	void ClientSetScreenParticleFloatParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, float Param);
+	void ClientSetScreenParticleMaterialParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, class UMaterialInterface* Param);
+	void ClientSetScreenParticleVectorParameter(class UFXSystemAsset* Template, class FName Tag, class FName ParameterName, const struct FVector& Param);
+	void ClientShowScreenParticle(class UFXSystemAsset* Template, bool bHideWhenFinished, const TArray<struct FGbxParticleParameter>& ParticleParameters, const struct FVector2D& ContentDims, float ParticleDepth, EScreenParticleScalingMode ScalingMode, bool bOnlyOwnerSee, bool bAlwaysVisible, class FName Tag, bool bAllowMultipleInstances, bool bTickEvenWhenPaused, bool bHideDuringInGameMenu, bool bDepthPriorityWorld, EScreenParticleVisibility ThirdPersonVisibility, EScreenParticleVisibility FirstPersonVisibility, bool bHideDuringCinematic);
+	void ClientShowScreenParticleEx(class UFXSystemAsset* Template, uint16 InitFlags, const TArray<struct FGbxParticleParameter>& ParticleParameters, const struct FVector2D& ContentDims, float ParticleDepth, EScreenParticleScalingMode ScalingMode, class FName Tag);
+	void ClientTrackParticleProperty(class UParticlePropertyTrackingData* TrackingData, class UFXSystemAsset* Template, class FName Tag, class FName PropertyName, float PropertyValue, bool bAddToValue, class UMaterialInterface* UsedMaterialProperty, class FName MaterialPropertyName);
+
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ScreenParticleManagerComponent")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ScreenParticleManagerComponent")
+	}
+	static class UScreenParticleManagerComponent* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<UScreenParticleManagerComponent>();
+	}
+};
+DUMPER7_ASSERTS_UScreenParticleManagerComponent;
 
 // Class GbxGame.SpawnEncounterCondition_Aggro
 // 0x0000 (0x0028 - 0x0028)
@@ -24730,31 +24843,6 @@ public:
 	}
 };
 DUMPER7_ASSERTS_USpawnEncounterCondition_Aggro;
-
-// Class GbxGame.SpawnEncounterCondition_Health
-// 0x0090 (0x00B8 - 0x0028)
-class USpawnEncounterCondition_Health final : public USpawnEncounterCondition
-{
-public:
-	struct FSpawnEncounterSpawnerRef              Spawner;                                           // 0x0028(0x0038)(Edit, NoDestructor, ContainsInstancedReference, NativeAccessSpecifierPrivate)
-	struct FGbxAttributeInit                      HealthThreshold;                                   // 0x0060(0x0050)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_B0[0x8];                                       // 0x00B0(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("SpawnEncounterCondition_Health")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"SpawnEncounterCondition_Health")
-	}
-	static class USpawnEncounterCondition_Health* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<USpawnEncounterCondition_Health>();
-	}
-};
-DUMPER7_ASSERTS_USpawnEncounterCondition_Health;
 
 // Class GbxGame.SpawnEncounterCondition_Volume
 // 0x0020 (0x0048 - 0x0028)
@@ -24785,166 +24873,127 @@ public:
 };
 DUMPER7_ASSERTS_USpawnEncounterCondition_Volume;
 
-// Class GbxGame.SpawnEncounterEvent_Mission
-// 0x0008 (0x0038 - 0x0030)
-class USpawnEncounterEvent_Mission final : public USpawnEncounterEvent
+// Class GbxGame.SpawnEncounterEvent_Fact
+// 0x0068 (0x0098 - 0x0030)
+class USpawnEncounterEvent_Fact final : public USpawnEncounterEvent
 {
 public:
-	class FName                                   EventName;                                         // 0x0030(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FRelativeFactsSystemActorReference     FactActor;                                         // 0x0030(0x0028)(Edit, NoDestructor, NativeAccessSpecifierPrivate)
+	struct FContingentFactChange                  FactValue;                                         // 0x0058(0x0040)(Edit, NativeAccessSpecifierPrivate)
 
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("SpawnEncounterEvent_Mission")
+		STATIC_CLASS_IMPL("SpawnEncounterEvent_Fact")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"SpawnEncounterEvent_Mission")
+		STATIC_NAME_IMPL(L"SpawnEncounterEvent_Fact")
 	}
-	static class USpawnEncounterEvent_Mission* GetDefaultObj()
+	static class USpawnEncounterEvent_Fact* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<USpawnEncounterEvent_Mission>();
+		return GetDefaultObjImpl<USpawnEncounterEvent_Fact>();
 	}
 };
-DUMPER7_ASSERTS_USpawnEncounterEvent_Mission;
+DUMPER7_ASSERTS_USpawnEncounterEvent_Fact;
 
-// Class GbxGame.SpawnEncounterEvent_Transfer
-// 0x0020 (0x0050 - 0x0030)
-class USpawnEncounterEvent_Transfer final : public USpawnEncounterEvent
-{
-public:
-	TArray<class ASpawnEncounter*>                SourceEncounters;                                  // 0x0030(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	class ASpawner*                               TargetSpawner;                                     // 0x0040(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	bool                                          bSpecifyTargetSpawner;                             // 0x0048(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_49[0x7];                                       // 0x0049(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("SpawnEncounterEvent_Transfer")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"SpawnEncounterEvent_Transfer")
-	}
-	static class USpawnEncounterEvent_Transfer* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<USpawnEncounterEvent_Transfer>();
-	}
-};
-DUMPER7_ASSERTS_USpawnEncounterEvent_Transfer;
-
-// Class GbxGame.StreamingEffectsGroup
-// 0x0028 (0x0058 - 0x0030)
-class UStreamingEffectsGroup final : public UDataAsset
-{
-public:
-	uint8                                         Pad_30[0x28];                                      // 0x0030(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("StreamingEffectsGroup")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"StreamingEffectsGroup")
-	}
-	static class UStreamingEffectsGroup* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UStreamingEffectsGroup>();
-	}
-};
-DUMPER7_ASSERTS_UStreamingEffectsGroup;
-
-// Class GbxGame.UnlockablesProgressRolePerCharacter
-// 0x0000 (0x0108 - 0x0108)
-class UUnlockablesProgressRolePerCharacter final : public UUnlockablesProgressRole
+// Class GbxGame.SpawnPointBodyData
+// 0x0000 (0x0060 - 0x0060)
+class USpawnPointBodyData : public UGbxBodyData
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("UnlockablesProgressRolePerCharacter")
+		STATIC_CLASS_IMPL("SpawnPointBodyData")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"UnlockablesProgressRolePerCharacter")
+		STATIC_NAME_IMPL(L"SpawnPointBodyData")
 	}
-	static class UUnlockablesProgressRolePerCharacter* GetDefaultObj()
+	static class USpawnPointBodyData* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UUnlockablesProgressRolePerCharacter>();
+		return GetDefaultObjImpl<USpawnPointBodyData>();
 	}
 };
-DUMPER7_ASSERTS_UUnlockablesProgressRolePerCharacter;
+DUMPER7_ASSERTS_USpawnPointBodyData;
 
-// Class GbxGame.UnlockablesProgressRoleShared
-// 0x0000 (0x0108 - 0x0108)
-class UUnlockablesProgressRoleShared final : public UUnlockablesProgressRole
+// Class GbxGame.TimedFactsProgressRole
+// 0x0000 (0x0100 - 0x0100)
+class UTimedFactsProgressRole final : public UGbxProfileProgressRoleHostPlayer
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("UnlockablesProgressRoleShared")
+		STATIC_CLASS_IMPL("TimedFactsProgressRole")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"UnlockablesProgressRoleShared")
+		STATIC_NAME_IMPL(L"TimedFactsProgressRole")
 	}
-	static class UUnlockablesProgressRoleShared* GetDefaultObj()
+	static class UTimedFactsProgressRole* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UUnlockablesProgressRoleShared>();
+		return GetDefaultObjImpl<UTimedFactsProgressRole>();
 	}
 };
-DUMPER7_ASSERTS_UUnlockablesProgressRoleShared;
+DUMPER7_ASSERTS_UTimedFactsProgressRole;
 
-// Class GbxGame.GbxSequenceFadeSection
-// 0x0450 (0x0548 - 0x00F8)
-class UGbxSequenceFadeSection final : public UMovieSceneSection
-{
-public:
-	uint8                                         Pad_F8[0x8];                                       // 0x00F8(0x0008)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FMovieSceneFloatChannel                FloatCurve;                                        // 0x0100(0x0110)(NativeAccessSpecifierPublic)
-	struct FMovieSceneFloatChannel                RedCurve;                                          // 0x0210(0x0110)(NativeAccessSpecifierPublic)
-	struct FMovieSceneFloatChannel                GreenCurve;                                        // 0x0320(0x0110)(NativeAccessSpecifierPublic)
-	struct FMovieSceneFloatChannel                BlueCurve;                                         // 0x0430(0x0110)(NativeAccessSpecifierPublic)
-	uint8                                         bFadeAudio : 1;                                    // 0x0540(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         Pad_541[0x7];                                      // 0x0541(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-
-public:
-	static class UClass* StaticClass()
-	{
-		STATIC_CLASS_IMPL("GbxSequenceFadeSection")
-	}
-	static const class FName& StaticName()
-	{
-		STATIC_NAME_IMPL(L"GbxSequenceFadeSection")
-	}
-	static class UGbxSequenceFadeSection* GetDefaultObj()
-	{
-		return GetDefaultObjImpl<UGbxSequenceFadeSection>();
-	}
-};
-DUMPER7_ASSERTS_UGbxSequenceFadeSection;
-
-// Class GbxGame.GbxSequenceFadeTrack
-// 0x0000 (0x0128 - 0x0128)
-class UGbxSequenceFadeTrack final : public UMovieSceneFloatTrack
+// Class GbxGame.ZoomValueProvider
+// 0x0000 (0x0000 - 0x0000)
+class IZoomValueProvider final
 {
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("GbxSequenceFadeTrack")
+		STATIC_CLASS_IMPL("ZoomValueProvider")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"GbxSequenceFadeTrack")
+		STATIC_NAME_IMPL(L"ZoomValueProvider")
 	}
-	static class UGbxSequenceFadeTrack* GetDefaultObj()
+	static class IZoomValueProvider* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<UGbxSequenceFadeTrack>();
+		return GetDefaultObjImpl<IZoomValueProvider>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
 	}
 };
-DUMPER7_ASSERTS_UGbxSequenceFadeTrack;
+DUMPER7_ASSERTS_IZoomValueProvider;
+
+// Class GbxGame.ZoomHandler
+// 0x0000 (0x0000 - 0x0000)
+class IZoomHandler final
+{
+public:
+	static class UClass* StaticClass()
+	{
+		STATIC_CLASS_IMPL("ZoomHandler")
+	}
+	static const class FName& StaticName()
+	{
+		STATIC_NAME_IMPL(L"ZoomHandler")
+	}
+	static class IZoomHandler* GetDefaultObj()
+	{
+		return GetDefaultObjImpl<IZoomHandler>();
+	}
+
+	class UObject* AsUObject()
+	{
+		return reinterpret_cast<UObject*>(this);
+	}
+	const class UObject* AsUObject() const
+	{
+		return reinterpret_cast<const UObject*>(this);
+	}
+};
+DUMPER7_ASSERTS_IZoomHandler;
 
 }
 

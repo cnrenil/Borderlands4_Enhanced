@@ -28,9 +28,9 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			break;
 	}
 
-    // ALWAYS pass to ImGui first so it can track key states for Aimbot/Hotkeys
-    // even when the menu is closed.
-    ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
+    // Serialize Win32 message ingestion with the render thread. ImGui internal
+    // containers are not thread-safe and this hook does not run on the Present thread.
+    GUI::Overlay::HandleWndProcMessage(hWnd, uMsg, wParam, lParam);
 
 	if (GUI::ShowMenu && !Utils::ShouldSuspendOverlayRendering()) {
 		// Fully block user input from reaching the game when menu is open.

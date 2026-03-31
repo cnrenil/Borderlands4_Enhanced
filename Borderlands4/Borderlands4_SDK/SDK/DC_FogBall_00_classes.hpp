@@ -10,9 +10,9 @@
 
 #include "Basic.hpp"
 
-#include "GbxDecorator_classes.hpp"
 #include "CoreUObject_structs.hpp"
 #include "EN_FogBall_Shapes_structs.hpp"
+#include "GbxDecorator_classes.hpp"
 
 
 namespace SDK

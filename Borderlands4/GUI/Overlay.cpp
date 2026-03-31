@@ -2,11 +2,15 @@
 #include "Fonts/Embedded/EmbeddedFontMain.h"
 #include "Fonts/Embedded/EmbeddedFontFallback.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 namespace GUI::Overlay
 {
     namespace
     {
         bool gInitialized = false;
+        std::recursive_mutex g_ImGuiMutex;
+
         void LoadFonts(ImGuiIO& io)
         {
             char winDir[MAX_PATH];
@@ -87,6 +91,7 @@ namespace GUI::Overlay
 
     bool Initialize(HWND hwnd, ID3D12Device* device, UINT bufferCount, DXGI_FORMAT format, ID3D12DescriptorHeap* srvHeap)
     {
+        std::scoped_lock lock(g_ImGuiMutex);
         if (gInitialized) return true;
         if (!hwnd || !device || !srvHeap || bufferCount == 0) return false;
 
@@ -124,6 +129,7 @@ namespace GUI::Overlay
 
     void Shutdown()
     {
+        std::scoped_lock lock(g_ImGuiMutex);
         if (!gInitialized) return;
         ImGui_ImplDX12_Shutdown();
         ImGui_ImplWin32_Shutdown();
@@ -133,6 +139,7 @@ namespace GUI::Overlay
 
     void BeginFrame()
     {
+        std::scoped_lock lock(g_ImGuiMutex);
         if (!gInitialized) return;
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
@@ -142,6 +149,7 @@ namespace GUI::Overlay
 
     void BuildFrame()
     {
+        std::scoped_lock lock(g_ImGuiMutex);
         if (!gInitialized) return;
         try
         {
@@ -155,11 +163,45 @@ namespace GUI::Overlay
 
     ImDrawData* GetDrawData()
     {
+        std::scoped_lock lock(g_ImGuiMutex);
         return gInitialized ? ImGui::GetDrawData() : nullptr;
+    }
+
+    ImDrawData* BuildFrameAndGetDrawData()
+    {
+        std::scoped_lock lock(g_ImGuiMutex);
+        if (!gInitialized)
+            return nullptr;
+
+        ImGui_ImplDX12_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+        ImGui::GetIO().MouseDrawCursor = GUI::ShowMenu;
+
+        try
+        {
+            Cheats::Render();
+        }
+        catch (...)
+        {
+        }
+
+        ImGui::Render();
+        return ImGui::GetDrawData();
+    }
+
+    LRESULT HandleWndProcMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+    {
+        std::scoped_lock lock(g_ImGuiMutex);
+        if (!gInitialized || !ImGui::GetCurrentContext())
+            return 0;
+
+        return ::ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
     }
 
     bool IsInitialized()
     {
+        std::scoped_lock lock(g_ImGuiMutex);
         return gInitialized;
     }
 

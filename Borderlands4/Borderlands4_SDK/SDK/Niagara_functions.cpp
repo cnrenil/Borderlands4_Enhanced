@@ -1722,9 +1722,9 @@ void UNiagaraComponent::SetGpuComputeDebug(bool bEnableDebug)
 // Function Niagara.NiagaraComponent.SetLockDesiredAgeDeltaTimeToSeekDelta
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
-// bool                                    Block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// bool                                    block                                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UNiagaraComponent::SetLockDesiredAgeDeltaTimeToSeekDelta(bool Block)
+void UNiagaraComponent::SetLockDesiredAgeDeltaTimeToSeekDelta(bool block)
 {
 	static class UFunction* Func = nullptr;
 
@@ -1733,7 +1733,7 @@ void UNiagaraComponent::SetLockDesiredAgeDeltaTimeToSeekDelta(bool Block)
 
 	Params::NiagaraComponent_SetLockDesiredAgeDeltaTimeToSeekDelta Parms{};
 
-	Parms.Block = Block;
+	Parms.block = block;
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;

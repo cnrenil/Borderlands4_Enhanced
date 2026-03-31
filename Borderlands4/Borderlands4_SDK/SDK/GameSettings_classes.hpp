@@ -14,8 +14,8 @@
 #include "UMG_classes.hpp"
 #include "CoreUObject_classes.hpp"
 #include "GameplayTags_structs.hpp"
-#include "CommonUI_classes.hpp"
 #include "GameSettings_structs.hpp"
+#include "CommonUI_classes.hpp"
 #include "Engine_classes.hpp"
 
 

@@ -521,8 +521,8 @@ public:
 	static void ClearNavModifierOverride();
 	static bool FindPathOnNavMesh(class UObject* WorldContextObject, const struct FVector& Start, const struct FVector& Goal, float AgentRadius, const struct FGbxNavQueryData& QueryData);
 	static class FString GetGbxNavAnimPath(class AActor* Actor);
-	static void LockNavigation(class AActor* Actor, class FName reason, bool Block);
-	static void LockStance(class AActor* Actor, class FName reason, bool Block, FGameDataHandleProperty_ stance);
+	static void LockNavigation(class AActor* Actor, class FName reason, bool block);
+	static void LockStance(class AActor* Actor, class FName reason, bool block, FGameDataHandleProperty_ stance);
 	static struct FGbxNavQueryData MakeGbxNavQueryData(class UGbxNavMeshLayer* layer, class UGbxNavAreaUserData* Areas, class UGbxNavEdgeUserData* Edges);
 	static bool ProjectToNavMesh(class UObject* WorldContextObject, const struct FVector& Start, float Distance, const struct FGbxNavQueryData& QueryData, struct FVector* Result);
 	static void SetNavModifierOverride(const struct FGbxNavGoalModifiers& Modifiers);
@@ -1726,7 +1726,7 @@ public:
 	struct FHavokFlightNavChunkSettings           ChunkSettings;                                     // 0x0044(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
 	struct FHavokFlightNavMergingSettings         MergingSettings;                                   // 0x004C(0x0020)(Edit, NoDestructor, NativeAccessSpecifierPublic)
 	float                                         MinCellWidth;                                      // 0x006C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Border;                                            // 0x0070(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         border;                                            // 0x0070(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          UseBorderCells;                                    // 0x0074(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_75[0x3];                                       // 0x0075(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
 	float                                         MinRegionVolume;                                   // 0x0078(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)

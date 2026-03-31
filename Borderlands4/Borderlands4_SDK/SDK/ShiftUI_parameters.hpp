@@ -41,14 +41,14 @@ public:
 };
 DUMPER7_ASSERTS_ShiftUIFunctionLibrary_AddShowDelegate;
 
-// Function ShiftUI.ShiftUIFunctionLibrary.Block
+// Function ShiftUI.ShiftUIFunctionLibrary.block
 // 0x0008 (0x0008 - 0x0000)
-struct ShiftUIFunctionLibrary_Block final
+struct ShiftUIFunctionLibrary_block final
 {
 public:
 	class FName                                   reason;                                            // 0x0000(0x0008)(Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_ShiftUIFunctionLibrary_Block;
+DUMPER7_ASSERTS_ShiftUIFunctionLibrary_block;
 
 // Function ShiftUI.ShiftUIFunctionLibrary.IsBlockingEnabled
 // 0x0001 (0x0001 - 0x0000)

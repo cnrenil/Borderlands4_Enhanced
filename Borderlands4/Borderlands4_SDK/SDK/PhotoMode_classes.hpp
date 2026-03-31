@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "GameplayTags_structs.hpp"
 #include "CoreUObject_structs.hpp"
+#include "GameplayTags_structs.hpp"
 #include "DeveloperSettings_classes.hpp"
 #include "Engine_classes.hpp"
 
@@ -20,7 +20,7 @@ namespace SDK
 {
 
 // Class PhotoMode.KPhotoModePawn
-// 0x0340 (0x0790 - 0x0450)
+// 0x0380 (0x07D0 - 0x0450)
 class AKPhotoModePawn final : public ADefaultPawn
 {
 public:
@@ -35,47 +35,49 @@ public:
 	struct FGameplayTagContainer                  PM_EnemyTags;                                      // 0x04C0(0x0020)(NativeAccessSpecifierPrivate)
 	struct FGameplayTagContainer                  PM_NpcTags;                                        // 0x04E0(0x0020)(NativeAccessSpecifierPrivate)
 	struct FGameplayTagContainer                  PM_SummonExcludeTags;                              // 0x0500(0x0020)(NativeAccessSpecifierPrivate)
-	TArray<class FString>                         PM_ExcludedMeshList;                               // 0x0520(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-	TArray<class FString>                         PM_ExcludedNiagaraList;                            // 0x0530(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-	TArray<class FString>                         PM_IncludedInteractiveObjectList;                  // 0x0540(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
-	float                                         MaxDistance;                                       // 0x0550(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         ExitDistance;                                      // 0x0554(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TSoftObjectPtr<class UCurveFloat>             FloatCurve;                                        // 0x0558(0x0028)(UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         FilterWeight;                                      // 0x0580(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         InitialTimeOfDay;                                  // 0x0584(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bCanSetTimeOfDay;                                  // 0x0588(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bDamageNumbersAreVisible;                          // 0x0589(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bPlayerIsVisibility;                               // 0x058A(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bSummonIsVisibility;                               // 0x058B(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bNpcIsVisibility;                                  // 0x058C(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bEnemyIsVisibility;                                // 0x058D(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_58E[0x2];                                      // 0x058E(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         MaxStartOffset;                                    // 0x0590(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         MinStartOffset;                                    // 0x0594(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         BoundsForce;                                       // 0x0598(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	bool                                          bSkipStart;                                        // 0x059C(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_59D[0x3];                                      // 0x059D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FTransform                             SpawnTransform;                                    // 0x05A0(0x0060)(IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FRotator                               SpawnRotator;                                      // 0x0600(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
-	struct FVector                                StartLocation;                                     // 0x0618(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FRotator                               StartRotator;                                      // 0x0630(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
-	struct FVector                                EndLocation;                                       // 0x0648(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FRotator                               EndRotator;                                        // 0x0660(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
-	struct FVector                                ExitLocation;                                      // 0x0678(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FRotator                               ExitRotator;                                       // 0x0690(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
-	TDelegate<void(float Output)>                 StartFloatUpdate;                                  // 0x06A8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TDelegate<void()>                             StartFinishEvent;                                  // 0x06B8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TDelegate<void(float Output)>                 EndFloatUpdate;                                    // 0x06C8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TDelegate<void()>                             EndFinishEvent;                                    // 0x06D8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<TWeakObjectPtr<class AGbxCharacter>>   HiddenPlayerCharacters;                            // 0x06E8(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	TArray<TWeakObjectPtr<class AGbxCharacter>>   HiddenSummons;                                     // 0x06F8(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	TArray<TWeakObjectPtr<class AGbxCharacter>>   HiddenNPC;                                         // 0x0708(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	TArray<TWeakObjectPtr<class AGbxDecoCharacter>> HiddenDecoCharacters;                            // 0x0718(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	TArray<TWeakObjectPtr<class AGbxCharacter>>   HiddenEnemies;                                     // 0x0728(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	TArray<TWeakObjectPtr<class AInteractiveObject>> HiddenEnemyInteractiveObjects;                  // 0x0738(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	TArray<TWeakObjectPtr<class APawn>>           HiddenPlayerVehicles;                              // 0x0748(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	TArray<TWeakObjectPtr<class AGbxDrone>>       HiddenDrones;                                      // 0x0758(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_768[0x28];                                     // 0x0768(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGameplayTagContainer                  PM_EnemyProjectileTags;                            // 0x0520(0x0020)(NativeAccessSpecifierPrivate)
+	TArray<class FString>                         PM_ExcludedMeshList;                               // 0x0540(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<class FString>                         PM_ExcludedNiagaraList;                            // 0x0550(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+	TArray<class FString>                         PM_IncludedInteractiveObjectList;                  // 0x0560(0x0010)(ZeroConstructor, NativeAccessSpecifierPrivate)
+	float                                         MaxDistance;                                       // 0x0570(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         ExitDistance;                                      // 0x0574(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TSoftObjectPtr<class UCurveFloat>             FloatCurve;                                        // 0x0578(0x0028)(UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         FilterWeight;                                      // 0x05A0(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         InitialTimeOfDay;                                  // 0x05A4(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bCanSetTimeOfDay;                                  // 0x05A8(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bDamageNumbersAreVisible;                          // 0x05A9(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bPlayerIsVisibility;                               // 0x05AA(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bSummonIsVisibility;                               // 0x05AB(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bNpcIsVisibility;                                  // 0x05AC(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bEnemyIsVisibility;                                // 0x05AD(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_5AE[0x2];                                      // 0x05AE(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         MaxStartOffset;                                    // 0x05B0(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         MinStartOffset;                                    // 0x05B4(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         BoundsForce;                                       // 0x05B8(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	bool                                          bSkipStart;                                        // 0x05BC(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_5BD[0x3];                                      // 0x05BD(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FTransform                             SpawnTransform;                                    // 0x05C0(0x0060)(IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FRotator                               SpawnRotator;                                      // 0x0620(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
+	struct FVector                                StartLocation;                                     // 0x0638(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FRotator                               StartRotator;                                      // 0x0650(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
+	struct FVector                                EndLocation;                                       // 0x0668(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FRotator                               EndRotator;                                        // 0x0680(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
+	struct FVector                                ExitLocation;                                      // 0x0698(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FRotator                               ExitRotator;                                       // 0x06B0(0x0018)(ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPrivate)
+	TDelegate<void(float Output)>                 StartFloatUpdate;                                  // 0x06C8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TDelegate<void()>                             StartFinishEvent;                                  // 0x06D8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TDelegate<void(float Output)>                 EndFloatUpdate;                                    // 0x06E8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TDelegate<void()>                             EndFinishEvent;                                    // 0x06F8(0x0010)(ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class AGbxCharacter>>   HiddenPlayerCharacters;                            // 0x0708(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class AGbxCharacter>>   HiddenSummons;                                     // 0x0718(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class AGbxCharacter>>   HiddenNPC;                                         // 0x0728(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class AGbxDecoCharacter>> HiddenDecoCharacters;                            // 0x0738(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class AGbxCharacter>>   HiddenEnemies;                                     // 0x0748(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class AInteractiveObject>> HiddenEnemyInteractiveObjects;                  // 0x0758(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class Aprojectile>>     HiddenEnemyProjectiles;                            // 0x0768(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class APawn>>           HiddenPlayerVehicles;                              // 0x0778(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	TArray<TWeakObjectPtr<class AGbxDrone>>       HiddenDrones;                                      // 0x0788(0x0010)(ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_798[0x38];                                     // 0x0798(0x0038)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	void ActivatePhotoModePawn(class APlayerController* InPlayerController);
@@ -140,7 +142,7 @@ public:
 DUMPER7_ASSERTS_AKPhotoModePawn;
 
 // Class PhotoMode.KPhotoModeSettings
-// 0x0328 (0x0360 - 0x0038)
+// 0x0348 (0x0380 - 0x0038)
 class UKPhotoModeSettings final : public UDeveloperSettings
 {
 public:
@@ -172,11 +174,12 @@ public:
 	TArray<TSoftObjectPtr<class UAnimationAsset>> AnimationPoses;                                    // 0x02A0(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Config, UObjectWrapper, NativeAccessSpecifierPublic)
 	struct FGameplayTagContainer                  PlayerTags;                                        // 0x02B0(0x0020)(Edit, BlueprintVisible, BlueprintReadOnly, Config, NativeAccessSpecifierPublic)
 	struct FGameplayTagContainer                  EnemyTags;                                         // 0x02D0(0x0020)(Edit, BlueprintVisible, BlueprintReadOnly, Config, NativeAccessSpecifierPublic)
-	struct FGameplayTagContainer                  NpcTags;                                           // 0x02F0(0x0020)(Edit, BlueprintVisible, BlueprintReadOnly, Config, NativeAccessSpecifierPublic)
-	struct FGameplayTagContainer                  SummonExcludeTags;                                 // 0x0310(0x0020)(Edit, BlueprintVisible, BlueprintReadOnly, Config, NativeAccessSpecifierPublic)
-	TArray<class FString>                         MeshList;                                          // 0x0330(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Config, NativeAccessSpecifierPublic)
-	TArray<class FString>                         NiagaraList;                                       // 0x0340(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Config, NativeAccessSpecifierPublic)
-	TArray<class FString>                         InteractiveObjectList;                             // 0x0350(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Config, NativeAccessSpecifierPublic)
+	struct FGameplayTagContainer                  EnemyProjectileTags;                               // 0x02F0(0x0020)(Edit, BlueprintVisible, BlueprintReadOnly, Config, NativeAccessSpecifierPublic)
+	struct FGameplayTagContainer                  NpcTags;                                           // 0x0310(0x0020)(Edit, BlueprintVisible, BlueprintReadOnly, Config, NativeAccessSpecifierPublic)
+	struct FGameplayTagContainer                  SummonExcludeTags;                                 // 0x0330(0x0020)(Edit, BlueprintVisible, BlueprintReadOnly, Config, NativeAccessSpecifierPublic)
+	TArray<class FString>                         MeshList;                                          // 0x0350(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Config, NativeAccessSpecifierPublic)
+	TArray<class FString>                         NiagaraList;                                       // 0x0360(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Config, NativeAccessSpecifierPublic)
+	TArray<class FString>                         InteractiveObjectList;                             // 0x0370(0x0010)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, Config, NativeAccessSpecifierPublic)
 
 public:
 	static class UClass* StaticClass()

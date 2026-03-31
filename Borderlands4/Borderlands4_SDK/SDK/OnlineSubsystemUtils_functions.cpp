@@ -1054,44 +1054,6 @@ void AOnlineBeaconClient::ClientOnConnected()
 }
 
 
-// Function OnlineSubsystemUtils.TestBeaconClient.ClientPing
-// (Net, NetReliable, Native, Event, Public, NetClient)
-
-void ATestBeaconClient::ClientPing()
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("TestBeaconClient", "ClientPing");
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, nullptr);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
-// Function OnlineSubsystemUtils.TestBeaconClient.ServerPong
-// (Net, NetReliable, Native, Event, Public, NetServer, NetValidate)
-
-void ATestBeaconClient::ServerPong()
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = Class->GetFunction("TestBeaconClient", "ServerPong");
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	UObject::ProcessEvent(Func, nullptr);
-
-	Func->FunctionFlags = Flgs;
-}
-
-
 // Function OnlineSubsystemUtils.PartyBeaconClient.ClientCancelReservationResponse
 // (Net, NetReliable, Native, Event, Public, NetClient)
 // Parameters:
@@ -1319,6 +1281,36 @@ void APartyBeaconClient::ServerUpdateReservationRequest(const class FString& Ses
 }
 
 
+// Function OnlineSubsystemUtils.ShowLoginUICallbackProxy.ShowExternalLoginUI
+// (Final, Native, Static, Public, BlueprintCallable)
+// Parameters:
+// class UObject*                          WorldContextObject                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class APlayerController*                InPlayerController                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+// class UShowLoginUICallbackProxy*        ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+
+class UShowLoginUICallbackProxy* UShowLoginUICallbackProxy::ShowExternalLoginUI(class UObject* WorldContextObject, class APlayerController* InPlayerController)
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = StaticClass()->GetFunction("ShowLoginUICallbackProxy", "ShowExternalLoginUI");
+
+	Params::ShowLoginUICallbackProxy_ShowExternalLoginUI Parms{};
+
+	Parms.WorldContextObject = WorldContextObject;
+	Parms.InPlayerController = InPlayerController;
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	GetDefaultObj()->ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+
+	return Parms.ReturnValue;
+}
+
+
 // Function OnlineSubsystemUtils.QuitMatchCallbackProxy.QuitMatch
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
@@ -1343,36 +1335,6 @@ class UQuitMatchCallbackProxy* UQuitMatchCallbackProxy::QuitMatch(class UObject*
 	Parms.MatchID = std::move(MatchID);
 	Parms.Outcome = Outcome;
 	Parms.TurnTimeoutInSeconds = TurnTimeoutInSeconds;
-
-	auto Flgs = Func->FunctionFlags;
-	Func->FunctionFlags |= 0x400;
-
-	GetDefaultObj()->ProcessEvent(Func, &Parms);
-
-	Func->FunctionFlags = Flgs;
-
-	return Parms.ReturnValue;
-}
-
-
-// Function OnlineSubsystemUtils.ShowLoginUICallbackProxy.ShowExternalLoginUI
-// (Final, Native, Static, Public, BlueprintCallable)
-// Parameters:
-// class UObject*                          WorldContextObject                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class APlayerController*                InPlayerController                                     (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-// class UShowLoginUICallbackProxy*        ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-
-class UShowLoginUICallbackProxy* UShowLoginUICallbackProxy::ShowExternalLoginUI(class UObject* WorldContextObject, class APlayerController* InPlayerController)
-{
-	static class UFunction* Func = nullptr;
-
-	if (Func == nullptr)
-		Func = StaticClass()->GetFunction("ShowLoginUICallbackProxy", "ShowExternalLoginUI");
-
-	Params::ShowLoginUICallbackProxy_ShowExternalLoginUI Parms{};
-
-	Parms.WorldContextObject = WorldContextObject;
-	Parms.InPlayerController = InPlayerController;
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;
@@ -1526,6 +1488,44 @@ void ASpectatorBeaconClient::ServerReservationRequest(const class FString& Sessi
 	Func->FunctionFlags |= 0x400;
 
 	UObject::ProcessEvent(Func, &Parms);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function OnlineSubsystemUtils.TestBeaconClient.ClientPing
+// (Net, NetReliable, Native, Event, Public, NetClient)
+
+void ATestBeaconClient::ClientPing()
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("TestBeaconClient", "ClientPing");
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, nullptr);
+
+	Func->FunctionFlags = Flgs;
+}
+
+
+// Function OnlineSubsystemUtils.TestBeaconClient.ServerPong
+// (Net, NetReliable, Native, Event, Public, NetServer, NetValidate)
+
+void ATestBeaconClient::ServerPong()
+{
+	static class UFunction* Func = nullptr;
+
+	if (Func == nullptr)
+		Func = Class->GetFunction("TestBeaconClient", "ServerPong");
+
+	auto Flgs = Func->FunctionFlags;
+	Func->FunctionFlags |= 0x400;
+
+	UObject::ProcessEvent(Func, nullptr);
 
 	Func->FunctionFlags = Flgs;
 }

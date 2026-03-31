@@ -584,11 +584,11 @@ public:
 DUMPER7_ASSERTS_USharedClothData;
 
 // Class GbxEngine.GbxAssetManager
-// 0x00D0 (0x0648 - 0x0578)
+// 0x00D0 (0x0608 - 0x0538)
 class UGbxAssetManager : public UGbxBaseAssetManager
 {
 public:
-	uint8                                         Pad_578[0xD0];                                     // 0x0578(0x00D0)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_538[0xD0];                                     // 0x0538(0x00D0)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()

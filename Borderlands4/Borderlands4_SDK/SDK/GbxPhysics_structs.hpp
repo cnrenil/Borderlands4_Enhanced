@@ -213,15 +213,58 @@ enum class EAggCollisionShapeType : uint8
 	EAggCollisionShapeType_MAX               = 6,
 };
 
-// ScriptStruct GbxPhysics.DBehaviorCategory
-// 0x0018 (0x0018 - 0x0000)
-struct FDBehaviorCategory
+// ScriptStruct GbxPhysics.DBodyReference
+// 0x000C (0x000C - 0x0000)
+struct FDBodyReference final
 {
 public:
-	class FName                                   categoryname;                                      // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<TSoftObjectPtr<class UAnimSequence>>   Animations;                                        // 0x0008(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic)
+	class FName                                   BodyName;                                          // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_8[0x4];                                        // 0x0008(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FDBehaviorCategory;
+DUMPER7_ASSERTS_FDBodyReference;
+
+// ScriptStruct GbxPhysics.DPoseTargetSolveType
+// 0x0008 (0x0008 - 0x0000)
+struct FDPoseTargetSolveType final
+{
+public:
+	EDPoseTargetSolveType                         Angular;                                           // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EDPoseTargetSolveType                         Linear;                                            // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FDPoseTargetSolveType;
+
+// ScriptStruct GbxPhysics.DStrengthBiasOverride
+// 0x0050 (0x0050 - 0x0000)
+struct alignas(0x08) FDStrengthBiasOverride final
+{
+public:
+	struct FDBodyReference                        BodyRef;                                           // 0x0000(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FDPoseTargetSolveType                  LocalSpaceSolveType;                               // 0x000C(0x0008)(NoDestructor, NativeAccessSpecifierPublic)
+	struct FDPoseTargetSolveType                  ComponentSpaceSolveType;                           // 0x0014(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         AnimationStrength;                                 // 0x001C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         PoseBias;                                          // 0x0020(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ComponentSpaceAngularTargetInfluence;              // 0x0024(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ComponentSpaceLinearTargetInfluence;               // 0x0028(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ParentConstraintRelativeMassInverseScale;          // 0x002C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ConstraintRelativeMassInverseScale;                // 0x0030(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_34[0x1C];                                      // 0x0034(0x001C)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FDStrengthBiasOverride;
+
+// ScriptStruct GbxPhysics.DBodySettingsOverrides
+// 0x0030 (0x0030 - 0x0000)
+struct FDBodySettingsOverrides final
+{
+public:
+	struct FDBodyReference                        BodyRef;                                           // 0x0000(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOverrideGravity;                                  // 0x000C(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVector                                Gravity;                                           // 0x0010(0x0018)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseGravityScale;                                  // 0x0028(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29[0x3];                                       // 0x0029(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         GravityScale;                                      // 0x002C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FDBodySettingsOverrides;
 
 // ScriptStruct GbxPhysics.DBodyTargetParams
 // 0x00A8 (0x00A8 - 0x0000)
@@ -282,59 +325,6 @@ public:
 	uint8                                         Pad_F8[0xD8];                                      // 0x00F8(0x00D8)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FDConstraintReference;
-
-// ScriptStruct GbxPhysics.DBodyReference
-// 0x000C (0x000C - 0x0000)
-struct FDBodyReference final
-{
-public:
-	class FName                                   BodyName;                                          // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_8[0x4];                                        // 0x0008(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FDBodyReference;
-
-// ScriptStruct GbxPhysics.DPoseTargetSolveType
-// 0x0008 (0x0008 - 0x0000)
-struct FDPoseTargetSolveType final
-{
-public:
-	EDPoseTargetSolveType                         Angular;                                           // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EDPoseTargetSolveType                         Linear;                                            // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FDPoseTargetSolveType;
-
-// ScriptStruct GbxPhysics.DStrengthBiasOverride
-// 0x0050 (0x0050 - 0x0000)
-struct alignas(0x08) FDStrengthBiasOverride final
-{
-public:
-	struct FDBodyReference                        BodyRef;                                           // 0x0000(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FDPoseTargetSolveType                  LocalSpaceSolveType;                               // 0x000C(0x0008)(NoDestructor, NativeAccessSpecifierPublic)
-	struct FDPoseTargetSolveType                  ComponentSpaceSolveType;                           // 0x0014(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         AnimationStrength;                                 // 0x001C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         PoseBias;                                          // 0x0020(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ComponentSpaceAngularTargetInfluence;              // 0x0024(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ComponentSpaceLinearTargetInfluence;               // 0x0028(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ParentConstraintRelativeMassInverseScale;          // 0x002C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ConstraintRelativeMassInverseScale;                // 0x0030(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_34[0x1C];                                      // 0x0034(0x001C)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FDStrengthBiasOverride;
-
-// ScriptStruct GbxPhysics.DBodySettingsOverrides
-// 0x0030 (0x0030 - 0x0000)
-struct FDBodySettingsOverrides final
-{
-public:
-	struct FDBodyReference                        BodyRef;                                           // 0x0000(0x000C)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOverrideGravity;                                  // 0x000C(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D[0x3];                                        // 0x000D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVector                                Gravity;                                           // 0x0010(0x0018)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseGravityScale;                                  // 0x0028(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29[0x3];                                       // 0x0029(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         GravityScale;                                      // 0x002C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FDBodySettingsOverrides;
 
 // ScriptStruct GbxPhysics.ForwardDynamicsSettings
 // 0x01E0 (0x01E0 - 0x0000)
@@ -424,45 +414,6 @@ public:
 };
 DUMPER7_ASSERTS_FForwardDynamicsSettings;
 
-// ScriptStruct GbxPhysics.ForwardDynamicsAnimNotifySettings
-// 0x0018 (0x0018 - 0x0000)
-struct FForwardDynamicsAnimNotifySettings final
-{
-public:
-	struct FGameplayTag                           Tag;                                               // 0x0000(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bEnable;                                           // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ETeleportType                                 TeleportType;                                      // 0x0009(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseBlendOverride;                                 // 0x000A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_B[0x1];                                        // 0x000B(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         BlendTime;                                         // 0x000C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   reason;                                            // 0x0010(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FForwardDynamicsAnimNotifySettings;
-
-// ScriptStruct GbxPhysics.AnimNode_ForwardDynamics
-// 0x02C0 (0x02D8 - 0x0018)
-struct FAnimNode_ForwardDynamics final : public FAnimNode_Base
-{
-public:
-	class FName                                   Tag;                                               // 0x0018(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	struct FForwardDynamicsSettings               settings;                                          // 0x0020(0x01E0)(Edit, NativeAccessSpecifierPrivate)
-	struct FGameplayTag                           SimTag;                                            // 0x0200(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_208[0xA0];                                     // 0x0208(0x00A0)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FComponentSpacePoseLink                DisabledSimPose;                                   // 0x02A8(0x0010)(Edit, BlueprintVisible, NoDestructor, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_2B8[0x20];                                     // 0x02B8(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FAnimNode_ForwardDynamics;
-
-// ScriptStruct GbxPhysics.DCollidableLinkIndexes
-// 0x0008 (0x0008 - 0x0000)
-struct FDCollidableLinkIndexes final
-{
-public:
-	int32                                         A;                                                 // 0x0000(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         B;                                                 // 0x0004(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FDCollidableLinkIndexes;
-
 // ScriptStruct GbxPhysics.OptionalForce
 // 0x0060 (0x0060 - 0x0000)
 struct FOptionalForce final
@@ -501,14 +452,34 @@ public:
 };
 DUMPER7_ASSERTS_FForwardDynamicsRepData;
 
-// ScriptStruct GbxPhysics.ExtraCollisionFilter
-// 0x0006 (0x0006 - 0x0000)
-struct FExtraCollisionFilter final
+// ScriptStruct GbxPhysics.AnimNode_ForwardDynamics
+// 0x02C0 (0x02D8 - 0x0018)
+struct FAnimNode_ForwardDynamics final : public FAnimNode_Base
 {
 public:
-	EExtraCollisionFilterBehavior                 BlockToTouchChannels[0x6];                         // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   Tag;                                               // 0x0018(0x0008)(ZeroConstructor, Deprecated, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	struct FForwardDynamicsSettings               settings;                                          // 0x0020(0x01E0)(Edit, NativeAccessSpecifierPrivate)
+	struct FGameplayTag                           SimTag;                                            // 0x0200(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_208[0xA0];                                     // 0x0208(0x00A0)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FComponentSpacePoseLink                DisabledSimPose;                                   // 0x02A8(0x0010)(Edit, BlueprintVisible, NoDestructor, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_2B8[0x20];                                     // 0x02B8(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FExtraCollisionFilter;
+DUMPER7_ASSERTS_FAnimNode_ForwardDynamics;
+
+// ScriptStruct GbxPhysics.ForwardDynamicsAnimNotifySettings
+// 0x0018 (0x0018 - 0x0000)
+struct FForwardDynamicsAnimNotifySettings final
+{
+public:
+	struct FGameplayTag                           Tag;                                               // 0x0000(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bEnable;                                           // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ETeleportType                                 TeleportType;                                      // 0x0009(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseBlendOverride;                                 // 0x000A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_B[0x1];                                        // 0x000B(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         BlendTime;                                         // 0x000C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   reason;                                            // 0x0010(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FForwardDynamicsAnimNotifySettings;
 
 // ScriptStruct GbxPhysics.DConstraintProperties
 // 0x0018 (0x0018 - 0x0000)
@@ -521,6 +492,25 @@ public:
 	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FDConstraintProperties;
+
+// ScriptStruct GbxPhysics.DCollidableLinkIndexes
+// 0x0008 (0x0008 - 0x0000)
+struct FDCollidableLinkIndexes final
+{
+public:
+	int32                                         A;                                                 // 0x0000(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         B;                                                 // 0x0004(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FDCollidableLinkIndexes;
+
+// ScriptStruct GbxPhysics.ExtraCollisionFilter
+// 0x0006 (0x0006 - 0x0000)
+struct FExtraCollisionFilter final
+{
+public:
+	EExtraCollisionFilterBehavior                 BlockToTouchChannels[0x6];                         // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FExtraCollisionFilter;
 
 // ScriptStruct GbxPhysics.JointDoFData
 // 0x0050 (0x0050 - 0x0000)
@@ -597,6 +587,16 @@ public:
 	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FDAnatomicalStructure;
+
+// ScriptStruct GbxPhysics.DBehaviorCategory
+// 0x0018 (0x0018 - 0x0000)
+struct FDBehaviorCategory
+{
+public:
+	class FName                                   categoryname;                                      // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<TSoftObjectPtr<class UAnimSequence>>   Animations;                                        // 0x0008(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FDBehaviorCategory;
 
 // ScriptStruct GbxPhysics.RagdollBehaviorAnimation
 // 0x0018 (0x0018 - 0x0000)

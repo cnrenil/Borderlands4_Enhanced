@@ -300,9 +300,7 @@ namespace d3d12hook {
         last_rendered_frame = current_time;
         last_index = current_index;
 
-        GUI::Overlay::BeginFrame();
-        GUI::Overlay::BuildFrame();
-        ImDrawData* drawData = GUI::Overlay::GetDrawData();
+        ImDrawData* drawData = GUI::Overlay::BuildFrameAndGetDrawData();
         if (!drawData) return;
 
         UINT frameIdx = pSwapChain->GetCurrentBackBufferIndex();

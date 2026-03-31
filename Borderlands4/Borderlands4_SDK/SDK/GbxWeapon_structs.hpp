@@ -360,14 +360,15 @@ enum class EWeaponTriggerFeedbackMode : uint8
 	EWeaponTriggerFeedbackMode_MAX           = 5,
 };
 
-// ScriptStruct GbxWeapon.CameraWeaponData
-// 0x0138 (0x0138 - 0x0000)
-struct alignas(0x08) FCameraWeaponData final
+// ScriptStruct GbxWeapon.ActiveWeaponSlotData
+// 0x0020 (0x0020 - 0x0000)
+struct alignas(0x08) FActiveWeaponSlotData final
 {
 public:
-	uint8                                         Pad_0[0x138];                                      // 0x0000(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FName                                   AttachSocket;                                      // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      AccuracyPool;                                      // 0x0008(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FCameraWeaponData;
+DUMPER7_ASSERTS_FActiveWeaponSlotData;
 
 // ScriptStruct GbxWeapon.VisibleAmmoEffectData
 // 0x00C0 (0x00C0 - 0x0000)
@@ -383,6 +384,58 @@ public:
 };
 DUMPER7_ASSERTS_FVisibleAmmoEffectData;
 
+// ScriptStruct GbxWeapon.WeaponBehaviorDef
+// 0x0028 (0x0030 - 0x0008)
+struct FWeaponBehaviorDef : public FGbxHasStructType
+{
+public:
+	TSoftClassPtr<class UClass>                   BehaviorClass;                                     // 0x0008(0x0028)(Edit, DisableEditOnInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FWeaponBehaviorDef;
+
+// ScriptStruct GbxWeapon.WeaponBehaviorDef_VisibleAmmo
+// 0x0200 (0x0230 - 0x0030)
+struct FWeaponBehaviorDef_VisibleAmmo final : public FWeaponBehaviorDef
+{
+public:
+	TArray<class FName>                           Bones;                                             // 0x0030(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	struct FGbxAttributeInit                      BonesPerLoadedAmmo;                                // 0x0040(0x0050)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	EInventoryBodyVisibilityType                  MeshType;                                          // 0x0090(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EVisibleAmmoState                             InitialState;                                      // 0x0091(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EVisibleAmmoUpdateMethod                      UpdateMethod;                                      // 0x0092(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EVisibleAmmoUseModeType                       ShowOnUseMode;                                     // 0x0093(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ShowOnUseModeDelay;                                // 0x0094(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EVisibleAmmoUseModeType                       HideOnUseMode;                                     // 0x0098(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_99[0x3];                                       // 0x0099(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         HideOnUseModeDelay;                                // 0x009C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EInventoryUseMode                             VisibleUseMode;                                    // 0x00A0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_A1[0xF];                                       // 0x00A1(0x000F)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FVisibleAmmoEffectData                 HideEffect;                                        // 0x00B0(0x00C0)(Edit, NativeAccessSpecifierPublic)
+	struct FVisibleAmmoEffectData                 ShowEffect;                                        // 0x0170(0x00C0)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FWeaponBehaviorDef_VisibleAmmo;
+
+// ScriptStruct GbxWeapon.CameraModeBehavior_WeaponLook
+// 0x0008 (0x0098 - 0x0090)
+struct FCameraModeBehavior_WeaponLook : public FCameraModeBehavior_Look
+{
+public:
+	float                                         PreviousZoomPct;                                   // 0x0090(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         CurrentPitchSnap;                                  // 0x0094(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+};
+DUMPER7_ASSERTS_FCameraModeBehavior_WeaponLook;
+
+// ScriptStruct GbxWeapon.WeaponAttributeContextResolver
+// 0x0030 (0x0038 - 0x0008)
+struct FWeaponAttributeContextResolver : public FAttributeContextResolver
+{
+public:
+	TSoftClassPtr<class UClass>                   BehaviorTypeToFurtherResolveTo;                    // 0x0008(0x0028)(Edit, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint32                                        usemodebitmask;                                    // 0x0030(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FWeaponAttributeContextResolver;
+
 // ScriptStruct GbxWeapon.ActiveWeaponSlot
 // 0x0170 (0x0170 - 0x0000)
 struct FActiveWeaponSlot final
@@ -395,49 +448,6 @@ public:
 	uint8                                         Pad_38[0x138];                                     // 0x0038(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FActiveWeaponSlot;
-
-// ScriptStruct GbxWeapon.GbxBrainAspect_UseWeapon
-// 0x0020 (0x00F8 - 0x00D8)
-struct FGbxBrainAspect_UseWeapon final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x20];                                      // 0x00D8(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_UseWeapon;
-
-// ScriptStruct GbxWeapon.ActiveWeaponSlotData
-// 0x0020 (0x0020 - 0x0000)
-struct alignas(0x08) FActiveWeaponSlotData final
-{
-public:
-	class FName                                   AttachSocket;                                      // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      AccuracyPool;                                      // 0x0008(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FActiveWeaponSlotData;
-
-// ScriptStruct GbxWeapon.WeaponRecoilDef
-// 0x00A0 (0x00B8 - 0x0018)
-struct FWeaponRecoilDef final : public FGbxDef
-{
-public:
-	struct FVector2D                              min_0;                                             // 0x0018(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector2D                              MAX;                                               // 0x0028(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FVector2D                              FirstShotScale;                                    // 0x0038(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TSoftObjectPtr<class UCurveFloat>             ShotCurve;                                         // 0x0048(0x0028)(Edit, DisableEditOnInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TSoftObjectPtr<class UCurveFloat>             InvertedShotCurve;                                 // 0x0070(0x0028)(Edit, DisableEditOnInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ScaleShotCurveByMagazinePercent;                   // 0x0098(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ZoomScale;                                         // 0x009C(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ZoomFOVMinScale;                                   // 0x00A0(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         speed;                                             // 0x00A4(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         RecoveryTime;                                      // 0x00A8(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         RecoveryDelayTime;                                 // 0x00AC(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ReachedTargetTolerance;                            // 0x00B0(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         bScaleByFOV : 1;                                   // 0x00B4(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         bStartRecoveryWhenFiringEnds : 1;                  // 0x00B4(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         bScaleShotCurveByMagazineSize : 1;                 // 0x00B4(0x0001)(BitIndex: 0x02, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         Pad_B5[0x3];                                       // 0x00B5(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FWeaponRecoilDef;
 
 // ScriptStruct GbxWeapon.ActiveWeaponsState
 // 0x0208 (0x0208 - 0x0000)
@@ -455,60 +465,6 @@ public:
 	uint8                                         Pad_B0[0x158];                                     // 0x00B0(0x0158)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FActiveWeaponsState;
-
-// ScriptStruct GbxWeapon.AIWantsToFireWeaponValueResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FAIWantsToFireWeaponValueResolver final : public FAttributeValueResolver
-{
-};
-DUMPER7_ASSERTS_FAIWantsToFireWeaponValueResolver;
-
-// ScriptStruct GbxWeapon.WeaponBehaviorDef
-// 0x0028 (0x0030 - 0x0008)
-struct FWeaponBehaviorDef : public FGbxHasStructType
-{
-public:
-	TSoftClassPtr<class UClass>                   BehaviorClass;                                     // 0x0008(0x0028)(Edit, DisableEditOnInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FWeaponBehaviorDef;
-
-// ScriptStruct GbxWeapon.WeaponBehaviorDef_Sway
-// 0x0038 (0x0068 - 0x0030)
-struct FWeaponBehaviorDef_Sway final : public FWeaponBehaviorDef
-{
-public:
-	float                                         scale;                                             // 0x0030(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         AccuracyScale;                                     // 0x0034(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ZoomScale;                                         // 0x0038(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ZoomAccuracyScale;                                 // 0x003C(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         WidthScale;                                        // 0x0040(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         HeightScale;                                       // 0x0044(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         speed;                                             // 0x0048(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Lacunarity;                                        // 0x004C(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Persistence;                                       // 0x0050(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SmoothingSpeed;                                    // 0x0054(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ZoomSmoothTime;                                    // 0x0058(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         FireSmoothTime;                                    // 0x005C(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bApplyAccuracyScaleOnlyWhenFiring;                 // 0x0060(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_61[0x3];                                       // 0x0061(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         MaxAccuracyPercent;                                // 0x0064(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FWeaponBehaviorDef_Sway;
-
-// ScriptStruct GbxWeapon.AIWeaponUserState
-// 0x01F0 (0x01F0 - 0x0000)
-struct FAIWeaponUserState final
-{
-public:
-	TMulticastInlineDelegate<void()>              OnWeaponReloadStarted;                             // 0x0000(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
-	uint8                                         Pad_10[0x30];                                      // 0x0010(0x0030)(Fixing Size After Last Property [ Dumper-7 ])
-	class AActor*                                 OwnerActor;                                        // 0x0040(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	TScriptInterface<class IAIWeaponUser>         owner;                                             // 0x0048(0x0010)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_58[0x30];                                      // 0x0058(0x0030)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxAITicketUseData                    AIWeaponUseTicket;                                 // 0x0088(0x00B8)(NativeAccessSpecifierPrivate)
-	uint8                                         Pad_140[0xB0];                                     // 0x0140(0x00B0)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FAIWeaponUserState;
 
 // ScriptStruct GbxWeapon.AIWeaponUseSettings
 // 0x04C0 (0x04C0 - 0x0000)
@@ -558,15 +514,60 @@ public:
 };
 DUMPER7_ASSERTS_FAIWeaponUseSettings;
 
-// ScriptStruct GbxWeapon.CameraModeBehavior_WeaponLook
-// 0x0008 (0x0098 - 0x0090)
-struct FCameraModeBehavior_WeaponLook : public FCameraModeBehavior_Look
+// ScriptStruct GbxWeapon.WeaponBehaviorDef_StatusEffectModifier
+// 0x0000 (0x0030 - 0x0030)
+struct FWeaponBehaviorDef_StatusEffectModifier : public FWeaponBehaviorDef
+{
+};
+DUMPER7_ASSERTS_FWeaponBehaviorDef_StatusEffectModifier;
+
+// ScriptStruct GbxWeapon.AIWantsToFireWeaponValueResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FAIWantsToFireWeaponValueResolver final : public FAttributeValueResolver
+{
+};
+DUMPER7_ASSERTS_FAIWantsToFireWeaponValueResolver;
+
+// ScriptStruct GbxWeapon.AIWeaponUserState
+// 0x01F0 (0x01F0 - 0x0000)
+struct FAIWeaponUserState final
 {
 public:
-	float                                         PreviousZoomPct;                                   // 0x0090(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         CurrentPitchSnap;                                  // 0x0094(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TMulticastInlineDelegate<void()>              OnWeaponReloadStarted;                             // 0x0000(0x0010)(ZeroConstructor, InstancedReference, BlueprintAssignable, NativeAccessSpecifierPublic)
+	uint8                                         Pad_10[0x30];                                      // 0x0010(0x0030)(Fixing Size After Last Property [ Dumper-7 ])
+	class AActor*                                 OwnerActor;                                        // 0x0040(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	TScriptInterface<class IAIWeaponUser>         owner;                                             // 0x0048(0x0010)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_58[0x30];                                      // 0x0058(0x0030)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxAITicketUseData                    AIWeaponUseTicket;                                 // 0x0088(0x00B8)(NativeAccessSpecifierPrivate)
+	uint8                                         Pad_140[0xB0];                                     // 0x0140(0x00B0)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FCameraModeBehavior_WeaponLook;
+DUMPER7_ASSERTS_FAIWeaponUserState;
+
+// ScriptStruct GbxWeapon.WeaponBehaviorDef_Ammo
+// 0x00B0 (0x00E0 - 0x0030)
+struct FWeaponBehaviorDef_Ammo : public FWeaponBehaviorDef
+{
+public:
+	uint8                                         bAutoSwitchModeWhenOutOfAmmo : 1;                  // 0x0030(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         bSyncAmmo : 1;                                     // 0x0030(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         bLimitMaxLoadedAmmoModifiers : 1;                  // 0x0030(0x0001)(BitIndex: 0x02, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	EAmmoRegenType                                RegenType;                                         // 0x0034(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxAttributeInit                      RegenRate;                                         // 0x0038(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxAttributeInit                      ConsumeRegenDelay;                                 // 0x0088(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
+	EAmmoRegenCondition                           RegenCondition;                                    // 0x00D8(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_DC[0x4];                                       // 0x00DC(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FWeaponBehaviorDef_Ammo;
+
+// ScriptStruct GbxWeapon.CameraWeaponData
+// 0x0138 (0x0138 - 0x0000)
+struct alignas(0x08) FCameraWeaponData final
+{
+public:
+	uint8                                         Pad_0[0x138];                                      // 0x0000(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FCameraWeaponData;
 
 // ScriptStruct GbxWeapon.CrosshairDef
 // 0x0010 (0x0028 - 0x0018)
@@ -584,13 +585,6 @@ struct FCurrentWeaponValueResolver final : public FAttributeValueResolver
 };
 DUMPER7_ASSERTS_FCurrentWeaponValueResolver;
 
-// ScriptStruct GbxWeapon.WeaponBehaviorDef_PreUse
-// 0x0000 (0x0030 - 0x0030)
-struct FWeaponBehaviorDef_PreUse : public FWeaponBehaviorDef
-{
-};
-DUMPER7_ASSERTS_FWeaponBehaviorDef_PreUse;
-
 // ScriptStruct GbxWeapon.GbxBrainAspectSettings_CanUseWeapon
 // 0x0000 (0x0080 - 0x0080)
 struct FGbxBrainAspectSettings_CanUseWeapon final : public FGbxBrainAspectSettings
@@ -607,12 +601,28 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBrainAspect_CanUseWeapon;
 
-// ScriptStruct GbxWeapon.WeaponFireRateAccelerationValueResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FWeaponFireRateAccelerationValueResolver final : public FAttributeValueResolver
+// ScriptStruct GbxWeapon.WeaponBehaviorDef_Sway
+// 0x0038 (0x0068 - 0x0030)
+struct FWeaponBehaviorDef_Sway final : public FWeaponBehaviorDef
 {
+public:
+	float                                         scale;                                             // 0x0030(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         AccuracyScale;                                     // 0x0034(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ZoomScale;                                         // 0x0038(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ZoomAccuracyScale;                                 // 0x003C(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         WidthScale;                                        // 0x0040(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         HeightScale;                                       // 0x0044(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         speed;                                             // 0x0048(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Lacunarity;                                        // 0x004C(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Persistence;                                       // 0x0050(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SmoothingSpeed;                                    // 0x0054(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ZoomSmoothTime;                                    // 0x0058(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         FireSmoothTime;                                    // 0x005C(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bApplyAccuracyScaleOnlyWhenFiring;                 // 0x0060(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_61[0x3];                                       // 0x0061(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         MaxAccuracyPercent;                                // 0x0064(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FWeaponFireRateAccelerationValueResolver;
+DUMPER7_ASSERTS_FWeaponBehaviorDef_Sway;
 
 // ScriptStruct GbxWeapon.GbxBrainAspectSettings_ReloadWeapon
 // 0x0070 (0x00F0 - 0x0080)
@@ -644,14 +654,14 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBrainAspectSettings_UseWeapon;
 
-// ScriptStruct GbxWeapon.GbxContextParam_WeaponStatsPropertyResolver
-// 0x0008 (0x0010 - 0x0008)
-struct FGbxContextParam_WeaponStatsPropertyResolver final : public FGbxContextParam_CustomPropertyResolver
+// ScriptStruct GbxWeapon.GbxBrainAspect_UseWeapon
+// 0x0020 (0x00F8 - 0x00D8)
+struct FGbxBrainAspect_UseWeapon final : public FGbxBrainAspect
 {
 public:
-	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_D8[0x20];                                      // 0x00D8(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxContextParam_WeaponStatsPropertyResolver;
+DUMPER7_ASSERTS_FGbxBrainAspect_UseWeapon;
 
 // ScriptStruct GbxWeapon.GbxBrainTaskSettings_CoverAttack
 // 0x0358 (0x04F0 - 0x0198)
@@ -692,16 +702,6 @@ public:
 	struct FGbxParam                              HideActionPlayRate;                                // 0x0480(0x0038)(Edit, AdvancedDisplay, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FGbxBrainTaskSettings_Hide;
-
-// ScriptStruct GbxWeapon.WeaponLoadedAmmoPercentValueResolver
-// 0x0008 (0x0010 - 0x0008)
-struct FWeaponLoadedAmmoPercentValueResolver final : public FAttributeValueResolver
-{
-public:
-	bool                                          bInvert;                                           // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FWeaponLoadedAmmoPercentValueResolver;
 
 // ScriptStruct GbxWeapon.GbxBrainTaskSettings_Wait
 // 0x0550 (0x06E8 - 0x0198)
@@ -775,6 +775,25 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBrainTaskSettings_WeaponAttack_v2;
 
+// ScriptStruct GbxWeapon.WeaponClassData
+// 0x0148 (0x0150 - 0x0008)
+struct FWeaponClassData : public FInventoryTypeClassData
+{
+public:
+	class FName                                   BodyAnimTag;                                       // 0x0008(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxAttributeInit                      EquipTime;                                         // 0x0010(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxAttributeInit                      PutDownTime;                                       // 0x0060(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
+	struct FGbxAttributeInit                      SwitchModeTime;                                    // 0x00B0(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         SwitchModeCompletePercent;                         // 0x0100(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         PostSprintUseDelay;                                // 0x0104(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         EquipToSwitchModeBlendTime;                        // 0x0108(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCanZoomWhileEquipping;                            // 0x010C(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_10D[0x3];                                      // 0x010D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	FGameDataHandleProperty_                      audioprovider;                                     // 0x0110(0x0018)(Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TSoftObjectPtr<class UWeaponTriggerFeedback>  ClassTriggerFeedback;                              // 0x0128(0x0028)(Edit, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FWeaponClassData;
+
 // ScriptStruct GbxWeapon.GbxCondition_CanReloadWeapon
 // 0x0000 (0x0010 - 0x0010)
 struct FGbxCondition_CanReloadWeapon final : public FGbxConditionValueResolver
@@ -791,6 +810,15 @@ public:
 	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxCondition_WeaponActiveSlot;
+
+// ScriptStruct GbxWeapon.GpsGenerator_WeaponTargetLocks
+// 0x0390 (0x07A8 - 0x0418)
+struct FGpsGenerator_WeaponTargetLocks final : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x390];                                    // 0x0418(0x0390)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_WeaponTargetLocks;
 
 // ScriptStruct GbxWeapon.GbxCondition_WeaponAmmoCount
 // 0x0008 (0x0018 - 0x0010)
@@ -833,6 +861,15 @@ public:
 };
 DUMPER7_ASSERTS_FGbxCondition_WeaponZoom;
 
+// ScriptStruct GbxWeapon.ShotModifierDef
+// 0x0018 (0x0030 - 0x0018)
+struct FShotModifierDef final : public FGbxDef
+{
+public:
+	struct FGbxInlineStruct                       Modifier;                                          // 0x0018(0x0018)(Edit, DisableEditOnInstance, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FShotModifierDef;
+
 // ScriptStruct GbxWeapon.GpsGeneratorSettings_TargetingOwner
 // 0x0000 (0x0040 - 0x0040)
 struct FGpsGeneratorSettings_TargetingOwner final : public FGpsGeneratorSettings
@@ -859,15 +896,6 @@ public:
 	uint8                                         Pad_42[0x6];                                       // 0x0042(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsGeneratorSettings_WeaponTargetLocks;
-
-// ScriptStruct GbxWeapon.GpsGenerator_WeaponTargetLocks
-// 0x0390 (0x07A8 - 0x0418)
-struct FGpsGenerator_WeaponTargetLocks final : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x390];                                    // 0x0418(0x0390)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_WeaponTargetLocks;
 
 // ScriptStruct GbxWeapon.GpsTestSettings_WeaponTargetLockScoringBoost
 // 0x0008 (0x0088 - 0x0080)
@@ -919,38 +947,6 @@ public:
 };
 DUMPER7_ASSERTS_FShotModifierData;
 
-// ScriptStruct GbxWeapon.ShotModifierDef
-// 0x0018 (0x0030 - 0x0018)
-struct FShotModifierDef final : public FGbxDef
-{
-public:
-	struct FGbxInlineStruct                       Modifier;                                          // 0x0018(0x0018)(Edit, DisableEditOnInstance, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FShotModifierDef;
-
-// ScriptStruct GbxWeapon.WeaponAudioParams
-// 0x0168 (0x0168 - 0x0000)
-struct alignas(0x08) FWeaponAudioParams final
-{
-public:
-	FGbxDefPtrProperty_                           Time_Fired;                                        // 0x0000(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Shots_Fired;                                       // 0x0018(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Is_Firing;                                         // 0x0030(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Fire_Rate;                                         // 0x0048(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           damage;                                            // 0x0060(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Accuracy;                                          // 0x0078(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Ammo_Count;                                        // 0x0090(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Ammo_Pool;                                         // 0x00A8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Heat;                                              // 0x00C0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Heat2;                                             // 0x00D8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Overheat;                                          // 0x00F0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           Overheat2;                                         // 0x0108(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           AimDownSights;                                     // 0x0120(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           TargetLock;                                        // 0x0138(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	FGbxDefPtrProperty_                           TargetDistance;                                    // 0x0150(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FWeaponAudioParams;
-
 // ScriptStruct GbxWeapon.ShotModifierGameDataCategories_DONTUSE
 // 0x0001 (0x0001 - 0x0000)
 struct FShotModifierGameDataCategories_DONTUSE final
@@ -959,56 +955,6 @@ public:
 	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FShotModifierGameDataCategories_DONTUSE;
-
-// ScriptStruct GbxWeapon.WeaponClassData
-// 0x0148 (0x0150 - 0x0008)
-struct FWeaponClassData : public FInventoryTypeClassData
-{
-public:
-	class FName                                   BodyAnimTag;                                       // 0x0008(0x0008)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxAttributeInit                      EquipTime;                                         // 0x0010(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxAttributeInit                      PutDownTime;                                       // 0x0060(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxAttributeInit                      SwitchModeTime;                                    // 0x00B0(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         SwitchModeCompletePercent;                         // 0x0100(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         PostSprintUseDelay;                                // 0x0104(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         EquipToSwitchModeBlendTime;                        // 0x0108(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCanZoomWhileEquipping;                            // 0x010C(0x0001)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_10D[0x3];                                      // 0x010D(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	FGameDataHandleProperty_                      audioprovider;                                     // 0x0110(0x0018)(Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TSoftObjectPtr<class UWeaponTriggerFeedback>  ClassTriggerFeedback;                              // 0x0128(0x0028)(Edit, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FWeaponClassData;
-
-// ScriptStruct GbxWeapon.WeaponShellCasingAudioParameters
-// 0x0050 (0x0050 - 0x0000)
-struct alignas(0x08) FWeaponShellCasingAudioParameters final
-{
-public:
-	FGbxDefPtrProperty_                           ShellCasingWwiseEvent;                             // 0x0000(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetEvent;                                         // 0x0018(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   EjectionSocket;                                    // 0x001C(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetSocket;                                        // 0x0024(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_25[0x3];                                       // 0x0025(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         EjectDistance;                                     // 0x0028(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetDistance;                                      // 0x002C(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2D[0x1];                                       // 0x002D(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          AmbidextrousEjection;                              // 0x002E(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetAmbidexterity;                                 // 0x002F(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_30[0x4];                                       // 0x0030(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         ImpactDelay;                                       // 0x0034(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSetDelay;                                         // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_39[0x1];                                       // 0x0039(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bSetModeMask;                                      // 0x003A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3B[0x1];                                       // 0x003B(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         ModeMask;                                          // 0x003C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_40[0x1];                                       // 0x0040(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bSetScope;                                         // 0x0041(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_42[0x2];                                       // 0x0042(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         ScopeMask;                                         // 0x0044(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_48[0x8];                                       // 0x0048(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FWeaponShellCasingAudioParameters;
 
 // ScriptStruct GbxWeapon.ReplicatedAmmoState
 // 0x0008 (0x0008 - 0x0000)
@@ -1029,17 +975,6 @@ public:
 };
 DUMPER7_ASSERTS_FWeaponAmmoChamberBoneControl;
 
-// ScriptStruct GbxWeapon.WeaponAttributeContextResolver
-// 0x0030 (0x0038 - 0x0008)
-struct FWeaponAttributeContextResolver : public FAttributeContextResolver
-{
-public:
-	TSoftClassPtr<class UClass>                   BehaviorTypeToFurtherResolveTo;                    // 0x0008(0x0028)(Edit, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint32                                        usemodebitmask;                                    // 0x0030(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FWeaponAttributeContextResolver;
-
 // ScriptStruct GbxWeapon.UseModeAttributeEffects
 // 0x0018 (0x0018 - 0x0000)
 struct FUseModeAttributeEffects final
@@ -1051,6 +986,15 @@ public:
 };
 DUMPER7_ASSERTS_FUseModeAttributeEffects;
 
+// ScriptStruct GbxWeapon.WeaponAttributeEffectAspect
+// 0x0010 (0x00D0 - 0x00C0)
+struct FWeaponAttributeEffectAspect : public FAttributeEffectAspect
+{
+public:
+	TArray<struct FUseModeAttributeEffects>       UseModeAttributeEffects;                           // 0x00C0(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FWeaponAttributeEffectAspect;
+
 // ScriptStruct GbxWeapon.WeaponFireMidiSequence
 // 0x0018 (0x0018 - 0x0000)
 struct FWeaponFireMidiSequence final
@@ -1061,15 +1005,6 @@ public:
 	uint8                                         Pad_11[0x7];                                       // 0x0011(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FWeaponFireMidiSequence;
-
-// ScriptStruct GbxWeapon.WeaponAttributeEffectAspect
-// 0x0010 (0x00D0 - 0x00C0)
-struct FWeaponAttributeEffectAspect : public FAttributeEffectAspect
-{
-public:
-	TArray<struct FUseModeAttributeEffects>       UseModeAttributeEffects;                           // 0x00C0(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FWeaponAttributeEffectAspect;
 
 // ScriptStruct GbxWeapon.WeaponFireAudioBehavior
 // 0x0090 (0x0090 - 0x0000)
@@ -1135,6 +1070,37 @@ public:
 };
 DUMPER7_ASSERTS_FWeaponAudioBodyLoop;
 
+// ScriptStruct GbxWeapon.WeaponShellCasingAudioParameters
+// 0x0050 (0x0050 - 0x0000)
+struct alignas(0x08) FWeaponShellCasingAudioParameters final
+{
+public:
+	FGbxDefPtrProperty_                           ShellCasingWwiseEvent;                             // 0x0000(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetEvent;                                         // 0x0018(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_19[0x3];                                       // 0x0019(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   EjectionSocket;                                    // 0x001C(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetSocket;                                        // 0x0024(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_25[0x3];                                       // 0x0025(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         EjectDistance;                                     // 0x0028(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetDistance;                                      // 0x002C(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2D[0x1];                                       // 0x002D(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          AmbidextrousEjection;                              // 0x002E(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetAmbidexterity;                                 // 0x002F(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_30[0x4];                                       // 0x0030(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         ImpactDelay;                                       // 0x0034(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSetDelay;                                         // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_39[0x1];                                       // 0x0039(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bSetModeMask;                                      // 0x003A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3B[0x1];                                       // 0x003B(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         ModeMask;                                          // 0x003C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_40[0x1];                                       // 0x0040(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bSetScope;                                         // 0x0041(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_42[0x2];                                       // 0x0042(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         ScopeMask;                                         // 0x0044(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_48[0x8];                                       // 0x0048(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FWeaponShellCasingAudioParameters;
+
 // ScriptStruct GbxWeapon.WeaponAudioHoverParams
 // 0x0048 (0x0048 - 0x0000)
 struct alignas(0x08) FWeaponAudioHoverParams final
@@ -1183,6 +1149,29 @@ public:
 };
 DUMPER7_ASSERTS_FWeaponAudioProvider;
 
+// ScriptStruct GbxWeapon.WeaponAudioParams
+// 0x0168 (0x0168 - 0x0000)
+struct alignas(0x08) FWeaponAudioParams final
+{
+public:
+	FGbxDefPtrProperty_                           Time_Fired;                                        // 0x0000(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Shots_Fired;                                       // 0x0018(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Is_Firing;                                         // 0x0030(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Fire_Rate;                                         // 0x0048(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           damage;                                            // 0x0060(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Accuracy;                                          // 0x0078(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Ammo_Count;                                        // 0x0090(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Ammo_Pool;                                         // 0x00A8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Heat;                                              // 0x00C0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Heat2;                                             // 0x00D8(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Overheat;                                          // 0x00F0(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           Overheat2;                                         // 0x0108(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           AimDownSights;                                     // 0x0120(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           TargetLock;                                        // 0x0138(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	FGbxDefPtrProperty_                           TargetDistance;                                    // 0x0150(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FWeaponAudioParams;
+
 // ScriptStruct GbxWeapon.WeaponAudioProviderDef
 // 0x02C8 (0x0410 - 0x0148)
 struct FWeaponAudioProviderDef : public FGbxAudioProviderDef
@@ -1202,23 +1191,6 @@ public:
 	struct FFoleyLoopInfo                         FoleyLoop;                                         // 0x0350(0x00C0)(Edit, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FWeaponAudioProviderDef;
-
-// ScriptStruct GbxWeapon.WeaponBehaviorDef_Ammo
-// 0x00B0 (0x00E0 - 0x0030)
-struct FWeaponBehaviorDef_Ammo : public FWeaponBehaviorDef
-{
-public:
-	uint8                                         bAutoSwitchModeWhenOutOfAmmo : 1;                  // 0x0030(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         bSyncAmmo : 1;                                     // 0x0030(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         bLimitMaxLoadedAmmoModifiers : 1;                  // 0x0030(0x0001)(BitIndex: 0x02, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
-	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	EAmmoRegenType                                RegenType;                                         // 0x0034(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxAttributeInit                      RegenRate;                                         // 0x0038(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
-	struct FGbxAttributeInit                      ConsumeRegenDelay;                                 // 0x0088(0x0050)(Edit, DisableEditOnInstance, NoDestructor, NativeAccessSpecifierPublic)
-	EAmmoRegenCondition                           RegenCondition;                                    // 0x00D8(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_DC[0x4];                                       // 0x00DC(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FWeaponBehaviorDef_Ammo;
 
 // ScriptStruct GbxWeapon.WeaponBehaviorDef_DamageModifier
 // 0x0018 (0x0048 - 0x0030)
@@ -1294,6 +1266,30 @@ public:
 };
 DUMPER7_ASSERTS_FWeaponBehaviorDef_Fire;
 
+// ScriptStruct GbxWeapon.WeaponRecoilDef
+// 0x00A0 (0x00B8 - 0x0018)
+struct FWeaponRecoilDef final : public FGbxDef
+{
+public:
+	struct FVector2D                              min_0;                                             // 0x0018(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector2D                              MAX;                                               // 0x0028(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FVector2D                              FirstShotScale;                                    // 0x0038(0x0010)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TSoftObjectPtr<class UCurveFloat>             ShotCurve;                                         // 0x0048(0x0028)(Edit, DisableEditOnInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TSoftObjectPtr<class UCurveFloat>             InvertedShotCurve;                                 // 0x0070(0x0028)(Edit, DisableEditOnInstance, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ScaleShotCurveByMagazinePercent;                   // 0x0098(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ZoomScale;                                         // 0x009C(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ZoomFOVMinScale;                                   // 0x00A0(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         speed;                                             // 0x00A4(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         RecoveryTime;                                      // 0x00A8(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         RecoveryDelayTime;                                 // 0x00AC(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ReachedTargetTolerance;                            // 0x00B0(0x0004)(Edit, ZeroConstructor, DisableEditOnInstance, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         bScaleByFOV : 1;                                   // 0x00B4(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         bStartRecoveryWhenFiringEnds : 1;                  // 0x00B4(0x0001)(BitIndex: 0x01, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         bScaleShotCurveByMagazineSize : 1;                 // 0x00B4(0x0001)(BitIndex: 0x02, PropSize: 0x0001 (Edit, DisableEditOnInstance, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
+	uint8                                         Pad_B5[0x3];                                       // 0x00B5(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FWeaponRecoilDef;
+
 // ScriptStruct GbxWeapon.WeaponBehaviorDef_Heat
 // 0x01B0 (0x01E0 - 0x0030)
 struct FWeaponBehaviorDef_Heat final : public FWeaponBehaviorDef
@@ -1320,34 +1316,12 @@ public:
 };
 DUMPER7_ASSERTS_FWeaponBehaviorDef_Heat;
 
-// ScriptStruct GbxWeapon.WeaponBehaviorDef_StatusEffectModifier
+// ScriptStruct GbxWeapon.WeaponBehaviorDef_PreUse
 // 0x0000 (0x0030 - 0x0030)
-struct FWeaponBehaviorDef_StatusEffectModifier : public FWeaponBehaviorDef
+struct FWeaponBehaviorDef_PreUse : public FWeaponBehaviorDef
 {
 };
-DUMPER7_ASSERTS_FWeaponBehaviorDef_StatusEffectModifier;
-
-// ScriptStruct GbxWeapon.WeaponBehaviorDef_VisibleAmmo
-// 0x0200 (0x0230 - 0x0030)
-struct FWeaponBehaviorDef_VisibleAmmo final : public FWeaponBehaviorDef
-{
-public:
-	TArray<class FName>                           Bones;                                             // 0x0030(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	struct FGbxAttributeInit                      BonesPerLoadedAmmo;                                // 0x0040(0x0050)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	EInventoryBodyVisibilityType                  MeshType;                                          // 0x0090(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EVisibleAmmoState                             InitialState;                                      // 0x0091(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EVisibleAmmoUpdateMethod                      UpdateMethod;                                      // 0x0092(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EVisibleAmmoUseModeType                       ShowOnUseMode;                                     // 0x0093(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ShowOnUseModeDelay;                                // 0x0094(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EVisibleAmmoUseModeType                       HideOnUseMode;                                     // 0x0098(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_99[0x3];                                       // 0x0099(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         HideOnUseModeDelay;                                // 0x009C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EInventoryUseMode                             VisibleUseMode;                                    // 0x00A0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A1[0xF];                                       // 0x00A1(0x000F)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FVisibleAmmoEffectData                 HideEffect;                                        // 0x00B0(0x00C0)(Edit, NativeAccessSpecifierPublic)
-	struct FVisibleAmmoEffectData                 ShowEffect;                                        // 0x0170(0x00C0)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FWeaponBehaviorDef_VisibleAmmo;
+DUMPER7_ASSERTS_FWeaponBehaviorDef_PreUse;
 
 // ScriptStruct GbxWeapon.WeaponZoomLevel
 // 0x0014 (0x0014 - 0x0000)
@@ -1405,6 +1379,16 @@ struct FWeaponConsumedLoadedAmmoValueResolver final : public FAttributeValueReso
 };
 DUMPER7_ASSERTS_FWeaponConsumedLoadedAmmoValueResolver;
 
+// ScriptStruct GbxWeapon.WeaponLoadedAmmoPercentValueResolver
+// 0x0008 (0x0010 - 0x0008)
+struct FWeaponLoadedAmmoPercentValueResolver final : public FAttributeValueResolver
+{
+public:
+	bool                                          bInvert;                                           // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FWeaponLoadedAmmoPercentValueResolver;
+
 // ScriptStruct GbxWeapon.WeaponAmmoValueResolver
 // 0x0008 (0x0010 - 0x0008)
 struct FWeaponAmmoValueResolver final : public FAttributeValueResolver
@@ -1416,6 +1400,13 @@ public:
 	uint8                                         Pad_B[0x5];                                        // 0x000B(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FWeaponAmmoValueResolver;
+
+// ScriptStruct GbxWeapon.WeaponFireRateAccelerationValueResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FWeaponFireRateAccelerationValueResolver final : public FAttributeValueResolver
+{
+};
+DUMPER7_ASSERTS_FWeaponFireRateAccelerationValueResolver;
 
 // ScriptStruct GbxWeapon.WeaponDamageTypeAspect
 // 0x0040 (0x0088 - 0x0048)
@@ -1453,6 +1444,15 @@ public:
 	uint8                                         Pad_A[0x6];                                        // 0x000A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FWeaponStateValueResolver;
+
+// ScriptStruct GbxWeapon.GbxContextParam_WeaponStatsPropertyResolver
+// 0x0008 (0x0010 - 0x0008)
+struct FGbxContextParam_WeaponStatsPropertyResolver final : public FGbxContextParam_CustomPropertyResolver
+{
+public:
+	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxContextParam_WeaponStatsPropertyResolver;
 
 // ScriptStruct GbxWeapon.WeaponStatsContainer
 // 0x00D8 (0x02E0 - 0x0208)

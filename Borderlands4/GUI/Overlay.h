@@ -7,6 +7,8 @@ namespace GUI::Overlay
     void BeginFrame();
     void BuildFrame();
     ImDrawData* GetDrawData();
+    ImDrawData* BuildFrameAndGetDrawData();
+    LRESULT HandleWndProcMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
     bool IsInitialized();
     float GetDpiScale();
 }

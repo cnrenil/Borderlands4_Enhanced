@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__ida-multi-mcp__list_instances",
+      "mcp__ida-multi-mcp__find_bytes"
+    ]
+  }
+}

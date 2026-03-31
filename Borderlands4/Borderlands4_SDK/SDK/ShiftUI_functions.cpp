@@ -92,19 +92,19 @@ void UShiftUIFunctionLibrary::AddShowDelegate(TDelegate<void(bool bUnblocked)> D
 }
 
 
-// Function ShiftUI.ShiftUIFunctionLibrary.Block
+// Function ShiftUI.ShiftUIFunctionLibrary.block
 // (Final, Native, Static, Public, BlueprintCallable)
 // Parameters:
 // class FName                             reason                                                 (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void UShiftUIFunctionLibrary::Block(class FName reason)
+void UShiftUIFunctionLibrary::block(class FName reason)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = StaticClass()->GetFunction("ShiftUIFunctionLibrary", "Block");
+		Func = StaticClass()->GetFunction("ShiftUIFunctionLibrary", "block");
 
-	Params::ShiftUIFunctionLibrary_Block Parms{};
+	Params::ShiftUIFunctionLibrary_block Parms{};
 
 	Parms.reason = reason;
 

@@ -10,14 +10,14 @@
 
 #include "Basic.hpp"
 
-#include "E_Decal_ChannelSelector_structs.hpp"
+#include "GbxSmartAsset_classes.hpp"
 #include "E_Decal_DiffuseSelector_structs.hpp"
-#include "E_ChannelSelector_RGBOff_structs.hpp"
+#include "E_Decal_ChannelSelector_structs.hpp"
 #include "E_Decal_UVMode_structs.hpp"
-#include "E_Decal_WearMask_structs.hpp"
 #include "CoreUObject_structs.hpp"
 #include "E_Decal_Special_Effects_structs.hpp"
-#include "GbxSmartAsset_classes.hpp"
+#include "E_ChannelSelector_RGBOff_structs.hpp"
+#include "E_Decal_WearMask_structs.hpp"
 
 
 namespace SDK

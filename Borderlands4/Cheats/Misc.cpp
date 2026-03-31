@@ -67,9 +67,14 @@ void Cheats::RenderEnabledOptions()
     const float rowsHeight =
         static_cast<float>(activeLabels.size()) * chipHeight +
         static_cast<float>((std::max)(static_cast<int>(activeLabels.size()) - 1, 0)) * chipGap;
-    const ImVec2 windowSize(windowWidth, 12.0f + rowsHeight + 8.0f);
     const float windowX = 16.0f;
-    ImGui::SetNextWindowPos(ImVec2(windowX, 30.0f), ImGuiCond_Always);
+    const float windowY = 30.0f;
+    const float contentTopPadding = 6.0f;
+    const float contentBottomPadding = 8.0f;
+    const float windowHeight = 12.0f + rowsHeight + contentBottomPadding;
+    const ImVec2 windowSize(windowWidth, windowHeight);
+
+    ImGui::SetNextWindowPos(ImVec2(windowX, windowY), ImGuiCond_Always);
     ImGui::SetNextWindowSize(windowSize, ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(0.0f);
 	ImGui::Begin(
@@ -79,7 +84,7 @@ void Cheats::RenderEnabledOptions()
         ImGuiWindowFlags_NoSavedSettings |
         ImGuiWindowFlags_NoMove);
 
-    ImGui::SetCursorPos(ImVec2(horizontalPadding, 6.0f));
+    ImGui::SetCursorPos(ImVec2(horizontalPadding, contentTopPadding));
 
     const float rainbowTime = static_cast<float>(ImGui::GetTime()) * 2.2f;
     for (size_t i = 0; i < activeLabels.size(); ++i)
@@ -122,6 +127,7 @@ void Cheats::RenderEnabledOptions()
 
         ImGui::Dummy(ImVec2(chipSize.x, chipHeight + (i + 1 < activeLabels.size() ? chipGap : 0.0f)));
     }
+
 	ImGui::End();
 }
 

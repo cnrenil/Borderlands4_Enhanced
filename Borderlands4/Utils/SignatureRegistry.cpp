@@ -13,6 +13,9 @@ namespace SignatureRegistry
             std::string Pattern;
             HookTiming Timing = HookTiming::Immediate;
             uintptr_t CachedAddress = 0;
+            bool bResolveRipRelative = false;
+            size_t RipDisplacementOffset = 3;
+            size_t RipInstructionLength = 7;
             bool bResolveFailed = false;
             bool bHookInstalled = false;
             ULONGLONG LastAttemptMs = 0;
@@ -26,6 +29,38 @@ namespace SignatureRegistry
         // Delay signature-backed gameplay hooks a little longer after map entry.
         constexpr ULONGLONG kInGameReadyWarmupMs = 10000;
         constexpr ULONGLONG kInGameRetryIntervalMs = 5000;
+
+        bool IsCommittedAddress(uintptr_t address, size_t size = sizeof(void*))
+        {
+            if (!address)
+                return false;
+
+            MEMORY_BASIC_INFORMATION mbi{};
+            if (VirtualQuery(reinterpret_cast<LPCVOID>(address), &mbi, sizeof(mbi)) == 0)
+                return false;
+            if (mbi.State != MEM_COMMIT || (mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) != 0)
+                return false;
+
+            const uintptr_t regionStart = reinterpret_cast<uintptr_t>(mbi.BaseAddress);
+            const uintptr_t regionEnd = regionStart + mbi.RegionSize;
+            return address >= regionStart && (address + size) <= regionEnd;
+        }
+
+        uintptr_t ResolveRipRelativeAddress(uintptr_t instructionAddress, size_t displacementOffset, size_t instructionLength)
+        {
+            if (!instructionAddress)
+                return 0;
+
+            __try
+            {
+                const int32 displacement = *reinterpret_cast<int32*>(instructionAddress + displacementOffset);
+                return instructionAddress + instructionLength + static_cast<intptr_t>(displacement);
+            }
+            __except (EXCEPTION_EXECUTE_HANDLER)
+            {
+                return 0;
+            }
+        }
 
         bool TryInstallAbsoluteFallback(
             SignatureEntry& entry,
@@ -128,7 +163,13 @@ namespace SignatureRegistry
         g_InGameReadySinceMs = 0;
     }
 
-    void Register(const char* name, const char* pattern, HookTiming timing)
+    void Register(
+        const char* name,
+        const char* pattern,
+        HookTiming timing,
+        bool bResolveRipRelative,
+        size_t ripDisplacementOffset,
+        size_t ripInstructionLength)
     {
         if (!name || !pattern || name[0] == '\0' || pattern[0] == '\0')
             return;
@@ -136,8 +177,16 @@ namespace SignatureRegistry
         auto& entry = g_Signatures[std::string(name)];
         const bool bPatternChanged = entry.Pattern != pattern;
         const bool bTimingChanged = entry.Timing != timing;
+        const bool bRipModeChanged = entry.bResolveRipRelative != bResolveRipRelative;
+        const bool bRipLayoutChanged =
+            entry.RipDisplacementOffset != ripDisplacementOffset ||
+            entry.RipInstructionLength != ripInstructionLength;
+        const bool bWasNewEntry = entry.Pattern.empty();
         entry.Pattern = pattern;
         entry.Timing = timing;
+        entry.bResolveRipRelative = bResolveRipRelative;
+        entry.RipDisplacementOffset = ripDisplacementOffset;
+        entry.RipInstructionLength = ripInstructionLength;
         if (bPatternChanged)
         {
             entry.CachedAddress = 0;
@@ -145,9 +194,38 @@ namespace SignatureRegistry
             entry.bHookInstalled = false;
             entry.ConsecutiveInstallFailures = 0;
         }
-        if (bPatternChanged || bTimingChanged)
+        if (bPatternChanged || bTimingChanged || bRipModeChanged || bRipLayoutChanged)
         {
+            entry.CachedAddress = 0;
+            entry.bResolveFailed = false;
             entry.LastAttemptMs = 0;
+        }
+
+        if (bWasNewEntry)
+        {
+            LOG_DEBUG(
+                "Signature",
+                "Registered '%s' (timing=%d, ripRelative=%d, disp=%zu, len=%zu).",
+                name,
+                static_cast<int>(timing),
+                bResolveRipRelative ? 1 : 0,
+                ripDisplacementOffset,
+                ripInstructionLength);
+        }
+        else if (bPatternChanged || bTimingChanged || bRipModeChanged || bRipLayoutChanged)
+        {
+            LOG_DEBUG(
+                "Signature",
+                "Updated '%s' registration (patternChanged=%d, timingChanged=%d, ripModeChanged=%d, ripLayoutChanged=%d, timing=%d, ripRelative=%d, disp=%zu, len=%zu).",
+                name,
+                bPatternChanged ? 1 : 0,
+                bTimingChanged ? 1 : 0,
+                bRipModeChanged ? 1 : 0,
+                bRipLayoutChanged ? 1 : 0,
+                static_cast<int>(timing),
+                bResolveRipRelative ? 1 : 0,
+                ripDisplacementOffset,
+                ripInstructionLength);
         }
     }
 
@@ -177,6 +255,11 @@ namespace SignatureRegistry
             entry.LastAttemptMs != 0 &&
             (nowMs - entry.LastAttemptMs) < retryIntervalMs)
         {
+            LOG_DEBUG(
+                "Signature",
+                "Skipping '%s': retry interval not reached (%llums remaining).",
+                name,
+                static_cast<unsigned long long>(retryIntervalMs - (nowMs - entry.LastAttemptMs)));
             return false;
         }
 
@@ -197,31 +280,80 @@ namespace SignatureRegistry
         }
 
         auto& entry = it->second;
+        if (!IsHookTimingReady(entry.Timing))
+        {
+            LOG_DEBUG(
+                "Signature",
+                "Skipping '%s': timing gate not ready (timing=%d).",
+                name,
+                static_cast<int>(entry.Timing));
+            return 0;
+        }
+
         if (!ShouldAttempt(name, entry.Timing))
             return 0;
 
         if (entry.bResolveFailed)
+        {
+            LOG_DEBUG("Signature", "Skipping '%s': resolve previously failed.", name);
             return 0;
+        }
 
         if (entry.CachedAddress)
+        {
+            LOG_DEBUG(
+                "Signature",
+                "Using cached address for '%s': 0x%llX",
+                name,
+                static_cast<unsigned long long>(entry.CachedAddress));
             return entry.CachedAddress;
+        }
 
-        const uintptr_t address = Memory::FindPattern(entry.Pattern.c_str());
-        if (!address)
+        LOG_DEBUG("Signature", "Scanning '%s' with pattern: %s", name, entry.Pattern.c_str());
+        const uintptr_t rawAddress = Memory::FindPattern(entry.Pattern.c_str());
+        if (!rawAddress)
         {
             entry.bResolveFailed = true;
             LOG_WARN("Signature", "Pattern not found for '%s'.", name);
             return 0;
         }
 
-        entry.CachedAddress = address;
-        LOG_DEBUG("Signature", "Resolved '%s' at 0x%llX", name, static_cast<unsigned long long>(address));
+        const uintptr_t resolvedAddress = entry.bResolveRipRelative
+            ? ResolveRipRelativeAddress(rawAddress, entry.RipDisplacementOffset, entry.RipInstructionLength)
+            : rawAddress;
+        if (!IsCommittedAddress(resolvedAddress))
+        {
+            entry.bResolveFailed = true;
+            LOG_WARN(
+                "Signature",
+                "Resolved address invalid for '%s': raw=0x%llX, resolved=0x%llX, ripRelative=%d",
+                name,
+                static_cast<unsigned long long>(rawAddress),
+                static_cast<unsigned long long>(resolvedAddress),
+                entry.bResolveRipRelative ? 1 : 0);
+            return 0;
+        }
+
+        entry.CachedAddress = resolvedAddress;
+        LOG_DEBUG(
+            "Signature",
+            "Resolved '%s': raw=0x%llX, final=0x%llX, ripRelative=%d",
+            name,
+            static_cast<unsigned long long>(rawAddress),
+            static_cast<unsigned long long>(entry.CachedAddress),
+            entry.bResolveRipRelative ? 1 : 0);
         return entry.CachedAddress;
     }
 
     uintptr_t Resolve(const Signature& signature)
     {
-        Register(signature.Name, signature.Pattern, signature.Timing);
+        Register(
+            signature.Name,
+            signature.Pattern,
+            signature.Timing,
+            signature.bResolveRipRelative,
+            signature.RipDisplacementOffset,
+            signature.RipInstructionLength);
         return Resolve(signature.Name);
     }
 
@@ -263,7 +395,13 @@ namespace SignatureRegistry
         if (!signature.Name || !signature.Pattern || !detour || !originalOut)
             return false;
 
-        Register(signature.Name, signature.Pattern, signature.Timing);
+        Register(
+            signature.Name,
+            signature.Pattern,
+            signature.Timing,
+            signature.bResolveRipRelative,
+            signature.RipDisplacementOffset,
+            signature.RipInstructionLength);
 
         auto it = g_Signatures.find(std::string(signature.Name));
         if (it == g_Signatures.end())

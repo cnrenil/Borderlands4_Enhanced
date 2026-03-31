@@ -17,8 +17,8 @@
 #include "GbxGame_structs.hpp"
 #include "GbxGame_classes.hpp"
 #include "Engine_classes.hpp"
-#include "GbxWeapon_structs.hpp"
 #include "GbxEngine_classes.hpp"
+#include "GbxWeapon_structs.hpp"
 #include "GameplayTags_structs.hpp"
 #include "GbxCore_structs.hpp"
 
@@ -392,7 +392,7 @@ public:
 DUMPER7_ASSERTS_USwayPatternData;
 
 // Class GbxWeapon.Weapon
-// 0x0508 (0x0DB8 - 0x08B0)
+// 0x0518 (0x0DC8 - 0x08B0)
 class AWeapon : public Ainventory
 {
 public:
@@ -449,19 +449,19 @@ public:
 	uint8                                         RemoteShotState;                                   // 0x0BCE(0x0001)(Net, ZeroConstructor, IsPlainOldData, RepNotify, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_BCF[0x75];                                     // 0x0BCF(0x0075)(Fixing Size After Last Property [ Dumper-7 ])
 	float                                         PostSprintUseDelay;                                // 0x0C44(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	struct FDamageModifierData                    DamageModifierData;                                // 0x0C48(0x0068)(Transient, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_CB0[0x10];                                     // 0x0CB0(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxAttributeFloat                     ZoomTimeScale;                                     // 0x0CC0(0x000C)(Net, ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_CCC[0x3C];                                     // 0x0CCC(0x003C)(Fixing Size After Last Property [ Dumper-7 ])
-	uint8                                         PrimaryRepHeatState;                               // 0x0D08(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         AltRepHeatState;                                   // 0x0D09(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_D0A[0x6];                                      // 0x0D0A(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FWeaponAttachState                     PendingAttachState;                                // 0x0D10(0x0010)(Net, Transient, RepNotify, NoDestructor, Protected, NativeAccessSpecifierProtected)
-	struct FWeaponAttachState                     AttachState;                                       // 0x0D20(0x0010)(Transient, NoDestructor, Protected, NativeAccessSpecifierProtected)
-	uint8                                         Pad_D30[0x10];                                     // 0x0D30(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	class FName                                   CurrentState;                                      // 0x0D40(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	TArray<class UWeaponBehavior*>                behaviors;                                         // 0x0D48(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_D58[0x60];                                     // 0x0D58(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FDamageModifierData                    DamageModifierData;                                // 0x0C48(0x0078)(Transient, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_CC0[0x10];                                     // 0x0CC0(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxAttributeFloat                     ZoomTimeScale;                                     // 0x0CD0(0x000C)(Net, ZeroConstructor, Transient, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_CDC[0x3C];                                     // 0x0CDC(0x003C)(Fixing Size After Last Property [ Dumper-7 ])
+	uint8                                         PrimaryRepHeatState;                               // 0x0D18(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         AltRepHeatState;                                   // 0x0D19(0x0001)(Net, ZeroConstructor, Transient, IsPlainOldData, RepNotify, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_D1A[0x6];                                      // 0x0D1A(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FWeaponAttachState                     PendingAttachState;                                // 0x0D20(0x0010)(Net, Transient, RepNotify, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	struct FWeaponAttachState                     AttachState;                                       // 0x0D30(0x0010)(Transient, NoDestructor, Protected, NativeAccessSpecifierProtected)
+	uint8                                         Pad_D40[0x10];                                     // 0x0D40(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	class FName                                   CurrentState;                                      // 0x0D50(0x0008)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	TArray<class UWeaponBehavior*>                behaviors;                                         // 0x0D58(0x0010)(ZeroConstructor, Transient, UObjectWrapper, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_D68[0x60];                                     // 0x0D68(0x0060)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	void ClientConsumeAmmo(uint8 UseModeIndex, int32 Amount);
@@ -567,12 +567,12 @@ public:
 DUMPER7_ASSERTS_UWeaponBehavior_Ammo;
 
 // Class GbxWeapon.WeaponBehavior_DamageModifier
-// 0x0078 (0x00B0 - 0x0038)
+// 0x0088 (0x00C0 - 0x0038)
 class UWeaponBehavior_DamageModifier final : public UWeaponBehavior
 {
 public:
-	struct FDamageModifierData                    DamageModifierData;                                // 0x0038(0x0068)(Transient, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A0[0x10];                                      // 0x00A0(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FDamageModifierData                    DamageModifierData;                                // 0x0038(0x0078)(Transient, NativeAccessSpecifierPublic)
+	uint8                                         Pad_B0[0x10];                                      // 0x00B0(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()

@@ -190,7 +190,7 @@ public:
 	uint8                                         Pad_34[0x4];                                       // 0x0034(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
 	struct FGameplayTagContainer                  apply_tags;                                        // 0x0038(0x0020)(Edit, NativeAccessSpecifierPublic)
 	struct FGameplayTagContainer                  StatesToRemove;                                    // 0x0058(0x0020)(Edit, NativeAccessSpecifierPublic)
-	struct FGameplayTagContainer                  Exclusive_Tags;                                    // 0x0078(0x0020)(Edit, NativeAccessSpecifierPublic)
+	struct FGameplayTagContainer                  exclusive_tags;                                    // 0x0078(0x0020)(Edit, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FGbxUIState;
 

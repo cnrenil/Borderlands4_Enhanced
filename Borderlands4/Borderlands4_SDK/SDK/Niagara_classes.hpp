@@ -2493,7 +2493,7 @@ public:
 	void SetForceLocalPlayerEffect(bool bIsPlayerEffect);
 	void SetForceSolo(bool bInForceSolo);
 	void SetGpuComputeDebug(bool bEnableDebug);
-	void SetLockDesiredAgeDeltaTimeToSeekDelta(bool Block);
+	void SetLockDesiredAgeDeltaTimeToSeekDelta(bool block);
 	void SetMaxSimTime(float InMaxTime);
 	void SetNiagaraVariableActor(const class FString& InVariableName, class AActor* Actor);
 	void SetNiagaraVariableBool(const class FString& InVariableName, bool InValue);
@@ -5523,7 +5523,7 @@ DUMPER7_ASSERTS_UNiagaraSimCacheFunctionLibrary;
 class UNiagaraSimulationStageBase : public UNiagaraMergeable
 {
 public:
-	class UNiagaraScript*                         script;                                            // 0x0028(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UNiagaraScript*                         Script;                                            // 0x0028(0x0008)(ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
 	class FName                                   SimulationStageName;                               // 0x0030(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         bEnabled : 1;                                      // 0x0038(0x0001)(BitIndex: 0x00, PropSize: 0x0001 (NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic))
 	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])

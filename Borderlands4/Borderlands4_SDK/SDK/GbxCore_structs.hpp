@@ -120,38 +120,6 @@ enum class EGbxComparator : uint8
 	MAX                                      = 6,
 };
 
-// ScriptStruct GbxCore.GbxAttributeBase
-// 0x0004 (0x0004 - 0x0000)
-struct alignas(0x04) FGbxAttributeBase
-{
-public:
-	uint8                                         Pad_0[0x4];                                        // 0x0000(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAttributeBase;
-
-// ScriptStruct GbxCore.GbxAttributeFloat
-// 0x0008 (0x000C - 0x0004)
-struct FGbxAttributeFloat final : public FGbxAttributeBase
-{
-public:
-	float                                         Value;                                             // 0x0004(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	float                                         BaseValue;                                         // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, RepSkip, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FGbxAttributeFloat;
-
-// ScriptStruct GbxCore.TestInlineStruct
-// 0x0028 (0x0030 - 0x0008)
-struct FTestInlineStruct : public FGbxHasStructType
-{
-public:
-	struct FGbxAttributeFloat                     AttributeProperty;                                 // 0x0008(0x000C)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	class FString                                 StringProperty;                                    // 0x0018(0x0010)(Edit, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         FloatProperty;                                     // 0x0028(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FTestInlineStruct;
-
 // ScriptStruct GbxCore.GbxDataCollectorConfig
 // 0x000C (0x000C - 0x0000)
 struct FGbxDataCollectorConfig final
@@ -163,21 +131,26 @@ public:
 };
 DUMPER7_ASSERTS_FGbxDataCollectorConfig;
 
-// ScriptStruct GbxCore.GbxContextParam
-// 0x0000 (0x0008 - 0x0008)
-struct FGbxContextParam : public FGbxHasStructType
-{
-};
-DUMPER7_ASSERTS_FGbxContextParam;
-
-// ScriptStruct GbxCore.GbxContextParam_Int
-// 0x0008 (0x0010 - 0x0008)
-struct FGbxContextParam_Int final : public FGbxContextParam
+// ScriptStruct GbxCore.GbxCategoryProvidersSetup
+// 0x0020 (0x0020 - 0x0000)
+struct FGbxCategoryProvidersSetup final
 {
 public:
-	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FName                                   EventName;                                         // 0x0000(0x0008)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class FName>                           ProviderNames;                                     // 0x0008(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	EGbxElasticExportOptions                      ElasticExportOptions;                              // 0x0018(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxContextParam_Int;
+DUMPER7_ASSERTS_FGbxCategoryProvidersSetup;
+
+// ScriptStruct GbxCore.GbxAttributeBase
+// 0x0004 (0x0004 - 0x0000)
+struct alignas(0x04) FGbxAttributeBase
+{
+public:
+	uint8                                         Pad_0[0x4];                                        // 0x0000(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxAttributeBase;
 
 // ScriptStruct GbxCore.GbxAttributeInteger
 // 0x0008 (0x000C - 0x0004)
@@ -189,17 +162,49 @@ public:
 };
 DUMPER7_ASSERTS_FGbxAttributeInteger;
 
-// ScriptStruct GbxCore.ParsedPropertyPathElement
-// 0x0038 (0x0038 - 0x0000)
-struct alignas(0x08) FParsedPropertyPathElement final
+// ScriptStruct GbxCore.GbxDef_GbxDefPtrCoreTest_InvalidDef
+// 0x0000 (0x0008 - 0x0008)
+struct FGbxDef_GbxDefPtrCoreTest_InvalidDef final : public FGbxHasStructType
+{
+};
+DUMPER7_ASSERTS_FGbxDef_GbxDefPtrCoreTest_InvalidDef;
+
+// ScriptStruct GbxCore.GbxAttributeFloat
+// 0x0008 (0x000C - 0x0004)
+struct FGbxAttributeFloat final : public FGbxAttributeBase
 {
 public:
-	class FName                                   PropertyName;                                      // 0x0000(0x0008)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUsesArrayIndex;                                   // 0x0008(0x0001)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         ArrayIndex;                                        // 0x0009(0x0001)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A[0x2E];                                       // 0x000A(0x002E)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	float                                         Value;                                             // 0x0004(0x0004)(ZeroConstructor, Transient, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	float                                         BaseValue;                                         // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, RepSkip, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 };
-DUMPER7_ASSERTS_FParsedPropertyPathElement;
+DUMPER7_ASSERTS_FGbxAttributeFloat;
+
+// ScriptStruct GbxCore.GbxDef_GbxDefPtrCoreTest_CycleA
+// 0x0018 (0x0020 - 0x0008)
+struct FGbxDef_GbxDefPtrCoreTest_CycleA final : public FGbxHasStructType
+{
+public:
+	FGbxDefPtrProperty_                           TestB;                                             // 0x0008(0x0018)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxDef_GbxDefPtrCoreTest_CycleA;
+
+// ScriptStruct GbxCore.GbxAnalyticsFileOptions
+// 0x0028 (0x0028 - 0x0000)
+struct FGbxAnalyticsFileOptions final
+{
+public:
+	class FString                                 path;                                              // 0x0000(0x0010)(ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 Ext;                                               // 0x0010(0x0010)(ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAnalyticsFileOption                          UseMachineName;                                    // 0x0020(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAnalyticsFileOption                          UseBranch;                                         // 0x0021(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAnalyticsFileOption                          UseBuild;                                          // 0x0022(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EAnalyticsFileOption                          UseLaunchType;                                     // 0x0023(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseTimestamp;                                     // 0x0024(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseEventFolders;                                  // 0x0025(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFlush;                                            // 0x0026(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bShared;                                           // 0x0027(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxAnalyticsFileOptions;
 
 // ScriptStruct GbxCore.GbxLock
 // 0x0028 (0x0028 - 0x0000)
@@ -222,35 +227,31 @@ public:
 };
 DUMPER7_ASSERTS_FGbxAnalyticsProviderSetup;
 
-// ScriptStruct GbxCore.GbxAnalyticsFileOptions
-// 0x0028 (0x0028 - 0x0000)
-struct FGbxAnalyticsFileOptions final
+// ScriptStruct GbxCore.TestStructContext
+// 0x0010 (0x0018 - 0x0008)
+struct FTestStructContext final : public FGbxHasStructType
 {
 public:
-	class FString                                 path;                                              // 0x0000(0x0010)(ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 Ext;                                               // 0x0010(0x0010)(ZeroConstructor, Config, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAnalyticsFileOption                          UseMachineName;                                    // 0x0020(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAnalyticsFileOption                          UseBranch;                                         // 0x0021(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAnalyticsFileOption                          UseBuild;                                          // 0x0022(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EAnalyticsFileOption                          UseLaunchType;                                     // 0x0023(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseTimestamp;                                     // 0x0024(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseEventFolders;                                  // 0x0025(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFlush;                                            // 0x0026(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bShared;                                           // 0x0027(0x0001)(ZeroConstructor, Config, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxAttributeFloat                     AttributeProperty;                                 // 0x0008(0x000C)(ZeroConstructor, NativeAccessSpecifierPublic)
+	float                                         FloatProperty;                                     // 0x0014(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FGbxAnalyticsFileOptions;
+DUMPER7_ASSERTS_FTestStructContext;
 
-// ScriptStruct GbxCore.GbxCategoryProvidersSetup
-// 0x0020 (0x0020 - 0x0000)
-struct FGbxCategoryProvidersSetup final
+// ScriptStruct GbxCore.GbxContextParam
+// 0x0000 (0x0008 - 0x0008)
+struct FGbxContextParam : public FGbxHasStructType
+{
+};
+DUMPER7_ASSERTS_FGbxContextParam;
+
+// ScriptStruct GbxCore.GbxContextParam_Int
+// 0x0008 (0x0010 - 0x0008)
+struct FGbxContextParam_Int final : public FGbxContextParam
 {
 public:
-	class FName                                   EventName;                                         // 0x0000(0x0008)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class FName>                           ProviderNames;                                     // 0x0008(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	EGbxElasticExportOptions                      ElasticExportOptions;                              // 0x0018(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1C[0x4];                                       // 0x001C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxCategoryProvidersSetup;
+DUMPER7_ASSERTS_FGbxContextParam_Int;
 
 // ScriptStruct GbxCore.GbxContextParam_Float
 // 0x0008 (0x0010 - 0x0008)
@@ -269,6 +270,13 @@ public:
 	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxContextParam_Bool;
+
+// ScriptStruct GbxCore.TestForwardDeclaredInlineStruct
+// 0x0000 (0x0008 - 0x0008)
+struct FTestForwardDeclaredInlineStruct : public FGbxHasStructType
+{
+};
+DUMPER7_ASSERTS_FTestForwardDeclaredInlineStruct;
 
 // ScriptStruct GbxCore.GbxDef_GbxDefPtrCoreTest_SimpleStruct
 // 0x0008 (0x0010 - 0x0008)
@@ -290,6 +298,15 @@ public:
 };
 DUMPER7_ASSERTS_FGbxDef_GbxDefPtrCoreTest_DerivedStruct;
 
+// ScriptStruct GbxCore.GbxContextParam_TestFloat
+// 0x0008 (0x0010 - 0x0008)
+struct FGbxContextParam_TestFloat final : public FGbxContextParam
+{
+public:
+	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxContextParam_TestFloat;
+
 // ScriptStruct GbxCore.GbxDef_GbxDefPtrCoreTest_DerivedStruct_SameStore
 // 0x0008 (0x0018 - 0x0010)
 struct FGbxDef_GbxDefPtrCoreTest_DerivedStruct_SameStore final : public FGbxDef_GbxDefPtrCoreTest_SimpleStruct
@@ -299,22 +316,6 @@ public:
 	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxDef_GbxDefPtrCoreTest_DerivedStruct_SameStore;
-
-// ScriptStruct GbxCore.GbxDef_GbxDefPtrCoreTest_InvalidDef
-// 0x0000 (0x0008 - 0x0008)
-struct FGbxDef_GbxDefPtrCoreTest_InvalidDef final : public FGbxHasStructType
-{
-};
-DUMPER7_ASSERTS_FGbxDef_GbxDefPtrCoreTest_InvalidDef;
-
-// ScriptStruct GbxCore.GbxDef_GbxDefPtrCoreTest_CycleA
-// 0x0018 (0x0020 - 0x0008)
-struct FGbxDef_GbxDefPtrCoreTest_CycleA final : public FGbxHasStructType
-{
-public:
-	FGbxDefPtrProperty_                           TestB;                                             // 0x0008(0x0018)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxDef_GbxDefPtrCoreTest_CycleA;
 
 // ScriptStruct GbxCore.GbxDef_GbxDefPtrCoreTest_CycleB
 // 0x0018 (0x0020 - 0x0008)
@@ -343,6 +344,19 @@ public:
 	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxLevelGameDataCategories_DONTUSE;
+
+// ScriptStruct GbxCore.TestInlineStruct
+// 0x0028 (0x0030 - 0x0008)
+struct FTestInlineStruct : public FGbxHasStructType
+{
+public:
+	struct FGbxAttributeFloat                     AttributeProperty;                                 // 0x0008(0x000C)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	uint8                                         Pad_14[0x4];                                       // 0x0014(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	class FString                                 StringProperty;                                    // 0x0018(0x0010)(Edit, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         FloatProperty;                                     // 0x0028(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_2C[0x4];                                       // 0x002C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FTestInlineStruct;
 
 // ScriptStruct GbxCore.TestDerivedInlineStruct
 // 0x0008 (0x0038 - 0x0030)
@@ -384,19 +398,24 @@ public:
 };
 DUMPER7_ASSERTS_FTEST_InlineStructContainerWithDefault;
 
-// ScriptStruct GbxCore.TestForwardDeclaredInlineStruct
-// 0x0000 (0x0008 - 0x0008)
-struct FTestForwardDeclaredInlineStruct : public FGbxHasStructType
-{
-};
-DUMPER7_ASSERTS_FTestForwardDeclaredInlineStruct;
-
 // ScriptStruct GbxCore.TestInvalidForwardDeclaredChildInlineStruct
 // 0x0000 (0x0008 - 0x0008)
 struct FTestInvalidForwardDeclaredChildInlineStruct final : public FTestForwardDeclaredInlineStruct
 {
 };
 DUMPER7_ASSERTS_FTestInvalidForwardDeclaredChildInlineStruct;
+
+// ScriptStruct GbxCore.ParsedPropertyPathElement
+// 0x0038 (0x0038 - 0x0000)
+struct alignas(0x08) FParsedPropertyPathElement final
+{
+public:
+	class FName                                   PropertyName;                                      // 0x0000(0x0008)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUsesArrayIndex;                                   // 0x0008(0x0001)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         ArrayIndex;                                        // 0x0009(0x0001)(Edit, ZeroConstructor, EditConst, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_A[0x2E];                                       // 0x000A(0x002E)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FParsedPropertyPathElement;
 
 // ScriptStruct GbxCore.ParsedProperty
 // 0x0150 (0x0150 - 0x0000)
@@ -412,16 +431,6 @@ public:
 };
 DUMPER7_ASSERTS_FParsedProperty;
 
-// ScriptStruct GbxCore.TestStructContext
-// 0x0010 (0x0018 - 0x0008)
-struct FTestStructContext final : public FGbxHasStructType
-{
-public:
-	struct FGbxAttributeFloat                     AttributeProperty;                                 // 0x0008(0x000C)(ZeroConstructor, NativeAccessSpecifierPublic)
-	float                                         FloatProperty;                                     // 0x0014(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FTestStructContext;
-
 // ScriptStruct GbxCore.GbxContextParam_TestInt
 // 0x0008 (0x0010 - 0x0008)
 struct FGbxContextParam_TestInt final : public FGbxContextParam
@@ -430,15 +439,6 @@ public:
 	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxContextParam_TestInt;
-
-// ScriptStruct GbxCore.GbxContextParam_TestFloat
-// 0x0008 (0x0010 - 0x0008)
-struct FGbxContextParam_TestFloat final : public FGbxContextParam
-{
-public:
-	uint8                                         Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxContextParam_TestFloat;
 
 }
 

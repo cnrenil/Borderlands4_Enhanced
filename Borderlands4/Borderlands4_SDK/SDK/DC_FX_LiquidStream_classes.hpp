@@ -10,9 +10,9 @@
 
 #include "Basic.hpp"
 
-#include "GbxDecorator_classes.hpp"
-#include "CoreUObject_structs.hpp"
 #include "ProceduralMeshComponent_structs.hpp"
+#include "CoreUObject_structs.hpp"
+#include "GbxDecorator_classes.hpp"
 
 
 namespace SDK

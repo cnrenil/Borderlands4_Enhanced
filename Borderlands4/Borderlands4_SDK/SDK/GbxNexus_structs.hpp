@@ -27,91 +27,6 @@ enum class ENexusBitSetOperator : uint8
 	ENexusBitSetOperator_MAX                 = 3,
 };
 
-// ScriptStruct GbxNexus.GbxDef
-// 0x0010 (0x0018 - 0x0008)
-struct FGbxDef : public FGbxHasStructType
-{
-public:
-	uint8                                         Pad_8[0x10];                                       // 0x0008(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxDef;
-
-// ScriptStruct GbxNexus.GbxGlobalDef
-// 0x0008 (0x0020 - 0x0018)
-struct FGbxGlobalDef : public FGbxDef
-{
-public:
-	uint8                                         Pad_18[0x8];                                       // 0x0018(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxGlobalDef;
-
-// ScriptStruct GbxNexus.NexusSerializeTest_GameplayTagData
-// 0x0028 (0x0028 - 0x0000)
-struct FNexusSerializeTest_GameplayTagData final
-{
-public:
-	struct FGameplayTag                           Tag;                                               // 0x0000(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGameplayTagContainer                  TagContainer;                                      // 0x0008(0x0020)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FNexusSerializeTest_GameplayTagData;
-
-// ScriptStruct GbxNexus.NexusSerializeTest_GameplayTagDef
-// 0x0038 (0x0050 - 0x0018)
-struct FNexusSerializeTest_GameplayTagDef final : public FGbxDef
-{
-public:
-	struct FNexusSerializeTest_GameplayTagData    data;                                              // 0x0018(0x0028)(Edit, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FNexusSerializeTest_GameplayTagData> ArrayData;                                    // 0x0040(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FNexusSerializeTest_GameplayTagDef;
-
-// ScriptStruct GbxNexus.NexusBitSingleTag
-// 0x0010 (0x0010 - 0x0000)
-struct alignas(0x08) FNexusBitSingleTag
-{
-public:
-	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FNexusBitSingleTag;
-
-// ScriptStruct GbxNexus.NexusStyleInfo
-// 0x0020 (0x0020 - 0x0000)
-struct FNexusStyleInfo final
-{
-public:
-	class FName                                   DefStruct;                                         // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   ThumbnailBrush;                                    // 0x0008(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 Color;                                             // 0x0010(0x0010)(Edit, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FNexusStyleInfo;
-
-// ScriptStruct GbxNexus.NexusBitSet
-// 0x0020 (0x0020 - 0x0000)
-struct alignas(0x08) FNexusBitSet
-{
-public:
-	uint8                                         Pad_0[0x20];                                       // 0x0000(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FNexusBitSet;
-
-// ScriptStruct GbxNexus.GbxDefMetaflags
-// 0x0001 (0x0001 - 0x0000)
-struct FGbxDefMetaflags final
-{
-public:
-	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxDefMetaflags;
-
-// ScriptStruct GbxNexus.GbxNexusMetaData
-// 0x0050 (0x0050 - 0x0000)
-struct FGbxNexusMetaData final
-{
-public:
-	TMap<class FName, class FString>              MetaData;                                          // 0x0000(0x0050)(NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxNexusMetaData;
-
 // ScriptStruct GbxNexus.GbxMetaDataRule
 // 0x0000 (0x0008 - 0x0008)
 struct FGbxMetaDataRule : public FGbxHasStructType
@@ -125,6 +40,88 @@ struct FGbxMetaDataStructRule : public FGbxMetaDataRule
 {
 };
 DUMPER7_ASSERTS_FGbxMetaDataStructRule;
+
+// ScriptStruct GbxNexus.NexusTest_CallbackStruct
+// 0x000C (0x000C - 0x0000)
+struct FNexusTest_CallbackStruct final
+{
+public:
+	class FName                                   Name;                                              // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         Value;                                             // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FNexusTest_CallbackStruct;
+
+// ScriptStruct GbxNexus.GbxDef
+// 0x0010 (0x0018 - 0x0008)
+struct FGbxDef : public FGbxHasStructType
+{
+public:
+	uint8                                         Pad_8[0x10];                                       // 0x0008(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxDef;
+
+// ScriptStruct GbxNexus.NexusBitSet
+// 0x0020 (0x0020 - 0x0000)
+struct alignas(0x08) FNexusBitSet
+{
+public:
+	uint8                                         Pad_0[0x20];                                       // 0x0000(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FNexusBitSet;
+
+// ScriptStruct GbxNexus.NexusSourceInfo
+// 0x0068 (0x0068 - 0x0000)
+struct FNexusSourceInfo final
+{
+public:
+	class FString                                 BuildTags;                                         // 0x0000(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 RemoveBuildTags;                                   // 0x0010(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 ContentTags;                                       // 0x0020(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 RemoveContentTags;                                 // 0x0030(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 LoadContextTags;                                   // 0x0040(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         PakChunkId;                                        // 0x0050(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         PakChunkIdForced;                                  // 0x0054(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   layer;                                             // 0x0058(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         revision;                                          // 0x0060(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         priority;                                          // 0x0064(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FNexusSourceInfo;
+
+// ScriptStruct GbxNexus.NexusBitSingleTag
+// 0x0010 (0x0010 - 0x0000)
+struct alignas(0x08) FNexusBitSingleTag
+{
+public:
+	uint8                                         Pad_0[0x10];                                       // 0x0000(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FNexusBitSingleTag;
+
+// ScriptStruct GbxNexus.GbxDefMetaflags
+// 0x0001 (0x0001 - 0x0000)
+struct FGbxDefMetaflags final
+{
+public:
+	uint8                                         Pad_0[0x1];                                        // 0x0000(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxDefMetaflags;
+
+// ScriptStruct GbxNexus.GbxGlobalDef
+// 0x0008 (0x0020 - 0x0018)
+struct FGbxGlobalDef : public FGbxDef
+{
+public:
+	uint8                                         Pad_18[0x8];                                       // 0x0018(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxGlobalDef;
+
+// ScriptStruct GbxNexus.GbxNexusMetaData
+// 0x0050 (0x0050 - 0x0000)
+struct FGbxNexusMetaData final
+{
+public:
+	TMap<class FName, class FString>              MetaData;                                          // 0x0000(0x0050)(NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxNexusMetaData;
 
 // ScriptStruct GbxNexus.GbxMetaDataPropertyRule
 // 0x0000 (0x0008 - 0x0008)
@@ -227,24 +224,6 @@ public:
 	uint8                                         Pad_5C[0x4];                                       // 0x005C(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FNexusStoreRedirect;
-
-// ScriptStruct GbxNexus.NexusSourceInfo
-// 0x0068 (0x0068 - 0x0000)
-struct FNexusSourceInfo final
-{
-public:
-	class FString                                 BuildTags;                                         // 0x0000(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 RemoveBuildTags;                                   // 0x0010(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 ContentTags;                                       // 0x0020(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 RemoveContentTags;                                 // 0x0030(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 LoadContextTags;                                   // 0x0040(0x0010)(Edit, BlueprintVisible, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         PakChunkId;                                        // 0x0050(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         PakChunkIdForced;                                  // 0x0054(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FName                                   layer;                                             // 0x0058(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         revision;                                          // 0x0060(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         priority;                                          // 0x0064(0x0004)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FNexusSourceInfo;
 
 // ScriptStruct GbxNexus.NexusLayerInfo
 // 0x0060 (0x0060 - 0x0000)
@@ -366,6 +345,26 @@ public:
 };
 DUMPER7_ASSERTS_FNexusSerializeTest_BasicDef;
 
+// ScriptStruct GbxNexus.NexusSerializeTest_GameplayTagData
+// 0x0028 (0x0028 - 0x0000)
+struct FNexusSerializeTest_GameplayTagData final
+{
+public:
+	struct FGameplayTag                           Tag;                                               // 0x0000(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGameplayTagContainer                  TagContainer;                                      // 0x0008(0x0020)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FNexusSerializeTest_GameplayTagData;
+
+// ScriptStruct GbxNexus.NexusSerializeTest_GameplayTagDef
+// 0x0038 (0x0050 - 0x0018)
+struct FNexusSerializeTest_GameplayTagDef final : public FGbxDef
+{
+public:
+	struct FNexusSerializeTest_GameplayTagData    data;                                              // 0x0018(0x0028)(Edit, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FNexusSerializeTest_GameplayTagData> ArrayData;                                    // 0x0040(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FNexusSerializeTest_GameplayTagDef;
+
 // ScriptStruct GbxNexus.NexusSerializeTest_MapData
 // 0x0050 (0x0050 - 0x0000)
 struct FNexusSerializeTest_MapData final
@@ -384,16 +383,6 @@ public:
 	TMap<class FString, struct FNexusSerializeTest_MapData> MapData;                                 // 0x0068(0x0050)(Edit, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FNexusSerializeTest_MapDef;
-
-// ScriptStruct GbxNexus.NexusTest_CallbackStruct
-// 0x000C (0x000C - 0x0000)
-struct FNexusTest_CallbackStruct final
-{
-public:
-	class FName                                   Name;                                              // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         Value;                                             // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FNexusTest_CallbackStruct;
 
 // ScriptStruct GbxNexus.NexusTest_OuterCallbackStruct
 // 0x000C (0x000C - 0x0000)
@@ -438,6 +427,17 @@ public:
 	TSet<struct FNexusSerializeTest_SetData>      SetData;                                           // 0x0068(0x0050)(Edit, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FNexusSerializeTest_SetDef;
+
+// ScriptStruct GbxNexus.NexusStyleInfo
+// 0x0020 (0x0020 - 0x0000)
+struct FNexusStyleInfo final
+{
+public:
+	class FName                                   DefStruct;                                         // 0x0000(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FName                                   ThumbnailBrush;                                    // 0x0008(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	class FString                                 Color;                                             // 0x0010(0x0010)(Edit, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FNexusStyleInfo;
 
 }
 

@@ -92,15 +92,16 @@ public:
 DUMPER7_ASSERTS_UGbxCrossplayConfig;
 
 // Class GbxOnline.GbxCrossSaveManager
-// 0x00B0 (0x00E0 - 0x0030)
+// 0x0110 (0x0140 - 0x0030)
 class UGbxCrossSaveManager : public UGameInstanceSubsystem
 {
 public:
 	uint8                                         Pad_30[0x10];                                      // 0x0030(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
 	int32                                         MaxSaveGameSizeBytes;                              // 0x0040(0x0004)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	int32                                         MaxSaveGameMetadataLength;                         // 0x0044(0x0004)(ZeroConstructor, Config, GlobalConfig, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	class UGbxGameInstance*                       GameInstance;                                      // 0x0048(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
-	uint8                                         Pad_50[0x90];                                      // 0x0050(0x0090)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	TArray<class FString>                         CrossSavePlatforms;                                // 0x0048(0x0010)(ZeroConstructor, Config, GlobalConfig, Protected, NativeAccessSpecifierProtected)
+	class UGbxGameInstance*                       GameInstance;                                      // 0x0058(0x0008)(ZeroConstructor, Transient, NoDestructor, Protected, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierProtected, TObjectPtr)
+	uint8                                         Pad_60[0xE0];                                      // 0x0060(0x00E0)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
 	static class UClass* StaticClass()

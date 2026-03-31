@@ -11,13 +11,13 @@
 #include "Basic.hpp"
 
 #include "Engine_classes.hpp"
+#include "GbxUISettings_structs.hpp"
 #include "DeveloperSettings_classes.hpp"
 #include "GbxGame_classes.hpp"
+#include "GameSettings_classes.hpp"
 #include "GameplayTags_structs.hpp"
-#include "GbxUISettings_structs.hpp"
 #include "CoreUObject_classes.hpp"
 #include "SlateCore_structs.hpp"
-#include "GameSettings_classes.hpp"
 
 
 namespace SDK

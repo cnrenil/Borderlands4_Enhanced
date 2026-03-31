@@ -54,7 +54,7 @@ public:
 	static void AddAccountLinkedDelegate(TDelegate<void(int32 LocalUserNum)> Delegate);
 	static void AddHideDelegate(TDelegate<void(bool bBlocked)> Delegate);
 	static void AddShowDelegate(TDelegate<void(bool bUnblocked)> Delegate);
-	static void Block(class FName reason);
+	static void block(class FName reason);
 	static void Close();
 	static bool IsBlockingEnabled();
 	static bool IsInitialized();

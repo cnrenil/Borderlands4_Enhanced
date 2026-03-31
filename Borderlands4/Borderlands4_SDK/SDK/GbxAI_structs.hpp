@@ -11,8 +11,8 @@
 #include "Basic.hpp"
 
 #include "GameplayTags_structs.hpp"
-#include "GbxPhysics_structs.hpp"
 #include "AIModule_structs.hpp"
+#include "GbxPhysics_structs.hpp"
 #include "GbxNav_structs.hpp"
 #include "CoreUObject_structs.hpp"
 #include "GbxEngine_structs.hpp"
@@ -790,36 +790,82 @@ struct FGpsNodeSettings : public FGbxGraphNodeSettings
 };
 DUMPER7_ASSERTS_FGpsNodeSettings;
 
-// ScriptStruct GbxAI.GpsConditionSettings
-// 0x0008 (0x0040 - 0x0038)
-struct FGpsConditionSettings : public FGpsNodeSettings
+// ScriptStruct GbxAI.GpsScoringNodeSettings
+// 0x0020 (0x0058 - 0x0038)
+struct FGpsScoringNodeSettings : public FGpsNodeSettings
 {
 public:
-	bool                                          bInvertCondition;                                  // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxBinding_Bool                       bEnabled;                                          // 0x0038(0x0020)(Edit, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FGpsConditionSettings;
+DUMPER7_ASSERTS_FGpsScoringNodeSettings;
 
-// ScriptStruct GbxAI.GpsConditionSettings_Attribute
-// 0x0038 (0x0078 - 0x0040)
-struct FGpsConditionSettings_Attribute final : public FGpsConditionSettings
+// ScriptStruct GbxAI.GpsTestSettings
+// 0x0028 (0x0080 - 0x0058)
+struct FGpsTestSettings : public FGpsScoringNodeSettings
 {
 public:
-	struct FGbxParam                              Param;                                             // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxBinding_Float                      Weight;                                            // 0x0058(0x0020)(Edit, NativeAccessSpecifierPublic)
+	EGpsFilterType                                FilterType;                                        // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGpsConditionSettings_Attribute;
+DUMPER7_ASSERTS_FGpsTestSettings;
 
-// ScriptStruct GbxAI.CoverSlotViewFailData
-// 0x0020 (0x0020 - 0x0000)
-struct FCoverSlotViewFailData final
+// ScriptStruct GbxAI.GpsTestSettings_DistanceList
+// 0x0050 (0x00D0 - 0x0080)
+struct FGpsTestSettings_DistanceList : public FGpsTestSettings
 {
 public:
-	class UCoverViewData*                         View;                                              // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	ECoverViewFailReason                          FailReason;                                        // 0x0008(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         MaxItems;                                          // 0x0080(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bLimitItems;                                       // 0x0084(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_85[0x3];                                       // 0x0085(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBinding_Float                      MinDistance;                                       // 0x0088(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Float                      MaxDistance;                                       // 0x00A8(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	EGpsDistanceListScore                         Preference;                                        // 0x00C8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	EGpsDistanceMode                              Mode;                                              // 0x00CC(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+};
+DUMPER7_ASSERTS_FGpsTestSettings_DistanceList;
+
+// ScriptStruct GbxAI.GpsTestSettings_History
+// 0x0000 (0x00D0 - 0x00D0)
+struct FGpsTestSettings_History final : public FGpsTestSettings_DistanceList
+{
+};
+DUMPER7_ASSERTS_FGpsTestSettings_History;
+
+// ScriptStruct GbxAI.GbxBrainDef
+// 0x0080 (0x0088 - 0x0008)
+struct FGbxBrainDef : public FGbxHasStructType
+{
+public:
+	bool                                          bRestrictedToCombatTerritory;                      // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class FString                                 FailDescription;                                   // 0x0010(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TSoftObjectPtr<class UGbxBrainTaskData>       MainTask;                                          // 0x0010(0x0028)(Edit, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TMap<struct FGameplayTag, TSoftObjectPtr<class UGbxBrainTaskData>> TaggedTasks;                  // 0x0038(0x0050)(Edit, UObjectWrapper, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FCoverSlotViewFailData;
+DUMPER7_ASSERTS_FGbxBrainDef;
+
+// ScriptStruct GbxAI.GbxBrainTaskBase
+// 0x0088 (0x00D8 - 0x0050)
+struct FGbxBrainTaskBase : public FGbxGraphNodeState
+{
+public:
+	uint8                                         Pad_50[0x88];                                      // 0x0050(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTaskBase;
+
+// ScriptStruct GbxAI.GbxBrainAspect
+// 0x0000 (0x00D8 - 0x00D8)
+struct FGbxBrainAspect : public FGbxBrainTaskBase
+{
+};
+DUMPER7_ASSERTS_FGbxBrainAspect;
+
+// ScriptStruct GbxAI.GbxBrainAspect_GameplayTags
+// 0x0000 (0x00D8 - 0x00D8)
+struct FGbxBrainAspect_GameplayTags final : public FGbxBrainAspect
+{
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_GameplayTags;
 
 // ScriptStruct GbxAI.GpsNodeState
 // 0x0000 (0x0050 - 0x0050)
@@ -846,273 +892,23 @@ public:
 };
 DUMPER7_ASSERTS_FGpsTest;
 
-// ScriptStruct GbxAI.GpsTest_NodeChain
-// 0x0010 (0x0070 - 0x0060)
-struct FGpsTest_NodeChain final : public FGpsTest
+// ScriptStruct GbxAI.GpsTest_TraceList
+// 0x0078 (0x00D8 - 0x0060)
+struct FGpsTest_TraceList : public FGpsTest
 {
 public:
-	uint8                                         Pad_60[0x10];                                      // 0x0060(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_60[0x78];                                      // 0x0060(0x0078)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGpsTest_NodeChain;
+DUMPER7_ASSERTS_FGpsTest_TraceList;
 
-// ScriptStruct GbxAI.GbxAttitudeResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FGbxAttitudeResolver final : public FGbxHasStructType
-{
-};
-DUMPER7_ASSERTS_FGbxAttitudeResolver;
-
-// ScriptStruct GbxAI.GpsDirectionSettings
-// 0x0160 (0x0160 - 0x0000)
-struct FGpsDirectionSettings final
-{
-public:
-	EGpsDirectionType                             DirectionType;                                     // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBinding_Rotator                    Rotation;                                          // 0x0008(0x0060)(Edit, NativeAccessSpecifierPrivate)
-	struct FGbxBinding_Vector                     Towards;                                           // 0x0068(0x0098)(Edit, NativeAccessSpecifierPrivate)
-	struct FGbxBinding_Rotator                    TowardsRotationOffset;                             // 0x0100(0x0060)(Edit, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FGpsDirectionSettings;
-
-// ScriptStruct GbxAI.GbxBrainTaskBase
-// 0x0088 (0x00D8 - 0x0050)
-struct FGbxBrainTaskBase : public FGbxGraphNodeState
-{
-public:
-	uint8                                         Pad_50[0x88];                                      // 0x0050(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainTaskBase;
-
-// ScriptStruct GbxAI.GbxTargetableState
-// 0x01C8 (0x01C8 - 0x0000)
-struct alignas(0x08) FGbxTargetableState final
-{
-public:
-	uint8                                         Pad_0[0x1C8];                                      // 0x0000(0x01C8)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxTargetableState;
-
-// ScriptStruct GbxAI.GbxBrainAspect
-// 0x0000 (0x00D8 - 0x00D8)
-struct FGbxBrainAspect : public FGbxBrainTaskBase
-{
-};
-DUMPER7_ASSERTS_FGbxBrainAspect;
-
-// ScriptStruct GbxAI.GbxTeamState
-// 0x0060 (0x0060 - 0x0000)
-struct FGbxTeamState final
-{
-public:
-	uint8                                         Pad_0[0x18];                                       // 0x0000(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	class UObject*                                owner;                                             // 0x0018(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	uint8                                         Pad_20[0x40];                                      // 0x0020(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxTeamState;
-
-// ScriptStruct GbxAI.GbxAIHeldFilter
-// 0x000C (0x000C - 0x0000)
-struct FGbxAIHeldFilter final
-{
-public:
-	class FName                                   ID;                                                // 0x0000(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxAIHeldFilterType                          FindBy;                                            // 0x0008(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x3];                                        // 0x0009(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAIHeldFilter;
-
-// ScriptStruct GbxAI.GbxAggroValueResolver
-// 0x0008 (0x0010 - 0x0008)
-struct FGbxAggroValueResolver final : public FAttributeValueResolver
-{
-public:
-	EGbxAggroValue                                Value;                                             // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAggroValueResolver;
-
-// ScriptStruct GbxAI.GbxAggroState
-// 0x0108 (0x0108 - 0x0000)
-struct alignas(0x08) FGbxAggroState final
-{
-public:
-	uint8                                         Pad_0[0x108];                                      // 0x0000(0x0108)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAggroState;
-
-// ScriptStruct GbxAI.GpsChoiceData
-// 0x000C (0x000C - 0x0000)
-struct FGpsChoiceData final
-{
-public:
-	EGpsChoice                                    type;                                              // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         Index;                                             // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Percent;                                           // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGpsChoiceData;
-
-// ScriptStruct GbxAI.GbxTerritoryAreaData
-// 0x0120 (0x0120 - 0x0000)
-struct FGbxTerritoryAreaData final
-{
-public:
-	float                                         Radius;                                            // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Height;                                            // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<class AVolume*>                        Volumes;                                           // 0x0008(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
-	TArray<class UObject*>                        ShapeObjects;                                      // 0x0018(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
-	TArray<class AVolume*>                        ExclusionVolumes;                                  // 0x0028(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
-	uint8                                         Pad_38[0xE0];                                      // 0x0038(0x00E0)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bEverywhere;                                       // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseHeight;                                        // 0x0119(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_11A[0x6];                                      // 0x011A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxTerritoryAreaData;
-
-// ScriptStruct GbxAI.GbxBrainAspect_ClaimCover
+// ScriptStruct GbxAI.GpsTest_TracePerceivedEnemies
 // 0x0008 (0x00E0 - 0x00D8)
-struct FGbxBrainAspect_ClaimCover final : public FGbxBrainAspect
+struct FGpsTest_TracePerceivedEnemies final : public FGpsTest_TraceList
 {
 public:
 	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxBrainAspect_ClaimCover;
-
-// ScriptStruct GbxAI.GbxBrainAspect_IsInRange
-// 0x0008 (0x00E0 - 0x00D8)
-struct FGbxBrainAspect_IsInRange final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_IsInRange;
-
-// ScriptStruct GbxAI.GbxBrainTask_StateMachine_TaskSettings
-// 0x0008 (0x0008 - 0x0000)
-struct FGbxBrainTask_StateMachine_TaskSettings final
-{
-public:
-	int32                                         OnSuccess;                                         // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	int32                                         OnFailure;                                         // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainTask_StateMachine_TaskSettings;
-
-// ScriptStruct GbxAI.GbxBrainTaskBaseSettings
-// 0x0040 (0x0078 - 0x0038)
-struct FGbxBrainTaskBaseSettings : public FGbxGraphNodeSettings
-{
-public:
-	struct FGbxParam                              IsEnabledParam;                                    // 0x0038(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bInvertIsEnabledParam;                             // 0x0070(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxBrainTaskResultTransition                 SuccessTransition;                                 // 0x0071(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxBrainTaskResultTransition                 FailureTransition;                                 // 0x0072(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAlwaysReportSuccess;                              // 0x0073(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         CanStartPeriod;                                    // 0x0074(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainTaskBaseSettings;
-
-// ScriptStruct GbxAI.GbxBrainTaskSettings
-// 0x0008 (0x0080 - 0x0078)
-struct FGbxBrainTaskSettings : public FGbxBrainTaskBaseSettings
-{
-public:
-	bool                                          bWaitForAllAspects;                                // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings;
-
-// ScriptStruct GbxAI.GbxBrainTaskSettings_FlowControl
-// 0x0050 (0x00D0 - 0x0080)
-struct FGbxBrainTaskSettings_FlowControl : public FGbxBrainTaskSettings
-{
-public:
-	uint8                                         Pad_80[0x50];                                      // 0x0080(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings_FlowControl;
-
-// ScriptStruct GbxAI.GbxBrainTaskSettings_Selector
-// 0x0000 (0x00D0 - 0x00D0)
-struct FGbxBrainTaskSettings_Selector : public FGbxBrainTaskSettings_FlowControl
-{
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings_Selector;
-
-// ScriptStruct GbxAI.GbxBrainTaskSettings_StateMachine
-// 0x0010 (0x00E0 - 0x00D0)
-struct FGbxBrainTaskSettings_StateMachine final : public FGbxBrainTaskSettings_Selector
-{
-public:
-	TArray<struct FGbxBrainTask_StateMachine_TaskSettings> TaskStateMachineSettingsList;             // 0x00D0(0x0010)(Edit, EditFixedSize, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings_StateMachine;
-
-// ScriptStruct GbxAI.GbxAITicketUseData
-// 0x00B8 (0x00B8 - 0x0000)
-struct FGbxAITicketUseData final
-{
-public:
-	class UGbxAITicketData*                       Ticket;                                            // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	struct FGbxParam                              Value;                                             // 0x0008(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              HoldDuration;                                      // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
-	EGbxAITicketHoldType                          HoldType;                                          // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxAITicketInterruptCondition                ReserveInterruptCondition;                         // 0x0079(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bOverrideTicketTarget;                             // 0x007A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_7B[0x5];                                       // 0x007B(0x0005)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              TicketTargetOverride;                              // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxAITicketUseData;
-
-// ScriptStruct GbxAI.GpsScoringNodeSettings
-// 0x0020 (0x0058 - 0x0038)
-struct FGpsScoringNodeSettings : public FGpsNodeSettings
-{
-public:
-	struct FGbxBinding_Bool                       bEnabled;                                          // 0x0038(0x0020)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGpsScoringNodeSettings;
-
-// ScriptStruct GbxAI.GpsTestSettings
-// 0x0028 (0x0080 - 0x0058)
-struct FGpsTestSettings : public FGpsScoringNodeSettings
-{
-public:
-	struct FGbxBinding_Float                      Weight;                                            // 0x0058(0x0020)(Edit, NativeAccessSpecifierPublic)
-	EGpsFilterType                                FilterType;                                        // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTestSettings;
-
-// ScriptStruct GbxAI.GpsTestSettings_IsCurrentTarget
-// 0x0008 (0x0088 - 0x0080)
-struct FGpsTestSettings_IsCurrentTarget final : public FGpsTestSettings
-{
-public:
-	bool                                          bInvert;                                           // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTestSettings_IsCurrentTarget;
-
-// ScriptStruct GbxAI.GbxBrainDef
-// 0x0080 (0x0088 - 0x0008)
-struct FGbxBrainDef : public FGbxHasStructType
-{
-public:
-	bool                                          bRestrictedToCombatTerritory;                      // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TSoftObjectPtr<class UGbxBrainTaskData>       MainTask;                                          // 0x0010(0x0028)(Edit, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TMap<struct FGameplayTag, TSoftObjectPtr<class UGbxBrainTaskData>> TaggedTasks;                  // 0x0038(0x0050)(Edit, UObjectWrapper, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainDef;
-
-// ScriptStruct GbxAI.GbxBrainAspect_Gps
-// 0x0138 (0x0210 - 0x00D8)
-struct FGbxBrainAspect_Gps : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x138];                                     // 0x00D8(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_Gps;
+DUMPER7_ASSERTS_FGpsTest_TracePerceivedEnemies;
 
 // ScriptStruct GbxAI.GbxTeamDef
 // 0x0078 (0x0090 - 0x0018)
@@ -1132,30 +928,110 @@ public:
 };
 DUMPER7_ASSERTS_FGbxTeamDef;
 
-// ScriptStruct GbxAI.GpsResultsNode
-// 0x03C8 (0x0418 - 0x0050)
-struct FGpsResultsNode : public FGpsNodeState
+// ScriptStruct GbxAI.GbxAIPerfStats
+// 0x0038 (0x0038 - 0x0000)
+struct FGbxAIPerfStats final
 {
 public:
-	uint8                                         Pad_50[0x3C8];                                     // 0x0050(0x03C8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	bool                                          bIsValid;                                          // 0x0000(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         CurrAliveAICount;                                  // 0x0004(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SpawnCostMs;                                       // 0x0008(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SpawnBudgetMs;                                     // 0x000C(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         TotalTickTime;                                     // 0x0010(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         NavMemStats;                                       // 0x0014(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_18[0x20];                                      // 0x0018(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGpsResultsNode;
+DUMPER7_ASSERTS_FGbxAIPerfStats;
 
-// ScriptStruct GbxAI.GpsGenerator
-// 0x0000 (0x0418 - 0x0418)
-struct FGpsGenerator : public FGpsResultsNode
+// ScriptStruct GbxAI.GpsTestSettings_OtherNavGoals
+// 0x0000 (0x00D0 - 0x00D0)
+struct FGpsTestSettings_OtherNavGoals final : public FGpsTestSettings_DistanceList
 {
 };
-DUMPER7_ASSERTS_FGpsGenerator;
+DUMPER7_ASSERTS_FGpsTestSettings_OtherNavGoals;
 
-// ScriptStruct GbxAI.GpsGenerator_Cover
-// 0x0010 (0x0428 - 0x0418)
-struct FGpsGenerator_Cover final : public FGpsGenerator
+// ScriptStruct GbxAI.GbxTargetableState
+// 0x01C8 (0x01C8 - 0x0000)
+struct alignas(0x08) FGbxTargetableState final
 {
 public:
-	uint8                                         Pad_418[0x10];                                     // 0x0418(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_0[0x1C8];                                      // 0x0000(0x01C8)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGpsGenerator_Cover;
+DUMPER7_ASSERTS_FGbxTargetableState;
+
+// ScriptStruct GbxAI.GbxAggroState
+// 0x0108 (0x0108 - 0x0000)
+struct alignas(0x08) FGbxAggroState final
+{
+public:
+	uint8                                         Pad_0[0x108];                                      // 0x0000(0x0108)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxAggroState;
+
+// ScriptStruct GbxAI.GbxSenseConfig
+// 0x001C (0x001C - 0x0000)
+struct FGbxSenseConfig final
+{
+public:
+	float                                         MaxAge;                                            // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SightRadius;                                       // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         SightHalfAngle;                                    // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         ProximityRadius;                                   // 0x000C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         BulletRadius;                                      // 0x0010(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         PredictionAge;                                     // 0x0014(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_18[0x1];                                       // 0x0018(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bSenseFriendly;                                    // 0x0019(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSenseNeutral;                                     // 0x001A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bSenseHostile;                                     // 0x001B(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxSenseConfig;
+
+// ScriptStruct GbxAI.CoverLineOfSightParams
+// 0x0010 (0x0010 - 0x0000)
+struct FCoverLineOfSightParams final
+{
+public:
+	float                                         Up;                                                // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Down;                                              // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Left;                                              // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Right;                                             // 0x000C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FCoverLineOfSightParams;
+
+// ScriptStruct GbxAI.GpsTest_NavMaterial
+// 0x0008 (0x0068 - 0x0060)
+struct FGpsTest_NavMaterial final : public FGpsTest
+{
+public:
+	uint8                                         Pad_60[0x8];                                       // 0x0060(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsTest_NavMaterial;
+
+// ScriptStruct GbxAI.GbxAttitudeResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FGbxAttitudeResolver final : public FGbxHasStructType
+{
+};
+DUMPER7_ASSERTS_FGbxAttitudeResolver;
+
+// ScriptStruct GbxAI.GbxBrainTask
+// 0x0058 (0x0130 - 0x00D8)
+struct FGbxBrainTask : public FGbxBrainTaskBase
+{
+public:
+	uint8                                         Pad_D8[0x58];                                      // 0x00D8(0x0058)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTask;
+
+// ScriptStruct GbxAI.GbxBrainTask_Composite
+// 0x0138 (0x0268 - 0x0130)
+struct FGbxBrainTask_Composite : public FGbxBrainTask
+{
+public:
+	uint8                                         Pad_130[0x138];                                    // 0x0130(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTask_Composite;
 
 // ScriptStruct GbxAI.GbxBrainAspectSettings_IsInRangeData
 // 0x0040 (0x0040 - 0x0000)
@@ -1182,6 +1058,20 @@ public:
 	uint8                                         Pad_C3[0x5];                                       // 0x00C3(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxBrainAspectIsInRangeAdvancedData;
+
+// ScriptStruct GbxAI.GbxBrainTaskBaseSettings
+// 0x0040 (0x0078 - 0x0038)
+struct FGbxBrainTaskBaseSettings : public FGbxGraphNodeSettings
+{
+public:
+	struct FGbxParam                              IsEnabledParam;                                    // 0x0038(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bInvertIsEnabledParam;                             // 0x0070(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxBrainTaskResultTransition                 SuccessTransition;                                 // 0x0071(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxBrainTaskResultTransition                 FailureTransition;                                 // 0x0072(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAlwaysReportSuccess;                              // 0x0073(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         CanStartPeriod;                                    // 0x0074(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainTaskBaseSettings;
 
 // ScriptStruct GbxAI.GbxBrainAspectSettings
 // 0x0008 (0x0080 - 0x0078)
@@ -1215,6 +1105,156 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBrainAspectSettings_IsInRange;
 
+// ScriptStruct GbxAI.GpsResultsNode
+// 0x03C8 (0x0418 - 0x0050)
+struct FGpsResultsNode : public FGpsNodeState
+{
+public:
+	uint8                                         Pad_50[0x3C8];                                     // 0x0050(0x03C8)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsResultsNode;
+
+// ScriptStruct GbxAI.GpsGenerator
+// 0x0000 (0x0418 - 0x0418)
+struct FGpsGenerator : public FGpsResultsNode
+{
+};
+DUMPER7_ASSERTS_FGpsGenerator;
+
+// ScriptStruct GbxAI.GpsGenerator_Cover
+// 0x0010 (0x0428 - 0x0418)
+struct FGpsGenerator_Cover final : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x10];                                     // 0x0418(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Cover;
+
+// ScriptStruct GbxAI.GbxTeamState
+// 0x0060 (0x0060 - 0x0000)
+struct FGbxTeamState final
+{
+public:
+	uint8                                         Pad_0[0x18];                                       // 0x0000(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	class UObject*                                owner;                                             // 0x0018(0x0008)(ZeroConstructor, Transient, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	uint8                                         Pad_20[0x40];                                      // 0x0020(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxTeamState;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_ChanceToStart
+// 0x0078 (0x00F8 - 0x0080)
+struct FGbxBrainAspectSettings_ChanceToStart final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              Chance;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              RerollTimer;                                       // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseRerollTimer;                                   // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_F1[0x7];                                       // 0x00F1(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_ChanceToStart;
+
+// ScriptStruct GbxAI.GbxAITicketUseData
+// 0x00B8 (0x00B8 - 0x0000)
+struct FGbxAITicketUseData final
+{
+public:
+	class UGbxAITicketData*                       Ticket;                                            // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	struct FGbxParam                              Value;                                             // 0x0008(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              HoldDuration;                                      // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
+	EGbxAITicketHoldType                          HoldType;                                          // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxAITicketInterruptCondition                ReserveInterruptCondition;                         // 0x0079(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bOverrideTicketTarget;                             // 0x007A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_7B[0x5];                                       // 0x007B(0x0005)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              TicketTargetOverride;                              // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxAITicketUseData;
+
+// ScriptStruct GbxAI.GbxTerritoryAreaData
+// 0x0120 (0x0120 - 0x0000)
+struct FGbxTerritoryAreaData final
+{
+public:
+	float                                         Radius;                                            // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Height;                                            // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<class AVolume*>                        Volumes;                                           // 0x0008(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
+	TArray<class UObject*>                        ShapeObjects;                                      // 0x0018(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
+	TArray<class AVolume*>                        ExclusionVolumes;                                  // 0x0028(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
+	uint8                                         Pad_38[0xE0];                                      // 0x0038(0x00E0)(Fixing Size After Last Property [ Dumper-7 ])
+	bool                                          bEverywhere;                                       // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseHeight;                                        // 0x0119(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_11A[0x6];                                      // 0x011A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxTerritoryAreaData;
+
+// ScriptStruct GbxAI.GpsGenerator_Circle
+// 0x0028 (0x0440 - 0x0418)
+struct FGpsGenerator_Circle final : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x28];                                     // 0x0418(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Circle;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_GameplayTags
+// 0x0088 (0x0108 - 0x0080)
+struct FGbxBrainAspectSettings_GameplayTags final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGameplayTagQuery                      CanStartTagQuery;                                  // 0x0080(0x0048)(Edit, NativeAccessSpecifierPublic)
+	EGbxBrainAspectSettingsGameplayTagQueryContext ContextType;                                      // 0x00C8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_CC[0x4];                                       // 0x00CC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              CustomContext;                                     // 0x00D0(0x0038)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_GameplayTags;
+
+// ScriptStruct GbxAI.GpsTestSettings_GroupDistance
+// 0x0050 (0x00D0 - 0x0080)
+struct FGpsTestSettings_GroupDistance : public FGpsTestSettings
+{
+public:
+	struct FGbxBinding_Float                      MaxDistance;                                       // 0x0080(0x0020)(Edit, NativeAccessSpecifierPublic)
+	EGpsDistanceMode                              Mode;                                              // 0x00A0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_A4[0x4];                                       // 0x00A4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBinding_Int                        MinNearbyGroupSize;                                // 0x00A8(0x0020)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseMinNearbyGroupSize;                            // 0x00C8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C9[0x7];                                       // 0x00C9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsTestSettings_GroupDistance;
+
+// ScriptStruct GbxAI.GpsTestSettings_EnemiesGroup
+// 0x00A0 (0x0170 - 0x00D0)
+struct FGpsTestSettings_EnemiesGroup final : public FGpsTestSettings_GroupDistance
+{
+public:
+	struct FGbxParam                              SenseAgeMax;                                       // 0x00D0(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxRelativeLocation                   RelativeLocation;                                  // 0x0108(0x0060)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	bool                                          bUseRelativeLocation;                              // 0x0168(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_169[0x7];                                      // 0x0169(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsTestSettings_EnemiesGroup;
+
+// ScriptStruct GbxAI.GpsQueryRunData
+// 0x01E0 (0x01E0 - 0x0000)
+struct FGpsQueryRunData final
+{
+public:
+	class UGpsQueryAsset*                         Query;                                             // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	struct FGbxBindingList                        Bindings;                                          // 0x0008(0x01D0)(Edit, NativeAccessSpecifierPublic)
+	class FName                                   Name;                                              // 0x01D8(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGpsQueryRunData;
+
+// ScriptStruct GbxAI.GbxTargeterState
+// 0x0318 (0x0318 - 0x0000)
+struct FGbxTargeterState final
+{
+public:
+	uint8                                         Pad_0[0xC8];                                       // 0x0000(0x00C8)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGpsQueryRunData                       Gps;                                               // 0x00C8(0x01E0)(Edit, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_2A8[0x70];                                     // 0x02A8(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxTargeterState;
+
 // ScriptStruct GbxAI.TargetLocationSettings
 // 0x0050 (0x0050 - 0x0000)
 struct FTargetLocationSettings final
@@ -1240,83 +1280,62 @@ public:
 };
 DUMPER7_ASSERTS_FGbxPerceiverState;
 
-// ScriptStruct GbxAI.GbxTargetValueResolver
-// 0x0000 (0x0008 - 0x0008)
-struct FGbxTargetValueResolver final : public FAttributeValueResolver
-{
-};
-DUMPER7_ASSERTS_FGbxTargetValueResolver;
-
-// ScriptStruct GbxAI.CoverTransitionData
-// 0x0020 (0x0020 - 0x0000)
-struct FCoverTransitionData final
+// ScriptStruct GbxAI.GbxGlobalsAI
+// 0x00F0 (0x0110 - 0x0020)
+struct FGbxGlobalsAI : public FGbxGlobalDef
 {
 public:
-	class UAnimSequence*                          Animation;                                         // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	struct FNumericRange                          Angle;                                             // 0x0008(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	struct FNumericRange                          HorizontalDistance;                                // 0x0010(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	float                                         VerticalDistance;                                  // 0x0018(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	ECoverSlotHeight                              SlotHeight;                                        // 0x001C(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCornerTransition;                                 // 0x001D(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1E[0x2];                                       // 0x001E(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_20[0x10];                                      // 0x0020(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
+	ECollisionChannel                             BulletSenseTraceChannel;                           // 0x0030(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         AttackAggroTime;                                   // 0x0034(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         TerritoryAggroTime;                                // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         RecentlyAggroedTime;                               // 0x003C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         MaxBrainTickTimeMs;                                // 0x0040(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_44[0x4];                                       // 0x0044(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              RestrictedToTerritoryAreaCondition;                // 0x0048(0x0038)(Edit, NativeAccessSpecifierPublic)
+	EGbxTerritoryArea                             RestrictedToTerritoryArea;                         // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_81[0x3];                                       // 0x0081(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	float                                         RestrictedToTerritoryTimeThreshold;                // 0x0084(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint32                                        MaxWeaponUsersPerTick;                             // 0x0088(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         TimeToBestAccuracy;                                // 0x008C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         DamagePercentToWorstAccuracy;                      // 0x0090(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         DamagePercentDecayRate;                            // 0x0094(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         AcceptableAngle;                                   // 0x0098(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         CoveringFireTime;                                  // 0x009C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxParam                              DefaultLeadTarget;                                 // 0x00A0(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              DefaultFollowTarget;                               // 0x00D8(0x0038)(Edit, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FCoverTransitionData;
+DUMPER7_ASSERTS_FGbxGlobalsAI;
 
-// ScriptStruct GbxAI.GpsQueryRunData
-// 0x01E0 (0x01E0 - 0x0000)
-struct FGpsQueryRunData final
+// ScriptStruct GbxAI.GbxBrainAspectSettings_CompareValue
+// 0x0078 (0x00F8 - 0x0080)
+struct FGbxBrainAspectSettings_CompareValue final : public FGbxBrainAspectSettings
 {
 public:
-	class UGpsQueryAsset*                         Query;                                             // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	struct FGbxBindingList                        Bindings;                                          // 0x0008(0x01D0)(Edit, NativeAccessSpecifierPublic)
-	class FName                                   Name;                                              // 0x01D8(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxParam                              CompareValue;                                      // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              CompareTo;                                         // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	EGbxComparator                                Comparator;                                        // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxCompareType                               CompareType;                                       // 0x00F1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_F2[0x6];                                       // 0x00F2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGpsQueryRunData;
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_CompareValue;
 
-// ScriptStruct GbxAI.GbxTargeterState
-// 0x0318 (0x0318 - 0x0000)
-struct FGbxTargeterState final
+// ScriptStruct GbxAI.GpsTestSettings_Distance
+// 0x0108 (0x0188 - 0x0080)
+struct FGpsTestSettings_Distance final : public FGpsTestSettings
 {
 public:
-	uint8                                         Pad_0[0xC8];                                       // 0x0000(0x00C8)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGpsQueryRunData                       Gps;                                               // 0x00C8(0x01E0)(Edit, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_2A8[0x70];                                     // 0x02A8(0x0070)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxBinding_Vector                     Origin;                                            // 0x0080(0x0098)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Float                      MinDistance;                                       // 0x0118(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Float                      MaxDistance;                                       // 0x0138(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Float                      CustomDistance;                                    // 0x0158(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	EGpsDistanceScore                             Preference;                                        // 0x0178(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	EGpsDistanceMode                              Mode;                                              // 0x017C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	bool                                          bClampToDistanceRange;                             // 0x0180(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_181[0x7];                                      // 0x0181(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxTargeterState;
-
-// ScriptStruct GbxAI.GbxTerritorySettings
-// 0x0378 (0x0378 - 0x0000)
-struct FGbxTerritorySettings final
-{
-public:
-	class FString                                 Description;                                       // 0x0000(0x0010)(Edit, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxTerritoryAreaData                  PatrolTerritory;                                   // 0x0010(0x0120)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxTerritoryAreaData                  ThreatTerritory;                                   // 0x0130(0x0120)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxTerritoryAreaData                  CombatTerritory;                                   // 0x0250(0x0120)(Edit, NativeAccessSpecifierPublic)
-	EGbxTerritoryArea                             CombatProxy;                                       // 0x0370(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseCombatProxy;                                   // 0x0371(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAlwaysAwareInThreatArea;                          // 0x0372(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_373[0x5];                                      // 0x0373(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxTerritorySettings;
-
-// ScriptStruct GbxAI.GbxBrainService
-// 0x0028 (0x0030 - 0x0008)
-struct FGbxBrainService : public FGbxHasStructType
-{
-public:
-	uint8                                         Pad_8[0x28];                                       // 0x0008(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainService;
-
-// ScriptStruct GbxAI.GbxBrainAspect_IsNavReachable
-// 0x0010 (0x00E8 - 0x00D8)
-struct FGbxBrainAspect_IsNavReachable final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_IsNavReachable;
+DUMPER7_ASSERTS_FGpsTestSettings_Distance;
 
 // ScriptStruct GbxAI.GbxTeamIdHandle
 // 0x0018 (0x0018 - 0x0000)
@@ -1327,26 +1346,27 @@ public:
 };
 DUMPER7_ASSERTS_FGbxTeamIdHandle;
 
-// ScriptStruct GbxAI.GpsGenerator_Actors
-// 0x0030 (0x0448 - 0x0418)
-struct FGpsGenerator_Actors : public FGpsGenerator
+// ScriptStruct GbxAI.GpsGenerator_History
+// 0x0008 (0x0420 - 0x0418)
+struct FGpsGenerator_History final : public FGpsGenerator
 {
 public:
-	uint8                                         Pad_418[0x30];                                     // 0x0418(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_418[0x8];                                      // 0x0418(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGpsGenerator_Actors;
+DUMPER7_ASSERTS_FGpsGenerator_History;
 
-// ScriptStruct GbxAI.GbxBrainAspectSettings_InLineOfFire
+// ScriptStruct GbxAI.GbxBrainAspectSettings_IsNavReachable
 // 0x0078 (0x00F8 - 0x0080)
-struct FGbxBrainAspectSettings_InLineOfFire final : public FGbxBrainAspectSettings
+struct FGbxBrainAspectSettings_IsNavReachable final : public FGbxBrainAspectSettings
 {
 public:
-	struct FGbxParam                              Origin;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Radius;                                            // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bFailWhenBlocking;                                 // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_F1[0x7];                                       // 0x00F1(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              Goal;                                              // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              MaxDistance;                                       // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bFailIfNoLongerReachable;                          // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bInvert;                                           // 0x00F1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_F2[0x6];                                       // 0x00F2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_InLineOfFire;
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_IsNavReachable;
 
 // ScriptStruct GbxAI.CoverUseParams
 // 0x0110 (0x0110 - 0x0000)
@@ -1410,42 +1430,46 @@ public:
 };
 DUMPER7_ASSERTS_FCoverUserState;
 
-// ScriptStruct GbxAI.CoverActionData
-// 0x00F8 (0x00F8 - 0x0000)
-struct FCoverActionData final
+// ScriptStruct GbxAI.GpsConditionSettings
+// 0x0008 (0x0040 - 0x0038)
+struct FGpsConditionSettings : public FGpsNodeSettings
 {
 public:
-	class UCoverStyleData*                        Style;                                             // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	struct FGbxParam                              Weight;                                            // 0x0008(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              IdleTimeOverride;                                  // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bOverrideIdleTime;                                 // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              FireTimeOverride;                                  // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bOverrideFireTime;                                 // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_B9[0x7];                                       // 0x00B9(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class UAnimSequence*                          FireEnter;                                         // 0x00C0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	class UAnimSequence*                          FireExit;                                          // 0x00C8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	class UAnimSequence*                          FireIdle;                                          // 0x00D0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	class UAnimSequence*                          FireExitCover;                                     // 0x00D8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
-	bool                                          bForceAllowFireExitCover;                          // 0x00E0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_E1[0x7];                                       // 0x00E1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<class UAnimSequence*>                  RandomAnims;                                       // 0x00E8(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
+	bool                                          bInvertCondition;                                  // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FCoverActionData;
+DUMPER7_ASSERTS_FGpsConditionSettings;
 
-// ScriptStruct GbxAI.GbxBrainAspectSettings_ConditionData
-// 0x0080 (0x0080 - 0x0000)
-struct FGbxBrainAspectSettings_ConditionData final
+// ScriptStruct GbxAI.GpsConditionSettings_Attribute
+// 0x0038 (0x0078 - 0x0040)
+struct FGpsConditionSettings_Attribute final : public FGpsConditionSettings
 {
 public:
-	struct FGbxParam                              Condition;                                         // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
-	EGbxBrainAspectSettingsConditionContext       ContextType;                                       // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3C[0x4];                                       // 0x003C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              CustomContext;                                     // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bInvert;                                           // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              Param;                                             // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
 };
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_ConditionData;
+DUMPER7_ASSERTS_FGpsConditionSettings_Attribute;
+
+// ScriptStruct GbxAI.GbxBrainAspect_CanSense
+// 0x0000 (0x00D8 - 0x00D8)
+struct FGbxBrainAspect_CanSense final : public FGbxBrainAspect
+{
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_CanSense;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_CanSense
+// 0x0090 (0x0110 - 0x0080)
+struct FGbxBrainAspectSettings_CanSense final : public FGbxBrainAspectSettings
+{
+public:
+	bool                                          bRequireTarget;                                    // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              target;                                            // 0x0088(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bInvert;                                           // 0x00C0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C1[0x7];                                       // 0x00C1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<EGbxSense>                             Senses;                                            // 0x00C8(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Threshold;                                         // 0x00D8(0x0038)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_CanSense;
 
 // ScriptStruct GbxAI.CoverAdjustParams
 // 0x0040 (0x0040 - 0x0000)
@@ -1476,36 +1500,6 @@ public:
 };
 DUMPER7_ASSERTS_FCoverAdjustParams;
 
-// ScriptStruct GbxAI.GbxSenseConfig
-// 0x001C (0x001C - 0x0000)
-struct FGbxSenseConfig final
-{
-public:
-	float                                         MaxAge;                                            // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SightRadius;                                       // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SightHalfAngle;                                    // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         ProximityRadius;                                   // 0x000C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         BulletRadius;                                      // 0x0010(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         PredictionAge;                                     // 0x0014(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_18[0x1];                                       // 0x0018(0x0001)(Fixing Size After Last Property [ Dumper-7 ])
-	bool                                          bSenseFriendly;                                    // 0x0019(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSenseNeutral;                                     // 0x001A(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bSenseHostile;                                     // 0x001B(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxSenseConfig;
-
-// ScriptStruct GbxAI.CoverLineOfSightParams
-// 0x0010 (0x0010 - 0x0000)
-struct FCoverLineOfSightParams final
-{
-public:
-	float                                         Up;                                                // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Down;                                              // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Left;                                              // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         Right;                                             // 0x000C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FCoverLineOfSightParams;
-
 // ScriptStruct GbxAI.CoverSlotViewData
 // 0x0070 (0x0070 - 0x0000)
 struct FCoverSlotViewData final
@@ -1517,6 +1511,75 @@ public:
 };
 DUMPER7_ASSERTS_FCoverSlotViewData;
 
+// ScriptStruct GbxAI.GbxBrainTaskSettings
+// 0x0008 (0x0080 - 0x0078)
+struct FGbxBrainTaskSettings : public FGbxBrainTaskBaseSettings
+{
+public:
+	bool                                          bWaitForAllAspects;                                // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings;
+
+// ScriptStruct GbxAI.GbxBrainTaskSettings_Tagged
+// 0x0008 (0x0088 - 0x0080)
+struct FGbxBrainTaskSettings_Tagged final : public FGbxBrainTaskSettings
+{
+public:
+	struct FGameplayTag                           TaskTag;                                           // 0x0080(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings_Tagged;
+
+// ScriptStruct GbxAI.CoverSlotViewFailData
+// 0x0020 (0x0020 - 0x0000)
+struct FCoverSlotViewFailData final
+{
+public:
+	class UCoverViewData*                         View;                                              // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	ECoverViewFailReason                          FailReason;                                        // 0x0008(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class FString                                 FailDescription;                                   // 0x0010(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FCoverSlotViewFailData;
+
+// ScriptStruct GbxAI.CoverActionData
+// 0x00F8 (0x00F8 - 0x0000)
+struct FCoverActionData final
+{
+public:
+	class UCoverStyleData*                        Style;                                             // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	struct FGbxParam                              Weight;                                            // 0x0008(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              IdleTimeOverride;                                  // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bOverrideIdleTime;                                 // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              FireTimeOverride;                                  // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bOverrideFireTime;                                 // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_B9[0x7];                                       // 0x00B9(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class UAnimSequence*                          FireEnter;                                         // 0x00C0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UAnimSequence*                          FireExit;                                          // 0x00C8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UAnimSequence*                          FireIdle;                                          // 0x00D0(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	class UAnimSequence*                          FireExitCover;                                     // 0x00D8(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	bool                                          bForceAllowFireExitCover;                          // 0x00E0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_E1[0x7];                                       // 0x00E1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<class UAnimSequence*>                  RandomAnims;                                       // 0x00E8(0x0010)(Edit, ZeroConstructor, UObjectWrapper, NativeAccessSpecifierPublic, TObjectPtr)
+};
+DUMPER7_ASSERTS_FCoverActionData;
+
+// ScriptStruct GbxAI.CoverTransitionData
+// 0x0020 (0x0020 - 0x0000)
+struct FCoverTransitionData final
+{
+public:
+	class UAnimSequence*                          Animation;                                         // 0x0000(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic, TObjectPtr)
+	struct FNumericRange                          Angle;                                             // 0x0008(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	struct FNumericRange                          HorizontalDistance;                                // 0x0010(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
+	float                                         VerticalDistance;                                  // 0x0018(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	ECoverSlotHeight                              SlotHeight;                                        // 0x001C(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCornerTransition;                                 // 0x001D(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1E[0x2];                                       // 0x001E(0x0002)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FCoverTransitionData;
+
 // ScriptStruct GbxAI.GbxAggroInfo
 // 0x0024 (0x0024 - 0x0000)
 struct alignas(0x04) FGbxAggroInfo final
@@ -1526,794 +1589,28 @@ public:
 };
 DUMPER7_ASSERTS_FGbxAggroInfo;
 
-// ScriptStruct GbxAI.GbxAIPerfStats
-// 0x0038 (0x0038 - 0x0000)
-struct FGbxAIPerfStats final
+// ScriptStruct GbxAI.GpsConditionSettings_Ticket
+// 0x0080 (0x00C0 - 0x0040)
+struct FGpsConditionSettings_Ticket final : public FGpsConditionSettings
 {
 public:
-	bool                                          bIsValid;                                          // 0x0000(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	int32                                         CurrAliveAICount;                                  // 0x0004(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SpawnCostMs;                                       // 0x0008(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         SpawnBudgetMs;                                     // 0x000C(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         TotalTickTime;                                     // 0x0010(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         NavMemStats;                                       // 0x0014(0x0004)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_18[0x20];                                      // 0x0018(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxAIPerfStats;
-
-// ScriptStruct GbxAI.GpsConditionSettings_IsFirstRun
-// 0x0000 (0x0040 - 0x0040)
-struct FGpsConditionSettings_IsFirstRun final : public FGpsConditionSettings
-{
-};
-DUMPER7_ASSERTS_FGpsConditionSettings_IsFirstRun;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_AttachTerritory
-// 0x0738 (0x07B8 - 0x0080)
-struct FGbxBrainAspectSettings_AttachTerritory final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              target;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUpdateTarget;                                     // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bAttachToSelfIfNoTarget;                           // 0x00B9(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_BA[0x6];                                       // 0x00BA(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxTerritorySettings                  TerritorySettings;                                 // 0x00C0(0x0378)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bAlwaysAwareInThreatArea;                          // 0x0438(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_439[0x7];                                      // 0x0439(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	class FString                                 Description;                                       // 0x0440(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxTerritoryAreaData                  PatrolTerritory;                                   // 0x0450(0x0120)(NativeAccessSpecifierPublic)
-	struct FGbxTerritoryAreaData                  ThreatTerritory;                                   // 0x0570(0x0120)(NativeAccessSpecifierPublic)
-	struct FGbxTerritoryAreaData                  CombatTerritory;                                   // 0x0690(0x0120)(NativeAccessSpecifierPublic)
-	EGbxTerritoryArea                             CombatProxy;                                       // 0x07B0(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseCombatProxy;                                   // 0x07B1(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_7B2[0x6];                                      // 0x07B2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_AttachTerritory;
-
-// ScriptStruct GbxAI.GbxBrainAspect_AttachTerritory
-// 0x0008 (0x00E0 - 0x00D8)
-struct FGbxBrainAspect_AttachTerritory final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_AttachTerritory;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_CanSee
-// 0x0078 (0x00F8 - 0x0080)
-struct FGbxBrainAspectSettings_CanSee final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              target;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	ECanSeeAspectTestMode                         Mode;                                              // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_B9[0x7];                                       // 0x00B9(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              Threshold;                                         // 0x00C0(0x0038)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_CanSee;
-
-// ScriptStruct GbxAI.GpsQuery
-// 0x0AB0 (0x0BE0 - 0x0130)
-struct FGpsQuery final : public FGbxGraphState
-{
-public:
-	uint8                                         Pad_130[0xAB0];                                    // 0x0130(0x0AB0)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsQuery;
-
-// ScriptStruct GbxAI.GbxBrainAspect_CanSee
-// 0x0000 (0x00D8 - 0x00D8)
-struct FGbxBrainAspect_CanSee final : public FGbxBrainAspect
-{
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_CanSee;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_CanSense
-// 0x0090 (0x0110 - 0x0080)
-struct FGbxBrainAspectSettings_CanSense final : public FGbxBrainAspectSettings
-{
-public:
-	bool                                          bRequireTarget;                                    // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Value;                                             // 0x0040(0x0038)(Edit, NativeAccessSpecifierPrivate)
+	class UGbxAITicketData*                       Ticket;                                            // 0x0078(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
+	bool                                          bOverrideTicketTarget;                             // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
 	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              target;                                            // 0x0088(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bInvert;                                           // 0x00C0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C1[0x7];                                       // 0x00C1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<EGbxSense>                             Senses;                                            // 0x00C8(0x0010)(Edit, ZeroConstructor, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Threshold;                                         // 0x00D8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              TicketTargetOverride;                              // 0x0088(0x0038)(Edit, NativeAccessSpecifierPrivate)
 };
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_CanSense;
+DUMPER7_ASSERTS_FGpsConditionSettings_Ticket;
 
-// ScriptStruct GbxAI.GpsFlow
-// 0x0018 (0x0430 - 0x0418)
-struct FGpsFlow : public FGpsResultsNode
+// ScriptStruct GbxAI.GbxAggroValueResolver
+// 0x0008 (0x0010 - 0x0008)
+struct FGbxAggroValueResolver final : public FAttributeValueResolver
 {
 public:
-	uint8                                         Pad_418[0x18];                                     // 0x0418(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	EGbxAggroValue                                Value;                                             // 0x0008(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x7];                                        // 0x0009(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGpsFlow;
-
-// ScriptStruct GbxAI.GpsFlow_Priority
-// 0x0000 (0x0430 - 0x0430)
-struct FGpsFlow_Priority final : public FGpsFlow
-{
-};
-DUMPER7_ASSERTS_FGpsFlow_Priority;
-
-// ScriptStruct GbxAI.GbxBrainAspect_CanSense
-// 0x0000 (0x00D8 - 0x00D8)
-struct FGbxBrainAspect_CanSense final : public FGbxBrainAspect
-{
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_CanSense;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_ChanceToStart
-// 0x0078 (0x00F8 - 0x0080)
-struct FGbxBrainAspectSettings_ChanceToStart final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              Chance;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              RerollTimer;                                       // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseRerollTimer;                                   // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_F1[0x7];                                       // 0x00F1(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_ChanceToStart;
-
-// ScriptStruct GbxAI.GpsTest_Aggro
-// 0x0010 (0x0070 - 0x0060)
-struct FGpsTest_Aggro final : public FGpsTest
-{
-public:
-	uint8                                         Pad_60[0x10];                                      // 0x0060(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTest_Aggro;
-
-// ScriptStruct GbxAI.GbxBrainAspect_ChanceToStart
-// 0x0010 (0x00E8 - 0x00D8)
-struct FGbxBrainAspect_ChanceToStart final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_ChanceToStart;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_ClaimCover
-// 0x0038 (0x00B8 - 0x0080)
-struct FGbxBrainAspectSettings_ClaimCover final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              Cover;                                             // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_ClaimCover;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_CompareValue
-// 0x0078 (0x00F8 - 0x0080)
-struct FGbxBrainAspectSettings_CompareValue final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              CompareValue;                                      // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              CompareTo;                                         // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	EGbxComparator                                Comparator;                                        // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGbxCompareType                               CompareType;                                       // 0x00F1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_F2[0x6];                                       // 0x00F2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_CompareValue;
-
-// ScriptStruct GbxAI.GpsFlow_Combine
-// 0x0000 (0x0430 - 0x0430)
-struct FGpsFlow_Combine : public FGpsFlow
-{
-};
-DUMPER7_ASSERTS_FGpsFlow_Combine;
-
-// ScriptStruct GbxAI.GbxBrainAspect_CompareValue
-// 0x0000 (0x00D8 - 0x00D8)
-struct FGbxBrainAspect_CompareValue final : public FGbxBrainAspect
-{
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_CompareValue;
-
-// ScriptStruct GbxAI.GpsGeneratorSettings_Actors_ConditionFilter
-// 0x0040 (0x0040 - 0x0000)
-struct FGpsGeneratorSettings_Actors_ConditionFilter final
-{
-public:
-	struct FGbxParam                              Condition;                                         // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bInvert;                                           // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGeneratorSettings_Actors_ConditionFilter;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_Condition
-// 0x0220 (0x02A0 - 0x0080)
-struct FGbxBrainAspectSettings_Condition final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxBrainAspectSettings_ConditionData  CanStartCondition;                                 // 0x0080(0x0080)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseCanStartCondition;                             // 0x0100(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_101[0x7];                                      // 0x0101(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBrainAspectSettings_ConditionData  CanInterruptCondition;                             // 0x0108(0x0080)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseCanInterruptCondition;                         // 0x0188(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_189[0x7];                                      // 0x0189(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBrainAspectSettings_ConditionData  SucceedCondition;                                  // 0x0190(0x0080)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseSucceedCondition;                              // 0x0210(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_211[0x7];                                      // 0x0211(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBrainAspectSettings_ConditionData  FailCondition;                                     // 0x0218(0x0080)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseFailCondition;                                 // 0x0298(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_299[0x7];                                      // 0x0299(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_Condition;
-
-// ScriptStruct GbxAI.GbxBrainAspect_Condition
-// 0x0008 (0x00E0 - 0x00D8)
-struct FGbxBrainAspect_Condition final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_Condition;
-
-// ScriptStruct GbxAI.GpsFlow_Root
-// 0x0000 (0x0430 - 0x0430)
-struct FGpsFlow_Root final : public FGpsFlow_Combine
-{
-};
-DUMPER7_ASSERTS_FGpsFlow_Root;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_CountAllies
-// 0x0040 (0x00C0 - 0x0080)
-struct FGbxBrainAspectSettings_CountAllies final : public FGbxBrainAspectSettings
-{
-public:
-	EGbxComparator                                Comparator;                                        // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              ComparisonValue;                                   // 0x0088(0x0038)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_CountAllies;
-
-// ScriptStruct GbxAI.GbxBrainAspect_CountAllies
-// 0x0000 (0x00D8 - 0x00D8)
-struct FGbxBrainAspect_CountAllies final : public FGbxBrainAspect
-{
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_CountAllies;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_GameplayTags
-// 0x0088 (0x0108 - 0x0080)
-struct FGbxBrainAspectSettings_GameplayTags final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGameplayTagQuery                      CanStartTagQuery;                                  // 0x0080(0x0048)(Edit, NativeAccessSpecifierPublic)
-	EGbxBrainAspectSettingsGameplayTagQueryContext ContextType;                                      // 0x00C8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_CC[0x4];                                       // 0x00CC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              CustomContext;                                     // 0x00D0(0x0038)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_GameplayTags;
-
-// ScriptStruct GbxAI.GbxBrainAspect_GameplayTags
-// 0x0000 (0x00D8 - 0x00D8)
-struct FGbxBrainAspect_GameplayTags final : public FGbxBrainAspect
-{
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_GameplayTags;
-
-// ScriptStruct GbxAI.GpsGenerator_Active
-// 0x0000 (0x0418 - 0x0418)
-struct FGpsGenerator_Active final : public FGpsGenerator
-{
-};
-DUMPER7_ASSERTS_FGpsGenerator_Active;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_Gps
-// 0x0220 (0x02A0 - 0x0080)
-struct FGbxBrainAspectSettings_Gps : public FGbxBrainAspectSettings
-{
-public:
-	struct FGpsQueryRunData                       QuerySettings;                                     // 0x0080(0x01E0)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Result;                                            // 0x0260(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bClearResultOnStop;                                // 0x0298(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EGpsBrainStyle                                QueryStyle;                                        // 0x0299(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_29A[0x6];                                      // 0x029A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_Gps;
-
-// ScriptStruct GbxAI.GpsGenerator_Grid
-// 0x0040 (0x0458 - 0x0418)
-struct FGpsGenerator_Grid final : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x40];                                     // 0x0418(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Grid;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_HasNavLoS
-// 0x00B8 (0x0138 - 0x0080)
-struct FGbxBrainAspectSettings_HasNavLoS final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              target;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Distance;                                          // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bIncludeTargetRadius;                              // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_F1[0x7];                                       // 0x00F1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              Height;                                            // 0x00F8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bIncludeTargetHalfHeight;                          // 0x0130(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFailIfNavLineOfSightLost;                         // 0x0131(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bInvert;                                           // 0x0132(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_133[0x5];                                      // 0x0133(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_HasNavLoS;
-
-// ScriptStruct GbxAI.GbxBrainAspect_HasNavLoS
-// 0x0010 (0x00E8 - 0x00D8)
-struct FGbxBrainAspect_HasNavLoS final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_HasNavLoS;
-
-// ScriptStruct GbxAI.GbxBrainAspect_InLineOfFire
-// 0x0010 (0x00E8 - 0x00D8)
-struct FGbxBrainAspect_InLineOfFire final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_InLineOfFire;
-
-// ScriptStruct GbxAI.GpsGenerator_Project
-// 0x0050 (0x0468 - 0x0418)
-struct FGpsGenerator_Project : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x50];                                     // 0x0418(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Project;
-
-// ScriptStruct GbxAI.GpsGenerator_Line
-// 0x0040 (0x04A8 - 0x0468)
-struct FGpsGenerator_Line final : public FGpsGenerator_Project
-{
-public:
-	uint8                                         Pad_468[0x40];                                     // 0x0468(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Line;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_IsInTerritory
-// 0x00C8 (0x0148 - 0x0080)
-struct FGbxBrainAspectSettings_IsInTerritory final : public FGbxBrainAspectSettings
-{
-public:
-	EGbxTerritoryArea                             TerritoryArea;                                     // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              Goal;                                              // 0x0088(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseGoal;                                          // 0x00C0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C1[0x7];                                       // 0x00C1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              TimeThreshold;                                     // 0x00C8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseTimeThreshold;                                 // 0x0100(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_101[0x7];                                      // 0x0101(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              DistanceThreshold;                                 // 0x0108(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseDistanceThreshold;                             // 0x0140(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bInvert;                                           // 0x0141(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bInvertSucceeding;                                 // 0x0142(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bTrackLastLocationInTerritory;                     // 0x0143(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIgnoreThresoldWhenTerritoryChanges;               // 0x0144(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIgnoreExclusionVolumes;                           // 0x0145(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseGlobalTerritoryRestrictionCondition;           // 0x0146(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_147[0x1];                                      // 0x0147(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_IsInTerritory;
-
-// ScriptStruct GbxAI.GbxBrainAspect_IsInTerritory
-// 0x0050 (0x0128 - 0x00D8)
-struct FGbxBrainAspect_IsInTerritory final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x50];                                      // 0x00D8(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_IsInTerritory;
-
-// ScriptStruct GbxAI.GpsGenerator_History
-// 0x0008 (0x0420 - 0x0418)
-struct FGpsGenerator_History final : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x8];                                      // 0x0418(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_History;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_IsNavReachable
-// 0x0078 (0x00F8 - 0x0080)
-struct FGbxBrainAspectSettings_IsNavReachable final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              Goal;                                              // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              MaxDistance;                                       // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bFailIfNoLongerReachable;                          // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bInvert;                                           // 0x00F1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_F2[0x6];                                       // 0x00F2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_IsNavReachable;
-
-// ScriptStruct GbxAI.GpsGenerator_Circle
-// 0x0028 (0x0440 - 0x0418)
-struct FGpsGenerator_Circle final : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x28];                                     // 0x0418(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Circle;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_IsOnTerrain
-// 0x0048 (0x00C8 - 0x0080)
-struct FGbxBrainAspectSettings_IsOnTerrain final : public FGbxBrainAspectSettings
-{
-public:
-	EGbxBrainAspectIsOnTerrainContext             ContextType;                                       // 0x0080(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_84[0x4];                                       // 0x0084(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              CustomContext;                                     // 0x0088(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bInvert;                                           // 0x00C0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bFailWhenNoLongerOnTerrain;                        // 0x00C1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C2[0x6];                                       // 0x00C2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_IsOnTerrain;
-
-// ScriptStruct GbxAI.GbxBrainAspect_IsOnTerrain
-// 0x0000 (0x00D8 - 0x00D8)
-struct FGbxBrainAspect_IsOnTerrain final : public FGbxBrainAspect
-{
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_IsOnTerrain;
-
-// ScriptStruct GbxAI.GbxBrainTask_Random_TaskSettings
-// 0x0040 (0x0040 - 0x0000)
-struct FGbxBrainTask_Random_TaskSettings final
-{
-public:
-	struct FGbxParam                              Weight;                                            // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
-	uint32                                        MaxRunCount;                                       // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseMaxRunCount;                                   // 0x003C(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainTask_Random_TaskSettings;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_LockTarget
-// 0x0010 (0x0090 - 0x0080)
-struct FGbxBrainAspectSettings_LockTarget final : public FGbxBrainAspectSettings
-{
-public:
-	class FName                                   reason;                                            // 0x0080(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseCustomReason;                                  // 0x0088(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_89[0x7];                                       // 0x0089(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_LockTarget;
-
-// ScriptStruct GbxAI.GbxBrainAspect_LockTarget
-// 0x0008 (0x00E0 - 0x00D8)
-struct FGbxBrainAspect_LockTarget final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_LockTarget;
-
-// ScriptStruct GbxAI.GpsGenerator_Targetables
-// 0x0000 (0x0448 - 0x0448)
-struct FGpsGenerator_Targetables final : public FGpsGenerator_Actors
-{
-};
-DUMPER7_ASSERTS_FGpsGenerator_Targetables;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_Loop
-// 0x0108 (0x0188 - 0x0080)
-struct FGbxBrainAspectSettings_Loop final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxBrainAspectSettings_ConditionData  LoopCondition;                                     // 0x0080(0x0080)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseLoopCondition;                                 // 0x0100(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_101[0x7];                                      // 0x0101(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              LoopCount;                                         // 0x0108(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseLoopCount;                                     // 0x0140(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_141[0x7];                                      // 0x0141(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              LoopDuration;                                      // 0x0148(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseLoopDuration;                                  // 0x0180(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bStopImmediately;                                  // 0x0181(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bIgnoreFailure;                                    // 0x0182(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_183[0x5];                                      // 0x0183(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_Loop;
-
-// ScriptStruct GbxAI.GbxBrainAspect_Loop
-// 0x0010 (0x00E8 - 0x00D8)
-struct FGbxBrainAspect_Loop final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_Loop;
-
-// ScriptStruct GbxAI.GbxBrainTaskSettings_Sequence
-// 0x0010 (0x00E0 - 0x00D0)
-struct FGbxBrainTaskSettings_Sequence final : public FGbxBrainTaskSettings_Selector
-{
-public:
-	EGbxBrainTaskSequenceCanStartCheck            CanStartChecks;                                    // 0x00D0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCanBeInterrupted;                                 // 0x00D1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D2[0x2];                                       // 0x00D2(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
-	TOptional<int32>                              CanInterruptThroughTask;                           // 0x00D4(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_DC[0x4];                                       // 0x00DC(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings_Sequence;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_MaxRuns
-// 0x0040 (0x00C0 - 0x0080)
-struct FGbxBrainAspectSettings_MaxRuns final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              MaxRuns;                                           // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bOnlyCountCertainResults;                          // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCountSuccess;                                     // 0x00B9(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCountFailure;                                     // 0x00BA(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCountInterruption;                                // 0x00BB(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCountAborted;                                     // 0x00BC(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_BD[0x3];                                       // 0x00BD(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_MaxRuns;
-
-// ScriptStruct GbxAI.GbxBrainAspect_MaxRuns
-// 0x0008 (0x00E0 - 0x00D8)
-struct FGbxBrainAspect_MaxRuns final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_MaxRuns;
-
-// ScriptStruct GbxAI.GbxBrainTask_Parallel_TaskSettings
-// 0x0004 (0x0004 - 0x0000)
-struct FGbxBrainTask_Parallel_TaskSettings final
-{
-public:
-	bool                                          bCanPreventTaskFromStarting;                       // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCanCauseTaskToSucceed;                            // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCanCauseTaskToFail;                               // 0x0002(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bMustFinish;                                       // 0x0003(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainTask_Parallel_TaskSettings;
-
-// ScriptStruct GbxAI.GbxBrainTaskSettings_Parallel
-// 0x0018 (0x00E8 - 0x00D0)
-struct FGbxBrainTaskSettings_Parallel final : public FGbxBrainTaskSettings_FlowControl
-{
-public:
-	EGbxBrainTaskParallelMode                     Mode;                                              // 0x00D0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bWaitForAllTasks;                                  // 0x00D4(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_D5[0x3];                                       // 0x00D5(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	TArray<struct FGbxBrainTask_Parallel_TaskSettings> TaskParallelSettingsList;                     // 0x00D8(0x0010)(Edit, EditFixedSize, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings_Parallel;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_Navigation
-// 0x0168 (0x01E8 - 0x0080)
-struct FGbxBrainAspectSettings_Navigation : public FGbxBrainAspectSettings
-{
-public:
-	uint8                                         Pad_80[0x18];                                      // 0x0080(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxNavGoalModifiers                   Modifiers;                                         // 0x0098(0x0080)(Edit, NativeAccessSpecifierPublic)
-	EGbxNavGoalCustomRotationContext              CustomGoalRotationContext;                         // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_119[0x7];                                      // 0x0119(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              DynamicRadius;                                     // 0x0120(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseDynamicRadius;                                 // 0x0158(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_159[0x7];                                      // 0x0159(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              DynamicHalfHeight;                                 // 0x0160(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseDynamicHalfHeight;                             // 0x0198(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_199[0x3];                                      // 0x0199(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	EAINavAspectType                              RunType;                                           // 0x019C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUpdateGoalWhileRunning;                           // 0x01A0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bStopImmediatelyWhenReachedGoal;                   // 0x01A1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bRemainAtReachedGoal;                              // 0x01A2(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bInvalidateUnreachableGoals;                       // 0x01A3(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bUseGoalsNumLimit;                                 // 0x01A4(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1A5[0x3];                                      // 0x01A5(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              GoalsNumLimit;                                     // 0x01A8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseLeavingAreaCosts;                              // 0x01E0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bWaitForStop;                                      // 0x01E1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1E2[0x6];                                      // 0x01E2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_Navigation;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_NavAttribute
-// 0x0038 (0x0220 - 0x01E8)
-struct FGbxBrainAspectSettings_NavAttribute : public FGbxBrainAspectSettings_Navigation
-{
-public:
-	struct FGbxParam                              GoalAttribute;                                     // 0x01E8(0x0038)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_NavAttribute;
-
-// ScriptStruct GbxAI.GpsGenerator_Range
-// 0x0030 (0x0448 - 0x0418)
-struct FGpsGenerator_Range : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x30];                                     // 0x0418(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Range;
-
-// ScriptStruct GbxAI.GpsGenerator_Random
-// 0x0008 (0x0450 - 0x0448)
-struct FGpsGenerator_Random final : public FGpsGenerator_Range
-{
-public:
-	uint8                                         Pad_448[0x8];                                      // 0x0448(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Random;
-
-// ScriptStruct GbxAI.GbxBrainAspect_Navigation
-// 0x0048 (0x0120 - 0x00D8)
-struct FGbxBrainAspect_Navigation : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x48];                                      // 0x00D8(0x0048)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_Navigation;
-
-// ScriptStruct GbxAI.GbxBrainAspect_NavAttribute
-// 0x0000 (0x0120 - 0x0120)
-struct FGbxBrainAspect_NavAttribute : public FGbxBrainAspect_Navigation
-{
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_NavAttribute;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_NavGps
-// 0x01E8 (0x03D0 - 0x01E8)
-struct FGbxBrainAspectSettings_NavGps final : public FGbxBrainAspectSettings_Navigation
-{
-public:
-	struct FGpsQueryRunData                       GoalQuery;                                         // 0x01E8(0x01E0)(Edit, NativeAccessSpecifierPublic)
-	EGpsBrainStyle                                QueryStyle;                                        // 0x03C8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3C9[0x7];                                      // 0x03C9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_NavGps;
-
-// ScriptStruct GbxAI.GbxBrainAspect_NavGps
-// 0x0138 (0x0258 - 0x0120)
-struct FGbxBrainAspect_NavGps final : public FGbxBrainAspect_Navigation
-{
-public:
-	uint8                                         Pad_120[0x138];                                    // 0x0120(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_NavGps;
-
-// ScriptStruct GbxAI.GpsGenerator_TargetInfo
-// 0x0398 (0x07B0 - 0x0418)
-struct FGpsGenerator_TargetInfo final : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x398];                                    // 0x0418(0x0398)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_TargetInfo;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_NavLink
-// 0x0040 (0x00C0 - 0x0080)
-struct FGbxBrainAspectSettings_NavLink final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              EndLocation;                                       // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGameplayTag                           AnimTag;                                           // 0x00B8(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_NavLink;
-
-// ScriptStruct GbxAI.GbxBrainAspect_NavLink
-// 0x0018 (0x00F0 - 0x00D8)
-struct FGbxBrainAspect_NavLink final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x18];                                      // 0x00D8(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_NavLink;
-
-// ScriptStruct GbxAI.GpsResultsNodeSettings
-// 0x0008 (0x0040 - 0x0038)
-struct FGpsResultsNodeSettings : public FGpsNodeSettings
-{
-public:
-	uint8                                         Pad_38[0x8];                                       // 0x0038(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsResultsNodeSettings;
-
-// ScriptStruct GbxAI.GpsGeneratorSettings
-// 0x0000 (0x0040 - 0x0040)
-struct FGpsGeneratorSettings : public FGpsResultsNodeSettings
-{
-};
-DUMPER7_ASSERTS_FGpsGeneratorSettings;
-
-// ScriptStruct GbxAI.GpsGeneratorSettings_Range
-// 0x0280 (0x02C0 - 0x0040)
-struct FGpsGeneratorSettings_Range : public FGpsGeneratorSettings
-{
-public:
-	struct FGbxBinding_Float                      MinRadius;                                         // 0x0040(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Float                      MaxRadius;                                         // 0x0060(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Vector                     Center;                                            // 0x0080(0x0098)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Float                      MinSpacing;                                        // 0x0118(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Float                      ArcAngle;                                          // 0x0138(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGpsDirectionSettings                  ArcDirection;                                      // 0x0158(0x0160)(Edit, Protected, NativeAccessSpecifierProtected)
-	bool                                          bLimitAngle;                                       // 0x02B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_2B9[0x7];                                      // 0x02B9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGeneratorSettings_Range;
-
-// ScriptStruct GbxAI.GpsGeneratorSettings_Random
-// 0x0020 (0x02E0 - 0x02C0)
-struct FGpsGeneratorSettings_Random final : public FGpsGeneratorSettings_Range
-{
-public:
-	struct FGbxBinding_NumericRange               NumPoints;                                         // 0x02C0(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-};
-DUMPER7_ASSERTS_FGpsGeneratorSettings_Random;
-
-// ScriptStruct GbxAI.OrbitSettings
-// 0x0250 (0x0250 - 0x0000)
-struct FOrbitSettings final
-{
-public:
-	struct FGbxParam                              Center;                                            // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              HeightOffset;                                      // 0x0038(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Radius;                                            // 0x0070(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              FallBackRadius;                                    // 0x00A8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Angle;                                             // 0x00E0(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              AngleInterval;                                     // 0x0118(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              SearchRadius;                                      // 0x0150(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              SearchHalfHeight;                                  // 0x0188(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bRespectCombatTerritory;                           // 0x01C0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	EOrbitDirection                               Direction;                                         // 0x01C1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_1C2[0x6];                                      // 0x01C2(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              DirectionGoal;                                     // 0x01C8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              RunContinuously;                                   // 0x0200(0x0038)(Edit, NativeAccessSpecifierPublic)
-	FGameDataHandleProperty_                      OrbitStance;                                       // 0x0238(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FOrbitSettings;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_Orbit
-// 0x0250 (0x0438 - 0x01E8)
-struct FGbxBrainAspectSettings_Orbit final : public FGbxBrainAspectSettings_Navigation
-{
-public:
-	struct FOrbitSettings                         OrbitSettings;                                     // 0x01E8(0x0250)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_Orbit;
-
-// ScriptStruct GbxAI.GpsGenerator_Trace
-// 0x0088 (0x04A0 - 0x0418)
-struct FGpsGenerator_Trace final : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x88];                                     // 0x0418(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Trace;
-
-// ScriptStruct GbxAI.GbxBrainAspect_Orbit
-// 0x00B0 (0x01D0 - 0x0120)
-struct FGbxBrainAspect_Orbit final : public FGbxBrainAspect_Navigation
-{
-public:
-	uint8                                         Pad_120[0xB0];                                     // 0x0120(0x00B0)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_Orbit;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_ReserveLineOfFire
-// 0x00B0 (0x0130 - 0x0080)
-struct FGbxBrainAspectSettings_ReserveLineOfFire final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              target;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Origin;                                            // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              Radius;                                            // 0x00F0(0x0038)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bInvalidateUnreachableGoals;                       // 0x0128(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_129[0x7];                                      // 0x0129(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_ReserveLineOfFire;
+DUMPER7_ASSERTS_FGbxAggroValueResolver;
 
 // ScriptStruct GbxAI.GpsNavMesh
 // 0x0040 (0x0040 - 0x0000)
@@ -2331,82 +1628,6 @@ public:
 	uint8                                         Pad_3B[0x5];                                       // 0x003B(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsNavMesh;
-
-// ScriptStruct GbxAI.GbxBrainAspect_ReserveLineOfFire
-// 0x0020 (0x00F8 - 0x00D8)
-struct FGbxBrainAspect_ReserveLineOfFire final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x20];                                      // 0x00D8(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_ReserveLineOfFire;
-
-// ScriptStruct GbxAI.GbxBrainAspectSetParamValueData
-// 0x0078 (0x0078 - 0x0000)
-struct FGbxBrainAspectSetParamValueData final
-{
-public:
-	struct FGbxParam                              Value;                                             // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
-	EGbxBrainAspectSetParamValueContext           ContextType;                                       // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_3C[0x4];                                       // 0x003C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              CustomContext;                                     // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSetParamValueData;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_SetParam
-// 0x0178 (0x01F8 - 0x0080)
-struct FGbxBrainAspectSettings_SetParam final : public FGbxBrainAspectSettings
-{
-public:
-	struct FGbxParam                              Parameter;                                         // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
-	EGbxBrainAspectSetParamContext                ContextType;                                       // 0x00B8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_BC[0x4];                                       // 0x00BC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              CustomContext;                                     // 0x00C0(0x0038)(Edit, NativeAccessSpecifierPublic)
-	EGbxBrainAspectSetParamOnStartBehavior        OnStartBehavior;                                   // 0x00F8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_FC[0x4];                                       // 0x00FC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBrainAspectSetParamValueData       OnStartData;                                       // 0x0100(0x0078)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bApplyOnStartDataOnUpdate;                         // 0x0178(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_179[0x3];                                      // 0x0179(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	EGbxBrainAspectSetParamOnStopBehavior         OnStopBehavior;                                    // 0x017C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxBrainAspectSetParamValueData       OnStopData;                                        // 0x0180(0x0078)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_SetParam;
-
-// ScriptStruct GbxAI.GbxBrainAspect_SetParam
-// 0x0028 (0x0100 - 0x00D8)
-struct FGbxBrainAspect_SetParam final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x28];                                      // 0x00D8(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_SetParam;
-
-// ScriptStruct GbxAI.GpsGenerator_Territory
-// 0x0130 (0x0548 - 0x0418)
-struct FGpsGenerator_Territory final : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x130];                                    // 0x0418(0x0130)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Territory;
-
-// ScriptStruct GbxAI.GbxBrainAspectSettings_Stance
-// 0x0018 (0x0098 - 0x0080)
-struct FGbxBrainAspectSettings_Stance final : public FGbxBrainAspectSettings
-{
-public:
-	FGameDataHandleProperty_                      stance;                                            // 0x0080(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainAspectSettings_Stance;
-
-// ScriptStruct GbxAI.GbxBrainAspect_Stance
-// 0x0010 (0x00E8 - 0x00D8)
-struct FGbxBrainAspect_Stance final : public FGbxBrainAspect
-{
-public:
-	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainAspect_Stance;
 
 // ScriptStruct GbxAI.GpsTraceCollisionChannel
 // 0x0002 (0x0002 - 0x0000)
@@ -2487,6 +1708,906 @@ public:
 };
 DUMPER7_ASSERTS_FGpsModifierSettings_Project;
 
+// ScriptStruct GbxAI.GpsConditionSettings_IsFirstRun
+// 0x0000 (0x0040 - 0x0040)
+struct FGpsConditionSettings_IsFirstRun final : public FGpsConditionSettings
+{
+};
+DUMPER7_ASSERTS_FGpsConditionSettings_IsFirstRun;
+
+// ScriptStruct GbxAI.GbxTerritorySettings
+// 0x0378 (0x0378 - 0x0000)
+struct FGbxTerritorySettings final
+{
+public:
+	class FString                                 Description;                                       // 0x0000(0x0010)(Edit, ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxTerritoryAreaData                  PatrolTerritory;                                   // 0x0010(0x0120)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxTerritoryAreaData                  ThreatTerritory;                                   // 0x0130(0x0120)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxTerritoryAreaData                  CombatTerritory;                                   // 0x0250(0x0120)(Edit, NativeAccessSpecifierPublic)
+	EGbxTerritoryArea                             CombatProxy;                                       // 0x0370(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseCombatProxy;                                   // 0x0371(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAlwaysAwareInThreatArea;                          // 0x0372(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_373[0x5];                                      // 0x0373(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxTerritorySettings;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_AttachTerritory
+// 0x0738 (0x07B8 - 0x0080)
+struct FGbxBrainAspectSettings_AttachTerritory final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              target;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUpdateTarget;                                     // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bAttachToSelfIfNoTarget;                           // 0x00B9(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_BA[0x6];                                       // 0x00BA(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxTerritorySettings                  TerritorySettings;                                 // 0x00C0(0x0378)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bAlwaysAwareInThreatArea;                          // 0x0438(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_439[0x7];                                      // 0x0439(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	class FString                                 Description;                                       // 0x0440(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxTerritoryAreaData                  PatrolTerritory;                                   // 0x0450(0x0120)(NativeAccessSpecifierPublic)
+	struct FGbxTerritoryAreaData                  ThreatTerritory;                                   // 0x0570(0x0120)(NativeAccessSpecifierPublic)
+	struct FGbxTerritoryAreaData                  CombatTerritory;                                   // 0x0690(0x0120)(NativeAccessSpecifierPublic)
+	EGbxTerritoryArea                             CombatProxy;                                       // 0x07B0(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseCombatProxy;                                   // 0x07B1(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_7B2[0x6];                                      // 0x07B2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_AttachTerritory;
+
+// ScriptStruct GbxAI.GpsFlow
+// 0x0018 (0x0430 - 0x0418)
+struct FGpsFlow : public FGpsResultsNode
+{
+public:
+	uint8                                         Pad_418[0x18];                                     // 0x0418(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsFlow;
+
+// ScriptStruct GbxAI.GbxBrainAspect_AttachTerritory
+// 0x0008 (0x00E0 - 0x00D8)
+struct FGbxBrainAspect_AttachTerritory final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_AttachTerritory;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_CanSee
+// 0x0078 (0x00F8 - 0x0080)
+struct FGbxBrainAspectSettings_CanSee final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              target;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	ECanSeeAspectTestMode                         Mode;                                              // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_B9[0x7];                                       // 0x00B9(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              Threshold;                                         // 0x00C0(0x0038)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_CanSee;
+
+// ScriptStruct GbxAI.GpsConditionSettings_Timer
+// 0x0028 (0x0068 - 0x0040)
+struct FGpsConditionSettings_Timer final : public FGpsConditionSettings
+{
+public:
+	EGpsTimerMode                                 Mode;                                              // 0x0040(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_44[0x4];                                       // 0x0044(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBinding_NumericRange               TimeRange;                                         // 0x0048(0x0020)(Edit, NativeAccessSpecifierPrivate)
+};
+DUMPER7_ASSERTS_FGpsConditionSettings_Timer;
+
+// ScriptStruct GbxAI.GbxBrainAspect_CanSee
+// 0x0000 (0x00D8 - 0x00D8)
+struct FGbxBrainAspect_CanSee final : public FGbxBrainAspect
+{
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_CanSee;
+
+// ScriptStruct GbxAI.GpsResultsNodeSettings
+// 0x0008 (0x0040 - 0x0038)
+struct FGpsResultsNodeSettings : public FGpsNodeSettings
+{
+public:
+	uint8                                         Pad_38[0x8];                                       // 0x0038(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsResultsNodeSettings;
+
+// ScriptStruct GbxAI.GpsFlowSettings
+// 0x0000 (0x0040 - 0x0040)
+struct FGpsFlowSettings : public FGpsResultsNodeSettings
+{
+};
+DUMPER7_ASSERTS_FGpsFlowSettings;
+
+// ScriptStruct GbxAI.GbxBrainAspect_ChanceToStart
+// 0x0010 (0x00E8 - 0x00D8)
+struct FGbxBrainAspect_ChanceToStart final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_ChanceToStart;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_ClaimCover
+// 0x0038 (0x00B8 - 0x0080)
+struct FGbxBrainAspectSettings_ClaimCover final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              Cover;                                             // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_ClaimCover;
+
+// ScriptStruct GbxAI.GbxBrainAspect_ClaimCover
+// 0x0008 (0x00E0 - 0x00D8)
+struct FGbxBrainAspect_ClaimCover final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_ClaimCover;
+
+// ScriptStruct GbxAI.GpsFlow_Combine
+// 0x0000 (0x0430 - 0x0430)
+struct FGpsFlow_Combine : public FGpsFlow
+{
+};
+DUMPER7_ASSERTS_FGpsFlow_Combine;
+
+// ScriptStruct GbxAI.GbxBrainAspect_CompareValue
+// 0x0000 (0x00D8 - 0x00D8)
+struct FGbxBrainAspect_CompareValue final : public FGbxBrainAspect
+{
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_CompareValue;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_ConditionData
+// 0x0080 (0x0080 - 0x0000)
+struct FGbxBrainAspectSettings_ConditionData final
+{
+public:
+	struct FGbxParam                              Condition;                                         // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
+	EGbxBrainAspectSettingsConditionContext       ContextType;                                       // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3C[0x4];                                       // 0x003C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              CustomContext;                                     // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bInvert;                                           // 0x0078(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_79[0x7];                                       // 0x0079(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_ConditionData;
+
+// ScriptStruct GbxAI.GpsDirectionSettings
+// 0x0160 (0x0160 - 0x0000)
+struct FGpsDirectionSettings final
+{
+public:
+	EGpsDirectionType                             DirectionType;                                     // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	uint8                                         Pad_4[0x4];                                        // 0x0004(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBinding_Rotator                    Rotation;                                          // 0x0008(0x0060)(Edit, NativeAccessSpecifierPrivate)
+	struct FGbxBinding_Vector                     Towards;                                           // 0x0068(0x0098)(Edit, NativeAccessSpecifierPrivate)
+	struct FGbxBinding_Rotator                    TowardsRotationOffset;                             // 0x0100(0x0060)(Edit, NativeAccessSpecifierPrivate)
+};
+DUMPER7_ASSERTS_FGpsDirectionSettings;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_Condition
+// 0x0220 (0x02A0 - 0x0080)
+struct FGbxBrainAspectSettings_Condition final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxBrainAspectSettings_ConditionData  CanStartCondition;                                 // 0x0080(0x0080)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseCanStartCondition;                             // 0x0100(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_101[0x7];                                      // 0x0101(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBrainAspectSettings_ConditionData  CanInterruptCondition;                             // 0x0108(0x0080)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseCanInterruptCondition;                         // 0x0188(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_189[0x7];                                      // 0x0189(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBrainAspectSettings_ConditionData  SucceedCondition;                                  // 0x0190(0x0080)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseSucceedCondition;                              // 0x0210(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_211[0x7];                                      // 0x0211(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBrainAspectSettings_ConditionData  FailCondition;                                     // 0x0218(0x0080)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseFailCondition;                                 // 0x0298(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_299[0x7];                                      // 0x0299(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_Condition;
+
+// ScriptStruct GbxAI.GbxBrainAspect_Condition
+// 0x0008 (0x00E0 - 0x00D8)
+struct FGbxBrainAspect_Condition final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_Condition;
+
+// ScriptStruct GbxAI.GpsFlow_Root
+// 0x0000 (0x0430 - 0x0430)
+struct FGpsFlow_Root final : public FGpsFlow_Combine
+{
+};
+DUMPER7_ASSERTS_FGpsFlow_Root;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_CountAllies
+// 0x0040 (0x00C0 - 0x0080)
+struct FGbxBrainAspectSettings_CountAllies final : public FGbxBrainAspectSettings
+{
+public:
+	EGbxComparator                                Comparator;                                        // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              ComparisonValue;                                   // 0x0088(0x0038)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_CountAllies;
+
+// ScriptStruct GbxAI.GbxBrainAspect_CountAllies
+// 0x0000 (0x00D8 - 0x00D8)
+struct FGbxBrainAspect_CountAllies final : public FGbxBrainAspect
+{
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_CountAllies;
+
+// ScriptStruct GbxAI.GpsGenerator_Active
+// 0x0000 (0x0418 - 0x0418)
+struct FGpsGenerator_Active final : public FGpsGenerator
+{
+};
+DUMPER7_ASSERTS_FGpsGenerator_Active;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_Gps
+// 0x0220 (0x02A0 - 0x0080)
+struct FGbxBrainAspectSettings_Gps : public FGbxBrainAspectSettings
+{
+public:
+	struct FGpsQueryRunData                       QuerySettings;                                     // 0x0080(0x01E0)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Result;                                            // 0x0260(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bClearResultOnStop;                                // 0x0298(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGpsBrainStyle                                QueryStyle;                                        // 0x0299(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_29A[0x6];                                      // 0x029A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_Gps;
+
+// ScriptStruct GbxAI.GbxBrainAspect_Gps
+// 0x0138 (0x0210 - 0x00D8)
+struct FGbxBrainAspect_Gps : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x138];                                     // 0x00D8(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_Gps;
+
+// ScriptStruct GbxAI.GpsFlow_Priority
+// 0x0000 (0x0430 - 0x0430)
+struct FGpsFlow_Priority final : public FGpsFlow
+{
+};
+DUMPER7_ASSERTS_FGpsFlow_Priority;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_HasNavLoS
+// 0x00B8 (0x0138 - 0x0080)
+struct FGbxBrainAspectSettings_HasNavLoS final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              target;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Distance;                                          // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bIncludeTargetRadius;                              // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_F1[0x7];                                       // 0x00F1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              Height;                                            // 0x00F8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bIncludeTargetHalfHeight;                          // 0x0130(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFailIfNavLineOfSightLost;                         // 0x0131(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bInvert;                                           // 0x0132(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_133[0x5];                                      // 0x0133(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_HasNavLoS;
+
+// ScriptStruct GbxAI.GbxBrainAspect_HasNavLoS
+// 0x0010 (0x00E8 - 0x00D8)
+struct FGbxBrainAspect_HasNavLoS final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_HasNavLoS;
+
+// ScriptStruct GbxAI.GbxBrainTask_FlowControl
+// 0x0090 (0x01C0 - 0x0130)
+struct FGbxBrainTask_FlowControl : public FGbxBrainTask
+{
+public:
+	uint8                                         Pad_130[0x90];                                     // 0x0130(0x0090)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTask_FlowControl;
+
+// ScriptStruct GbxAI.GbxBrainTask_Selector
+// 0x0008 (0x01C8 - 0x01C0)
+struct FGbxBrainTask_Selector : public FGbxBrainTask_FlowControl
+{
+public:
+	uint8                                         Pad_1C0[0x8];                                      // 0x01C0(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTask_Selector;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_InLineOfFire
+// 0x0078 (0x00F8 - 0x0080)
+struct FGbxBrainAspectSettings_InLineOfFire final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              Origin;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Radius;                                            // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bFailWhenBlocking;                                 // 0x00F0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_F1[0x7];                                       // 0x00F1(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_InLineOfFire;
+
+// ScriptStruct GbxAI.GbxBrainAspect_InLineOfFire
+// 0x0010 (0x00E8 - 0x00D8)
+struct FGbxBrainAspect_InLineOfFire final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_InLineOfFire;
+
+// ScriptStruct GbxAI.GbxBrainAspect_IsInRange
+// 0x0008 (0x00E0 - 0x00D8)
+struct FGbxBrainAspect_IsInRange final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_IsInRange;
+
+// ScriptStruct GbxAI.GbxBrainTask_Priority_TaskSettings
+// 0x0004 (0x0004 - 0x0000)
+struct FGbxBrainTask_Priority_TaskSettings final
+{
+public:
+	bool                                          bCanCauseParentToStop;                             // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCanCauseParentToSucceed;                          // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCanCauseParentToFail;                             // 0x0002(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCheckCanStartIfUnknown;                           // 0x0003(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainTask_Priority_TaskSettings;
+
+// ScriptStruct GbxAI.GbxBrainTaskSettings_FlowControl
+// 0x0050 (0x00D0 - 0x0080)
+struct FGbxBrainTaskSettings_FlowControl : public FGbxBrainTaskSettings
+{
+public:
+	uint8                                         Pad_80[0x50];                                      // 0x0080(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings_FlowControl;
+
+// ScriptStruct GbxAI.GbxBrainTaskSettings_Selector
+// 0x0000 (0x00D0 - 0x00D0)
+struct FGbxBrainTaskSettings_Selector : public FGbxBrainTaskSettings_FlowControl
+{
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings_Selector;
+
+// ScriptStruct GbxAI.GbxBrainTaskSettings_Priority
+// 0x0018 (0x00E8 - 0x00D0)
+struct FGbxBrainTaskSettings_Priority : public FGbxBrainTaskSettings_Selector
+{
+public:
+	float                                         TryInterruptPeriod;                                // 0x00D0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         WaitForTaskCanStartDuration;                       // 0x00D4(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	TArray<struct FGbxBrainTask_Priority_TaskSettings> TaskPrioritySettingsList;                     // 0x00D8(0x0010)(Edit, EditFixedSize, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings_Priority;
+
+// ScriptStruct GbxAI.GbxBrainTaskSettings_AITree
+// 0x0000 (0x00E8 - 0x00E8)
+struct FGbxBrainTaskSettings_AITree final : public FGbxBrainTaskSettings_Priority
+{
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings_AITree;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_IsInTerritory
+// 0x00C8 (0x0148 - 0x0080)
+struct FGbxBrainAspectSettings_IsInTerritory final : public FGbxBrainAspectSettings
+{
+public:
+	EGbxTerritoryArea                             TerritoryArea;                                     // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              Goal;                                              // 0x0088(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseGoal;                                          // 0x00C0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C1[0x7];                                       // 0x00C1(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              TimeThreshold;                                     // 0x00C8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseTimeThreshold;                                 // 0x0100(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_101[0x7];                                      // 0x0101(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              DistanceThreshold;                                 // 0x0108(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseDistanceThreshold;                             // 0x0140(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bInvert;                                           // 0x0141(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bInvertSucceeding;                                 // 0x0142(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bTrackLastLocationInTerritory;                     // 0x0143(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIgnoreThresoldWhenTerritoryChanges;               // 0x0144(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIgnoreExclusionVolumes;                           // 0x0145(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseGlobalTerritoryRestrictionCondition;           // 0x0146(0x0001)(ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_147[0x1];                                      // 0x0147(0x0001)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_IsInTerritory;
+
+// ScriptStruct GbxAI.GbxBrainAspect_IsInTerritory
+// 0x0050 (0x0128 - 0x00D8)
+struct FGbxBrainAspect_IsInTerritory final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x50];                                      // 0x00D8(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_IsInTerritory;
+
+// ScriptStruct GbxAI.GbxBrainAspect_IsNavReachable
+// 0x0010 (0x00E8 - 0x00D8)
+struct FGbxBrainAspect_IsNavReachable final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_IsNavReachable;
+
+// ScriptStruct GbxAI.GpsGeneratorSettings
+// 0x0000 (0x0040 - 0x0040)
+struct FGpsGeneratorSettings : public FGpsResultsNodeSettings
+{
+};
+DUMPER7_ASSERTS_FGpsGeneratorSettings;
+
+// ScriptStruct GbxAI.GpsGeneratorSettings_Range
+// 0x0280 (0x02C0 - 0x0040)
+struct FGpsGeneratorSettings_Range : public FGpsGeneratorSettings
+{
+public:
+	struct FGbxBinding_Float                      MinRadius;                                         // 0x0040(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Float                      MaxRadius;                                         // 0x0060(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Vector                     Center;                                            // 0x0080(0x0098)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Float                      MinSpacing;                                        // 0x0118(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Float                      ArcAngle;                                          // 0x0138(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGpsDirectionSettings                  ArcDirection;                                      // 0x0158(0x0160)(Edit, Protected, NativeAccessSpecifierProtected)
+	bool                                          bLimitAngle;                                       // 0x02B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_2B9[0x7];                                      // 0x02B9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGeneratorSettings_Range;
+
+// ScriptStruct GbxAI.GpsGeneratorSettings_Random
+// 0x0020 (0x02E0 - 0x02C0)
+struct FGpsGeneratorSettings_Random final : public FGpsGeneratorSettings_Range
+{
+public:
+	struct FGbxBinding_NumericRange               NumPoints;                                         // 0x02C0(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+};
+DUMPER7_ASSERTS_FGpsGeneratorSettings_Random;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_IsOnTerrain
+// 0x0048 (0x00C8 - 0x0080)
+struct FGbxBrainAspectSettings_IsOnTerrain final : public FGbxBrainAspectSettings
+{
+public:
+	EGbxBrainAspectIsOnTerrainContext             ContextType;                                       // 0x0080(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_84[0x4];                                       // 0x0084(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              CustomContext;                                     // 0x0088(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bInvert;                                           // 0x00C0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bFailWhenNoLongerOnTerrain;                        // 0x00C1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, AdvancedDisplay, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_C2[0x6];                                       // 0x00C2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_IsOnTerrain;
+
+// ScriptStruct GbxAI.GbxBrainAspect_IsOnTerrain
+// 0x0000 (0x00D8 - 0x00D8)
+struct FGbxBrainAspect_IsOnTerrain final : public FGbxBrainAspect
+{
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_IsOnTerrain;
+
+// ScriptStruct GbxAI.GpsGeneratorSettings_Project
+// 0x0040 (0x0080 - 0x0040)
+struct FGpsGeneratorSettings_Project : public FGpsGeneratorSettings
+{
+public:
+	struct FGpsTrace                              GeometryData;                                      // 0x0040(0x0040)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGpsGeneratorSettings_Project;
+
+// ScriptStruct GbxAI.GpsGeneratorSettings_Line
+// 0x0160 (0x01E0 - 0x0080)
+struct FGpsGeneratorSettings_Line final : public FGpsGeneratorSettings_Project
+{
+public:
+	struct FGbxBinding_Vector                     Center;                                            // 0x0080(0x0098)(Edit, Protected, NativeAccessSpecifierProtected)
+	bool                                          bUseTrace;                                         // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	uint8                                         Pad_119[0x7];                                      // 0x0119(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBinding_Float                      PostTraceOffset;                                   // 0x0120(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Float                      MaxLength;                                         // 0x0140(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Rotator                    Rotation;                                          // 0x0160(0x0060)(Edit, Protected, NativeAccessSpecifierProtected)
+	struct FGbxBinding_Int                        NumPoints;                                         // 0x01C0(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
+};
+DUMPER7_ASSERTS_FGpsGeneratorSettings_Line;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_LockTarget
+// 0x0010 (0x0090 - 0x0080)
+struct FGbxBrainAspectSettings_LockTarget final : public FGbxBrainAspectSettings
+{
+public:
+	class FName                                   reason;                                            // 0x0080(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseCustomReason;                                  // 0x0088(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_89[0x7];                                       // 0x0089(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_LockTarget;
+
+// ScriptStruct GbxAI.GbxBrainAspect_LockTarget
+// 0x0008 (0x00E0 - 0x00D8)
+struct FGbxBrainAspect_LockTarget final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_LockTarget;
+
+// ScriptStruct GbxAI.GpsGenerator_Grid
+// 0x0040 (0x0458 - 0x0418)
+struct FGpsGenerator_Grid final : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x40];                                     // 0x0418(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Grid;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_Loop
+// 0x0108 (0x0188 - 0x0080)
+struct FGbxBrainAspectSettings_Loop final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxBrainAspectSettings_ConditionData  LoopCondition;                                     // 0x0080(0x0080)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseLoopCondition;                                 // 0x0100(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_101[0x7];                                      // 0x0101(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              LoopCount;                                         // 0x0108(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseLoopCount;                                     // 0x0140(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_141[0x7];                                      // 0x0141(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              LoopDuration;                                      // 0x0148(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseLoopDuration;                                  // 0x0180(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bStopImmediately;                                  // 0x0181(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bIgnoreFailure;                                    // 0x0182(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_183[0x5];                                      // 0x0183(0x0005)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_Loop;
+
+// ScriptStruct GbxAI.GbxBrainAspect_Loop
+// 0x0010 (0x00E8 - 0x00D8)
+struct FGbxBrainAspect_Loop final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_Loop;
+
+// ScriptStruct GbxAI.GpsGenerator_Point
+// 0x0018 (0x0430 - 0x0418)
+struct FGpsGenerator_Point final : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x18];                                     // 0x0418(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Point;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_MaxRuns
+// 0x0040 (0x00C0 - 0x0080)
+struct FGbxBrainAspectSettings_MaxRuns final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              MaxRuns;                                           // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bOnlyCountCertainResults;                          // 0x00B8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCountSuccess;                                     // 0x00B9(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCountFailure;                                     // 0x00BA(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCountInterruption;                                // 0x00BB(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCountAborted;                                     // 0x00BC(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_BD[0x3];                                       // 0x00BD(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_MaxRuns;
+
+// ScriptStruct GbxAI.GbxBrainAspect_MaxRuns
+// 0x0008 (0x00E0 - 0x00D8)
+struct FGbxBrainAspect_MaxRuns final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_MaxRuns;
+
+// ScriptStruct GbxAI.GpsGenerator_Territory
+// 0x0130 (0x0548 - 0x0418)
+struct FGpsGenerator_Territory final : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x130];                                    // 0x0418(0x0130)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Territory;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_Navigation
+// 0x0168 (0x01E8 - 0x0080)
+struct FGbxBrainAspectSettings_Navigation : public FGbxBrainAspectSettings
+{
+public:
+	uint8                                         Pad_80[0x18];                                      // 0x0080(0x0018)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxNavGoalModifiers                   Modifiers;                                         // 0x0098(0x0080)(Edit, NativeAccessSpecifierPublic)
+	EGbxNavGoalCustomRotationContext              CustomGoalRotationContext;                         // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_119[0x7];                                      // 0x0119(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              DynamicRadius;                                     // 0x0120(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseDynamicRadius;                                 // 0x0158(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_159[0x7];                                      // 0x0159(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              DynamicHalfHeight;                                 // 0x0160(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseDynamicHalfHeight;                             // 0x0198(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_199[0x3];                                      // 0x0199(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	EAINavAspectType                              RunType;                                           // 0x019C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUpdateGoalWhileRunning;                           // 0x01A0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bStopImmediatelyWhenReachedGoal;                   // 0x01A1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bRemainAtReachedGoal;                              // 0x01A2(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bInvalidateUnreachableGoals;                       // 0x01A3(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseGoalsNumLimit;                                 // 0x01A4(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1A5[0x3];                                      // 0x01A5(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              GoalsNumLimit;                                     // 0x01A8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bUseLeavingAreaCosts;                              // 0x01E0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bWaitForStop;                                      // 0x01E1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1E2[0x6];                                      // 0x01E2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_Navigation;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_NavAttribute
+// 0x0038 (0x0220 - 0x01E8)
+struct FGbxBrainAspectSettings_NavAttribute : public FGbxBrainAspectSettings_Navigation
+{
+public:
+	struct FGbxParam                              GoalAttribute;                                     // 0x01E8(0x0038)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_NavAttribute;
+
+// ScriptStruct GbxAI.GpsGenerator_Range
+// 0x0030 (0x0448 - 0x0418)
+struct FGpsGenerator_Range : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x30];                                     // 0x0418(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Range;
+
+// ScriptStruct GbxAI.GpsGenerator_Random
+// 0x0008 (0x0450 - 0x0448)
+struct FGpsGenerator_Random final : public FGpsGenerator_Range
+{
+public:
+	uint8                                         Pad_448[0x8];                                      // 0x0448(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Random;
+
+// ScriptStruct GbxAI.GbxBrainAspect_Navigation
+// 0x0048 (0x0120 - 0x00D8)
+struct FGbxBrainAspect_Navigation : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x48];                                      // 0x00D8(0x0048)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_Navigation;
+
+// ScriptStruct GbxAI.GbxBrainAspect_NavAttribute
+// 0x0000 (0x0120 - 0x0120)
+struct FGbxBrainAspect_NavAttribute : public FGbxBrainAspect_Navigation
+{
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_NavAttribute;
+
+// ScriptStruct GbxAI.GpsGenerator_Project
+// 0x0050 (0x0468 - 0x0418)
+struct FGpsGenerator_Project : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x50];                                     // 0x0418(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Project;
+
+// ScriptStruct GbxAI.GpsGenerator_Line
+// 0x0040 (0x04A8 - 0x0468)
+struct FGpsGenerator_Line final : public FGpsGenerator_Project
+{
+public:
+	uint8                                         Pad_468[0x40];                                     // 0x0468(0x0040)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Line;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_NavGps
+// 0x01E8 (0x03D0 - 0x01E8)
+struct FGbxBrainAspectSettings_NavGps final : public FGbxBrainAspectSettings_Navigation
+{
+public:
+	struct FGpsQueryRunData                       GoalQuery;                                         // 0x01E8(0x01E0)(Edit, NativeAccessSpecifierPublic)
+	EGpsBrainStyle                                QueryStyle;                                        // 0x03C8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3C9[0x7];                                      // 0x03C9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_NavGps;
+
+// ScriptStruct GbxAI.GbxBrainAspect_NavGps
+// 0x0138 (0x0258 - 0x0120)
+struct FGbxBrainAspect_NavGps final : public FGbxBrainAspect_Navigation
+{
+public:
+	uint8                                         Pad_120[0x138];                                    // 0x0120(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_NavGps;
+
+// ScriptStruct GbxAI.GpsGenerator_TargetInfo
+// 0x0398 (0x07B0 - 0x0418)
+struct FGpsGenerator_TargetInfo final : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x398];                                    // 0x0418(0x0398)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_TargetInfo;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_NavLink
+// 0x0040 (0x00C0 - 0x0080)
+struct FGbxBrainAspectSettings_NavLink final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              EndLocation;                                       // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGameplayTag                           AnimTag;                                           // 0x00B8(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_NavLink;
+
+// ScriptStruct GbxAI.GbxBrainAspect_NavLink
+// 0x0018 (0x00F0 - 0x00D8)
+struct FGbxBrainAspect_NavLink final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x18];                                      // 0x00D8(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_NavLink;
+
+// ScriptStruct GbxAI.GpsModifierSettings_Noise
+// 0x0028 (0x0088 - 0x0060)
+struct FGpsModifierSettings_Noise final : public FGpsModifierSettings
+{
+public:
+	EGpsModifierNoiseOffsetMode                   Mode;                                              // 0x0060(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_64[0x4];                                       // 0x0064(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBinding_Float                      Radius;                                            // 0x0068(0x0020)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGpsModifierSettings_Noise;
+
+// ScriptStruct GbxAI.OrbitSettings
+// 0x0250 (0x0250 - 0x0000)
+struct FOrbitSettings final
+{
+public:
+	struct FGbxParam                              Center;                                            // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              HeightOffset;                                      // 0x0038(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Radius;                                            // 0x0070(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              FallBackRadius;                                    // 0x00A8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Angle;                                             // 0x00E0(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              AngleInterval;                                     // 0x0118(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              SearchRadius;                                      // 0x0150(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              SearchHalfHeight;                                  // 0x0188(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bRespectCombatTerritory;                           // 0x01C0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EOrbitDirection                               Direction;                                         // 0x01C1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1C2[0x6];                                      // 0x01C2(0x0006)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              DirectionGoal;                                     // 0x01C8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              RunContinuously;                                   // 0x0200(0x0038)(Edit, NativeAccessSpecifierPublic)
+	FGameDataHandleProperty_                      OrbitStance;                                       // 0x0238(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FOrbitSettings;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_Orbit
+// 0x0250 (0x0438 - 0x01E8)
+struct FGbxBrainAspectSettings_Orbit final : public FGbxBrainAspectSettings_Navigation
+{
+public:
+	struct FOrbitSettings                         OrbitSettings;                                     // 0x01E8(0x0250)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_Orbit;
+
+// ScriptStruct GbxAI.GpsGenerator_Trace
+// 0x0088 (0x04A0 - 0x0418)
+struct FGpsGenerator_Trace final : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x88];                                     // 0x0418(0x0088)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Trace;
+
+// ScriptStruct GbxAI.GbxBrainAspect_Orbit
+// 0x00B0 (0x01D0 - 0x0120)
+struct FGbxBrainAspect_Orbit final : public FGbxBrainAspect_Navigation
+{
+public:
+	uint8                                         Pad_120[0xB0];                                     // 0x0120(0x00B0)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_Orbit;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_ReserveLineOfFire
+// 0x00B0 (0x0130 - 0x0080)
+struct FGbxBrainAspectSettings_ReserveLineOfFire final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              target;                                            // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Origin;                                            // 0x00B8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxParam                              Radius;                                            // 0x00F0(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bInvalidateUnreachableGoals;                       // 0x0128(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_129[0x7];                                      // 0x0129(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_ReserveLineOfFire;
+
+// ScriptStruct GbxAI.GpsGenerator_Actors
+// 0x0030 (0x0448 - 0x0418)
+struct FGpsGenerator_Actors : public FGpsGenerator
+{
+public:
+	uint8                                         Pad_418[0x30];                                     // 0x0418(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGenerator_Actors;
+
+// ScriptStruct GbxAI.GpsGenerator_Targetables
+// 0x0000 (0x0448 - 0x0448)
+struct FGpsGenerator_Targetables final : public FGpsGenerator_Actors
+{
+};
+DUMPER7_ASSERTS_FGpsGenerator_Targetables;
+
+// ScriptStruct GbxAI.GbxBrainAspect_ReserveLineOfFire
+// 0x0020 (0x00F8 - 0x00D8)
+struct FGbxBrainAspect_ReserveLineOfFire final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x20];                                      // 0x00D8(0x0020)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_ReserveLineOfFire;
+
+// ScriptStruct GbxAI.GbxBrainAspectSetParamValueData
+// 0x0078 (0x0078 - 0x0000)
+struct FGbxBrainAspectSetParamValueData final
+{
+public:
+	struct FGbxParam                              Value;                                             // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
+	EGbxBrainAspectSetParamValueContext           ContextType;                                       // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3C[0x4];                                       // 0x003C(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              CustomContext;                                     // 0x0040(0x0038)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSetParamValueData;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_SetParam
+// 0x0178 (0x01F8 - 0x0080)
+struct FGbxBrainAspectSettings_SetParam final : public FGbxBrainAspectSettings
+{
+public:
+	struct FGbxParam                              Parameter;                                         // 0x0080(0x0038)(Edit, NativeAccessSpecifierPublic)
+	EGbxBrainAspectSetParamContext                ContextType;                                       // 0x00B8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_BC[0x4];                                       // 0x00BC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxParam                              CustomContext;                                     // 0x00C0(0x0038)(Edit, NativeAccessSpecifierPublic)
+	EGbxBrainAspectSetParamOnStartBehavior        OnStartBehavior;                                   // 0x00F8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_FC[0x4];                                       // 0x00FC(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
+	struct FGbxBrainAspectSetParamValueData       OnStartData;                                       // 0x0100(0x0078)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bApplyOnStartDataOnUpdate;                         // 0x0178(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_179[0x3];                                      // 0x0179(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	EGbxBrainAspectSetParamOnStopBehavior         OnStopBehavior;                                    // 0x017C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	struct FGbxBrainAspectSetParamValueData       OnStopData;                                        // 0x0180(0x0078)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_SetParam;
+
+// ScriptStruct GbxAI.GbxBrainAspect_SetParam
+// 0x0028 (0x0100 - 0x00D8)
+struct FGbxBrainAspect_SetParam final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x28];                                      // 0x00D8(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_SetParam;
+
+// ScriptStruct GbxAI.GbxBrainAspectSettings_Stance
+// 0x0018 (0x0098 - 0x0080)
+struct FGbxBrainAspectSettings_Stance final : public FGbxBrainAspectSettings
+{
+public:
+	FGameDataHandleProperty_                      stance;                                            // 0x0080(0x0018)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainAspectSettings_Stance;
+
+// ScriptStruct GbxAI.GbxBrainAspect_Stance
+// 0x0010 (0x00E8 - 0x00D8)
+struct FGbxBrainAspect_Stance final : public FGbxBrainAspect
+{
+public:
+	uint8                                         Pad_D8[0x10];                                      // 0x00D8(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainAspect_Stance;
+
 // ScriptStruct GbxAI.GbxBrainAspectSettings_StopMoving
 // 0x0038 (0x00B8 - 0x0080)
 struct FGbxBrainAspectSettings_StopMoving final : public FGbxBrainAspectSettings
@@ -2523,18 +2644,6 @@ public:
 	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxBrainAspect_Ticket;
-
-// ScriptStruct GbxAI.GpsModifierSettings_Transform
-// 0x0228 (0x0288 - 0x0060)
-struct FGpsModifierSettings_Transform final : public FGpsModifierSettings
-{
-public:
-	struct FGbxBinding_Vector                     Origin;                                            // 0x0060(0x0098)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxBinding_Vector                     Translate;                                         // 0x00F8(0x0098)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxBinding_Rotator                    Rotate;                                            // 0x0190(0x0060)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxBinding_Vector                     scale;                                             // 0x01F0(0x0098)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGpsModifierSettings_Transform;
 
 // ScriptStruct GbxAI.GbxBrainAspectSettings_Timer
 // 0x02C0 (0x0340 - 0x0080)
@@ -2585,17 +2694,6 @@ public:
 	uint8                                         Pad_D8[0x30];                                      // 0x00D8(0x0030)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxBrainAspect_Timer;
-
-// ScriptStruct GbxAI.GpsModifierSettings_Noise
-// 0x0028 (0x0088 - 0x0060)
-struct FGpsModifierSettings_Noise final : public FGpsModifierSettings
-{
-public:
-	EGpsModifierNoiseOffsetMode                   Mode;                                              // 0x0060(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_64[0x4];                                       // 0x0064(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBinding_Float                      Radius;                                            // 0x0068(0x0020)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGpsModifierSettings_Noise;
 
 // ScriptStruct GbxAI.GbxBrainAspectSettings_UseCover
 // 0x01F0 (0x0270 - 0x0080)
@@ -2660,62 +2758,14 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBrainGraphState;
 
-// ScriptStruct GbxAI.GbxBrainTask
-// 0x0058 (0x0130 - 0x00D8)
-struct FGbxBrainTask : public FGbxBrainTaskBase
+// ScriptStruct GbxAI.GbxBrainService
+// 0x0028 (0x0030 - 0x0008)
+struct FGbxBrainService : public FGbxHasStructType
 {
 public:
-	uint8                                         Pad_D8[0x58];                                      // 0x00D8(0x0058)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	uint8                                         Pad_8[0x28];                                       // 0x0008(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxBrainTask;
-
-// ScriptStruct GbxAI.GbxBrainTask_Priority_TaskSettings
-// 0x0004 (0x0004 - 0x0000)
-struct FGbxBrainTask_Priority_TaskSettings final
-{
-public:
-	bool                                          bCanCauseParentToStop;                             // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCanCauseParentToSucceed;                          // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCanCauseParentToFail;                             // 0x0002(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	bool                                          bCheckCanStartIfUnknown;                           // 0x0003(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainTask_Priority_TaskSettings;
-
-// ScriptStruct GbxAI.GbxBrainTaskSettings_Priority
-// 0x0018 (0x00E8 - 0x00D0)
-struct FGbxBrainTaskSettings_Priority : public FGbxBrainTaskSettings_Selector
-{
-public:
-	float                                         TryInterruptPeriod;                                // 0x00D0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         WaitForTaskCanStartDuration;                       // 0x00D4(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	TArray<struct FGbxBrainTask_Priority_TaskSettings> TaskPrioritySettingsList;                     // 0x00D8(0x0010)(Edit, EditFixedSize, ZeroConstructor, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings_Priority;
-
-// ScriptStruct GbxAI.GbxBrainTaskSettings_AITree
-// 0x0000 (0x00E8 - 0x00E8)
-struct FGbxBrainTaskSettings_AITree final : public FGbxBrainTaskSettings_Priority
-{
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings_AITree;
-
-// ScriptStruct GbxAI.GbxBrainTask_FlowControl
-// 0x0090 (0x01C0 - 0x0130)
-struct FGbxBrainTask_FlowControl : public FGbxBrainTask
-{
-public:
-	uint8                                         Pad_130[0x90];                                     // 0x0130(0x0090)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainTask_FlowControl;
-
-// ScriptStruct GbxAI.GbxBrainTask_Selector
-// 0x0008 (0x01C8 - 0x01C0)
-struct FGbxBrainTask_Selector : public FGbxBrainTask_FlowControl
-{
-public:
-	uint8                                         Pad_1C0[0x8];                                      // 0x01C0(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainTask_Selector;
+DUMPER7_ASSERTS_FGbxBrainService;
 
 // ScriptStruct GbxAI.GbxBrainTask_Priority
 // 0x0020 (0x01E8 - 0x01C8)
@@ -2741,15 +2791,6 @@ public:
 	uint8                                         Pad_80[0x118];                                     // 0x0080(0x0118)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGbxBrainTaskSettings_Composite;
-
-// ScriptStruct GbxAI.GbxBrainTask_Composite
-// 0x0138 (0x0268 - 0x0130)
-struct FGbxBrainTask_Composite : public FGbxBrainTask
-{
-public:
-	uint8                                         Pad_130[0x138];                                    // 0x0130(0x0138)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGbxBrainTask_Composite;
 
 // ScriptStruct GbxAI.GbxBrainTaskSettings_CompositeQuery
 // 0x0000 (0x0198 - 0x0198)
@@ -2784,12 +2825,48 @@ struct FGbxBrainTask_External final : public FGbxBrainTask_ExternalBase
 };
 DUMPER7_ASSERTS_FGbxBrainTask_External;
 
+// ScriptStruct GbxAI.GbxBrainTask_Parallel_TaskSettings
+// 0x0004 (0x0004 - 0x0000)
+struct FGbxBrainTask_Parallel_TaskSettings final
+{
+public:
+	bool                                          bCanPreventTaskFromStarting;                       // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCanCauseTaskToSucceed;                            // 0x0001(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCanCauseTaskToFail;                               // 0x0002(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bMustFinish;                                       // 0x0003(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainTask_Parallel_TaskSettings;
+
+// ScriptStruct GbxAI.GbxBrainTaskSettings_Parallel
+// 0x0018 (0x00E8 - 0x00D0)
+struct FGbxBrainTaskSettings_Parallel final : public FGbxBrainTaskSettings_FlowControl
+{
+public:
+	EGbxBrainTaskParallelMode                     Mode;                                              // 0x00D0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bWaitForAllTasks;                                  // 0x00D4(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D5[0x3];                                       // 0x00D5(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	TArray<struct FGbxBrainTask_Parallel_TaskSettings> TaskParallelSettingsList;                     // 0x00D8(0x0010)(Edit, EditFixedSize, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings_Parallel;
+
 // ScriptStruct GbxAI.GbxBrainTask_Parallel
 // 0x0000 (0x01C0 - 0x01C0)
 struct FGbxBrainTask_Parallel final : public FGbxBrainTask_FlowControl
 {
 };
 DUMPER7_ASSERTS_FGbxBrainTask_Parallel;
+
+// ScriptStruct GbxAI.GbxBrainTask_Random_TaskSettings
+// 0x0040 (0x0040 - 0x0000)
+struct FGbxBrainTask_Random_TaskSettings final
+{
+public:
+	struct FGbxParam                              Weight;                                            // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
+	uint32                                        MaxRunCount;                                       // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bUseMaxRunCount;                                   // 0x003C(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_3D[0x3];                                       // 0x003D(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTask_Random_TaskSettings;
 
 // ScriptStruct GbxAI.GbxBrainTaskSettings_Random
 // 0x0018 (0x00E8 - 0x00D0)
@@ -2821,12 +2898,44 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBrainTask_Random;
 
+// ScriptStruct GbxAI.GbxBrainTaskSettings_Sequence
+// 0x0010 (0x00E0 - 0x00D0)
+struct FGbxBrainTaskSettings_Sequence final : public FGbxBrainTaskSettings_Selector
+{
+public:
+	EGbxBrainTaskSequenceCanStartCheck            CanStartChecks;                                    // 0x00D0(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	bool                                          bCanBeInterrupted;                                 // 0x00D1(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_D2[0x2];                                       // 0x00D2(0x0002)(Fixing Size After Last Property [ Dumper-7 ])
+	TOptional<int32>                              CanInterruptThroughTask;                           // 0x00D4(0x0008)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_DC[0x4];                                       // 0x00DC(0x0004)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings_Sequence;
+
 // ScriptStruct GbxAI.GbxBrainTask_Sequence
 // 0x0000 (0x01C8 - 0x01C8)
 struct FGbxBrainTask_Sequence final : public FGbxBrainTask_Selector
 {
 };
 DUMPER7_ASSERTS_FGbxBrainTask_Sequence;
+
+// ScriptStruct GbxAI.GbxBrainTask_StateMachine_TaskSettings
+// 0x0008 (0x0008 - 0x0000)
+struct FGbxBrainTask_StateMachine_TaskSettings final
+{
+public:
+	int32                                         OnSuccess;                                         // 0x0000(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	int32                                         OnFailure;                                         // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainTask_StateMachine_TaskSettings;
+
+// ScriptStruct GbxAI.GbxBrainTaskSettings_StateMachine
+// 0x0010 (0x00E0 - 0x00D0)
+struct FGbxBrainTaskSettings_StateMachine final : public FGbxBrainTaskSettings_Selector
+{
+public:
+	TArray<struct FGbxBrainTask_StateMachine_TaskSettings> TaskStateMachineSettingsList;             // 0x00D0(0x0010)(Edit, EditFixedSize, ZeroConstructor, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGbxBrainTaskSettings_StateMachine;
 
 // ScriptStruct GbxAI.GbxBrainTask_StateMachine_TaskState
 // 0x0001 (0x0001 - 0x0000)
@@ -2846,15 +2955,6 @@ public:
 };
 DUMPER7_ASSERTS_FGbxBrainTask_StateMachine;
 
-// ScriptStruct GbxAI.GbxBrainTaskSettings_Tagged
-// 0x0008 (0x0088 - 0x0080)
-struct FGbxBrainTaskSettings_Tagged final : public FGbxBrainTaskSettings
-{
-public:
-	struct FGameplayTag                           TaskTag;                                           // 0x0080(0x0008)(Edit, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGbxBrainTaskSettings_Tagged;
-
 // ScriptStruct GbxAI.GbxBrainTask_Tagged
 // 0x0008 (0x0270 - 0x0268)
 struct FGbxBrainTask_Tagged final : public FGbxBrainTask_ExternalBase
@@ -2871,33 +2971,16 @@ struct FGbxCondition_IsInCover final : public FGbxConditionValueResolver
 };
 DUMPER7_ASSERTS_FGbxCondition_IsInCover;
 
-// ScriptStruct GbxAI.GbxGlobalsAI
-// 0x00F0 (0x0110 - 0x0020)
-struct FGbxGlobalsAI : public FGbxGlobalDef
+// ScriptStruct GbxAI.GbxAIHeldFilter
+// 0x000C (0x000C - 0x0000)
+struct FGbxAIHeldFilter final
 {
 public:
-	uint8                                         Pad_20[0x10];                                      // 0x0020(0x0010)(Fixing Size After Last Property [ Dumper-7 ])
-	ECollisionChannel                             BulletSenseTraceChannel;                           // 0x0030(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_31[0x3];                                       // 0x0031(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         AttackAggroTime;                                   // 0x0034(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         TerritoryAggroTime;                                // 0x0038(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         RecentlyAggroedTime;                               // 0x003C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         MaxBrainTickTimeMs;                                // 0x0040(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_44[0x4];                                       // 0x0044(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              RestrictedToTerritoryAreaCondition;                // 0x0048(0x0038)(Edit, NativeAccessSpecifierPublic)
-	EGbxTerritoryArea                             RestrictedToTerritoryArea;                         // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_81[0x3];                                       // 0x0081(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	float                                         RestrictedToTerritoryTimeThreshold;                // 0x0084(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint32                                        MaxWeaponUsersPerTick;                             // 0x0088(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         TimeToBestAccuracy;                                // 0x008C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         DamagePercentToWorstAccuracy;                      // 0x0090(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         DamagePercentDecayRate;                            // 0x0094(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         AcceptableAngle;                                   // 0x0098(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         CoveringFireTime;                                  // 0x009C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	struct FGbxParam                              DefaultLeadTarget;                                 // 0x00A0(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxParam                              DefaultFollowTarget;                               // 0x00D8(0x0038)(Edit, NativeAccessSpecifierPublic)
+	class FName                                   ID;                                                // 0x0000(0x0008)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	EGbxAIHeldFilterType                          FindBy;                                            // 0x0008(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_9[0x3];                                        // 0x0009(0x0003)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
-DUMPER7_ASSERTS_FGbxGlobalsAI;
+DUMPER7_ASSERTS_FGbxAIHeldFilter;
 
 // ScriptStruct GbxAI.GbxTargetingTestAgentData
 // 0x0070 (0x0070 - 0x0000)
@@ -2949,6 +3032,13 @@ public:
 };
 DUMPER7_ASSERTS_FTargetLocationData;
 
+// ScriptStruct GbxAI.GbxTargetValueResolver
+// 0x0000 (0x0008 - 0x0008)
+struct FGbxTargetValueResolver final : public FAttributeValueResolver
+{
+};
+DUMPER7_ASSERTS_FGbxTargetValueResolver;
+
 // ScriptStruct GbxAI.GbxTerritoryValueResolver
 // 0x0008 (0x0010 - 0x0008)
 struct FGbxTerritoryValueResolver final : public FAttributeValueResolver
@@ -2985,19 +3075,6 @@ struct FGpsCondition_IsFirstRun final : public FGpsCondition
 };
 DUMPER7_ASSERTS_FGpsCondition_IsFirstRun;
 
-// ScriptStruct GbxAI.GpsConditionSettings_Ticket
-// 0x0080 (0x00C0 - 0x0040)
-struct FGpsConditionSettings_Ticket final : public FGpsConditionSettings
-{
-public:
-	struct FGbxParam                              Value;                                             // 0x0040(0x0038)(Edit, NativeAccessSpecifierPrivate)
-	class UGbxAITicketData*                       Ticket;                                            // 0x0078(0x0008)(Edit, ZeroConstructor, NoDestructor, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPrivate, TObjectPtr)
-	bool                                          bOverrideTicketTarget;                             // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxParam                              TicketTargetOverride;                              // 0x0088(0x0038)(Edit, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FGpsConditionSettings_Ticket;
-
 // ScriptStruct GbxAI.GpsCondition_Ticket
 // 0x00C0 (0x0118 - 0x0058)
 struct FGpsCondition_Ticket final : public FGpsCondition
@@ -3007,17 +3084,6 @@ public:
 };
 DUMPER7_ASSERTS_FGpsCondition_Ticket;
 
-// ScriptStruct GbxAI.GpsConditionSettings_Timer
-// 0x0028 (0x0068 - 0x0040)
-struct FGpsConditionSettings_Timer final : public FGpsConditionSettings
-{
-public:
-	EGpsTimerMode                                 Mode;                                              // 0x0040(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-	uint8                                         Pad_44[0x4];                                       // 0x0044(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBinding_NumericRange               TimeRange;                                         // 0x0048(0x0020)(Edit, NativeAccessSpecifierPrivate)
-};
-DUMPER7_ASSERTS_FGpsConditionSettings_Timer;
-
 // ScriptStruct GbxAI.GpsCondition_Timer
 // 0x0050 (0x00A8 - 0x0058)
 struct FGpsCondition_Timer final : public FGpsCondition
@@ -3026,13 +3092,6 @@ public:
 	uint8                                         Pad_58[0x50];                                      // 0x0058(0x0050)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsCondition_Timer;
-
-// ScriptStruct GbxAI.GpsFlowSettings
-// 0x0000 (0x0040 - 0x0040)
-struct FGpsFlowSettings : public FGpsResultsNodeSettings
-{
-};
-DUMPER7_ASSERTS_FGpsFlowSettings;
 
 // ScriptStruct GbxAI.GpsFlowSettings_Combine
 // 0x0000 (0x0040 - 0x0040)
@@ -3076,6 +3135,17 @@ public:
 	uint8                                         Pad_B9[0x7];                                       // 0x00B9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsGeneratorSettings_Actors_DistanceFilter;
+
+// ScriptStruct GbxAI.GpsGeneratorSettings_Actors_ConditionFilter
+// 0x0040 (0x0040 - 0x0000)
+struct FGpsGeneratorSettings_Actors_ConditionFilter final
+{
+public:
+	struct FGbxParam                              Condition;                                         // 0x0000(0x0038)(Edit, NativeAccessSpecifierPublic)
+	bool                                          bInvert;                                           // 0x0038(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_39[0x7];                                       // 0x0039(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsGeneratorSettings_Actors_ConditionFilter;
 
 // ScriptStruct GbxAI.GpsGeneratorSettings_Actors
 // 0x0188 (0x01C8 - 0x0040)
@@ -3153,30 +3223,6 @@ public:
 };
 DUMPER7_ASSERTS_FGpsGeneratorSettings_History;
 
-// ScriptStruct GbxAI.GpsGeneratorSettings_Project
-// 0x0040 (0x0080 - 0x0040)
-struct FGpsGeneratorSettings_Project : public FGpsGeneratorSettings
-{
-public:
-	struct FGpsTrace                              GeometryData;                                      // 0x0040(0x0040)(Edit, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FGpsGeneratorSettings_Project;
-
-// ScriptStruct GbxAI.GpsGeneratorSettings_Line
-// 0x0160 (0x01E0 - 0x0080)
-struct FGpsGeneratorSettings_Line final : public FGpsGeneratorSettings_Project
-{
-public:
-	struct FGbxBinding_Vector                     Center;                                            // 0x0080(0x0098)(Edit, Protected, NativeAccessSpecifierProtected)
-	bool                                          bUseTrace;                                         // 0x0118(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_119[0x7];                                      // 0x0119(0x0007)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBinding_Float                      PostTraceOffset;                                   // 0x0120(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Float                      MaxLength;                                         // 0x0140(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Rotator                    Rotation;                                          // 0x0160(0x0060)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Int                        NumPoints;                                         // 0x01C0(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-};
-DUMPER7_ASSERTS_FGpsGeneratorSettings_Line;
-
 // ScriptStruct GbxAI.GpsGeneratorSettings_Point
 // 0x0098 (0x00D8 - 0x0040)
 struct FGpsGeneratorSettings_Point final : public FGpsGeneratorSettings
@@ -3185,15 +3231,6 @@ public:
 	struct FGbxBinding_Vector                     Point;                                             // 0x0040(0x0098)(Edit, Protected, NativeAccessSpecifierProtected)
 };
 DUMPER7_ASSERTS_FGpsGeneratorSettings_Point;
-
-// ScriptStruct GbxAI.GpsGenerator_Point
-// 0x0018 (0x0430 - 0x0418)
-struct FGpsGenerator_Point final : public FGpsGenerator
-{
-public:
-	uint8                                         Pad_418[0x18];                                     // 0x0418(0x0018)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsGenerator_Point;
 
 // ScriptStruct GbxAI.GpsGeneratorSettings_Targetables
 // 0x0008 (0x01D0 - 0x01C8)
@@ -3288,6 +3325,18 @@ public:
 };
 DUMPER7_ASSERTS_FGpsModifier_Project;
 
+// ScriptStruct GbxAI.GpsModifierSettings_Transform
+// 0x0228 (0x0288 - 0x0060)
+struct FGpsModifierSettings_Transform final : public FGpsModifierSettings
+{
+public:
+	struct FGbxBinding_Vector                     Origin;                                            // 0x0060(0x0098)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxBinding_Vector                     Translate;                                         // 0x00F8(0x0098)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxBinding_Rotator                    Rotate;                                            // 0x0190(0x0060)(Edit, NativeAccessSpecifierPublic)
+	struct FGbxBinding_Vector                     scale;                                             // 0x01F0(0x0098)(Edit, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGpsModifierSettings_Transform;
+
 // ScriptStruct GbxAI.GpsModifier_Transform
 // 0x0078 (0x00D0 - 0x0058)
 struct alignas(0x10) FGpsModifier_Transform final : public FGpsModifier
@@ -3296,6 +3345,18 @@ public:
 	uint8                                         Pad_58[0x78];                                      // 0x0058(0x0078)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsModifier_Transform;
+
+// ScriptStruct GbxAI.GpsChoiceData
+// 0x000C (0x000C - 0x0000)
+struct FGpsChoiceData final
+{
+public:
+	EGpsChoice                                    type;                                              // 0x0000(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_1[0x3];                                        // 0x0001(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
+	int32                                         Index;                                             // 0x0004(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Percent;                                           // 0x0008(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+};
+DUMPER7_ASSERTS_FGpsChoiceData;
 
 // ScriptStruct GbxAI.GpsQuerySettings
 // 0x0250 (0x02F8 - 0x00A8)
@@ -3316,6 +3377,15 @@ public:
 };
 DUMPER7_ASSERTS_FGpsQuerySettings;
 
+// ScriptStruct GbxAI.GpsQuery
+// 0x0AB0 (0x0BE0 - 0x0130)
+struct FGpsQuery final : public FGbxGraphState
+{
+public:
+	uint8                                         Pad_130[0xAB0];                                    // 0x0130(0x0AB0)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsQuery;
+
 // ScriptStruct GbxAI.GpsTestSettings_Aggro
 // 0x0028 (0x00A8 - 0x0080)
 struct FGpsTestSettings_Aggro final : public FGpsTestSettings
@@ -3327,6 +3397,15 @@ public:
 	uint8                                         Pad_A2[0x6];                                       // 0x00A2(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsTestSettings_Aggro;
+
+// ScriptStruct GbxAI.GpsTest_Aggro
+// 0x0010 (0x0070 - 0x0060)
+struct FGpsTest_Aggro final : public FGpsTest
+{
+public:
+	uint8                                         Pad_60[0x10];                                      // 0x0060(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsTest_Aggro;
 
 // ScriptStruct GbxAI.GpsTestSettings_Angle
 // 0x0240 (0x02C0 - 0x0080)
@@ -3416,22 +3495,6 @@ public:
 };
 DUMPER7_ASSERTS_FGpsTest_CoverTrace;
 
-// ScriptStruct GbxAI.GpsTestSettings_Distance
-// 0x0108 (0x0188 - 0x0080)
-struct FGpsTestSettings_Distance final : public FGpsTestSettings
-{
-public:
-	struct FGbxBinding_Vector                     Origin;                                            // 0x0080(0x0098)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Float                      MinDistance;                                       // 0x0118(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Float                      MaxDistance;                                       // 0x0138(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Float                      CustomDistance;                                    // 0x0158(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	EGpsDistanceScore                             Preference;                                        // 0x0178(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	EGpsDistanceMode                              Mode;                                              // 0x017C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bClampToDistanceRange;                             // 0x0180(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_181[0x7];                                      // 0x0181(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTestSettings_Distance;
-
 // ScriptStruct GbxAI.GpsTest_Distance
 // 0x0028 (0x0088 - 0x0060)
 struct FGpsTest_Distance final : public FGpsTest
@@ -3440,21 +3503,6 @@ public:
 	uint8                                         Pad_60[0x28];                                      // 0x0060(0x0028)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsTest_Distance;
-
-// ScriptStruct GbxAI.GpsTestSettings_DistanceList
-// 0x0050 (0x00D0 - 0x0080)
-struct FGpsTestSettings_DistanceList : public FGpsTestSettings
-{
-public:
-	int32                                         MaxItems;                                          // 0x0080(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	bool                                          bLimitItems;                                       // 0x0084(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	uint8                                         Pad_85[0x3];                                       // 0x0085(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBinding_Float                      MinDistance;                                       // 0x0088(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	struct FGbxBinding_Float                      MaxDistance;                                       // 0x00A8(0x0020)(Edit, Protected, NativeAccessSpecifierProtected)
-	EGpsDistanceListScore                         Preference;                                        // 0x00C8(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-	EGpsDistanceMode                              Mode;                                              // 0x00CC(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
-};
-DUMPER7_ASSERTS_FGpsTestSettings_DistanceList;
 
 // ScriptStruct GbxAI.GpsTest_DistanceList
 // 0x0018 (0x0078 - 0x0060)
@@ -3504,32 +3552,6 @@ struct FGpsTest_Enemies final : public FGpsTest_DistanceList
 {
 };
 DUMPER7_ASSERTS_FGpsTest_Enemies;
-
-// ScriptStruct GbxAI.GpsTestSettings_GroupDistance
-// 0x0050 (0x00D0 - 0x0080)
-struct FGpsTestSettings_GroupDistance : public FGpsTestSettings
-{
-public:
-	struct FGbxBinding_Float                      MaxDistance;                                       // 0x0080(0x0020)(Edit, NativeAccessSpecifierPublic)
-	EGpsDistanceMode                              Mode;                                              // 0x00A0(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_A4[0x4];                                       // 0x00A4(0x0004)(Fixing Size After Last Property [ Dumper-7 ])
-	struct FGbxBinding_Int                        MinNearbyGroupSize;                                // 0x00A8(0x0020)(Edit, NativeAccessSpecifierPublic)
-	bool                                          bUseMinNearbyGroupSize;                            // 0x00C8(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_C9[0x7];                                       // 0x00C9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTestSettings_GroupDistance;
-
-// ScriptStruct GbxAI.GpsTestSettings_EnemiesGroup
-// 0x00A0 (0x0170 - 0x00D0)
-struct FGpsTestSettings_EnemiesGroup final : public FGpsTestSettings_GroupDistance
-{
-public:
-	struct FGbxParam                              SenseAgeMax;                                       // 0x00D0(0x0038)(Edit, NativeAccessSpecifierPublic)
-	struct FGbxRelativeLocation                   RelativeLocation;                                  // 0x0108(0x0060)(Edit, NoDestructor, NativeAccessSpecifierPublic)
-	bool                                          bUseRelativeLocation;                              // 0x0168(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	uint8                                         Pad_169[0x7];                                      // 0x0169(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTestSettings_EnemiesGroup;
 
 // ScriptStruct GbxAI.GpsTest_GroupDistance
 // 0x0018 (0x0078 - 0x0060)
@@ -3664,19 +3686,22 @@ struct FGpsTest_GameplayTags final : public FGpsTest
 };
 DUMPER7_ASSERTS_FGpsTest_GameplayTags;
 
-// ScriptStruct GbxAI.GpsTestSettings_History
-// 0x0000 (0x00D0 - 0x00D0)
-struct FGpsTestSettings_History final : public FGpsTestSettings_DistanceList
-{
-};
-DUMPER7_ASSERTS_FGpsTestSettings_History;
-
 // ScriptStruct GbxAI.GpsTest_History
 // 0x0000 (0x0078 - 0x0078)
 struct FGpsTest_History final : public FGpsTest_DistanceList
 {
 };
 DUMPER7_ASSERTS_FGpsTest_History;
+
+// ScriptStruct GbxAI.GpsTestSettings_IsCurrentTarget
+// 0x0008 (0x0088 - 0x0080)
+struct FGpsTestSettings_IsCurrentTarget final : public FGpsTestSettings
+{
+public:
+	bool                                          bInvert;                                           // 0x0080(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	uint8                                         Pad_81[0x7];                                       // 0x0081(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsTestSettings_IsCurrentTarget;
 
 // ScriptStruct GbxAI.GpsTest_IsCurrentTarget
 // 0x0010 (0x0070 - 0x0060)
@@ -3760,15 +3785,6 @@ public:
 	uint8                                         Pad_A9[0x7];                                       // 0x00A9(0x0007)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsTestSettings_NavMaterial;
-
-// ScriptStruct GbxAI.GpsTest_NavMaterial
-// 0x0008 (0x0068 - 0x0060)
-struct FGpsTest_NavMaterial final : public FGpsTest
-{
-public:
-	uint8                                         Pad_60[0x8];                                       // 0x0060(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTest_NavMaterial;
 
 // ScriptStruct GbxAI.GpsTestSettings_NavNear
 // 0x0000 (0x0080 - 0x0080)
@@ -3865,6 +3881,15 @@ public:
 };
 DUMPER7_ASSERTS_FGpsTestSettings_NodeChain;
 
+// ScriptStruct GbxAI.GpsTest_NodeChain
+// 0x0010 (0x0070 - 0x0060)
+struct FGpsTest_NodeChain final : public FGpsTest
+{
+public:
+	uint8                                         Pad_60[0x10];                                      // 0x0060(0x0010)(Fixing Struct Size After Last Property [ Dumper-7 ])
+};
+DUMPER7_ASSERTS_FGpsTest_NodeChain;
+
 // ScriptStruct GbxAI.GpsTestSettings_Nodes
 // 0x0040 (0x00C0 - 0x0080)
 struct FGpsTestSettings_Nodes final : public FGpsTestSettings
@@ -3883,13 +3908,6 @@ public:
 	uint8                                         Pad_60[0xA0];                                      // 0x0060(0x00A0)(Fixing Struct Size After Last Property [ Dumper-7 ])
 };
 DUMPER7_ASSERTS_FGpsTest_Nodes;
-
-// ScriptStruct GbxAI.GpsTestSettings_OtherNavGoals
-// 0x0000 (0x00D0 - 0x00D0)
-struct FGpsTestSettings_OtherNavGoals final : public FGpsTestSettings_DistanceList
-{
-};
-DUMPER7_ASSERTS_FGpsTestSettings_OtherNavGoals;
 
 // ScriptStruct GbxAI.GpsTest_OtherNavGoals
 // 0x0000 (0x0078 - 0x0078)
@@ -4119,15 +4137,6 @@ public:
 };
 DUMPER7_ASSERTS_FGpsTestSettings_TraceList;
 
-// ScriptStruct GbxAI.GpsTest_TraceList
-// 0x0078 (0x00D8 - 0x0060)
-struct FGpsTest_TraceList : public FGpsTest
-{
-public:
-	uint8                                         Pad_60[0x78];                                      // 0x0060(0x0078)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTest_TraceList;
-
 // ScriptStruct GbxAI.GpsTestSettings_TracePerceivedEnemies
 // 0x0058 (0x0160 - 0x0108)
 struct FGpsTestSettings_TracePerceivedEnemies final : public FGpsTestSettings_TraceList
@@ -4137,15 +4146,6 @@ public:
 	struct FGbxBinding_Bool                       TracePlayersOnly;                                  // 0x0140(0x0020)(Edit, NativeAccessSpecifierPublic)
 };
 DUMPER7_ASSERTS_FGpsTestSettings_TracePerceivedEnemies;
-
-// ScriptStruct GbxAI.GpsTest_TracePerceivedEnemies
-// 0x0008 (0x00E0 - 0x00D8)
-struct FGpsTest_TracePerceivedEnemies final : public FGpsTest_TraceList
-{
-public:
-	uint8                                         Pad_D8[0x8];                                       // 0x00D8(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
-};
-DUMPER7_ASSERTS_FGpsTest_TracePerceivedEnemies;
 
 // ScriptStruct GbxAI.GbxTargetInfo
 // 0x0030 (0x0030 - 0x0000)
