@@ -75,7 +75,7 @@ namespace
 	constexpr uintptr_t kViewTargetRotOffset = 14664;
 	constexpr uintptr_t kViewTargetFovOffset = 14688;
 	using NativeCameraUpdateFn = __int64(__fastcall*)(__int64, __int64, float);
-	using NativeCameraModeCommitFn = __int64(__fastcall*)(__int64, __int64*, float);
+	using NativeCameraModeCommitFn = __int64(__fastcall*)(__int64, SDK::FName*, SDK::FName*, __int64, int, unsigned __int8);
 	constexpr SignatureRegistry::Signature kNativeCameraUpdateSignature{
 		"NativeCameraUpdate",
 		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? 66 44 0F 29 BC 24 ? ? ? ? 66 44 0F 29 B4 24 ? ? ? ? 66 44 0F 29 AC 24 ? ? ? ? 66 44 0F 29 A4 24 ? ? ? ? 66 44 0F 29 9C 24 ? ? ? ? 66 44 0F 29 94 24 ? ? ? ? 66 44 0F 29 8C 24 ? ? ? ? 66 44 0F 29 84 24 ? ? ? ? 66 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 66 0F 28 F2",
@@ -84,7 +84,7 @@ namespace
 	constexpr size_t kNativeCameraUpdateHookLen = 19;
 	constexpr SignatureRegistry::Signature kNativeCameraModeCommitSignature{
 		"NativeCameraModeCommit",
-		"56 57 53 48 83 EC ? 0F 29 74 24 ? 0F 28 F2 48 89 D6 48 89 CF 48 8B 05 ? ? ? ? 48 31 E0 48 89 44 24 ? 48 8B 89",
+		"41 57 41 56 41 54 56 57 55 53 48 83 EC ? 0F 29 74 24 ? 0F 28 F3 4C 89 C7",
 		SignatureRegistry::HookTiming::InGameReady
 	};
 	constexpr size_t kNativeCameraModeCommitHookLen = 19;
@@ -347,18 +347,27 @@ namespace
 		return modeStr.find("ThirdPerson") != std::string::npos;
 	}
 
-	__int64 __fastcall hkNativeCameraModeCommit(__int64 a1, __int64* a2, float a3)
+	__int64 __fastcall hkNativeCameraModeCommit(__int64 a1, SDK::FName* a2, SDK::FName* a3, __int64 a4, int a5, unsigned __int8 a6)
 	{
-		const bool bIsThirdPersonActive = IsCurrentlyInThirdPersonCameraMode();
-		
-		// This is the native camera-mode commit path that owns the +14920 current-mode slot.
-		// Keep it observational for stability; UpdateCameraModes handles re-requesting the desired mode.
-		if (bIsThirdPersonActive && g_RequestedThirdPersonMode)
+		const bool bShouldForceThirdPerson = ShouldHoldThirdPersonCameraMode();
+		if (bShouldForceThirdPerson && a2)
 		{
-			Logger::LogThrottled(Logger::Level::Debug, "CamMode", 2000, "Native attempted mode commit while locked, allowing bypass for stability.");
+			const std::string requestedMode = a2->ToString();
+			const bool bRequestsThirdPerson = requestedMode.find("ThirdPerson") != std::string::npos;
+			const bool bRequestsFirstPerson = requestedMode.find("FirstPerson") != std::string::npos;
+			if (!bRequestsThirdPerson && bRequestsFirstPerson)
+			{
+				*a2 = SDK::UKismetStringLibrary::Conv_StringToName(L"ThirdPerson");
+				Logger::LogThrottled(
+					Logger::Level::Debug,
+					"CamMode",
+					500,
+					"Intercepted camera mode request '%s' and forced ThirdPerson.",
+					requestedMode.c_str());
+			}
 		}
 
-		return oNativeCameraModeCommit ? oNativeCameraModeCommit(a1, a2, a3) : 0;
+		return oNativeCameraModeCommit ? oNativeCameraModeCommit(a1, a2, a3, a4, a5, a6) : 0;
 	}
 
 	bool ReadNativeCameraPose(uintptr_t base, uintptr_t locOffset, uintptr_t rotOffset, uintptr_t fovOffset, FNativeCameraPose& outPose)
