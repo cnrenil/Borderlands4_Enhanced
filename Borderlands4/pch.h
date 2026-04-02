@@ -48,53 +48,69 @@
 #include <cstdarg>
 
 // MinHook
-#include "minhook/include/MinHook.h"
+#include "ThirdParty/MinHook/include/MinHook.h"
 
 // ImGui Headers
-#include "imgui.h"
-#include "misc/cpp/imgui_stdlib.h"
-#include "backends/imgui_impl_win32.h"
-#include "backends/imgui_impl_dx12.h"
-#include <imgui_internal.h>
+#include "ThirdParty/ImGui/imgui.h"
+#include "ThirdParty/ImGui/misc/cpp/imgui_stdlib.h"
+#include "ThirdParty/ImGui/backends/imgui_impl_win32.h"
+#include "ThirdParty/ImGui/backends/imgui_impl_dx12.h"
+#include "ThirdParty/ImGui/imgui_internal.h"
 
 // SDK Headers
-#include "Borderlands4_SDK/SDK/Engine_classes.hpp"
-#include "Borderlands4_SDK/SDK/CoreUObject_classes.hpp"
-#include "Borderlands4_SDK/SDK/CoreUObject_parameters.hpp"
-#include "Borderlands4_SDK/SDK/Engine_parameters.hpp"
-#include "Borderlands4_SDK/SDK/OakGame_classes.hpp"
-#include "Borderlands4_SDK/SDK/OakGame_parameters.hpp"
-#include "Borderlands4_SDK/SDK/GbxGame_classes.hpp"
-#include <Borderlands4_SDK/SDK/GbxGame_parameters.hpp>
-#include "Borderlands4_SDK/SDK/GbxAI_classes.hpp"
-#include "Borderlands4_SDK/SDK/AIModule_classes.hpp"
-#include "Borderlands4_SDK/SDK/TemplateSequence_classes.hpp"
-#include "Borderlands4_SDK/SDK/Basic.hpp"
+#include "ThirdParty/SDK/SDK.hpp"
+#include "ThirdParty/SDK/SDK/Engine_classes.hpp"
+#include "ThirdParty/SDK/SDK/CoreUObject_classes.hpp"
+#include "ThirdParty/SDK/SDK/CoreUObject_parameters.hpp"
+#include "ThirdParty/SDK/SDK/Engine_parameters.hpp"
+#include "ThirdParty/SDK/SDK/OakGame_classes.hpp"
+#include "ThirdParty/SDK/SDK/OakGame_parameters.hpp"
+#include "ThirdParty/SDK/SDK/GbxGame_classes.hpp"
+#include "ThirdParty/SDK/SDK/GbxGame_parameters.hpp"
+#include "ThirdParty/SDK/SDK/GbxAI_classes.hpp"
+#include "ThirdParty/SDK/SDK/AIModule_classes.hpp"
+#include "ThirdParty/SDK/SDK/TemplateSequence_classes.hpp"
+#include "ThirdParty/SDK/SDK/Basic.hpp"
 extern "C" {
-#include "minhook/src/hde/hde64.h"
+#include "ThirdParty/MinHook/src/hde/hde64.h"
 }
 
 using namespace SDK;
 
 // Project Core Headers
-#include "Utils/Logger.h"
-#include "Config/ConfigManager.h"
-#include "Utils/Localization.h"
-#include "Utils/Hotkey.h"
-#include "Utils/Memory.h"
-#include "Utils/SignatureRegistry.h"
-#include "Utils/AntiDebug.h"
-#include "Utils/NativeInterop.h"
-#include "Utils/Utils.h"
-#include "Utils/StealthHook.h"
-#include "Engine.h"
-#include "Cheats.h"
-#include "GUI/Menu.h"
-#include "GUI/BackdropBlur.h"
-#include "GUI/Draw.h"
-#include "GUI/Overlay.h"
-#include "GUI/Themes.h"
-#include "Hooks/D3D12Hook.h"
-#include "Hooks/EngineHooks.h"
+#include "Core/Services/Logger/Logger.h"
+#include "Core/Config/ConfigManager.h"
+#include "Core/Services/Localization/Localization.h"
+#include "Core/Services/Hotkey/Hotkey.h"
+#include "Core/Memory/Memory.h"
+#include "Core/Memory/SignatureRegistry.h"
+#include "Core/Security/AntiDebug.h"
+#include "Core/Services/Interop/NativeInterop.h"
+#include "Core/Framework/Utils.h"
+#include "Core/Hooks/StealthHook.h"
+#include "Core/Framework/Engine.h"
+#include "Core/Framework/Scheduler.h"
+
+// Features
+#include "Features/Data/FeatureData.h"
+#include "Features/Core/FeatureRegistry.h"
+#include "Features/Aimbot/AimbotFeature.h"
+#include "Features/Camera/CameraFeature.h"
+#include "Features/Debug/DebugFeature.h"
+#include "Features/Player/PlayerFeature.h"
+#include "Features/Movement/MovementFeature.h"
+#include "Features/Weapon/WeaponFeature.h"
+#include "Features/World/WorldFeature.h"
+
+// Interface
+#include "Interface/Drawing/Draw.h"
+#include "Interface/Menu/Menu.h"
+#include "Interface/Overlay/BackdropBlur.h"
+#include "Interface/Overlay/Overlay.h"
+#include "Interface/Theme/Themes.h"
+
+// Hooks
+#include "Core/Hooks/D3D12Hook.h"
+#include "Core/Hooks/EngineHooks.h"
 
 #endif //PCH_H

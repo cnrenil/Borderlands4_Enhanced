@@ -1,0 +1,19 @@
+#pragma once
+
+namespace GUI
+{
+    extern bool ShowMenu;
+    extern ImGuiKey TriggerBotKey;
+    extern ImGuiKey ESPKey;
+    extern ImGuiKey AimButton;
+
+    struct MenuBackdropState;
+
+    void RenderMenu();
+    void RegisterMenu();
+    void AddDefaultTooltip(const char* desc);
+    void HostOnlyTooltip();
+    const MenuBackdropState& GetMenuBackdropState();
+}
+
+

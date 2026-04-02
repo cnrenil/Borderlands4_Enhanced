@@ -1,6 +1,6 @@
 [submodule "Borderlands4/ImGui"]
-	path = Borderlands4/ImGui
+	path = Borderlands4/ThirdParty/ImGui
 	url = https://github.com/ocornut/imgui.git
 [submodule "Borderlands4/minhook"]
-	path = Borderlands4/minhook
+	path = Borderlands4/ThirdParty/MinHook
 	url = https://github.com/TsudaKageyu/minhook.git

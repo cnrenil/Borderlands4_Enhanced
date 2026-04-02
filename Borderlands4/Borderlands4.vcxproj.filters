@@ -1,347 +1,480 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Core">
+      <UniqueIdentifier>{f271be22-85c0-4834-9d52-8ef3fe18c188}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SDK">
-      <UniqueIdentifier>{335a4557-8e48-405d-aadf-ad28a92df694}</UniqueIdentifier>
+    <Filter Include="Core\Config">
+      <UniqueIdentifier>{8d3d8e14-eaef-4fff-8818-1262bc7ad4e8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Utils">
-      <UniqueIdentifier>{3d0ed1f4-a921-4c48-871a-fd9377c27eb4}</UniqueIdentifier>
+    <Filter Include="Core\Framework">
+      <UniqueIdentifier>{12fecd6b-fc2d-455f-8f7d-655208105fc4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Cheats">
-      <UniqueIdentifier>{57b02205-6d58-4f60-8d57-97b0834279e2}</UniqueIdentifier>
+    <Filter Include="Core\Hooks">
+      <UniqueIdentifier>{1a5f3c84-99d1-4794-ab5e-9d504936d1d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ImGui">
-      <UniqueIdentifier>{9ea1bd67-d685-4f19-ae69-5f0f4a0e74d1}</UniqueIdentifier>
+    <Filter Include="Core\Memory">
+      <UniqueIdentifier>{3e356dd8-2499-4c2a-9d2b-09db21312c50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="MinHook">
-      <UniqueIdentifier>{ab471159-9bc4-400b-abfa-3862252abacb}</UniqueIdentifier>
+    <Filter Include="Core\Security">
+      <UniqueIdentifier>{4ae42713-bd58-4126-80d6-31cbd7b603c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Hooks">
-      <UniqueIdentifier>{2e692223-bab2-41b2-97c4-c25f4b14b4bf}</UniqueIdentifier>
+    <Filter Include="Core\Services">
+      <UniqueIdentifier>{1771698d-dd21-4583-a7a9-fc00d51391d1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Config">
-      <UniqueIdentifier>{5d2aaea9-a3b0-4d68-8f14-5f12f4385d2e}</UniqueIdentifier>
+    <Filter Include="Core\Services\Hotkey">
+      <UniqueIdentifier>{ff27e958-4de5-4157-8fc2-04cbd99897c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GUI">
-      <UniqueIdentifier>{b6b2d774-2144-4fd4-84ba-9fb953f0ee52}</UniqueIdentifier>
+    <Filter Include="Core\Services\Interop">
+      <UniqueIdentifier>{0c54c9f4-e1d3-4965-8b49-aced4963e8a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Services\Localization">
+      <UniqueIdentifier>{39ee0e58-370f-44f9-a4d7-4cd15d53abb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Services\Logger">
+      <UniqueIdentifier>{2262dfaa-a3b4-454d-a881-a94b029ee20e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features">
+      <UniqueIdentifier>{2e27e1c8-5095-4912-a7e9-4d8b02219e0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Aimbot">
+      <UniqueIdentifier>{e74a19f9-5747-4025-9726-03aec8892997}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Data">
+      <UniqueIdentifier>{a6ad30b7-7bdd-4400-b836-6cfe5a68323d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Core">
+      <UniqueIdentifier>{f4f3e3db-3626-4d03-9d89-6c9ef66fd6e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Camera">
+      <UniqueIdentifier>{89dfd14d-9d4d-4145-8a7c-246cf5558c4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Debug">
+      <UniqueIdentifier>{8af981b6-c634-4c9e-8c3c-51968b13ad45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\ESP">
+      <UniqueIdentifier>{5b5d2937-3101-4eb7-b0df-1e7b9946f1b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Movement">
+      <UniqueIdentifier>{2ecdb565-3a3d-43d4-a45f-c031bfa182fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Player">
+      <UniqueIdentifier>{a3784c5d-3b61-4991-9168-fad66d2e8ae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\World">
+      <UniqueIdentifier>{f3672714-fba5-4316-b11b-c86345df3223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Features\Weapon">
+      <UniqueIdentifier>{c2c32f6e-0eea-41c8-be6d-b7dfe5101c4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface">
+      <UniqueIdentifier>{3b1d815f-9841-4b7b-bb31-5d94c106de81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface\Fonts">
+      <UniqueIdentifier>{fcf44a25-33bc-440c-9a30-6a2d0416727a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface\Fonts\Embedded">
+      <UniqueIdentifier>{c235ae52-66f3-43fb-90bb-2ca2f315956a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface\Menu">
+      <UniqueIdentifier>{a06a595d-3e33-4650-803b-17ce62d3a18b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface\Drawing">
+      <UniqueIdentifier>{d18375a3-5039-4846-8858-4c2ad6651c35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface\Overlay">
+      <UniqueIdentifier>{aa999b3d-479a-44bb-be68-aaa4fea1caa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Interface\Theme">
+      <UniqueIdentifier>{e84e29d0-76da-4ae8-8493-35e43148b2f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty">
+      <UniqueIdentifier>{072a32a5-d87c-4a95-8d60-d0d4653d9003}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\ImGui">
+      <UniqueIdentifier>{e59f9242-709f-4143-847c-2f3e11edda63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\ImGui\backends">
+      <UniqueIdentifier>{2e80370f-01d9-40e4-a7fc-dd0660d785c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\ImGui\misc">
+      <UniqueIdentifier>{6049f411-433d-4125-acdd-35a8e4dd0c39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\ImGui\misc\cpp">
+      <UniqueIdentifier>{17c9c729-d831-45f4-916b-6af338d279f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\ImGui\misc\debuggers">
+      <UniqueIdentifier>{01897d89-3e7f-4edb-9a33-aa0829e728ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\MinHook">
+      <UniqueIdentifier>{5a43722c-7e6a-4ef5-bc2f-9fdf81b7cd2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\MinHook\src">
+      <UniqueIdentifier>{13961d4f-d8d4-48da-980c-a397e17ef394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\MinHook\src\hde">
+      <UniqueIdentifier>{7cc7fbde-7eb3-463c-9df8-aad41f0a8ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\SDK">
+      <UniqueIdentifier>{cd3b5e5a-c1fa-4e1c-89dc-cf1ea1b08fb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThirdParty\SDK\SDK">
+      <UniqueIdentifier>{954b4014-b55b-408b-ac3a-39892bdf2b32}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DLLMain.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Core\Config\ConfigManager.cpp">
+      <Filter>Core\Config</Filter>
     </ClCompile>
-    <ClCompile Include="Fonts\Embedded\EmbeddedFontFallback.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="Core\Framework\Scheduler.cpp">
+      <Filter>Core\Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Fonts\Embedded\EmbeddedFontMain.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="Core\Framework\Utils.cpp">
+      <Filter>Core\Framework</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Localization.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Hooks\D3D12Hook.cpp">
+      <Filter>Core\Hooks</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Utils.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Hooks\EngineHooks.cpp">
+      <Filter>Core\Hooks</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Hotkey.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Hooks\Init.cpp">
+      <Filter>Core\Hooks</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Logger.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Hooks\ProcessEventHook.cpp">
+      <Filter>Core\Hooks</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Memory.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Hooks\StealthHook.cpp">
+      <Filter>Core\Hooks</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\NativeInterop.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Memory\Memory.cpp">
+      <Filter>Core\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\SignatureRegistry.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Memory\SignatureRegistry.cpp">
+      <Filter>Core\Memory</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\AntiDebug.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Security\AntiDebug.cpp">
+      <Filter>Core\Security</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\StealthHook.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Services\Hotkey\Hotkey.cpp">
+      <Filter>Core\Services\Hotkey</Filter>
     </ClCompile>
-    <ClCompile Include="Utils\Input.cpp">
-      <Filter>Source Files\Utils</Filter>
+    <ClCompile Include="Core\Services\Interop\NativeInterop.cpp">
+      <Filter>Core\Services\Interop</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\backends\imgui_impl_dx12.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="Core\Services\Localization\Localization.cpp">
+      <Filter>Core\Services\Localization</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\backends\imgui_impl_win32.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="Core\Services\Logger\Logger.cpp">
+      <Filter>Core\Services\Logger</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="DLLMain.cpp" />
+    <ClCompile Include="Features\Aimbot\AimbotFeature.cpp">
+      <Filter>Features\Aimbot</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_draw.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="Features\Data\EnabledOptionsFeature.cpp">
+      <Filter>Features\Data</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_tables.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="Features\Core\FeatureRegistry.cpp">
+      <Filter>Features\Core</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_widgets.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="Features\Camera\CameraFeature.cpp">
+      <Filter>Features\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\imgui_demo.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="Features\Debug\DebugFeature.cpp">
+      <Filter>Features\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="ImGui\misc\cpp\imgui_stdlib.cpp">
-      <Filter>ImGui</Filter>
+    <ClCompile Include="Features\ESP\ESPFeature.cpp">
+      <Filter>Features\ESP</Filter>
     </ClCompile>
-    <ClCompile Include="minhook\src\hde\hde32.c">
-      <Filter>MinHook</Filter>
+    <ClCompile Include="Features\Movement\MovementFeature.cpp">
+      <Filter>Features\Movement</Filter>
     </ClCompile>
-    <ClCompile Include="minhook\src\hde\hde64.c">
-      <Filter>MinHook</Filter>
+    <ClCompile Include="Features\Player\PersistenceFeature.cpp">
+      <Filter>Features\Player</Filter>
     </ClCompile>
-    <ClCompile Include="minhook\src\buffer.c">
-      <Filter>MinHook</Filter>
+    <ClCompile Include="Features\Player\PlayerFeature.cpp">
+      <Filter>Features\Player</Filter>
     </ClCompile>
-    <ClCompile Include="minhook\src\hook.c">
-      <Filter>MinHook</Filter>
+    <ClCompile Include="Features\Weapon\WeaponFeature.cpp">
+      <Filter>Features\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="minhook\src\trampoline.c">
-      <Filter>MinHook</Filter>
+    <ClCompile Include="Features\Weapon\TriggerFeature.cpp">
+      <Filter>Features\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Features\Weapon\ReticleFeature.cpp">
+      <Filter>Features\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\Basic.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="Features\World\WorldFeature.cpp">
+      <Filter>Features\World</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\CoreUObject_functions.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="Interface\Fonts\Embedded\EmbeddedFontFallback.cpp">
+      <Filter>Interface\Fonts\Embedded</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\Engine_functions.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="Interface\Fonts\Embedded\EmbeddedFontMain.cpp">
+      <Filter>Interface\Fonts\Embedded</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\OakGame_functions.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="Interface\Menu\Menu.cpp">
+      <Filter>Interface\Menu</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\GbxGame_functions.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="Interface\Overlay\BackdropBlur.cpp">
+      <Filter>Interface\Overlay</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\GbxWeapon_functions.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="Interface\Drawing\Draw.cpp">
+      <Filter>Interface\Drawing</Filter>
     </ClCompile>
-    <ClCompile Include="Hooks\D3D12Hook.cpp">
-      <Filter>Source Files\Hooks</Filter>
+    <ClCompile Include="Interface\Overlay\Overlay.cpp">
+      <Filter>Interface\Overlay</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\GbxAI_functions.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="Interface\Theme\Themes.cpp">
+      <Filter>Interface\Theme</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\AIModule_functions.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="ThirdParty\ImGui\backends\imgui_impl_dx12.cpp">
+      <Filter>ThirdParty\ImGui\backends</Filter>
     </ClCompile>
-    <ClCompile Include="Borderlands4_SDK\SDK\TemplateSequence_functions.cpp">
-      <Filter>SDK</Filter>
+    <ClCompile Include="ThirdParty\ImGui\backends\imgui_impl_win32.cpp">
+      <Filter>ThirdParty\ImGui\backends</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\Aimbot.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\ImGui\imgui.cpp">
+      <Filter>ThirdParty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\SilentAimHooks.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\ImGui\imgui_demo.cpp">
+      <Filter>ThirdParty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\ESP.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\ImGui\imgui_draw.cpp">
+      <Filter>ThirdParty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\GodMode.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\ImGui\imgui_tables.cpp">
+      <Filter>ThirdParty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\Misc.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\ImGui\imgui_widgets.cpp">
+      <Filter>ThirdParty\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\Camera.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\ImGui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>ThirdParty\ImGui\misc\cpp</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\Movement.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\MinHook\src\buffer.c">
+      <Filter>ThirdParty\MinHook\src</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\Weapon.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\MinHook\src\hde\hde32.c">
+      <Filter>ThirdParty\MinHook\src\hde</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\Player.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\MinHook\src\hde\hde64.c">
+      <Filter>ThirdParty\MinHook\src\hde</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\Debug.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\MinHook\src\hook.c">
+      <Filter>ThirdParty\MinHook\src</Filter>
     </ClCompile>
-    <ClCompile Include="Cheats\TriggerBot.cpp">
-      <Filter>Source Files\Cheats</Filter>
+    <ClCompile Include="ThirdParty\MinHook\src\trampoline.c">
+      <Filter>ThirdParty\MinHook\src</Filter>
     </ClCompile>
-    <ClCompile Include="Config\ConfigManager.cpp">
-      <Filter>Source Files\Config</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\Basic.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\Menu.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\CoreUObject_functions.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\Draw.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\Engine_functions.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\Overlay.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\OakGame_functions.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\Themes.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\GbxGame_functions.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\BackdropBlur.cpp">
-      <Filter>Source Files\GUI</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\GbxWeapon_functions.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="Hooks\EngineHooks.cpp">
-      <Filter>Source Files\Hooks</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\GbxAI_functions.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="Hooks\Init.cpp">
-      <Filter>Source Files\Hooks</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\AIModule_functions.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
-    <ClCompile Include="Hooks\ProcessEventHook.cpp">
-      <Filter>Source Files\Hooks</Filter>
+    <ClCompile Include="ThirdParty\SDK\SDK\TemplateSequence_functions.cpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Utils\Localization.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Config\ConfigManager.h">
+      <Filter>Core\Config</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\Utils.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Framework\Engine.h">
+      <Filter>Core\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\Hotkey.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Framework\Scheduler.h">
+      <Filter>Core\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\Logger.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Framework\Utils.h">
+      <Filter>Core\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\Memory.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Hooks\D3D12Hook.h">
+      <Filter>Core\Hooks</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\NativeInterop.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Hooks\EngineHooks.h">
+      <Filter>Core\Hooks</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\SignatureRegistry.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Hooks\StealthHook.h">
+      <Filter>Core\Hooks</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\AntiDebug.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Memory\Memory.h">
+      <Filter>Core\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="Utils\StealthHook.h">
-      <Filter>Source Files\Utils</Filter>
+    <ClInclude Include="Core\Memory\SignatureRegistry.h">
+      <Filter>Core\Memory</Filter>
     </ClInclude>
-    <ClInclude Include="Cheats.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Core\Security\AntiDebug.h">
+      <Filter>Core\Security</Filter>
     </ClInclude>
-    <ClInclude Include="Engine.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="Core\Services\Hotkey\Hotkey.h">
+      <Filter>Core\Services\Hotkey</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Themes.h">
-      <Filter>Source Files\GUI</Filter>
+    <ClInclude Include="Core\Services\Interop\NativeInterop.h">
+      <Filter>Core\Services\Interop</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Draw.h">
-      <Filter>Source Files\GUI</Filter>
+    <ClInclude Include="Core\Services\Localization\Localization.h">
+      <Filter>Core\Services\Localization</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\Overlay.h">
-      <Filter>Source Files\GUI</Filter>
+    <ClInclude Include="Core\Services\Logger\Logger.h">
+      <Filter>Core\Services\Logger</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\BackdropBlur.h">
-      <Filter>Source Files\GUI</Filter>
+    <ClInclude Include="Features\Aimbot\AimbotFeature.h">
+      <Filter>Features\Aimbot</Filter>
     </ClInclude>
-    <ClInclude Include="Fonts\Embedded\EmbeddedFontFallback.h">
-      <Filter>Source Files\GUI</Filter>
+    <ClInclude Include="Features\Camera\CameraFeature.h">
+      <Filter>Features\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Fonts\Embedded\EmbeddedFontMain.h">
-      <Filter>Source Files\GUI</Filter>
+    <ClInclude Include="Features\Debug\DebugFeature.h">
+      <Filter>Features\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Features\Movement\MovementFeature.h">
+      <Filter>Features\Movement</Filter>
+    </ClInclude>
+    <ClInclude Include="Features\Player\PlayerFeature.h">
+      <Filter>Features\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Features\Weapon\WeaponFeature.h">
+      <Filter>Features\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="Features\Core\FeatureRegistry.h">
+      <Filter>Features\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Features\World\WorldFeature.h">
+      <Filter>Features\World</Filter>
+    </ClInclude>
+    <ClInclude Include="Features\Data\FeatureData.h">
+      <Filter>Features\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\Fonts\Embedded\EmbeddedFontFallback.h">
+      <Filter>Interface\Fonts\Embedded</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\Fonts\Embedded\EmbeddedFontMain.h">
+      <Filter>Interface\Fonts\Embedded</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\Menu\Menu.h">
+      <Filter>Interface\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\Overlay\BackdropBlur.h">
+      <Filter>Interface\Overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\Drawing\Draw.h">
+      <Filter>Interface\Drawing</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\Overlay\Overlay.h">
+      <Filter>Interface\Overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\Theme\Themes.h">
+      <Filter>Interface\Theme</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Borderlands4_SDK\SDK\Basic.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK.hpp">
+      <Filter>ThirdParty\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_classes.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\Basic.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_structs.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\CoreUObject_classes.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_parameters.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\CoreUObject_structs.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\Engine_classes.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\CoreUObject_parameters.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\Engine_structs.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\Engine_classes.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\Engine_parameters.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\Engine_structs.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\OakGame_classes.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\Engine_parameters.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\OakGame_structs.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\OakGame_classes.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\OakGame_parameters.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\OakGame_structs.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxGame_classes.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\OakGame_parameters.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxGame_structs.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxGame_classes.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxGame_parameters.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxGame_structs.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxWeapon_classes.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxGame_parameters.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxWeapon_structs.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxWeapon_classes.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxWeapon_parameters.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxWeapon_structs.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Hooks\D3D12Hook.h">
-      <Filter>Source Files\Hooks</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxWeapon_parameters.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxAI_classes.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxAI_classes.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxAI_structs.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxAI_structs.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\GbxAI_parameters.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\GbxAI_parameters.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\AIModule_classes.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\AIModule_classes.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\AIModule_structs.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\AIModule_structs.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\AIModule_parameters.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\AIModule_parameters.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
-    <ClInclude Include="Borderlands4_SDK\SDK\TemplateSequence_classes.hpp">
-      <Filter>SDK</Filter>
+    <ClInclude Include="ThirdParty\SDK\SDK\TemplateSequence_classes.hpp">
+      <Filter>ThirdParty\SDK\SDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ImGui\misc\debuggers\imgui.natstepfilter">
-      <Filter>ImGui</Filter>
+    <None Include="ThirdParty\ImGui\misc\debuggers\imgui.natstepfilter">
+      <Filter>ThirdParty\ImGui\misc\debuggers</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="ImGui\misc\debuggers\imgui.natvis">
-      <Filter>ImGui</Filter>
+    <Natvis Include="ThirdParty\ImGui\misc\debuggers\imgui.natvis">
+      <Filter>ThirdParty\ImGui\misc\debuggers</Filter>
     </Natvis>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="Utils\StealthSyscall.asm">
-      <Filter>Source Files\Utils</Filter>
+    <MASM Include="Core\Hooks\StealthSyscall.asm">
+      <Filter>Core\Hooks</Filter>
     </MASM>
   </ItemGroup>
 </Project>

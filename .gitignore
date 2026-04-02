@@ -17,7 +17,6 @@
 mono_crash.*
 
 # Build results
-[Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
@@ -367,8 +366,10 @@ MigrationBackup/
 FodyWeavers.xsd
 /Borderlands4/Fonts/Subset
 /.codex
-/.codex
-/.codex
-/.codex
+/.claude
+/.ida-mcp
 /IDAMappings
 /Borderlands4/OakGame_Functions_Analysis.txt
+/Borderlands4/Interface/Fonts/Subset
+/Borderlands4/Interface/Fonts/MapleMono-NF-CN-Regular.ttf
+/Borderlands4/Interface/Fonts/MapleMonoNormalNL-Regular.ttf
