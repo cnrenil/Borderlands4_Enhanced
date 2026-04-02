@@ -66,6 +66,7 @@ void Cleanup(HMODULE hModule)
 	Cleaning.store(true);
 	d3d12hook::release();
 	Cheats::ShutdownCamera();
+	StealthHook::Shutdown();
 	
 	// Restore WndProc
 	if (g_hWnd && oWndProc) {
@@ -122,14 +123,8 @@ static void InternalUpdateHooksSEH(bool& bIsProcessEventHooked, bool& bIsPlayerS
 				if (psVTable && !IsBadReadPtr(psVTable, sizeof(void*) * 80)) 
 				{
 					if (psVTable[73] != &hkProcessEvent) {
-						DWORD old;
-						if (VirtualProtect(&psVTable[73], sizeof(void*), PAGE_EXECUTE_READWRITE, &old)) {
-							psVTable[73] = (void*)hkProcessEvent;
-							VirtualProtect(&psVTable[73], sizeof(void*), old, &old);
-							
-							hookState.psVTable = psVTable; 
+						if (Memory::PatchVTableSlot(GVars.Character->PlayerState, 73, (void*)&hkProcessEvent, reinterpret_cast<void**>(&hookState.psVTable), true)) {
 							bIsPlayerStateHooked = true;
-							// LOG_INFO moved outside because SEH can't mix with RAII
 						}
 					}
 					else {
@@ -221,6 +216,7 @@ DWORD MainThread(HMODULE hModule)
 	SetConsoleCP(CP_UTF8);
 
     Logger::Initialize();
+	StealthHook::Initialize();
 	LOG_INFO("System", "Cheat Injecting...");
 
 	LOG_INFO("System", "Executing Anti-Debug Bypass...");

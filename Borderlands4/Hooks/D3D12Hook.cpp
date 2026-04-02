@@ -429,7 +429,12 @@ namespace d3d12hook {
             }
             else if (!gInitialized)
             {
-                    Logger::LogThrottled(Logger::Level::Debug, "D3D12", 5000, "hookPresentD3D12: Waiting for ImGui Init (Grace Period)...");
+                DWORD elapsed = GetTickCount() - gFirstPresentTime;
+                if (elapsed >= INIT_GRACE_PERIOD_MS) {
+                     Logger::LogThrottled(Logger::Level::Debug, "D3D12", 2000, "hookPresentD3D12: Past grace period but NOT initialized. CommandQueue=%p", (void*)gCommandQueue);
+                } else {
+                     Logger::LogThrottled(Logger::Level::Debug, "D3D12", 2000, "hookPresentD3D12: Waiting for ImGui Init (Grace Period)... %d/%d", elapsed, INIT_GRACE_PERIOD_MS);
+                }
             }
         }
 
@@ -503,12 +508,12 @@ namespace d3d12hook {
             return oExecuteCommandListsD3D12(_this, NumCommandLists, ppCommandLists);
         }
 
-        if (_this && (gNeedQueueRecapture || !gCommandQueue) && gAfterFirstPresent) {
+        if (_this && (gNeedQueueRecapture || !gCommandQueue)) {
             D3D12_COMMAND_QUEUE_DESC desc = _this->GetDesc();
             if (desc.Type == D3D12_COMMAND_LIST_TYPE_DIRECT) {
                 CaptureQueue(_this);
                 gNeedQueueRecapture = false;
-                LOG_DEBUG("DX12Hook", "Success: Captured Direct CommandQueue at ExecuteCommandLists.\n");
+                LOG_DEBUG("DX12Hook", "Success: Captured Direct CommandQueue at ExecuteCommandLists. this=%p\n", (void*)_this);
             }
         }
         gAfterFirstPresent = false;

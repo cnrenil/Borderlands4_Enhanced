@@ -54,6 +54,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -251,6 +252,7 @@
     <ClCompile Include="Borderlands4_SDK\SDK\TemplateSequence_functions.cpp">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Utils\StealthHook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cheats.h" />
@@ -273,6 +275,7 @@
     <ClInclude Include="Utils\NativeInterop.h" />
     <ClInclude Include="Utils\SignatureRegistry.h" />
     <ClInclude Include="Utils\AntiDebug.h" />
+    <ClInclude Include="Utils\StealthHook.h" />
     <ClInclude Include="Borderlands4_SDK\SDK\Basic.hpp" />
     <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_classes.hpp" />
     <ClInclude Include="Borderlands4_SDK\SDK\CoreUObject_structs.hpp" />
@@ -303,7 +306,11 @@
   <ItemGroup>
     <Natvis Include="ImGui\misc\debuggers\imgui.natvis" />
   </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Utils\StealthSyscall.asm" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>

@@ -86,6 +86,7 @@ using namespace SDK;
 #include "Utils/AntiDebug.h"
 #include "Utils/NativeInterop.h"
 #include "Utils/Utils.h"
+#include "Utils/StealthHook.h"
 #include "Engine.h"
 #include "Cheats.h"
 #include "GUI/Menu.h"

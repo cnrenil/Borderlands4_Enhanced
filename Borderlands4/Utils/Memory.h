@@ -16,7 +16,7 @@ namespace Memory
     uintptr_t ResolveRelativeCallTarget(uintptr_t callInstructionAddress);
 
     // Patch instance vtable slot to detour and optionally capture original.
-    bool PatchVTableSlot(void* instance, size_t slotIndex, void* detour, void** originalOut);
+    bool PatchVTableSlot(void* object, size_t slot, void* detour, void** originalOut, bool bStealth = false);
 
     // Install a simple absolute jump detour and build a trampoline with stolen bytes.
     // stolenLen must cover whole instructions and be at least 12 bytes on x64.

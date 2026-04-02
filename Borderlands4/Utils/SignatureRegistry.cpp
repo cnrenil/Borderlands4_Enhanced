@@ -27,7 +27,7 @@ namespace SignatureRegistry
         uintptr_t g_LastInGameWorld = 0;
         ULONGLONG g_InGameReadySinceMs = 0;
         // Delay signature-backed gameplay hooks a little longer after map entry.
-        constexpr ULONGLONG kInGameReadyWarmupMs = 10000;
+        constexpr uint64_t kInGameReadyWarmupMs = 4000;
         constexpr ULONGLONG kInGameRetryIntervalMs = 5000;
 
         bool IsCommittedAddress(uintptr_t address, size_t size = sizeof(void*))
@@ -129,6 +129,9 @@ namespace SignatureRegistry
             {
                 g_LastInGameWorld = 0;
                 g_InGameReadySinceMs = 0;
+                // Log throttled to avoid flooding the log
+                Logger::LogThrottled(Logger::Level::Debug, "Signature", 5000, "Global hooks timing gate not ready (InGame: %d, Loading: %d, World: %p, PC: %p)", 
+                    Utils::bIsInGame.load(), Utils::bIsLoading.load(), GVars.World, GVars.PlayerController);
                 return false;
             }
 
@@ -147,7 +150,13 @@ namespace SignatureRegistry
                 return false;
             }
 
-            return (nowMs - g_InGameReadySinceMs) >= kInGameReadyWarmupMs;
+            const bool ready = (nowMs - g_InGameReadySinceMs) >= kInGameReadyWarmupMs;
+            if (!ready)
+            {
+                Logger::LogThrottled(Logger::Level::Debug, "Signature", 5000, "Hook timing warmup in progress (%llu ms remaining)", 
+                    kInGameReadyWarmupMs - (nowMs - g_InGameReadySinceMs));
+            }
+            return ready;
         }
 
         ULONGLONG GetRetryIntervalMs(HookTiming timing)
@@ -255,8 +264,10 @@ namespace SignatureRegistry
             entry.LastAttemptMs != 0 &&
             (nowMs - entry.LastAttemptMs) < retryIntervalMs)
         {
-            LOG_DEBUG(
+            Logger::LogThrottled(
+                Logger::Level::Debug,
                 "Signature",
+                5000,
                 "Skipping '%s': retry interval not reached (%llums remaining).",
                 name,
                 static_cast<unsigned long long>(retryIntervalMs - (nowMs - entry.LastAttemptMs)));
@@ -280,13 +291,8 @@ namespace SignatureRegistry
         }
 
         auto& entry = it->second;
-        if (!IsHookTimingReady(entry.Timing))
+        if (!IsTimingReady(entry.Timing))
         {
-            LOG_DEBUG(
-                "Signature",
-                "Skipping '%s': timing gate not ready (timing=%d).",
-                name,
-                static_cast<int>(entry.Timing));
             return 0;
         }
 
@@ -384,13 +390,20 @@ namespace SignatureRegistry
         return snapshots;
     }
 
+    bool EnsureHook(const Signature& signature, void* detour, void** originalOut, bool bStealth)
+    {
+        // 19 bytes is a safe default for almost any instruction sequence we hook
+        return EnsureHook(signature, detour, originalOut, 19, signature.Name, true, bStealth);
+    }
+
     bool EnsureHook(
         const Signature& signature,
         void* detour,
         void** originalOut,
         size_t fallbackLen,
         const char* logCategory,
-        bool bAllowAbsoluteFallback)
+        bool bAllowAbsoluteFallback,
+        bool bStealth)
     {
         if (!signature.Name || !signature.Pattern || !detour || !originalOut)
             return false;
@@ -416,6 +429,13 @@ namespace SignatureRegistry
             return false;
 
         void* target = reinterpret_cast<void*>(targetAddress);
+
+        if (bStealth)
+        {
+            // Note: Standard MinHook fallback is now the default for code segments.
+            // We use StealthVirtualProtect inside our engine hooks for protection-level adjustments.
+        }
+
         MH_STATUS createStatus = MH_CreateHook(target, detour, reinterpret_cast<LPVOID*>(originalOut));
         if (createStatus != MH_OK && createStatus != MH_ERROR_ALREADY_CREATED)
         {

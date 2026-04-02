@@ -44,11 +44,21 @@ namespace SignatureRegistry
     uintptr_t Resolve(const char* name);
     uintptr_t Resolve(const Signature& signature);
     std::vector<SignatureSnapshot> GetSnapshots();
+
+    // Convenience Overload
+    bool EnsureHook(
+        const Signature& signature,
+        void* detour,
+        void** originalOut,
+        bool bStealth = true);
+
+    // Full Version
     bool EnsureHook(
         const Signature& signature,
         void* detour,
         void** originalOut,
         size_t fallbackLen,
         const char* logCategory,
-        bool bAllowAbsoluteFallback = true);
+        bool bAllowAbsoluteFallback = true,
+        bool bStealth = false);
 }

@@ -13,19 +13,7 @@ namespace AntiDebug
             if (!address)
                 return false;
 
-            DWORD oldProtect = 0;
-            if (!VirtualProtect(address, 1, PAGE_EXECUTE_READWRITE, &oldProtect))
-            {
-                LOG_WARN("AntiDebug", "VirtualProtect failed at 0x%llX", reinterpret_cast<uintptr_t>(address));
-                return false;
-            }
-
-            *reinterpret_cast<uint8_t*>(address) = value;
-
-            DWORD restoredProtect = 0;
-            VirtualProtect(address, 1, oldProtect, &restoredProtect);
-            FlushInstructionCache(GetCurrentProcess(), address, 1);
-            return true;
+            return StealthHook::StealthPatchByte(address, value);
         }
 
         void RemoveNoAccessPages(uintptr_t base, size_t size)
@@ -47,12 +35,12 @@ namespace AntiDebug
 
                 LOG_INFO("AntiDebug", "Unlocking PAGE_NOACCESS at 0x%llX", reinterpret_cast<uintptr_t>(mem.BaseAddress));
 
-                DWORD oldProtect = 0;
-                if (VirtualProtect(mem.BaseAddress, mem.RegionSize, PAGE_READONLY, &oldProtect) == 0)
+                uint32_t oldProtect = 0;
+                if (!StealthHook::StealthVirtualProtect(mem.BaseAddress, mem.RegionSize, PAGE_READONLY, &oldProtect))
                 {
                     LOG_ERROR(
                         "AntiDebug",
-                        "Failed to unlock page at 0x%llX: %lu",
+                        "Failed to unlock page at 0x%llX: 0x%08X",
                         reinterpret_cast<uintptr_t>(mem.BaseAddress),
                         GetLastError());
                 }
@@ -158,13 +146,15 @@ namespace AntiDebug
             }
 
             void* originalSymbiote = nullptr;
-            if (!Memory::HookFunctionAbsolute(
-                    reinterpret_cast<void*>(symbioteEntryPoint),
-                    reinterpret_cast<void*>(&SymbioteHook),
-                    &originalSymbiote,
-                    safeHookLen))
+            if (!StealthHook::CreateHook("AntiDebug.Symbiote", reinterpret_cast<void*>(symbioteEntryPoint), reinterpret_cast<void*>(&SymbioteHook), &originalSymbiote))
             {
-                LOG_ERROR("AntiDebug", "Failed to hook symbiote entry point at 0x%llX", symbioteEntryPoint);
+                LOG_ERROR("AntiDebug", "Failed to create stealth hook for symbiote at 0x%llX", symbioteEntryPoint);
+                return;
+            }
+
+            if (!StealthHook::EnableHook("AntiDebug.Symbiote"))
+            {
+                LOG_ERROR("AntiDebug", "Failed to enable stealth hook for symbiote at 0x%llX", symbioteEntryPoint);
                 return;
             }
 

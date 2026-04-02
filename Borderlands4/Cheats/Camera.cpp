@@ -74,23 +74,25 @@ namespace
 	constexpr uintptr_t kViewTargetLocOffset = 14640;
 	constexpr uintptr_t kViewTargetRotOffset = 14664;
 	constexpr uintptr_t kViewTargetFovOffset = 14688;
-	using NativeCameraUpdateFn = char(__fastcall*)(__int64, __int64*, float);
-	using NativeCameraModeCommitFn = __int64(__fastcall*)(__int64, __int64*, __int64*, __int64, int, char);
+	using NativeCameraUpdateFn = __int64(__fastcall*)(__int64, __int64, float);
+	using NativeCameraModeCommitFn = __int64(__fastcall*)(__int64, __int64*, float);
 	constexpr SignatureRegistry::Signature kNativeCameraUpdateSignature{
 		"NativeCameraUpdate",
-		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? 66 44 0F 29 BC 24 ? ? ? ? 66 44 0F 29 B4 24",
+		"41 57 41 56 41 54 56 57 53 48 81 EC ? ? ? ? 66 44 0F 29 BC 24 ? ? ? ? 66 44 0F 29 B4 24 ? ? ? ? 66 44 0F 29 AC 24 ? ? ? ? 66 44 0F 29 A4 24 ? ? ? ? 66 44 0F 29 9C 24 ? ? ? ? 66 44 0F 29 94 24 ? ? ? ? 66 44 0F 29 8C 24 ? ? ? ? 66 44 0F 29 84 24 ? ? ? ? 66 0F 29 BC 24 ? ? ? ? 0F 29 B4 24 ? ? ? ? 66 0F 28 F2",
 		SignatureRegistry::HookTiming::InGameReady
 	};
 	constexpr size_t kNativeCameraUpdateHookLen = 19;
 	constexpr SignatureRegistry::Signature kNativeCameraModeCommitSignature{
 		"NativeCameraModeCommit",
-		"Signature for 1410702B0: 41 57 41 56 41 54 56 57 55 53 48 83 EC ? 0F 29 74 24 ? 44 89 C7",
+		"56 57 53 48 83 EC ? 0F 29 74 24 ? 0F 28 F2 48 89 D6 48 89 CF 48 8B 05 ? ? ? ? 48 31 E0 48 89 44 24 ? 48 8B 89",
 		SignatureRegistry::HookTiming::InGameReady
 	};
 	constexpr size_t kNativeCameraModeCommitHookLen = 19;
 	NativeCameraUpdateFn oNativeCameraUpdate = nullptr;
 	NativeCameraModeCommitFn oNativeCameraModeCommit = nullptr;
 	FNativeFreecamState g_NativeFreecamState{};
+	bool g_NativeCameraUpdateInstalled = false;
+	bool g_NativeCameraModeCommitInstalled = false;
 
 	bool IsValidWorldForNativeCamera()
 	{
@@ -264,7 +266,7 @@ namespace
 			std::isfinite(fov);
 	}
 
-	char __fastcall hkNativeCameraUpdate(__int64 a1, __int64* a2, float a3)
+	__int64 __fastcall hkNativeCameraUpdate(__int64 a1, __int64 a2, float a3)
 	{
 		const uintptr_t cameraContext = static_cast<uintptr_t>(a1);
 		const bool bNativeCameraSafe =
@@ -285,7 +287,7 @@ namespace
 			LogNativeCameraState("PreUpdate", a1);
 		}
 
-		const char result = oNativeCameraUpdate ? oNativeCameraUpdate(a1, a2, a3) : 0;
+		const __int64 result = oNativeCameraUpdate ? oNativeCameraUpdate(a1, a2, a3) : 0;
 		Cheats::ApplyNativeCameraPostUpdate(cameraContext, a3);
 		if (bShouldLog)
 		{
@@ -345,19 +347,18 @@ namespace
 		return modeStr.find("ThirdPerson") != std::string::npos;
 	}
 
-	__int64 __fastcall hkNativeCameraModeCommit(__int64 a1, __int64* a2, __int64* a3, __int64 a4, int a5, char a6)
+	__int64 __fastcall hkNativeCameraModeCommit(__int64 a1, __int64* a2, float a3)
 	{
-		if (IsCurrentlyInThirdPersonCameraMode())
+		const bool bIsThirdPersonActive = IsCurrentlyInThirdPersonCameraMode();
+		
+		// This is the native camera-mode commit path that owns the +14920 current-mode slot.
+		// Keep it observational for stability; UpdateCameraModes handles re-requesting the desired mode.
+		if (bIsThirdPersonActive && g_RequestedThirdPersonMode)
 		{
-			Logger::LogThrottled(
-				Logger::Level::Debug,
-				"CamModeBlock",
-				1000,
-				"Blocked native camera mode commit while third-person lock is active");
-			return 0;
+			Logger::LogThrottled(Logger::Level::Debug, "CamMode", 2000, "Native attempted mode commit while locked, allowing bypass for stability.");
 		}
 
-		return oNativeCameraModeCommit ? oNativeCameraModeCommit(a1, a2, a3, a4, a5, a6) : 0;
+		return oNativeCameraModeCommit ? oNativeCameraModeCommit(a1, a2, a3) : 0;
 	}
 
 	bool ReadNativeCameraPose(uintptr_t base, uintptr_t locOffset, uintptr_t rotOffset, uintptr_t fovOffset, FNativeCameraPose& outPose)
@@ -1074,20 +1075,39 @@ void Cheats::UpdateCamera()
 	RegisterNativeCameraHookSignature();
 	RegisterNativeCameraModeCommitHookSignature();
 
-	SignatureRegistry::EnsureHook(
-		kNativeCameraUpdateSignature,
-		reinterpret_cast<void*>(&hkNativeCameraUpdate),
-		reinterpret_cast<void**>(&oNativeCameraUpdate),
-		kNativeCameraUpdateHookLen,
-		"CamNative",
-		true);
-	SignatureRegistry::EnsureHook(
-		kNativeCameraModeCommitSignature,
-		reinterpret_cast<void*>(&hkNativeCameraModeCommit),
-		reinterpret_cast<void**>(&oNativeCameraModeCommit),
-		kNativeCameraModeCommitHookLen,
-		"CamNative",
-		true);
+	// 1. Camera Hooks (Inline Hook for stability across all instances)
+	// ONLY attempt installation if timing is ready (to avoid error logs during warmup)
+	if (SignatureRegistry::IsTimingReady(SignatureRegistry::HookTiming::InGameReady))
+	{
+		if (!g_NativeCameraUpdateInstalled)
+		{
+			if (SignatureRegistry::EnsureHook(kNativeCameraUpdateSignature, &hkNativeCameraUpdate, reinterpret_cast<void**>(&oNativeCameraUpdate), true))
+			{
+				g_NativeCameraUpdateInstalled = true;
+				LOG_INFO("Hook", "NativeCameraUpdate Inline hooked successfully.");
+			}
+			else {
+				// We don't log error here because it might still fail for a few frames
+			}
+		}
+
+		if (!g_NativeCameraModeCommitInstalled)
+		{
+			if (SignatureRegistry::EnsureHook(kNativeCameraModeCommitSignature, &hkNativeCameraModeCommit, reinterpret_cast<void**>(&oNativeCameraModeCommit), true))
+			{
+				g_NativeCameraModeCommitInstalled = true;
+				LOG_INFO("Hook", "NativeCameraModeCommit Inline hooked successfully.");
+			}
+			else {
+				// Silence transient errors
+			}
+		}
+	}
+
+	SDK::APlayerCameraManager* pCamMgr = GVars.PlayerController ? GVars.PlayerController->PlayerCameraManager : nullptr;
+	if (!pCamMgr || !Utils::IsValidActor(pCamMgr)) {
+		Logger::LogThrottled(Logger::Level::Debug, "Hook", 5000, "cameraManager (pCamMgr) is NULL/Invalid, skipping camera sub-logic.");
+	}
 
 	if (g_BlockNativeCameraUntilGameplayReady)
 	{

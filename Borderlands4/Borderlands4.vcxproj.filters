@@ -64,6 +64,9 @@
     <ClCompile Include="Utils\AntiDebug.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Utils\StealthHook.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
     <ClCompile Include="Utils\Input.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -225,6 +228,9 @@
     <ClInclude Include="Utils\AntiDebug.h">
       <Filter>Source Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="Utils\StealthHook.h">
+      <Filter>Source Files\Utils</Filter>
+    </ClInclude>
     <ClInclude Include="Cheats.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -332,5 +338,10 @@
     <Natvis Include="ImGui\misc\debuggers\imgui.natvis">
       <Filter>ImGui</Filter>
     </Natvis>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Utils\StealthSyscall.asm">
+      <Filter>Source Files\Utils</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

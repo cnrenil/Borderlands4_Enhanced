@@ -114,32 +114,54 @@ namespace Memory
         }
     }
 
-    bool PatchVTableSlot(void* instance, size_t slotIndex, void* detour, void** originalOut)
+    bool PatchVTableSlot(void* object, size_t slot, void* detour, void** originalOut, bool bStealth)
     {
-        if (!instance || !detour || !originalOut) return false;
+        if (!object || !detour || !originalOut) return false;
 
-        void*** asVt = reinterpret_cast<void***>(instance);
+        void*** asVt = reinterpret_cast<void***>(object);
         if (!asVt || !*asVt) return false;
 
         void** vtable = *asVt;
-        void** slot = &vtable[slotIndex];
+        void** slotAddr = &vtable[slot];
 
-        DWORD oldProtect = 0;
-        if (!VirtualProtect(slot, sizeof(void*), PAGE_EXECUTE_READWRITE, &oldProtect))
+        if (bStealth)
         {
-            return false;
-        }
+            uint32_t oldProtect = 0;
+            if (!StealthHook::StealthVirtualProtect(slotAddr, sizeof(void*), PAGE_EXECUTE_READWRITE, &oldProtect))
+            {
+                return false;
+            }
 
-        if (!*originalOut)
+            if (!*originalOut)
+            {
+                *originalOut = *slotAddr;
+            }
+            *slotAddr = detour;
+
+            uint32_t tmp = 0;
+            StealthHook::StealthVirtualProtect(slotAddr, sizeof(void*), oldProtect, &tmp);
+            FlushInstructionCache(GetCurrentProcess(), slotAddr, sizeof(void*));
+            return true;
+        }
+        else
         {
-            *originalOut = *slot;
-        }
-        *slot = detour;
+            DWORD oldProtect = 0;
+            if (!VirtualProtect(slotAddr, sizeof(void*), PAGE_EXECUTE_READWRITE, &oldProtect))
+            {
+                return false;
+            }
 
-        DWORD tmp = 0;
-        VirtualProtect(slot, sizeof(void*), oldProtect, &tmp);
-        FlushInstructionCache(GetCurrentProcess(), slot, sizeof(void*));
-        return true;
+            if (!*originalOut)
+            {
+                *originalOut = *slotAddr;
+            }
+            *slotAddr = detour;
+
+            DWORD tmp = 0;
+            VirtualProtect(slotAddr, sizeof(void*), oldProtect, &tmp);
+            FlushInstructionCache(GetCurrentProcess(), slotAddr, sizeof(void*));
+            return true;
+        }
     }
 
     bool HookFunctionAbsolute(void* target, void* detour, void** originalOut, size_t stolenLen)
