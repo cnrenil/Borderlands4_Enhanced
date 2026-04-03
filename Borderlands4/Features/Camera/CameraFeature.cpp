@@ -1166,6 +1166,18 @@ namespace Features::Camera
 	{
 		ConfigManager::F("Misc.FOV") = fov;
 	}
+
+	bool OnEvent(const Core::SchedulerGameEvent& Event)
+	{
+		if (ConfigManager::B("Player.Freecam") && ConfigManager::B("Misc.FreecamBlockInput"))
+		{
+			if (Utils::IsInputEvent(Event.Function->GetName()))
+			{
+				return true; 
+			}
+		}
+		return false;
+	}
 }
 
 namespace Features
@@ -1181,5 +1193,9 @@ namespace Features
 			{
 				Camera::Update();
 			});
+
+		Core::Scheduler::RegisterEventHandler("Camera", [](const Core::SchedulerGameEvent& Event) {
+			return Camera::OnEvent(Event);
+		});
 	}
 }

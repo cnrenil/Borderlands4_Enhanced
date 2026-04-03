@@ -1083,8 +1083,23 @@ void Utils::SendMouseLeftDown()
 
 void Utils::SendMouseLeftUp()
 {
-    INPUT input{};
-    input.type = INPUT_MOUSE;
-    input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
-    SendInput(1, &input, sizeof(INPUT));
+    mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+}
+
+bool Utils::IsInputEvent(const std::string& name)
+{
+    return name.find("InputKey") != std::string::npos ||
+        name.find("InputAxis") != std::string::npos ||
+        name.find("InputTouch") != std::string::npos;
+}
+
+bool Utils::IsMouseInputEvent(const std::string& name)
+{
+    if (!IsInputEvent(name)) return false;
+    if (name.find("Mouse") != std::string::npos) return true;
+    if (name.find("LeftMouseButton") != std::string::npos) return true;
+    if (name.find("RightMouseButton") != std::string::npos) return true;
+    if (name.find("ThumbMouseButton") != std::string::npos) return true;
+    if (name == "InputKey" || name == "InputAxis") return true;
+    return false;
 }

@@ -98,6 +98,8 @@ struct Utils
 	static FVector GetBestAimPoint(ACharacter* TargetChar, const std::string& PreferredBone);
 	static void SendMouseLeftDown();
 	static void SendMouseLeftUp();
+	static bool IsInputEvent(const std::string& name);
+	static bool IsMouseInputEvent(const std::string& name);
 };
 
 static inline float Dot3(const FVector& A, const FVector& B)

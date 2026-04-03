@@ -16,7 +16,7 @@ namespace Core
     void Scheduler::RegisterGameUpdateCallback(const std::string& name, CallbackFn callback)
     {
         RegisterHandler(m_GameUpdateCallbacks, name, std::move(callback));
-        LOG_INFO("Scheduler", "[Scheduler] Registered GameUpdate callback: '%s' (total: %zu)",
+        LOG_DEBUG("Scheduler", "[Scheduler] Registered GameUpdate callback: '%s' (total: %zu)",
             name.c_str(), m_GameUpdateCallbacks.size());
     }
 
@@ -55,6 +55,8 @@ namespace Core
     void Scheduler::RegisterEventHandler(const std::string& name, EventHandlerFn handler)
     {
         RegisterHandler(m_EventHandlers, name, std::move(handler));
+        LOG_DEBUG("Scheduler", "[Scheduler] Registered Event handler: '%s' (total: %zu)",
+            name.c_str(), m_EventHandlers.size());
     }
 
     void Scheduler::RemoveGameUpdateCallback(const std::string& name)
@@ -121,19 +123,18 @@ namespace Core
 
     bool Scheduler::DispatchEvent(const SchedulerGameEvent& event)
     {
-        std::vector<EventHandlerFn> handlers;
+        std::vector<std::pair<std::string, EventHandlerFn>> handlers;
         handlers.reserve(m_EventHandlers.size());
 
         {
             std::lock_guard<std::mutex> lock(m_Mutex);
             for (const auto& [name, handler] : m_EventHandlers)
             {
-                (void)name;
-                handlers.push_back(handler);
+                handlers.push_back({ name, handler });
             }
         }
 
-        for (const auto& handler : handlers)
+        for (const auto& [name, handler] : handlers)
         {
             if (!handler)
                 continue;
@@ -141,10 +142,15 @@ namespace Core
             try
             {
                 if (handler(event))
+                {
+                    LOG_DEBUG("Scheduler", "[Scheduler] Event '%s' intercepted by handler: '%s'",
+                        event.Function ? event.Function->GetName().c_str() : "null", name.c_str());
                     return true;
+                }
             }
             catch (...)
             {
+                LOG_ERROR("Scheduler", "[Scheduler] Fatal error in handler: '%s'", name.c_str());
             }
         }
 

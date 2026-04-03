@@ -36,8 +36,29 @@ void Variables::UpdateUnitCache()
 	});
 }
 
+static int32_t GetActorCountSafe(SDK::ULevel* level)
+{
+	if (!level) return -1;
+	__try
+	{
+		return level->Actors.Num();
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		return -1;
+	}
+}
+
 void Variables::AutoSetVariables()
 {
+	static bool bRegistered = false;
+	if (!bRegistered) {
+		Core::Scheduler::RegisterEventHandler("Variables", [](const Core::SchedulerGameEvent& Event) {
+			return GVars.OnEvent(Event);
+		});
+		bRegistered = true;
+	}
+
 	UWorld* currentWorld = Utils::GetWorldSafe();
 	if (!currentWorld || this->World != currentWorld) {
 		if (this->World != currentWorld) {
@@ -80,15 +101,7 @@ void Variables::AutoSetVariables()
 		bIsLoading = true;
 	}
 	else {
-		int32_t actorCount = 0;
-		__try
-		{
-			actorCount = this->Level->Actors.Num();
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-			actorCount = -1;
-		}
+		int32_t actorCount = GetActorCountSafe(this->Level);
 
 		if (actorCount < 1 || actorCount > 200000)
 			bIsLoading = true;
@@ -129,4 +142,33 @@ void Variables::AutoSetVariables()
 		ScreenSize = ImGui::GetIO().DisplaySize;
 
 	state.IsInGame = this->World && this->World->VTable && this->Level && this->GameState && this->PlayerController && this->PlayerController->VTable && this->PlayerController->PlayerCameraManager && this->PlayerController->PlayerCameraManager->VTable && Utils::GetSelfActor();
+}
+
+bool Variables::OnEvent(const Core::SchedulerGameEvent& Event)
+{
+	if (!Event.Params || !Event.Function) return false;
+
+	std::string fnName = Event.Function->GetName();
+	if (fnName == "ClientSetCinematicMode" || fnName == "SetCinematicMode")
+	{
+		bool bNewCinematicMode = false;
+		if (fnName == "ClientSetCinematicMode")
+		{
+			const auto* cinematicParams = static_cast<const SDK::Params::PlayerController_ClientSetCinematicMode*>(Event.Params);
+			bNewCinematicMode = cinematicParams->bInCinematicMode;
+		}
+		else
+		{
+			const auto* cinematicParams = static_cast<const SDK::Params::PlayerController_SetCinematicMode*>(Event.Params);
+			bNewCinematicMode = cinematicParams->bInCinematicMode;
+		}
+
+		const bool bPreviousMode = Core::Scheduler::State().IsCinematicMode.exchange(bNewCinematicMode);
+		if (bPreviousMode != bNewCinematicMode)
+		{
+			LOG_INFO("Overlay", "Cinematic mode %s. %s overlay rendering.", bNewCinematicMode ? "enabled" : "disabled", bNewCinematicMode ? "Suspending" : "Resuming");
+		}
+	}
+
+	return false;
 }

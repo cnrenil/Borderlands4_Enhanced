@@ -5,17 +5,9 @@
 
 namespace Features::Debug
 {
-    void HandleEvents(
-        const SDK::UObject* Object,
-        SDK::UFunction* Function,
-        void* Params,
-        void(*OriginalProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*),
-        bool bCallOriginal)
+    bool OnEvent(const Core::SchedulerGameEvent& Event)
     {
-        if (bCallOriginal && OriginalProcessEvent)
-        {
-            OriginalProcessEvent(Object, Function, Params);
-        }
+        return false;
     }
 
     void DumpObjects() {}
@@ -135,31 +127,28 @@ namespace Features::Debug
         }
     }
 
-    void HandleEvents(
-        const SDK::UObject* Object,
-        SDK::UFunction* Function,
-        void* Params,
-        void(*OriginalProcessEvent)(const SDK::UObject*, SDK::UFunction*, void*),
-        bool bCallOriginal)
+    bool OnEvent(const Core::SchedulerGameEvent& Event)
     {
+        if (!ConfigManager::B("Misc.Debug")) return false;
+
         Update();
 
-        if (Logger::IsRecording() && Object && Function)
+        if (Logger::IsRecording() && Event.Object && Event.Function)
         {
-            const std::string FuncName = Function->GetName();
-            const std::string ClassName = Object->Class ? Object->Class->GetName() : "None";
-            const std::string ObjName = Object->GetName();
+            const std::string FuncName = Event.Function->GetName();
+            const std::string ClassName = Event.Object->Class ? Event.Object->Class->GetName() : "None";
+            const std::string ObjName = Event.Object->GetName();
             if (ClassName.find("Widget") == std::string::npos && ClassName.find("Menu") == std::string::npos)
             {
                 Logger::LogEvent(ClassName, FuncName, ObjName);
             }
         }
 
-        if (ConfigManager::B("Misc.PingDump") && Object && Function && Params)
+        if (ConfigManager::B("Misc.PingDump") && Event.Object && Event.Function && Event.Params)
         {
-            if (Object->IsA(SDK::AOakPlayerController::StaticClass()) && Function->GetName() == "ClientCreatePing")
+            if (Event.Object->IsA(SDK::AOakPlayerController::StaticClass()) && Event.Function->GetName() == "ClientCreatePing")
             {
-                auto* pingParams = static_cast<SDK::Params::OakPlayerController_ClientCreatePing*>(Params);
+                auto* pingParams = static_cast<SDK::Params::OakPlayerController_ClientCreatePing*>(Event.Params);
                 if (pingParams->TargetedActor)
                 {
                     DumpPingTargetObject(pingParams->TargetedActor);
@@ -167,10 +156,7 @@ namespace Features::Debug
             }
         }
 
-        if (bCallOriginal && OriginalProcessEvent)
-        {
-            OriginalProcessEvent(Object, Function, Params);
-        }
+        return false;
     }
 
     void DumpObjects()
@@ -227,6 +213,11 @@ namespace Features
         Core::Scheduler::RegisterGameplayTickCallback("Debug", []()
         {
             Debug::Update();
+        });
+
+        Core::Scheduler::RegisterEventHandler("Debug", [](const Core::SchedulerGameEvent& Event)
+        {
+            return Debug::OnEvent(Event);
         });
     }
 }

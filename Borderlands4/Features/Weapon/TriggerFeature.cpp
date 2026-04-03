@@ -237,6 +237,18 @@ namespace Features
 		}
 	}
 
+	bool OnEvent(const Core::SchedulerGameEvent& event)
+	{
+		if (ConfigManager::B("Trigger.Enabled") && Features::Data::bTriggerSuppressMouseInput.load())
+		{
+			if (Utils::IsMouseInputEvent(event.Function->GetName()))
+			{
+				return true; 
+			}
+		}
+		return false;
+	}
+
 	void RegisterTriggerFeature()
 	{
 		HotkeyManager::Register("Trigger.Key", "TRIGGER_KEY", ImGuiKey_MouseX2, []()
@@ -247,6 +259,11 @@ namespace Features
 		Core::Scheduler::RegisterGameplayTickCallback("Trigger", []()
 		{
 			TriggerBotFeature();
+		});
+
+		Core::Scheduler::RegisterEventHandler("Trigger", [](const Core::SchedulerGameEvent& event)
+		{
+			return OnEvent(event);
 		});
 	}
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+namespace Core { struct SchedulerGameEvent; }
+
 struct Variables
 {
 	APlayerController* PlayerController = nullptr;
@@ -17,6 +19,7 @@ struct Variables
 	void Reset();
 	void UpdateUnitCache();
 	void AutoSetVariables();
+	bool OnEvent(const Core::SchedulerGameEvent& Event);
 };
 
 extern Variables GVars;

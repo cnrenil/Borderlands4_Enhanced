@@ -1368,9 +1368,25 @@ const GUI::MenuBackdropState& GUI::GetMenuBackdropState()
     return g_MenuBackdropState;
 }
 
+bool GUI::OnEvent(const Core::SchedulerGameEvent& Event)
+{
+    if (ShowMenu && !Core::Scheduler::State().ShouldSuspendOverlayRendering())
+    {
+        if (Utils::IsInputEvent(Event.Function->GetName()))
+        {
+            return true; 
+        }
+    }
+    return false;
+}
+
 void GUI::RegisterMenu()
 {
     Core::Scheduler::RegisterOverlayRenderCallback("Menu", []() { 
         RenderMenu(); 
+    });
+
+    Core::Scheduler::RegisterEventHandler("Menu", [](const Core::SchedulerGameEvent& Event) {
+        return OnEvent(Event);
     });
 }

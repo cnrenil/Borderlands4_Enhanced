@@ -9,4 +9,5 @@ namespace Features::Camera
 	void Shutdown();
 	bool ShouldTraceNative();
 	void ApplyNativePostUpdate(uintptr_t cameraContext, float deltaSeconds);
+	bool OnEvent(const Core::SchedulerGameEvent& Event);
 }

@@ -14,6 +14,7 @@ namespace GUI
     void AddDefaultTooltip(const char* desc);
     void HostOnlyTooltip();
     const MenuBackdropState& GetMenuBackdropState();
+    bool OnEvent(const Core::SchedulerGameEvent& Event);
 }
 
 

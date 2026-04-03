@@ -5,7 +5,7 @@ namespace Features::World
 {
 	namespace
 	{
-		std::mutex gTeleportMutex;
+		std::recursive_mutex gTeleportMutex;
 		static SDK::FVector LastPinPos = { 0, 0, 0 };
 		static float LastPinTime = 0.0f;
 		static int LastPinCount = 0;
@@ -77,10 +77,18 @@ namespace Features::World
 	{
 		std::scoped_lock TeleLock(gTeleportMutex);
 
-		if (LastPinPos.X == 0 && LastPinPos.Y == 0 && LastPinPos.Z == 0) return;
+		if (LastPinPos.X == 0 && LastPinPos.Y == 0 && LastPinPos.Z == 0)
+		{
+			LOG_DEBUG("World", "[Teleport] LastPinPos is Zero. Ignoring PerformMapTeleport.");
+			return;
+		}
 
 		auto PC = GVars.PlayerController;
-		if (!PC || !PC->Pawn) return;
+		if (!PC || !PC->Pawn)
+		{
+			LOG_ERROR("World", "[Teleport] Missing PlayerController or Pawn.");
+			return;
+		}
 
 		SDK::AActor* TargetActor = PC->Pawn;
 		if (TargetActor->GetAttachParentActor())
@@ -89,6 +97,8 @@ namespace Features::World
 		SDK::FVector TelePos = LastPinPos;
 		SDK::FHitResult HitResult;
 
+		LOG_INFO("World", "[Teleport] Attempting teleport to (%.2f, %.2f, %.2f)", TelePos.X, TelePos.Y, TelePos.Z);
+
 		// Move way above the map and then sweep down to the ground
 		TelePos.Z = 50000.0f;
 		TargetActor->K2_SetActorLocation(TelePos, false, &HitResult, false);
@@ -96,6 +106,9 @@ namespace Features::World
 		TelePos.Z = -1000.0f;
 		TargetActor->K2_SetActorLocation(TelePos, true, &HitResult, false);
 		
+		LOG_INFO("World", "[Teleport] Completed. New Location: (%.2f, %.2f, %.2f)", 
+			TargetActor->K2_GetActorLocation().X, TargetActor->K2_GetActorLocation().Y, TargetActor->K2_GetActorLocation().Z);
+
 		LastPinPos = { 0, 0, 0 };
 		LastPinTime = 0.0f;
 	}
@@ -112,6 +125,7 @@ namespace Features::World
 				std::scoped_lock TeleLock(gTeleportMutex);
 				LastPinPos = p->InPinData.PinnedCustomWaypointLocation;
 				LastPinTime = (float)ImGui::GetTime();
+				LOG_DEBUG("World", "[Event] Discovery Pin captured at (%.2f, %.2f, %.2f)", LastPinPos.X, LastPinPos.Y, LastPinPos.Z);
 			}
 		}
 		else if (FuncName == "ServerCreatePing") {
@@ -120,13 +134,20 @@ namespace Features::World
 				std::scoped_lock TeleLock(gTeleportMutex);
 				LastPinPos = p->Location;
 				LastPinTime = (float)ImGui::GetTime();
+				LOG_DEBUG("World", "[Event] Ping captured at (%.2f, %.2f, %.2f)", LastPinPos.X, LastPinPos.Y, LastPinPos.Z);
 			}
 		}
 		else if (FuncName == "Server_RemoveDiscoveryPin" || FuncName == "ServerCancelPing") {
 			float CurrentTime = (float)ImGui::GetTime();
+			float Delta = CurrentTime - LastPinTime;
 			std::scoped_lock TeleLock(gTeleportMutex);
-			if (CurrentTime - LastPinTime < ConfigManager::F("Misc.MapTPWindow") && LastPinPos.X != 0) {
+			
+			if (Delta < ConfigManager::F("Misc.MapTPWindow") && LastPinPos.X != 0) {
+				LOG_DEBUG("World", "[Event] Teleport triggered by '%s' (delta: %.2fs)", FuncName.c_str(), Delta);
 				PerformMapTeleport();
+			}
+			else {
+				LOG_DEBUG("World", "[Event] Remove '%s' ignored (delta: %.2fs, posValid: %d)", FuncName.c_str(), Delta, (LastPinPos.X != 0));
 			}
 		}
 
