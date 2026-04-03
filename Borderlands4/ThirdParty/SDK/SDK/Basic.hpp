@@ -33,7 +33,7 @@ using namespace UC;
 */
 namespace Offsets
 {
-	constexpr int32 GObjects          = 0x115F29B0;
+	constexpr int32 GObjects          = 0x115F39B0;
 	constexpr int32 AppendString      = 0x011556A0;
 	constexpr int32 GNames            = 0x00000000;
 	constexpr int32 GWorld            = 0x00000000;
@@ -483,18 +483,18 @@ DUMPER7_ASSERTS_FTextData;
 class FText final
 {
 public:
-    class FTextImpl::FTextData*                   TextData;                                          // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
-    uint8 Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
+	class FTextImpl::FTextData* TextData;                                          // 0x0000(0x0008)(NOT AUTO-GENERATED PROPERTY)
+	uint8 Pad_8[0x8];                                        // 0x0008(0x0008)(Fixing Struct Size After Last Property [ Dumper-7 ])
 
 public:
-    const class FString& GetStringRef() const
-    {
-        return TextData->TextSource;
-    }
-    std::string ToString() const
-    {
-        return TextData->TextSource.ToString();
-    }
+	const class FString& GetStringRef() const
+	{
+		return TextData->TextSource;
+	}
+	std::string ToString() const
+	{
+		return TextData->TextSource.ToString();
+	}
 };
 // DUMPER7_ASSERTS_FText; // Until this is fixed comment this out.
 
@@ -579,22 +579,22 @@ public:
 
 namespace FakeSoftObjectPtr
 {
-    // 0x0010 (0x0010 - 0x0000)
-    struct FTopLevelAssetPath final
-    {
-    public:
-        class FName                                   packagename;                                       // 0x0000(0x0008)(Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-        class FName                                   assetname;                                         // 0x0008(0x0008)(Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
-    };
-// ScriptStruct CoreUObject.SoftObjectPath
-// 0x0020 (0x0020 - 0x0000)
-struct FSoftObjectPath
-{
-public:
-	struct FTopLevelAssetPath                     assetpath;                                         // 0x0000(0x0010)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	class FString                                 subpathstring;                                     // 0x0010(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-};
-DUMPER7_ASSERTS_FSoftObjectPath;
+	// 0x0010 (0x0010 - 0x0000)
+	struct FTopLevelAssetPath final
+	{
+	public:
+		class FName                                   packagename;                                       // 0x0000(0x0008)(Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+		class FName                                   assetname;                                         // 0x0008(0x0008)(Edit, BlueprintVisible, ZeroConstructor, SaveGame, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPrivate)
+	};
+	// ScriptStruct CoreUObject.SoftObjectPath
+	// 0x0020 (0x0020 - 0x0000)
+	struct FSoftObjectPath
+	{
+	public:
+		struct FTopLevelAssetPath                     assetpath;                                         // 0x0000(0x0010)(NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+		class FString                                 subpathstring;                                     // 0x0010(0x0010)(ZeroConstructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	};
+	DUMPER7_ASSERTS_FSoftObjectPath;
 
 }
 

@@ -405,7 +405,7 @@ class UMovieSceneDirectorBlueprintCondition final : public UMovieSceneCondition
 {
 public:
 	struct FMovieSceneDirectorBlueprintConditionData DirectorBlueprintConditionData;                 // 0x0060(0x0028)(Edit, NativeAccessSpecifierPublic)
-	EMovieSceneConditionScope                     scope;                                             // 0x0088(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
+	EMovieSceneConditionScope                     Scope;                                             // 0x0088(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	EMovieSceneConditionCheckFrequency            CheckFrequency;                                    // 0x0089(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, Protected, HasGetValueTypeHash, NativeAccessSpecifierProtected)
 	uint8                                         Pad_8A[0x6];                                       // 0x008A(0x0006)(Fixing Struct Size After Last Property [ Dumper-7 ])
 

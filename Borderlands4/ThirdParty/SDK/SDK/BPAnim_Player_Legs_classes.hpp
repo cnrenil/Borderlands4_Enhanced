@@ -10,10 +10,10 @@
 
 #include "Basic.hpp"
 
-#include "AnimGraphRuntime_structs.hpp"
-#include "BPAnim_Player_Legs_structs.hpp"
 #include "GbxGame_structs.hpp"
 #include "Engine_structs.hpp"
+#include "BPAnim_Player_Legs_structs.hpp"
+#include "AnimGraphRuntime_structs.hpp"
 #include "OakGame_classes.hpp"
 
 

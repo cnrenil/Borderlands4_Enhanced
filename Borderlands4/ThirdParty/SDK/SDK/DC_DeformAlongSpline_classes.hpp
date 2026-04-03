@@ -11,9 +11,9 @@
 #include "Basic.hpp"
 
 #include "Engine_structs.hpp"
+#include "GbxDecorator_classes.hpp"
 #include "ST_GbxSwatch_structs.hpp"
 #include "CoreUObject_structs.hpp"
-#include "GbxDecorator_classes.hpp"
 
 
 namespace SDK

@@ -11,11 +11,11 @@
 #include "Basic.hpp"
 
 #include "GameplayTags_structs.hpp"
+#include "Enum_SpawnMesh_FogWall_Shape_structs.hpp"
 #include "Engine_structs.hpp"
 #include "Enum_SpawnMesh_CharacterAnimStyle_structs.hpp"
 #include "CoreUObject_structs.hpp"
 #include "GbxSpawn_structs.hpp"
-#include "Enum_SpawnMesh_FogWall_Shape_structs.hpp"
 
 
 namespace SDK::Params

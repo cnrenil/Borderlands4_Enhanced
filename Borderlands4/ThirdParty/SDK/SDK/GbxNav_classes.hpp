@@ -1726,7 +1726,7 @@ public:
 	struct FHavokFlightNavChunkSettings           ChunkSettings;                                     // 0x0044(0x0008)(Edit, NoDestructor, NativeAccessSpecifierPublic)
 	struct FHavokFlightNavMergingSettings         MergingSettings;                                   // 0x004C(0x0020)(Edit, NoDestructor, NativeAccessSpecifierPublic)
 	float                                         MinCellWidth;                                      // 0x006C(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
-	float                                         border;                                            // 0x0070(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
+	float                                         Border;                                            // 0x0070(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	bool                                          UseBorderCells;                                    // 0x0074(0x0001)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 	uint8                                         Pad_75[0x3];                                       // 0x0075(0x0003)(Fixing Size After Last Property [ Dumper-7 ])
 	float                                         MinRegionVolume;                                   // 0x0078(0x0004)(Edit, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)

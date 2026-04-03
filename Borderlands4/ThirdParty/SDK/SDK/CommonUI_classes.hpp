@@ -434,7 +434,7 @@ DUMPER7_ASSERTS_UCommonBorderStyle;
 // Class CommonUI.CommonBorder
 // 0x0020 (0x0330 - 0x0310)
 #pragma pack(push, 0x1)
-class alignas(0x10) UCommonBorder : public Uborder
+class alignas(0x10) UCommonBorder : public UBorder
 {
 public:
 	TSubclassOf<class UCommonBorderStyle>         Style;                                             // 0x0308(0x0008)(Edit, BlueprintVisible, BlueprintReadOnly, ZeroConstructor, NoDestructor, ExposeOnSpawn, UObjectWrapper, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -853,7 +853,7 @@ DUMPER7_ASSERTS_UWidgetLockedStateRegistration;
 
 // Class CommonUI.CommonCustomNavigation
 // 0x0010 (0x0320 - 0x0310)
-class UCommonCustomNavigation : public Uborder
+class UCommonCustomNavigation : public UBorder
 {
 public:
 	TDelegate<void(EUINavigation NavigationType)> OnNavigationEvent;                                 // 0x0308(0x0010)(Edit, ZeroConstructor, InstancedReference, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)

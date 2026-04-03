@@ -8754,19 +8754,19 @@ void UBackgroundBlurSlot::SetVerticalAlignment(EVerticalAlignment InVerticalAlig
 }
 
 
-// Function UMG.border.GetDynamicMaterial
+// Function UMG.Border.GetDynamicMaterial
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // class UMaterialInstanceDynamic*         ReturnValue                                            (Parm, OutParm, ZeroConstructor, ReturnParm, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-class UMaterialInstanceDynamic* Uborder::GetDynamicMaterial()
+class UMaterialInstanceDynamic* UBorder::GetDynamicMaterial()
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "GetDynamicMaterial");
+		Func = Class->GetFunction("Border", "GetDynamicMaterial");
 
-	Params::border_GetDynamicMaterial Parms{};
+	Params::Border_GetDynamicMaterial Parms{};
 
 	auto Flgs = Func->FunctionFlags;
 	Func->FunctionFlags |= 0x400;
@@ -8779,19 +8779,19 @@ class UMaterialInstanceDynamic* Uborder::GetDynamicMaterial()
 }
 
 
-// Function UMG.border.SetBrush
+// Function UMG.Border.SetBrush
 // (Final, RequiredAPI, Native, Public, HasOutParams, BlueprintCallable)
 // Parameters:
 // const struct FSlateBrush&               InBrush                                                (ConstParm, Parm, OutParm, ReferenceParm, NativeAccessSpecifierPublic)
 
-void Uborder::SetBrush(const struct FSlateBrush& InBrush)
+void UBorder::SetBrush(const struct FSlateBrush& InBrush)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetBrush");
+		Func = Class->GetFunction("Border", "SetBrush");
 
-	Params::border_SetBrush Parms{};
+	Params::Border_SetBrush Parms{};
 
 	Parms.InBrush = std::move(InBrush);
 
@@ -8804,19 +8804,19 @@ void Uborder::SetBrush(const struct FSlateBrush& InBrush)
 }
 
 
-// Function UMG.border.SetBrushColor
+// Function UMG.Border.SetBrushColor
 // (Final, RequiredAPI, Native, Public, HasDefaults, BlueprintCallable)
 // Parameters:
 // const struct FLinearColor&              InBrushColor                                           (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetBrushColor(const struct FLinearColor& InBrushColor)
+void UBorder::SetBrushColor(const struct FLinearColor& InBrushColor)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetBrushColor");
+		Func = Class->GetFunction("Border", "SetBrushColor");
 
-	Params::border_SetBrushColor Parms{};
+	Params::Border_SetBrushColor Parms{};
 
 	Parms.InBrushColor = std::move(InBrushColor);
 
@@ -8829,19 +8829,19 @@ void Uborder::SetBrushColor(const struct FLinearColor& InBrushColor)
 }
 
 
-// Function UMG.border.SetBrushFromAsset
+// Function UMG.Border.SetBrushFromAsset
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // class USlateBrushAsset*                 Asset                                                  (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetBrushFromAsset(class USlateBrushAsset* Asset)
+void UBorder::SetBrushFromAsset(class USlateBrushAsset* Asset)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetBrushFromAsset");
+		Func = Class->GetFunction("Border", "SetBrushFromAsset");
 
-	Params::border_SetBrushFromAsset Parms{};
+	Params::Border_SetBrushFromAsset Parms{};
 
 	Parms.Asset = Asset;
 
@@ -8854,19 +8854,19 @@ void Uborder::SetBrushFromAsset(class USlateBrushAsset* Asset)
 }
 
 
-// Function UMG.border.SetBrushFromMaterial
+// Function UMG.Border.SetBrushFromMaterial
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // class UMaterialInterface*               Material                                               (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetBrushFromMaterial(class UMaterialInterface* Material)
+void UBorder::SetBrushFromMaterial(class UMaterialInterface* Material)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetBrushFromMaterial");
+		Func = Class->GetFunction("Border", "SetBrushFromMaterial");
 
-	Params::border_SetBrushFromMaterial Parms{};
+	Params::Border_SetBrushFromMaterial Parms{};
 
 	Parms.Material = Material;
 
@@ -8879,19 +8879,19 @@ void Uborder::SetBrushFromMaterial(class UMaterialInterface* Material)
 }
 
 
-// Function UMG.border.SetBrushFromTexture
+// Function UMG.Border.SetBrushFromTexture
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // class UTexture2D*                       Texture                                                (Parm, ZeroConstructor, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetBrushFromTexture(class UTexture2D* Texture)
+void UBorder::SetBrushFromTexture(class UTexture2D* Texture)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetBrushFromTexture");
+		Func = Class->GetFunction("Border", "SetBrushFromTexture");
 
-	Params::border_SetBrushFromTexture Parms{};
+	Params::Border_SetBrushFromTexture Parms{};
 
 	Parms.Texture = Texture;
 
@@ -8904,19 +8904,19 @@ void Uborder::SetBrushFromTexture(class UTexture2D* Texture)
 }
 
 
-// Function UMG.border.SetContentColorAndOpacity
+// Function UMG.Border.SetContentColorAndOpacity
 // (Final, RequiredAPI, Native, Public, HasDefaults, BlueprintCallable)
 // Parameters:
 // const struct FLinearColor&              InContentColorAndOpacity                               (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetContentColorAndOpacity(const struct FLinearColor& InContentColorAndOpacity)
+void UBorder::SetContentColorAndOpacity(const struct FLinearColor& InContentColorAndOpacity)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetContentColorAndOpacity");
+		Func = Class->GetFunction("Border", "SetContentColorAndOpacity");
 
-	Params::border_SetContentColorAndOpacity Parms{};
+	Params::Border_SetContentColorAndOpacity Parms{};
 
 	Parms.InContentColorAndOpacity = std::move(InContentColorAndOpacity);
 
@@ -8929,19 +8929,19 @@ void Uborder::SetContentColorAndOpacity(const struct FLinearColor& InContentColo
 }
 
 
-// Function UMG.border.SetDesiredSizeScale
+// Function UMG.Border.SetDesiredSizeScale
 // (Final, RequiredAPI, Native, Public, HasDefaults, BlueprintCallable)
 // Parameters:
 // const struct FVector2D&                 InScale                                                (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetDesiredSizeScale(const struct FVector2D& InScale)
+void UBorder::SetDesiredSizeScale(const struct FVector2D& InScale)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetDesiredSizeScale");
+		Func = Class->GetFunction("Border", "SetDesiredSizeScale");
 
-	Params::border_SetDesiredSizeScale Parms{};
+	Params::Border_SetDesiredSizeScale Parms{};
 
 	Parms.InScale = std::move(InScale);
 
@@ -8954,19 +8954,19 @@ void Uborder::SetDesiredSizeScale(const struct FVector2D& InScale)
 }
 
 
-// Function UMG.border.SetHorizontalAlignment
+// Function UMG.Border.SetHorizontalAlignment
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // EHorizontalAlignment                    InHorizontalAlignment                                  (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetHorizontalAlignment(EHorizontalAlignment InHorizontalAlignment)
+void UBorder::SetHorizontalAlignment(EHorizontalAlignment InHorizontalAlignment)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetHorizontalAlignment");
+		Func = Class->GetFunction("Border", "SetHorizontalAlignment");
 
-	Params::border_SetHorizontalAlignment Parms{};
+	Params::Border_SetHorizontalAlignment Parms{};
 
 	Parms.InHorizontalAlignment = InHorizontalAlignment;
 
@@ -8979,19 +8979,19 @@ void Uborder::SetHorizontalAlignment(EHorizontalAlignment InHorizontalAlignment)
 }
 
 
-// Function UMG.border.SetPadding
+// Function UMG.Border.SetPadding
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // const struct FMargin&                   InPadding                                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, NativeAccessSpecifierPublic)
 
-void Uborder::SetPadding(const struct FMargin& InPadding)
+void UBorder::SetPadding(const struct FMargin& InPadding)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetPadding");
+		Func = Class->GetFunction("Border", "SetPadding");
 
-	Params::border_SetPadding Parms{};
+	Params::Border_SetPadding Parms{};
 
 	Parms.InPadding = std::move(InPadding);
 
@@ -9004,19 +9004,19 @@ void Uborder::SetPadding(const struct FMargin& InPadding)
 }
 
 
-// Function UMG.border.SetShowEffectWhenDisabled
+// Function UMG.Border.SetShowEffectWhenDisabled
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // bool                                    bInShowEffectWhenDisabled                              (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetShowEffectWhenDisabled(bool bInShowEffectWhenDisabled)
+void UBorder::SetShowEffectWhenDisabled(bool bInShowEffectWhenDisabled)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetShowEffectWhenDisabled");
+		Func = Class->GetFunction("Border", "SetShowEffectWhenDisabled");
 
-	Params::border_SetShowEffectWhenDisabled Parms{};
+	Params::Border_SetShowEffectWhenDisabled Parms{};
 
 	Parms.bInShowEffectWhenDisabled = bInShowEffectWhenDisabled;
 
@@ -9029,19 +9029,19 @@ void Uborder::SetShowEffectWhenDisabled(bool bInShowEffectWhenDisabled)
 }
 
 
-// Function UMG.border.SetVerticalAlignment
+// Function UMG.Border.SetVerticalAlignment
 // (Final, RequiredAPI, Native, Public, BlueprintCallable)
 // Parameters:
 // EVerticalAlignment                      InVerticalAlignment                                    (Parm, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
 
-void Uborder::SetVerticalAlignment(EVerticalAlignment InVerticalAlignment)
+void UBorder::SetVerticalAlignment(EVerticalAlignment InVerticalAlignment)
 {
 	static class UFunction* Func = nullptr;
 
 	if (Func == nullptr)
-		Func = Class->GetFunction("border", "SetVerticalAlignment");
+		Func = Class->GetFunction("Border", "SetVerticalAlignment");
 
-	Params::border_SetVerticalAlignment Parms{};
+	Params::Border_SetVerticalAlignment Parms{};
 
 	Parms.InVerticalAlignment = InVerticalAlignment;
 

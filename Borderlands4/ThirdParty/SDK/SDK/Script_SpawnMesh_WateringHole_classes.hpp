@@ -11,9 +11,9 @@
 #include "Basic.hpp"
 
 #include "GbxGame_classes.hpp"
+#include "Enum_SpawnMesh_WateringHole_LiquidType_structs.hpp"
 #include "Engine_structs.hpp"
 #include "OakGame_structs.hpp"
-#include "Enum_SpawnMesh_WateringHole_LiquidType_structs.hpp"
 
 
 namespace SDK

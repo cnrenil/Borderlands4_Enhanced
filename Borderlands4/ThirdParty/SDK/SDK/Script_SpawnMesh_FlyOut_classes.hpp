@@ -11,8 +11,8 @@
 #include "Basic.hpp"
 
 #include "GbxGame_classes.hpp"
-#include "Engine_structs.hpp"
 #include "Enum_SpawnMesh_FogWall_Shape_structs.hpp"
+#include "Engine_structs.hpp"
 
 
 namespace SDK

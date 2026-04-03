@@ -11,14 +11,14 @@
 #include "Basic.hpp"
 
 #include "GbxGame_structs.hpp"
+#include "PlayerCharacters_structs.hpp"
 #include "Engine_structs.hpp"
 #include "GbxEngine_structs.hpp"
-#include "AnimGraphRuntime_structs.hpp"
 #include "BPAnim_Player_3rd_structs.hpp"
+#include "AnimGraphRuntime_structs.hpp"
 #include "FaceFX_structs.hpp"
 #include "OakGame_structs.hpp"
 #include "OakGame_classes.hpp"
-#include "PlayerCharacters_structs.hpp"
 
 
 namespace SDK

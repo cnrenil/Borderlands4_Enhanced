@@ -11,11 +11,11 @@
 #include "Basic.hpp"
 
 #include "E_Cap_structs.hpp"
-#include "E_Axis_2D_structs.hpp"
-#include "CoreUObject_structs.hpp"
-#include "ST_GbxSwatch_structs.hpp"
-#include "Engine_structs.hpp"
 #include "GbxDecorator_classes.hpp"
+#include "E_Axis_2D_structs.hpp"
+#include "ST_GbxSwatch_structs.hpp"
+#include "CoreUObject_structs.hpp"
+#include "Engine_structs.hpp"
 
 
 namespace SDK

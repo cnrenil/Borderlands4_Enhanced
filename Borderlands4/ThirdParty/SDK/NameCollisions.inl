@@ -9,31 +9,31 @@
 // FORWARD DECLARATIONS
 
 
-namespace AnimBP_Drill_Medium { struct FAnimBlueprintGeneratedConstantData; }
-
 namespace AnimBP_ORD_Dropship { struct FAnimBlueprintGeneratedConstantData; }
 
 namespace AnimBP_Drill_Small { struct FAnimBlueprintGeneratedConstantData; }
 
 namespace BPAnim_CheckpointStation { struct FAnimBlueprintGeneratedConstantData; }
 
+namespace AnimBP_Drill_Medium { struct FAnimBlueprintGeneratedConstantData; }
+
 namespace BPAnim_Player_StandIn { struct FAnimBlueprintGeneratedConstantData; }
 
-
-namespace BPAnim_Player_Legs
-{
-	struct FAnimBlueprintGeneratedConstantData;
-	struct FAnimBlueprintGeneratedMutableData;
-}
-
-namespace BPAnim_Player_1st
-{
-	struct FAnimBlueprintGeneratedConstantData;
-	struct FAnimBlueprintGeneratedMutableData;
-}
 
 namespace BPAnim_Player_3rd
 {
 	struct FAnimBlueprintGeneratedConstantData;
 	struct FAnimBlueprintGeneratedMutableData;
+}
+
+namespace BPAnim_Player_Legs
+{
+	struct FAnimBlueprintGeneratedMutableData;
+	struct FAnimBlueprintGeneratedConstantData;
+}
+
+namespace BPAnim_Player_1st
+{
+	struct FAnimBlueprintGeneratedMutableData;
+	struct FAnimBlueprintGeneratedConstantData;
 }

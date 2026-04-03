@@ -2088,10 +2088,10 @@ public:
 };
 DUMPER7_ASSERTS_UBackgroundBlurSlot;
 
-// Class UMG.border
+// Class UMG.Border
 // 0x0190 (0x0310 - 0x0180)
 #pragma pack(push, 0x1)
-class alignas(0x10) Uborder : public UContentWidget
+class alignas(0x10) UBorder : public UContentWidget
 {
 public:
 	EHorizontalAlignment                          HorizontalAlignment;                               // 0x0180(0x0001)(Edit, BlueprintVisible, ZeroConstructor, IsPlainOldData, NoDestructor, HasGetValueTypeHash, NativeAccessSpecifierPublic)
@@ -2132,19 +2132,19 @@ public:
 public:
 	static class UClass* StaticClass()
 	{
-		STATIC_CLASS_IMPL("border")
+		STATIC_CLASS_IMPL("Border")
 	}
 	static const class FName& StaticName()
 	{
-		STATIC_NAME_IMPL(L"border")
+		STATIC_NAME_IMPL(L"Border")
 	}
-	static class Uborder* GetDefaultObj()
+	static class UBorder* GetDefaultObj()
 	{
-		return GetDefaultObjImpl<Uborder>();
+		return GetDefaultObjImpl<UBorder>();
 	}
 };
 #pragma pack(pop)
-DUMPER7_ASSERTS_Uborder;
+DUMPER7_ASSERTS_UBorder;
 
 // Class UMG.BorderSlot
 // 0x0028 (0x0060 - 0x0038)

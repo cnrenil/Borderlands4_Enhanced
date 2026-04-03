@@ -11,8 +11,8 @@
 #include "Basic.hpp"
 
 #include "GbxGame_structs.hpp"
-#include "Enum_PropagandaSpeaker_ZoneTypes_structs.hpp"
 #include "Engine_structs.hpp"
+#include "Enum_PropagandaSpeaker_ZoneTypes_structs.hpp"
 #include "OakGame_classes.hpp"
 #include "GbxEngine_structs.hpp"
 

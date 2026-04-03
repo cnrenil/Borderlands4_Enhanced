@@ -10,9 +10,9 @@
 
 #include "Basic.hpp"
 
+#include "ST_GbxSwatch_structs.hpp"
 #include "CoreUObject_structs.hpp"
 #include "E_Axis_structs.hpp"
-#include "ST_GbxSwatch_structs.hpp"
 
 
 namespace SDK

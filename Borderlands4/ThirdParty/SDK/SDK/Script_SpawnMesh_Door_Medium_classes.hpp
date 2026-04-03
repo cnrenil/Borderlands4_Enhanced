@@ -13,8 +13,8 @@
 #include "GbxGame_classes.hpp"
 #include "Enum_SpawnMesh_CharacterAnimStyle_structs.hpp"
 #include "Engine_structs.hpp"
-#include "Enum_SpawnMesh_Door_Medium_AnimStyle_structs.hpp"
 #include "Enum_SpawnMesh_Door_Medium_ArtStyle_structs.hpp"
+#include "Enum_SpawnMesh_Door_Medium_AnimStyle_structs.hpp"
 
 
 namespace SDK

@@ -10,13 +10,13 @@
 
 #include "Basic.hpp"
 
-#include "E_Cap_structs.hpp"
-#include "ST_GbxSwatch_structs.hpp"
-#include "CoreUObject_structs.hpp"
-#include "Engine_structs.hpp"
-#include "E_Walkway_Railing_structs.hpp"
 #include "E_Walkway_Railing_Cap_Selection_structs.hpp"
+#include "E_Cap_structs.hpp"
+#include "CoreUObject_structs.hpp"
 #include "GbxDecorator_classes.hpp"
+#include "ST_GbxSwatch_structs.hpp"
+#include "E_Walkway_Railing_structs.hpp"
+#include "Engine_structs.hpp"
 
 
 namespace SDK

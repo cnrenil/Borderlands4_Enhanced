@@ -10,8 +10,8 @@
 
 #include "Basic.hpp"
 
-#include "GbxEngine_structs.hpp"
 #include "Enum_SpawnMesh_Dropship_Layouts_structs.hpp"
+#include "GbxEngine_structs.hpp"
 
 
 namespace SDK::Params
