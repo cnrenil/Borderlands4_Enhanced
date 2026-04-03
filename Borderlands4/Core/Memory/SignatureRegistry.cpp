@@ -120,8 +120,8 @@ namespace SignatureRegistry
             if (timing == HookTiming::Immediate)
                 return true;
 
-            if (!Utils::bIsInGame() ||
-                Utils::bIsLoading() ||
+            const bool gameplayReady = Core::Scheduler::State().CanRunGameplay();
+            if (!gameplayReady ||
                 !GVars.World ||
                 !GVars.Character ||
                 !GVars.PlayerController ||
@@ -130,8 +130,8 @@ namespace SignatureRegistry
                 g_LastInGameWorld = 0;
                 g_InGameReadySinceMs = 0;
                 // Log throttled to avoid flooding the log
-                Logger::LogThrottled(Logger::Level::Debug, "Signature", 5000, "Global hooks timing gate not ready (InGame: %d, Loading: %d, World: %p, PC: %p)", 
-                    Utils::bIsInGame().load(), Utils::bIsLoading().load(), GVars.World, GVars.PlayerController);
+                Logger::LogThrottled(Logger::Level::Debug, "Signature", 5000, "Global hooks timing gate not ready (GameplayReady: %d, World: %p, PC: %p)",
+                    gameplayReady ? 1 : 0, GVars.World, GVars.PlayerController);
                 return false;
             }
 

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Features/Core/FeatureRegistry.h"
 
 extern HWND g_hWnd;
 extern HWND g_hTrackedWindow;
@@ -8,7 +9,6 @@ extern std::atomic<bool> Resizing;
 extern std::atomic<bool> Cleaning;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-extern void hkProcessEvent(const SDK::UObject* Object, SDK::UFunction* Function, void* Params);
 
 LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	if (Cleaning.load())
@@ -32,7 +32,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     // containers are not thread-safe and this hook does not run on the Present thread.
     GUI::Overlay::HandleWndProcMessage(hWnd, uMsg, wParam, lParam);
 
-	if (GUI::ShowMenu && !Utils::ShouldSuspendOverlayRendering()) {
+	if (GUI::ShowMenu && !Core::Scheduler::State().ShouldSuspendOverlayRendering()) {
 		// Fully block user input from reaching the game when menu is open.
 		switch (uMsg) {
 			case WM_INPUT:
@@ -202,8 +202,8 @@ static bool TryAutoSetVariablesMainThread()
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
 		GVars.Reset();
-		Utils::bIsLoading() = true;
-		Utils::bIsInGame() = false;
+		Core::Scheduler::State().IsLoading = true;
+		Core::Scheduler::State().IsInGame = false;
 		return false;
 	}
 }
@@ -234,6 +234,7 @@ DWORD MainThread(HMODULE hModule)
     HotkeyManager::Initialize();
 
 	ConfigManager::LoadSettings();
+	Features::RegisterAllFeatures();
 
 	LOG_INFO("System", "Waiting for stable game state...");
 	Sleep(2000); 
@@ -289,7 +290,7 @@ DWORD MainThread(HMODULE hModule)
 			{
 				lastDx12HookAttemptTick = now;
 				LOG_DEBUG("System", "Stable world detected. Installing DX12 hooks...");
-				if (Engine::HookPresent())
+				if (HookPresent())
 				{
 					bDx12Hooked = true;
 					LOG_INFO("System", "Engine hooks initialized successfully.");
@@ -302,8 +303,8 @@ DWORD MainThread(HMODULE hModule)
 		}
 		
 		// 2. Always attempt to stabilize hooks (PE, PS, CM)
-        // We remove the !Utils::bIsLoading() check here to allow HookProcessEvent() 
-        // to finish hooking PostRender even if actors aren't loaded yet.
+        // Keep this ungated by gameplay-ready checks so HookProcessEvent() can finish
+        // hooking PostRender even if actors aren't loaded yet.
 		if (!Resizing.load())
 		{
 			SafeUpdateHooks(bIsProcessEventHooked, bIsPlayerStateHooked, bIsCameraManagerHooked);

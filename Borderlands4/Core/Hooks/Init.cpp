@@ -1,12 +1,7 @@
 #include "pch.h"
-
-
-DXGI_SWAP_CHAIN_DESC Engine::sd = {};
-int Engine::FrameCount = 3;
-
 bool HookPresentLocal();
 
-bool Engine::HookPresent()
+bool HookPresent()
 {
 	if (!HookPresentLocal())
 		return false;

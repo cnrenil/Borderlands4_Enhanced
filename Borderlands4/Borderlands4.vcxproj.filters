@@ -129,6 +129,9 @@
     <ClCompile Include="Core\Framework\Scheduler.cpp">
       <Filter>Core\Framework</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Framework\Variables.cpp">
+      <Filter>Core\Framework</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Framework\Utils.cpp">
       <Filter>Core\Framework</Filter>
     </ClCompile>
@@ -301,10 +304,10 @@
     <ClInclude Include="Core\Config\ConfigManager.h">
       <Filter>Core\Config</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Framework\Engine.h">
+    <ClInclude Include="Core\Framework\Scheduler.h">
       <Filter>Core\Framework</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Framework\Scheduler.h">
+    <ClInclude Include="Core\Framework\Variables.h">
       <Filter>Core\Framework</Filter>
     </ClInclude>
     <ClInclude Include="Core\Framework\Utils.h">

@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClCompile Include="Core\Config\ConfigManager.cpp" />
     <ClCompile Include="Core\Framework\Scheduler.cpp" />
+    <ClCompile Include="Core\Framework\Variables.cpp" />
     <ClCompile Include="Core\Framework\Utils.cpp" />
     <ClCompile Include="Core\Hooks\D3D12Hook.cpp" />
     <ClCompile Include="Core\Hooks\EngineHooks.cpp" />
@@ -259,8 +260,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Config\ConfigManager.h" />
-    <ClInclude Include="Core\Framework\Engine.h" />
     <ClInclude Include="Core\Framework\Scheduler.h" />
+    <ClInclude Include="Core\Framework\Variables.h" />
     <ClInclude Include="Core\Framework\Utils.h" />
     <ClInclude Include="Core\Hooks\D3D12Hook.h" />
     <ClInclude Include="Core\Hooks\EngineHooks.h" />

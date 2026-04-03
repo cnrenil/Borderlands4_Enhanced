@@ -273,8 +273,7 @@ namespace Features::Camera
 			const uintptr_t cameraContext = static_cast<uintptr_t>(a1);
 			const bool bNativeCameraSafe =
 				!g_BlockNativeCameraUntilGameplayReady &&
-				!Utils::bIsLoading() &&
-				Utils::bIsInGame() &&
+				Core::Scheduler::State().CanRunGameplay() &&
 				IsGameplayReadyForNativeCamera() &&
 				IsNativeCameraContextUsable(cameraContext);
 
@@ -302,8 +301,7 @@ namespace Features::Camera
 		bool ShouldHoldThirdPersonCameraMode()
 		{
 			if (g_BlockNativeCameraUntilGameplayReady ||
-				Utils::bIsLoading() ||
-				!Utils::bIsInGame() ||
+				!Core::Scheduler::State().CanRunGameplay() ||
 				!IsGameplayReadyForNativeCamera() ||
 				!IsValidCharacterForNativeCamera() ||
 				!IsValidCameraManagerForNativeCamera() ||
@@ -481,8 +479,7 @@ namespace Features::Camera
 		{
 			if (!cameraContext ||
 				g_BlockNativeCameraUntilGameplayReady ||
-				Utils::bIsLoading() ||
-				!Utils::bIsInGame() ||
+				!Core::Scheduler::State().CanRunGameplay() ||
 				!IsGameplayReadyForNativeCamera() ||
 				!IsNativeCameraContextUsable(cameraContext))
 			{
@@ -572,8 +569,7 @@ namespace Features::Camera
 
 		bool IsGameplayReadyForNativeCamera()
 		{
-			return Utils::bIsInGame() &&
-				!Utils::bIsLoading() &&
+			return Core::Scheduler::State().CanRunGameplay() &&
 				IsValidWorldForNativeCamera() &&
 				IsValidPlayerControllerForNativeCamera() &&
 				IsValidCameraManagerForNativeCamera() &&
@@ -584,7 +580,7 @@ namespace Features::Camera
 		{
 			return ConfigManager::B("Player.Freecam") &&
 				!g_BlockNativeCameraUntilGameplayReady &&
-				!Utils::bIsLoading() &&
+				Core::Scheduler::State().CanRunGameplay() &&
 				IsGameplayReadyForNativeCamera() &&
 				GVars.PlayerController &&
 				GVars.PlayerController->PlayerCameraManager;
@@ -1144,8 +1140,7 @@ namespace Features::Camera
 #if BL4_DEBUG_BUILD
 		return ConfigManager::B("Misc.Debug") &&
 			!g_BlockNativeCameraUntilGameplayReady &&
-			!Utils::bIsLoading() &&
-			Utils::bIsInGame() &&
+			Core::Scheduler::State().CanRunGameplay() &&
 			IsNativeOTSGameplayReady();
 #else
 		return false;

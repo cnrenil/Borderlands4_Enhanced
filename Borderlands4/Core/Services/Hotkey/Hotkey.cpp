@@ -128,9 +128,9 @@ namespace HotkeyManager
 
 	void Update()
 	{
-		// Don't process game-affecting hotkeys if loading, but allow menu toggle
-		bool IsLoading = Utils::bIsLoading();
-		bool IsInGame = Utils::bIsInGame();
+		// Don't process game-affecting hotkeys when scheduler says gameplay is unavailable,
+		// but allow menu/unhook hotkeys regardless.
+		const bool CanRunGameplay = Core::Scheduler::State().CanProcessGameplayHotkeys();
 		const ULONGLONG nowMs = GetTickCount64();
 		if (gPendingUnhookDeadlineMs != 0 && nowMs > gPendingUnhookDeadlineMs)
 		{
@@ -146,7 +146,7 @@ namespace HotkeyManager
 				bool bIsUnhookKey = (hk.Name == "Misc.UnhookKey");
 
 				// Allow menu/unhook hotkeys even if gameplay state is unavailable.
-				if ((IsLoading || !IsInGame) && !bIsMenuKey && !bIsUnhookKey) continue;
+				if (!CanRunGameplay && !bIsMenuKey && !bIsUnhookKey) continue;
 
 				if (currentKey >= ImGuiKey_NamedKey_BEGIN && currentKey < ImGuiKey_NamedKey_END)
 				{

@@ -30,6 +30,11 @@ namespace Core
 			return IsInGame.load(std::memory_order_relaxed) && !IsLoading.load(std::memory_order_relaxed);
 		}
 
+		bool CanProcessGameplayHotkeys() const
+		{
+			return CanRunGameplay();
+		}
+
 		bool CanRenderOverlay() const
 		{
 			return !ShouldSuspendOverlayRendering();

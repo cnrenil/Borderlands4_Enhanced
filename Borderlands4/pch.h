@@ -86,9 +86,9 @@ using namespace SDK;
 #include "Core/Memory/SignatureRegistry.h"
 #include "Core/Security/AntiDebug.h"
 #include "Core/Services/Interop/NativeInterop.h"
+#include "Core/Framework/Variables.h"
 #include "Core/Framework/Utils.h"
 #include "Core/Hooks/StealthHook.h"
-#include "Core/Framework/Engine.h"
 #include "Core/Framework/Scheduler.h"
 
 // Features

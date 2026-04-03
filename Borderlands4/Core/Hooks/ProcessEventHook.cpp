@@ -60,14 +60,14 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
                 bNewCinematicMode = cinematicParams->bInCinematicMode;
             }
 
-            const bool bPreviousMode = Utils::bIsCinematicMode().exchange(bNewCinematicMode);
+            const bool bPreviousMode = Core::Scheduler::State().IsCinematicMode.exchange(bNewCinematicMode);
             if (bPreviousMode != bNewCinematicMode)
             {
                 LOG_INFO("Overlay", "Cinematic mode %s. %s overlay rendering.", bNewCinematicMode ? "enabled" : "disabled", bNewCinematicMode ? "Suspending" : "Resuming");
             }
         }
 
-        if (Utils::bIsInGame()) {
+        if (Core::Scheduler::State().CanRunGameplay()) {
             auto IsInputEvent = [](const std::string& name) -> bool
             {
                 return name.find("InputKey") != std::string::npos ||
@@ -86,7 +86,7 @@ void hkProcessEvent(const UObject* Object, UFunction* Function, void* Params)
             };
 
             // Block Input when Menu is open
-            if (GUI::ShowMenu && !Utils::ShouldSuspendOverlayRendering())
+            if (GUI::ShowMenu && !Core::Scheduler::State().ShouldSuspendOverlayRendering())
             {
                 if (IsInputEvent(fnName))
                 {

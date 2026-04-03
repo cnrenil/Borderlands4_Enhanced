@@ -286,7 +286,7 @@ namespace d3d12hook {
         if (Resizing.load()) return;
         if (!IsWindowRenderable()) return;
         if (!gCommandQueue || !oExecuteCommandListsD3D12) return;
-        if (Utils::ShouldSuspendOverlayRendering()) return;
+        if (Core::Scheduler::State().ShouldSuspendOverlayRendering()) return;
 
         static uint64_t last_rendered_frame = 0;
         uint64_t current_time = GetTickCount64();

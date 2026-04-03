@@ -51,14 +51,6 @@ namespace
 
 }
 
-std::recursive_mutex gGVarsMutex;
-
-std::atomic<bool>& Utils::bIsLoading() { return Core::GetRuntimeState().IsLoading; }
-std::atomic<bool>& Utils::bIsInGame() { return Core::GetRuntimeState().IsInGame; }
-std::atomic<bool>& Utils::bIsCinematicMode() { return Core::GetRuntimeState().IsCinematicMode; }
-bool Utils::ShouldSuspendOverlayRendering() { return Core::GetRuntimeState().ShouldSuspendOverlayRendering(); }
-
-
 UWorld* Utils::GetWorldSafe() 
 {
     UWorld* World = nullptr;
@@ -408,7 +400,7 @@ FVector2D Utils::ImVec2ToFVector2D(ImVec2 Vector)
 TargetSelectionResult Utils::AcquireTarget(APlayerController* ViewPoint, float MaxFOV, float MinDistance, float MaxDistance, bool RequiresLOS, std::string TargetBone, bool TargetAll, int TargetMode)
 {
     TargetSelectionResult bestResult{};
-    if (Utils::bIsLoading || !GVars.World || !GVars.World->VTable) return bestResult;
+    if (!Core::Scheduler::State().CanRunGameplay() || !GVars.World || !GVars.World->VTable) return bestResult;
     if (!GVars.Level || !GVars.GameState || !ViewPoint || !ViewPoint->PlayerCameraManager) return bestResult;
 
     const FVector CameraLocation = ViewPoint->PlayerCameraManager->CameraCachePrivate.POV.Location;
@@ -578,50 +570,6 @@ void Utils::DrawSnapLine(FVector TargetPos, float Thickness = 2.0f)
 void Utils::Error(std::string msg)
 {
     printf("[Error] %s\n", msg.c_str());
-}
-
-bool Utils::IsInLoadingState()
-{
-    if (!IsReadableUObject(GVars.World) || !GVars.World->VTable) {
-        Logger::LogThrottled(Logger::Level::Debug, "System", 5000, "LoadingState: World is NULL/Invalid");
-        return true;
-    }
-    
-    if (!IsReadableUObject(GVars.Level) || !GVars.Level->VTable) {
-        Logger::LogThrottled(Logger::Level::Debug, "System", 5000, "LoadingState: PersistentLevel is NULL");
-        return true;
-    }
-
-    if (!IsReadableUObject(GVars.GameState) || !GVars.GameState->VTable) {
-        // Some phases keep gameplay alive while GameState is not ready yet.
-        Logger::LogThrottled(Logger::Level::Debug, "System", 5000, "LoadingState: GameState not ready yet");
-    }
-
-    int32_t actorCount = 0;
-    if (!TryReadLevelActorCount(GVars.Level, actorCount))
-    {
-        Logger::LogThrottled(Logger::Level::Warning, "System", 2000, "LoadingState: exception while reading Level->Actors (likely unloading)");
-        return true;
-    }
-
-    if (actorCount < 1 || actorCount > 200000)
-    {
-        Logger::LogThrottled(Logger::Level::Debug, "System", 5000, "LoadingState: Level actor count invalid (%d)", actorCount);
-        return true;
-    }
-
-    return false;
-}
-
-bool Utils::IsInPlayableState()
-{
-    if (Utils::bIsLoading) return false;
-    if (!GVars.World || !GVars.World->VTable) return false;
-    if (!GVars.Level || !GVars.GameState) return false;
-    if (!GVars.PlayerController || !GVars.PlayerController->VTable) return false;
-    if (!GVars.PlayerController->PlayerCameraManager || !GVars.PlayerController->PlayerCameraManager->VTable) return false;
-    if (!Utils::GetSelfActor()) return false;
-    return true;
 }
 
 void cerrf(const char* Format, ...)
