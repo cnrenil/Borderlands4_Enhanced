@@ -821,11 +821,12 @@ static void RenderESPFeature()
 			FVector2D feetPos;
 			if (ProjectForOverlay(Actor.FeetPosWorld, feetPos))
 			{
+				ImU32 thinnedColor = (Actor.Color & 0x00FFFFFF) | 0x77000000;
 				GUI::Draw::Line(
 					ImVec2(GVars.ScreenSize.x * 0.5f, GVars.ScreenSize.y - 10.0f),
 					ImVec2((float)feetPos.X, (float)feetPos.Y),
-					Actor.Color,
-					1.0f,
+					thinnedColor,
+					0.5f,
 					Canvas);
 			}
 		}

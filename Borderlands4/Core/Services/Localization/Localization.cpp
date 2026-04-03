@@ -265,7 +265,7 @@ namespace Localization
         Register("TRACER_SETTINGS", "Tracer Settings", (const char*)u8"弹道设置");
         Register("LOOT_INTERACTIVES", "Loot & Interactives", (const char*)u8"掉落物与交互物");
         Register("COLOR_SETTINGS", "Color Settings", (const char*)u8"颜色设置");
-        Register("BOX_TYPE", "Box Type", (const char*)u8"方框类型");
+        Register("BOX_TYPE", "Box Type", (const char*)u8"方框样式");
         Register("SNAPLINES", "Snaplines", (const char*)u8"射线");
         Register("ENEMY_COLOR", "Enemy Color", (const char*)u8"敌人颜色");
         Register("TEAM_COLOR", "Team Color", (const char*)u8"队友颜色");

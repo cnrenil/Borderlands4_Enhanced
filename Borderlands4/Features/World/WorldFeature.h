@@ -8,4 +8,5 @@ namespace Features::World
 	void ClearGroundItems();
 	void SetGameSpeed(float speed);
 	void SetPlayersOnly(bool enabled);
+	bool OnEvent(const Core::SchedulerGameEvent& Event);
 }

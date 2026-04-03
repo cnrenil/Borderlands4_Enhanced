@@ -5,9 +5,10 @@ namespace Features::World
 {
 	namespace
 	{
-		std::recursive_mutex gTeleportMutex;
+		std::mutex gTeleportMutex;
 		static SDK::FVector LastPinPos = { 0, 0, 0 };
 		static float LastPinTime = 0.0f;
+		static int LastPinCount = 0;
 	}
 
 	void KillEnemies() {
@@ -74,33 +75,68 @@ namespace Features::World
 
 	void PerformMapTeleport()
 	{
-		std::scoped_lock GVarsLock(gGVarsMutex);
 		std::scoped_lock TeleLock(gTeleportMutex);
-		if (!GVars.PlayerController || !GVars.Character) return;
 
-		SDK::AActor* TargetActor = GVars.Character;
-		if (GVars.Character->GetAttachParentActor())
-			TargetActor = GVars.Character->GetAttachParentActor();
+		if (LastPinPos.X == 0 && LastPinPos.Y == 0 && LastPinPos.Z == 0) return;
+
+		auto PC = GVars.PlayerController;
+		if (!PC || !PC->Pawn) return;
+
+		SDK::AActor* TargetActor = PC->Pawn;
+		if (TargetActor->GetAttachParentActor())
+			TargetActor = TargetActor->GetAttachParentActor();
 
 		SDK::FVector TelePos = LastPinPos;
 		SDK::FHitResult HitResult;
 
+		// Move way above the map and then sweep down to the ground
 		TelePos.Z = 50000.0f;
 		TargetActor->K2_SetActorLocation(TelePos, false, &HitResult, false);
 
 		TelePos.Z = -1000.0f;
 		TargetActor->K2_SetActorLocation(TelePos, true, &HitResult, false);
-
+		
 		LastPinPos = { 0, 0, 0 };
+		LastPinTime = 0.0f;
+	}
+
+	bool OnEvent(const Core::SchedulerGameEvent& Event)
+	{
+		if (!ConfigManager::B("Misc.MapTeleport")) return false;
+
+		std::string FuncName = Event.Function->GetName();
+
+		if (FuncName == "Server_CreateDiscoveryPin") {
+			auto* p = static_cast<SDK::Params::OakPlayerState_Server_CreateDiscoveryPin*>(Event.Params);
+			if (p && p->InPinData.pintype == SDK::EGbxDiscoveryPinType::CustomWaypoint) {
+				std::scoped_lock TeleLock(gTeleportMutex);
+				LastPinPos = p->InPinData.PinnedCustomWaypointLocation;
+				LastPinTime = (float)ImGui::GetTime();
+			}
+		}
+		else if (FuncName == "ServerCreatePing") {
+			auto* p = static_cast<SDK::Params::OakPlayerController_ServerCreatePing*>(Event.Params);
+			if (p) {
+				std::scoped_lock TeleLock(gTeleportMutex);
+				LastPinPos = p->Location;
+				LastPinTime = (float)ImGui::GetTime();
+			}
+		}
+		else if (FuncName == "Server_RemoveDiscoveryPin" || FuncName == "ServerCancelPing") {
+			float CurrentTime = (float)ImGui::GetTime();
+			std::scoped_lock TeleLock(gTeleportMutex);
+			if (CurrentTime - LastPinTime < ConfigManager::F("Misc.MapTPWindow") && LastPinPos.X != 0) {
+				PerformMapTeleport();
+			}
+		}
+
+		return false;
 	}
 
 	void DiscoveryPinWatcher()
 	{
-		std::scoped_lock GVarsLock(gGVarsMutex);
-		std::scoped_lock TeleLock(gTeleportMutex);
 		if (!ConfigManager::B("Misc.MapTeleport") || !GVars.Character || !GVars.Character->PlayerState) return;
 
-		static int LastPinCount = 0;
 		try {
 			SDK::AOakPlayerState* PS = (SDK::AOakPlayerState*)GVars.Character->PlayerState;
 			if (!PS || IsBadReadPtr(PS, sizeof(void*))) return;
@@ -108,7 +144,7 @@ namespace Features::World
 			auto& PinArray = PS->DiscoveryPinningState.PinnedDatas;
 			int32_t NumPins = PinArray.Num();
 
-			if (NumPins <= 0 || NumPins > 512) {
+			if (NumPins < 0 || NumPins > 512) {
 				LastPinCount = 0;
 				return;
 			}
@@ -116,6 +152,7 @@ namespace Features::World
 			if (NumPins > LastPinCount) {
 				for (int i = 0; i < NumPins; i++) {
 					if (PinArray[i].pintype == SDK::EGbxDiscoveryPinType::CustomWaypoint) {
+						std::scoped_lock TeleLock(gTeleportMutex);
 						LastPinPos = PinArray[i].PinnedCustomWaypointLocation;
 						LastPinTime = (float)ImGui::GetTime();
 					}
@@ -123,6 +160,7 @@ namespace Features::World
 			}
 			else if (NumPins < LastPinCount) {
 				float CurrentTime = (float)ImGui::GetTime();
+				std::scoped_lock TeleLock(gTeleportMutex);
 				if (CurrentTime - LastPinTime < ConfigManager::F("Misc.MapTPWindow") && LastPinPos.X != 0) {
 					PerformMapTeleport();
 				}
@@ -145,6 +183,11 @@ namespace Features
 		Core::Scheduler::RegisterGameplayTickCallback("World", []()
 		{
 			World::Update();
+		});
+
+		Core::Scheduler::RegisterEventHandler("World", [](const Core::SchedulerGameEvent& Event)
+		{
+			return World::OnEvent(Event);
 		});
 
 		HotkeyManager::Register("Misc.TeleportLootKey", "TELEPORT_LOOT_KEY", ImGuiKey_F6, []()
