@@ -91,29 +91,6 @@ namespace HotkeyManager
 			Cleaning.store(true);
 			});
 
-		// Aimbot & Trigger: These are 'Hold' hotkeys. Their callbacks run continuously.
-		Register("Aimbot.Key", "AIMBOT_KEY", ImGuiKey_MouseX2, []() { Features::Aimbot::RunHotkey(); }, true);
-		Register("Trigger.Key", "TRIGGER_KEY", ImGuiKey_MouseX2, []() { ConfigManager::B("Trigger.Enabled") = true; }, true);
-
-		Register("Player.GodModeKey", "GODMODE_KEY", ImGuiKey_None, []() {
-			Features::Player::SetGodMode(!ConfigManager::B("Player.GodMode"));
-			});
-
-		Register("Player.InfAmmoKey", "INF_AMMO_KEY", ImGuiKey_None, []() {
-			Features::Player::SetInfiniteAmmo(true);
-			});
-
-		Register("Misc.ThirdPersonKey", "TOGGLE_THIRDPERSON_KEY", ImGuiKey_F5, []() {
-			ConfigManager::B("Player.ThirdPerson") = !ConfigManager::B("Player.ThirdPerson");
-			if (ConfigManager::B("Player.ThirdPerson"))
-			{
-				ConfigManager::B("Player.Freecam") = false;
-			}
-			});
-		Register("Misc.TeleportLootKey", "TELEPORT_LOOT_KEY", ImGuiKey_F6, []() {
-			Features::World::TeleportLoot();
-			});
-
 #if BL4_DEBUG_BUILD
 		Register("Misc.DumpKey", "DUMP_OBJECTS_KEY", ImGuiKey_F8, []() {
 			Features::Debug::DumpObjects();

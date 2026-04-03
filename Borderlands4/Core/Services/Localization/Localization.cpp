@@ -247,6 +247,7 @@ namespace Localization
         Register("SHOW_TEAM", "Show Team", (const char*)u8"显示队友");
         Register("SHOW_BOX", "Show Box", (const char*)u8"显示方框");
         Register("SHOW_DISTANCE", "Show Distance", (const char*)u8"显示敌方距离");
+        Register("SHOW_HEALTH_BAR", "Show Health Bar", (const char*)u8"显示血条");
         Register("SHOW_BONES", "Show Bones", (const char*)u8"显示骨骼");
         Register("SHOW_NAME", "Show Name", (const char*)u8"显示敌方名称");
         Register("SHOW_ENEMY_INDICATOR", "Show Enemy Indicator", (const char*)u8"显示敌人三角指示");
@@ -264,6 +265,8 @@ namespace Localization
         Register("TRACER_SETTINGS", "Tracer Settings", (const char*)u8"弹道设置");
         Register("LOOT_INTERACTIVES", "Loot & Interactives", (const char*)u8"掉落物与交互物");
         Register("COLOR_SETTINGS", "Color Settings", (const char*)u8"颜色设置");
+        Register("BOX_TYPE", "Box Type", (const char*)u8"方框类型");
+        Register("SNAPLINES", "Snaplines", (const char*)u8"射线");
         Register("ENEMY_COLOR", "Enemy Color", (const char*)u8"敌人颜色");
         Register("TEAM_COLOR", "Team Color", (const char*)u8"队友颜色");
         Register("DEBUG", "Debug", (const char*)u8"调试");

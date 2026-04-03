@@ -92,10 +92,32 @@ namespace Features
 			if (!PC || !PC->player) return;
 
 			std::lock_guard lock(g_InstallMutex);
-			if (!g_PlayerViewPointHooked && StealthHook::HookVMT(PC, 132, (void*)&hkGetPlayerViewPoint, (void**)&oGetPlayerViewPoint))
-				g_PlayerViewPointHooked = true;
-			if (!g_ViewPointHooked && StealthHook::HookVMT(PC->player, 88, (void*)&hkGetViewPoint, (void**)&oGetViewPoint))
-				g_ViewPointHooked = true;
+
+			if (!g_PlayerViewPointHooked)
+			{
+				if (Memory::PatchVTableSlot(PC, 132, (void*)&hkGetPlayerViewPoint, (void**)&oGetPlayerViewPoint, false))
+				{
+					g_PlayerViewPointHooked = true;
+				}
+				else
+				{
+					void*** asVt = reinterpret_cast<void***>(PC);
+					Memory::DumpVTableWindow((asVt && *asVt) ? *asVt : nullptr, 132, 8, "AController", "Aimbot");
+				}
+			}
+
+			if (!g_ViewPointHooked)
+			{
+				if (Memory::PatchVTableSlot(PC->player, 88, (void*)&hkGetViewPoint, (void**)&oGetViewPoint, false))
+				{
+					g_ViewPointHooked = true;
+				}
+				else
+				{
+					void*** asVt = reinterpret_cast<void***>(PC->player);
+					Memory::DumpVTableWindow((asVt && *asVt) ? *asVt : nullptr, 88, 8, "ULocalPlayer", "Aimbot");
+				}
+			}
 		}
 
 		void UpdateTarget(SDK::AActor* target, const SDK::FVector& pos) { g_CurrentTarget = target; g_LatestPos = pos; }

@@ -69,6 +69,7 @@ namespace
 		return ConfigManager::B("ESP.ShowBox") ||
 			ConfigManager::B("ESP.ShowEnemyDistance") ||
 			ConfigManager::B("ESP.ShowEnemyName") ||
+			ConfigManager::B("ESP.ShowHealthBar") ||
 			ConfigManager::B("ESP.ShowEnemyIndicator") ||
 			ConfigManager::B("ESP.ShowLootName") ||
 			ConfigManager::B("ESP.ShowInteractives") ||
@@ -936,21 +937,25 @@ static void RenderESPFeature()
 		}
 
 		// Health Bar
-		float BarWidth = 4.0f;
-		float BarHeight = Height;
-		float BarX = (float)RenderActor.LeftTopScreen.X - 6.0f;
-		float BarY = (float)RenderActor.LeftTopScreen.Y;
+		if (ConfigManager::B("ESP.ShowHealthBar"))
+		{
+			const float dpiScale = std::clamp(ImGui::GetIO().DisplaySize.y / 1080.0f, 0.85f, 1.5f);
+			const float BarWidth = 4.0f * dpiScale;
+			const float BarHeight = Height;
+			const float BarX = (float)RenderActor.LeftTopScreen.X - (7.0f * dpiScale);
+			const float BarY = (float)RenderActor.LeftTopScreen.Y;
 
-		// Background
-		GUI::Draw::RectFilled(ImVec2(BarX, BarY), ImVec2(BarX + BarWidth, BarY + BarHeight), IM_COL32(0, 0, 0, 150), Canvas);
+			// Background
+			GUI::Draw::RectFilled(ImVec2(BarX, BarY), ImVec2(BarX + BarWidth, BarY + BarHeight), IM_COL32(0, 0, 0, 150), Canvas);
 
-		// Health Fill
-		ImU32 HealthColor = IM_COL32(0, 255, 0, 255);
-		if (Actor.HealthPct < 0.3f) HealthColor = IM_COL32(255, 0, 0, 255);
-		else if (Actor.HealthPct < 0.7f) HealthColor = IM_COL32(255, 255, 0, 255);
+			// Health Fill
+			ImU32 HealthColor = IM_COL32(0, 255, 0, 255);
+			if (Actor.HealthPct < 0.3f) HealthColor = IM_COL32(255, 0, 0, 255);
+			else if (Actor.HealthPct < 0.7f) HealthColor = IM_COL32(255, 255, 0, 255);
 
-		float FillHeight = BarHeight * Actor.HealthPct;
-		GUI::Draw::RectFilled(ImVec2(BarX, BarY + BarHeight - FillHeight), ImVec2(BarX + BarWidth, BarY + BarHeight), HealthColor, Canvas);
+			const float FillHeight = BarHeight * std::clamp(Actor.HealthPct, 0.0f, 1.0f);
+			GUI::Draw::RectFilled(ImVec2(BarX, BarY + BarHeight - FillHeight), ImVec2(BarX + BarWidth, BarY + BarHeight), HealthColor, Canvas);
+		}
 
 		// Distance and Name
 		if (ConfigManager::B("ESP.ShowEnemyDistance"))

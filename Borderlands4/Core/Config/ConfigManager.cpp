@@ -30,6 +30,7 @@ namespace ConfigManager
         Register("ESP.ShowBox", true);
         Register("ESP.ShowEnemyDistance", true);
         Register("ESP.ShowEnemyName", true);
+        Register("ESP.ShowHealthBar", true);
         Register("ESP.ShowEnemyIndicator", false);
         Register("ESP.ShowLootName", false);
         Register("ESP.ShowInteractives", false);
@@ -40,6 +41,8 @@ namespace ConfigManager
         Register("ESP.LootMaxDistance", 250.0f);
         Register("ESP.InteractiveColor", ImVec4(0.2f, 0.9f, 1.0f, 1.0f));
         Register("ESP.InteractiveMaxDistance", 250.0f);
+        Register("ESP.BoxType", 0);
+        Register("ESP.Snaplines", false);
         Register("ESP.BulletTracers", true);
         Register("ESP.TracerRainbow", true);
         Register("ESP.TracerDuration", 2.0f);

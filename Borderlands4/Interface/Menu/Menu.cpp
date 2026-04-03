@@ -449,9 +449,12 @@ namespace
             ImGui::Dummy(ImVec2(6.0f * scale, 0.0f));
             ImGui::SeparatorText(title);
             ImGui::Dummy(ImVec2(0.0f, 6.0f * scale));
+            
+            // Fix: Mark content as open BEFORE beginning the child, so EndSurface always pops it.
+            // ImGui requires EndChild() even if BeginChild() returns false (clipped).
+            g_SurfaceContentOpen = true;
             ImGui::BeginChild("##surface_content", ImVec2(-16.0f * scale, 0.0f), false, ImGuiWindowFlags_NoScrollbar);
             ImGui::Indent(14.0f * scale);
-            g_SurfaceContentOpen = true;
         }
         return open;
     }
@@ -461,10 +464,10 @@ namespace
         if (g_SurfaceContentOpen)
         {
             ImGui::Unindent(14.0f * GetMenuUiScale());
-            ImGui::EndChild();
+            ImGui::EndChild(); // Close ##surface_content
             g_SurfaceContentOpen = false;
         }
-        ImGui::EndChild();
+        ImGui::EndChild(); // Close the outer surface
     }
 
     void RenderChrome(const ImVec2& pos, const ImVec2& size)
@@ -541,11 +544,13 @@ namespace
             break;
         case PanelId::Camera:
             {
-                if (AnimatedToggle(Localization::T("THIRD_PERSON"), &B("Player.ThirdPerson")))
+                bool bTP = B("Player.ThirdPerson");
+                if (AnimatedToggle(Localization::T("THIRD_PERSON"), &bTP))
                     Features::Camera::ToggleThirdPerson();
             }
             {
-                if (AnimatedToggle(Localization::T("FREE_CAM"), &B("Player.Freecam")))
+                bool bFreecam = B("Player.Freecam");
+                if (AnimatedToggle(Localization::T("FREE_CAM"), &bFreecam))
                     Features::Camera::ToggleFreecam();
             }
             AnimatedToggle(Localization::T("ENABLE_FOV_CHANGER"), &B("Misc.EnableFOV"));
@@ -1197,6 +1202,7 @@ namespace
         AnimatedToggle(Localization::T("SHOW_BOX"), &B("ESP.ShowBox"));
         AnimatedToggle(Localization::T("SHOW_DISTANCE"), &B("ESP.ShowEnemyDistance"));
         AnimatedToggle(Localization::T("SHOW_BONES"), &B("ESP.Bones"));
+        AnimatedToggle(Localization::T("SHOW_HEALTH_BAR"), &B("ESP.ShowHealthBar"));
         AnimatedToggle(Localization::T("SHOW_NAME"), &B("ESP.ShowEnemyName"));
         AnimatedToggle(Localization::T("SHOW_ENEMY_INDICATOR"), &B("ESP.ShowEnemyIndicator"));
 

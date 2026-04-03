@@ -63,6 +63,17 @@ namespace StealthHook
     {
         if (!address || size == 0) return false;
 
+        // If Initialize() was skipped or failed, lazily resolve once here so callers
+        // don't jump through a null syscall instruction pointer.
+        if (!g_NtSyscallInstr || g_NtProtectSyscallNum == 0)
+        {
+            g_NtProtectSyscallNum = ResolveSyscallNumber("NtProtectVirtualMemory");
+            if (!g_NtSyscallInstr || g_NtProtectSyscallNum == 0)
+            {
+                return false;
+            }
+        }
+
         PVOID baseAddr = address;
         SIZE_T regionSize = size;
         ULONG old;

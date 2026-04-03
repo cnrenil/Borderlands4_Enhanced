@@ -19,7 +19,7 @@ namespace ConfigManager
     // Register a setting with its default value
     void Register(const std::string& key, ConfigValue defaultValue);
 
-    // Get a reference to a setting value (throws if key doesn't exist or type mismatch)
+    // Get a reference to a setting value (handles missing keys gracefully)
     template<typename T>
     T& Get(const std::string& key) {
         return std::get<T>(ConfigMap.at(key));

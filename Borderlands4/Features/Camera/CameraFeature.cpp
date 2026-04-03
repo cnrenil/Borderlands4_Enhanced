@@ -355,14 +355,15 @@ namespace Features::Camera
 				const std::string requestedMode = a2->ToString();
 				const bool bRequestsThirdPerson = requestedMode.find("ThirdPerson") != std::string::npos;
 				const bool bRequestsFirstPerson = requestedMode.find("FirstPerson") != std::string::npos;
-				if (!bRequestsThirdPerson && bRequestsFirstPerson)
+				if (!bRequestsThirdPerson)
 				{
-					*a2 = SDK::UKismetStringLibrary::Conv_StringToName(L"ThirdPerson");
+					const SDK::FName targetMode = SDK::UKismetStringLibrary::Conv_StringToName(L"ThirdPerson");
+					*a2 = targetMode;
 					Logger::LogThrottled(
 						Logger::Level::Debug,
 						"CamMode",
-						500,
-						"Intercepted camera mode request '%s' and forced ThirdPerson.",
+						2000,
+						"Intercepted: Forced ThirdPerson from '%s'",
 						requestedMode.c_str());
 				}
 			}
